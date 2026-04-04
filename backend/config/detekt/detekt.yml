@@ -854,3 +854,4 @@ style:
     active: true
     excludeImports:
       - 'java.util.*'
+      - 'io.ktor.*'

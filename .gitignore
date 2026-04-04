@@ -1,1 +1,15 @@
+# Secrets / local config overrides — use Doppler, not .env
+.env
+*.local.yaml
+
+# Editor
 .idea/
+.vscode/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# direnv
+.direnv/

@@ -1,9 +1,15 @@
-# Qalam - Arabic Learning Notes
+<div align="center">
+  <img src="docs/assets/banner.svg" alt="Qalam — Personal Arabic Learning Tool" width="100%"/>
+</div>
+
+<div align="center">
 
 [![CI](https://github.com/amasotti/qalam/actions/workflows/ci.yml/badge.svg)](https://github.com/amasotti/qalam/actions/workflows/ci.yml)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.3-7F52FF?logo=kotlin&logoColor=white)
 ![Ktor](https://img.shields.io/badge/Ktor-3.x-087CFA?logo=ktor&logoColor=white)
-![License](https://img.shields.io/github/license/amasotti/qalam)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+</div>
 
 *Qalam* (قلم — "pen") is the rewrite of [An-Na7wi](https://github.com/amasotti/an-na7wi), my personal Arabic learning
 platform. The old stack (Quarkus + Nuxt) served me well but accumulated too many rough edges and given it was a learning project

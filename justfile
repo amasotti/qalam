@@ -13,9 +13,9 @@ stop-db:
 backend: start-db
     doppler run -- ./backend/gradlew -p backend run
 
-# Run backend tests (starts a Testcontainers-managed Postgres — no docker compose needed)
+# Run backend tests (Testcontainers manages its own Postgres — no secrets needed)
 test:
-    doppler run -- ./backend/gradlew -p backend test
+    ./backend/gradlew -p backend test
 
 # Start everything: DB + backend
 run: start-db

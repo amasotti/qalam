@@ -13,7 +13,7 @@ group = "com.tonihacks"
 version = "0.0.1"
 
 application {
-    mainClass = "com.tonihacks.qalam.ApplicationKt"
+    mainClass = "io.ktor.server.netty.EngineMain"
 }
 
 java {
@@ -45,6 +45,13 @@ dependencies {
     implementation(libs.ktor.server.request.validation)
     implementation(libs.ktor.server.cors)
     implementation(libs.ktor.serialization.kotlinx.json)
+
+    // OpenAPI + Swagger UI
+    implementation(libs.ktor.server.openapi)
+    implementation(libs.ktor.server.swagger)
+
+    // Arrow (typed errors)
+    implementation(libs.arrow.core)
 
     // Ktor client (AI integration)
     implementation(libs.ktor.client.core)

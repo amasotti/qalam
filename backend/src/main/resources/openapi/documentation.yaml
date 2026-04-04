@@ -1,0 +1,80 @@
+openapi: "3.1.0"
+info:
+  title: Qalam API
+  description: Personal Arabic learning tool — backend API
+  version: "0.1.0"
+
+servers:
+  - url: http://localhost:8080
+    description: Local development
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      operationId: getHealth
+      tags: [system]
+      responses:
+        "200":
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+
+  /api/v1/openapi.json:
+    get:
+      summary: OpenAPI specification
+      operationId: getOpenApiSpec
+      tags: [system]
+      responses:
+        "200":
+          description: OpenAPI document
+
+  /api/v1/swagger-ui:
+    get:
+      summary: Swagger UI
+      operationId: getSwaggerUi
+      tags: [system]
+      responses:
+        "200":
+          description: Swagger UI HTML
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          example: ok
+
+    ErrorResponse:
+      type: object
+      required: [error, code]
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: string
+          description: Machine-readable error code
+
+    PaginatedResponse:
+      type: object
+      required: [items, total, page, size]
+      properties:
+        items:
+          type: array
+          items: {}
+        total:
+          type: integer
+          format: int64
+          description: Total number of matching records
+        page:
+          type: integer
+          description: Current page (1-based)
+        size:
+          type: integer
+          description: Page size requested

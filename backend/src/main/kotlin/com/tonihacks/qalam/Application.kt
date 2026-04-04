@@ -1,6 +1,21 @@
 package com.tonihacks.qalam
 
-fun main() {
-    // Placeholder — becomes embeddedServer(Netty, ...) in Milestone 1
-    println("Qalam starting…")
+import com.tonihacks.qalam.delivery.configurePlugins
+import com.tonihacks.qalam.delivery.configureRouting
+import com.tonihacks.qalam.infrastructure.db.configureDatabase
+import com.tonihacks.qalam.infrastructure.koin.appModule
+import io.ktor.server.application.*
+import org.koin.ktor.plugin.Koin
+import org.koin.logger.slf4jLogger
+
+// Entry point: io.ktor.server.netty.EngineMain (set in build.gradle.kts).
+// EngineMain reads application.conf, binds to the configured port, and calls Application.module().
+fun Application.module() {
+    install(Koin) {
+        slf4jLogger()
+        modules(appModule)
+    }
+    configureDatabase()
+    configurePlugins()
+    configureRouting()
 }

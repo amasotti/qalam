@@ -22,6 +22,7 @@ Infrastructure foundation. Nothing compiles or runs correctly until this is comp
 - [x] 0.7 `[I]` `flake.nix` devShell: JDK 25, Gradle, just, doppler, docker, pnpm, Node
 - [ ] 0.8 `[I]` GitHub Actions `ci.yml`: run `./gradlew test` on push/PR (Doppler token injected)
 - [ ] 0.9 `[B]` `detekt.yml` config wired and passing on empty project (already in `backend/config/detekt/`)
+- [ ] 0.10 `[I]` Write `README.md` with project overview, setup instructions, and development workflow. Reference the docs/ folder. Readme is nice to read, enjoyable and clear. Has badges and is appealing. Details are in docs/ folder and sub readmes.
 
 ---
 

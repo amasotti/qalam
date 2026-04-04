@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "model": "claude-sonnet-4-6",
+  "permissions": {
+    "defaultMode": "plan",
+    "allow": ["Bash(find *)", "Bash(ls *)", "Bash(cat *)", "mcp__claude_ai_Notion__notion-fetch", "mcp__claude_ai_Notion__notion-query-database-view"],
+    "disableBypassPermissionsMode": "disable",
+    "deny": [
+      "Bash(scp *)",
+      "Bash(rsync *)",
+      "Bash(ssh *)",
+      "Bash(ftp *)",
+      "Bash(sftp *)",
+
+      "Bash(chmod 777 *)",
+      "Bash(shred *)",
+
+      "Bash(git push --force*)",
+      "Bash(git push -f *)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean -f*)",
+      "Bash(git branch -D *)",
+      "Bash(git checkout -- .)",
+
+      "Bash(cat .env*)",
+      "Bash(cat *.pem)",
+      "Bash(cat *credential*)",
+      "Bash(cat *secret*)",
+      "Bash(cat *password*)",
+      "Bash(cat *token*)",
+      "Bash(cat *.key)",
+
+      "Bash(*DROP TABLE*)",
+      "Bash(*DROP DATABASE*)",
+      "Bash(*DROP SCHEMA*)",
+      "Bash(*DROP INDEX*)",
+
+      "Bash(env)",
+      "Bash(env *)",
+      "Bash(printenv)",
+      "Bash(printenv *)",
+      "Bash(cat /proc/*/environ)",
+
+      "Read(~/**/*.keyfile)",
+      "Read(~/**/*.key)",
+      "Read(~/**/*.p8)",
+      "Read(~/**/*.pem)",
+      "Read(~/**/secrets/**)",
+      "Read(~/**/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.zshrc)",
+      "Read(~/.zsh_history)",
+      "Read(~/.bash_history)"
+    ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "excludedCommands": ["git"]
+  }
+}

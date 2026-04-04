@@ -14,8 +14,8 @@ Mark `[ ]` → `[x]` when done. Completed tasks stay in the file as history.
 Infrastructure foundation. Nothing compiles or runs correctly until this is complete.
 
 - [x] 0.1 `[I]` Fix Gradle build: uncomment Kotlin plugin, correct alias `kotlinJvm`, add `gradlePluginPortal()` to `pluginManagement`
-- [ ] 0.2 `[I]` Add `src/main/kotlin` and `src/test/kotlin` source sets; add a placeholder `Application.kt` so the project has a main entry point
-- [ ] 0.3 `[I]` Wire full dependency set in `build.gradle.kts`: Ktor server (netty), Exposed, Flyway, Koin, kotlinx.serialization, Logback, Kotest + MockK + Testcontainers for tests
+- [x] 0.2 `[I]` Add `src/main/kotlin` and `src/test/kotlin` source sets; add a placeholder `Application.kt` so the project has a main entry point
+- [x] 0.3 `[I]` Wire full dependency set in `build.gradle.kts`: Ktor server (netty), Exposed, Flyway, Koin, kotlinx.serialization, Logback, Kotest + MockK + Testcontainers for tests
 - [ ] 0.4 `[I]` `docker-compose.yml` at repo root: `postgres:17-alpine` with health check + named volume; no backend or frontend container yet
 - [ ] 0.5 `[I]` `justfile` at repo root with `start-db`, `backend`, `test`, `run` recipes (Doppler-wrapped)
 - [ ] 0.6 `[I]` `doppler.yaml` committed at repo root (project config stub — no secrets in file)

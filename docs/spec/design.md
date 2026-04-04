@@ -17,7 +17,7 @@ The new name for this project will be `Qalam` (successor of an-na7wi).
 |---|---|
 | Backend language | Kotlin 2.3.20, JDK 25 (or latest LTS compatible with tooling) |
 | Backend framework | Ktor 3.4.x (embeddedServer, DSL routing) |
-| Database ORM | Exposed (SQL DSL — not DAO pattern) |
+| Database ORM | Exposed 1.x (SQL DSL — not DAO pattern). **Note**: Exposed 1.x moved to `org.jetbrains.exposed.v1.*` — all imports use this package, not the `org.jetbrains.exposed.sql.*` you'll find in older docs/tutorials. |
 | Migrations | Flyway (SQL files) |
 | Database | PostgreSQL 17 |
 | Serialization | kotlinx.serialization |
@@ -64,6 +64,22 @@ inward — outer layers know about inner layers, never the reverse.
 - Exposed tables and SQL queries live in infrastructure. They never leak into domain.
 - Koin wires implementations to interfaces at startup. Services receive their dependencies
   via constructor injection — no service locator pattern, no `KoinComponent` everywhere.
+
+### Error Handling
+
+Services return `Either<DomainError, T>` (Arrow). They never throw. Routes handle the left case
+explicitly via `fold`:
+
+```kotlin
+service.doThing().fold(
+    { error -> call.respondError(it) },   // delivery/ErrorMapping.kt extension
+    { result -> call.respond(result) },
+)
+```
+
+`DomainError` is a sealed class with no framework imports (domain stays pure). The HTTP status
+mapping lives in `delivery/ErrorMapping.kt` as an extension function. `StatusPages` is only a
+catch-all for truly unexpected `Throwable`s, not for domain errors.
 
 ---
 

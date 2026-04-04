@@ -1,0 +1,101 @@
+# CLAUDE.md — qalam
+
+## What this project is
+
+Personal Arabic learning tool — texts, vocabulary, roots, SRS training, annotations, interlinear glosses. Single user (Toni), no auth ever. 
+Full rewrite of `an-na7wi` (`/Users/antoniomasotti/toni/100_programming/190_frontend/an-na7wi`). 
+Consult it for data model details, migration history (22 SQL files), transliteration character map, and CSS patterns.
+
+## Repo layout
+
+```
+backend/      Kotlin + Ktor
+frontend/     SvelteKit (not started yet)
+docs/spec/    Source of truth — product-spec.md, design.md, requirements.md
+docs/tasks.md Living development plan — the authoritative task list
+justfile      (to be created) — all dev commands go here
+docker-compose.yml  (to be created)
+```
+
+## Stack (locked — don't deviate without asking)
+
+|             |                                                                                                                               |
+|-------------|-------------------------------------------------------------------------------------------------------------------------------|
+| Backend     | Kotlin 2.3.20, Ktor 3.4.x, Exposed (SQL DSL), Flyway, Koin, kotlinx.serialization                                             |
+| DB          | PostgreSQL 17, extensions: uuid-ossp, pg_trgm, unaccent                                                                       |
+| Frontend    | SvelteKit (Svelte 5 runes), shadcn-svelte (copy-paste owned), @tanstack/svelte-query, sveltekit-superforms + Zod, Tailwind v4 |
+| AI          | OpenRouter (OpenAI-compatible). Single `AiClient` wrapper. App works fully without it.                                        |
+| Secrets     | Doppler only — no .env files, ever                                                                                            |
+| Task runner | just                                                                                                                          |
+| CI          | GitHub Actions                                                                                                                |
+
+## Architecture rules
+
+**Backend** — Clean/Onion, deps inward only:
+- Routes → Services → Repositories (interfaces) → Exposed/DB
+- Domain has zero framework deps
+- Koin for DI, constructor injection only, no `KoinComponent` sprinkled everywhere
+- Sealed classes for domain errors, `Either<DomainError, A>` across service boundaries
+- No throwing across service boundaries
+
+**Frontend** — thin routes, component stores, no direct API calls from components:
+- Components call stores or accept props
+- Stores hold server state (svelte-query), not UI state
+- UI state (modals, hover, selection) lives in the component that owns it
+
+**API**:
+- All under `/api/v1/`
+- OpenAPI generated at startup → `/api/v1/openapi.json` + `/api/v1/swagger-ui`
+- Pagination: `page` + `size`, response: `{ items, total, page, size }`
+- Error envelope: `{ error, code }`
+- Frontend types generated via `pnpm generate:types` from the spec — never hand-write types
+
+## Database rules
+
+- Flyway SQL migrations only — naming: `V001__create_extensions.sql`
+- UUID PKs generated in application code
+- Enums as VARCHAR + CHECK constraints (not PG ENUM types)
+- All FK columns have explicit `ON DELETE`; all FK/filter columns indexed
+- No auto-DDL ever
+
+## Key design decisions (don't re-litigate)
+
+- `Text` is unified — plain view and interlinear gloss are properties of the same entity, no separate `InterlinearText`
+- Alignment tokens are a property of the sentence, not independent API entities — they're invalidated when sentence text changes
+- No version history (TextVersion removed — was never used)
+- `derivedFrom` on Word is a self-referential FK creating a directed graph — depth-limit all queries over it
+- `an-na7wi` field name bugs fixed: `freeTranslation` (not `translation`) and `notes` (not `annotations`) on Sentence
+- `derivedFrom` naming confusion and stale token problem are known improvements in the rewrite
+
+## What to preserve from an-na7wi
+
+- Transliteration character map (`TransliterationService.kt`) — copy the map, not the Quarkus wrapper
+- Exact enum values (dialect, difficulty, mastery, POS, annotation type)
+- Arabic font stack: Noto Naskh Arabic + Lateef (body), Lateef + Noto Naskh (display), Markazi Text + Noto Naskh (text)
+- `.arabic { direction: rtl }` + Tailwind `rtl:` variants pattern
+
+## Non-negotiables
+
+1. No auth — single-user forever
+2. No native image — `./gradlew test` under 2 min
+3. Every feature reachable via `curl`
+4. AI features degrade gracefully to 503 `AI_NOT_CONFIGURED` without `OPENROUTER_API_KEY`
+5. No `any` in TypeScript
+6. `just run` starts everything after `doppler login`
+7. the `private-dev` skill MUST be used and loaded in every new session
+
+## Working style with Tony
+
+- One task at a time, stop and share after each logical unit
+- Sketch approach in words before writing real code for non-trivial things
+- Pause at design forks: present options briefly, let Tony choose
+- Tick tasks in `docs/tasks.md` when done
+- Update `docs/` when behaviour/API/data model changes — proactively, not when asked
+- Tony is an experienced developer — don't over-explain, don't pad responses
+
+## Gradle notes
+gi
+- Version catalog: `gradle/libs.versions.toml`
+- Plugin alias for Kotlin is `kotlinJvm` → use `alias(libs.plugins.kotlinJvm)` (NOT `kotlin.jvm`)
+- `settings.gradle.kts` needs `gradlePluginPortal()` in `pluginManagement.repositories`
+- JVM target: 25

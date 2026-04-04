@@ -1,37 +1,89 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '$lib/components/ui/card';
 </script>
 
 <main class="min-h-screen bg-background p-8">
-	<div class="mx-auto max-w-2xl space-y-6">
+	<div class="mx-auto max-w-3xl space-y-8">
+
+		<!-- Stack verification -->
 		<div>
-			<h1 class="text-3xl font-bold text-foreground">قلم</h1>
-			<p class="text-muted-foreground mt-1">Arabic learning tool — design system check</p>
+			<h1 class="text-3xl font-bold text-foreground">قلم — Design System</h1>
+			<p class="text-muted-foreground mt-1">Font stack + component verification</p>
 		</div>
 
+		<!-- Arabic font stack demo -->
 		<Card>
 			<CardHeader>
-				<CardTitle>Tailwind v4 + shadcn-svelte</CardTitle>
+				<CardTitle>Arabic Fonts</CardTitle>
+				<CardDescription>Three roles — body, display, text passages</CardDescription>
+			</CardHeader>
+			<CardContent class="space-y-6">
+
+				<!-- Body font: Noto Naskh Arabic -->
+				<div class="space-y-1">
+					<p class="text-xs text-muted-foreground uppercase tracking-widest">
+						Body · Noto Naskh Arabic (font-arabic)
+					</p>
+					<p style="font-family: var(--font-arabic); font-size: var(--arabic-font-size-body); line-height: var(--arabic-line-height-body); direction: rtl; text-align: right;">
+						كَتَبَ الطالِبُ رِسالةً إلى أستاذِهِ في موضوعِ النَّحوِ العربيِّ القديمِ.
+					</p>
+					<p class="text-sm text-muted-foreground italic">
+						The student wrote a letter to his professor on the subject of classical Arabic grammar.
+					</p>
+				</div>
+
+				<!-- Display font: Lateef -->
+				<div class="space-y-1">
+					<p class="text-xs text-muted-foreground uppercase tracking-widest">
+						Display · Lateef (font-arabic-display)
+					</p>
+					<p style="font-family: var(--font-arabic-display); font-size: var(--arabic-font-size-display); line-height: var(--arabic-line-height-display); direction: rtl; text-align: right;">
+						القَلَمُ أقوى مِن السَّيف
+					</p>
+					<p class="text-sm text-muted-foreground italic">
+						The pen is mightier than the sword.
+					</p>
+				</div>
+
+				<!-- Text / passage font: Markazi Text -->
+				<div class="space-y-1">
+					<p class="text-xs text-muted-foreground uppercase tracking-widest">
+						Text passage · Markazi Text (font-arabic-text)
+					</p>
+					<p style="font-family: var(--font-arabic-text); font-size: var(--arabic-font-size-body); line-height: var(--arabic-line-height-text); direction: rtl; text-align: right;">
+						في البَدءِ كانَ الكَلِمةُ، وكانَتِ الكَلِمةُ عِندَ اللهِ، وكانَتِ الكَلِمةُ اللهَ.
+					</p>
+					<p class="text-sm text-muted-foreground italic">
+						In the beginning was the Word, and the Word was with God, and the Word was God.
+					</p>
+				</div>
+
+			</CardContent>
+		</Card>
+
+		<!-- Component spot check -->
+		<Card>
+			<CardHeader>
+				<CardTitle>Components</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-4">
-				<p class="text-sm text-muted-foreground">
-					If you can read this inside a card with styled text, the stack is working.
-				</p>
 				<div class="flex gap-2 flex-wrap">
 					<Badge>Default</Badge>
 					<Badge variant="secondary">Secondary</Badge>
 					<Badge variant="outline">Outline</Badge>
 					<Badge variant="destructive">Destructive</Badge>
 				</div>
-				<div class="flex gap-2">
+				<div class="flex gap-2 flex-wrap">
 					<Button>Primary</Button>
 					<Button variant="secondary">Secondary</Button>
 					<Button variant="outline">Outline</Button>
+					<Button variant="ghost">Ghost</Button>
 					<Button variant="destructive">Danger</Button>
 				</div>
 			</CardContent>
 		</Card>
+
 	</div>
 </main>

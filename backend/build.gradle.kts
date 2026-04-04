@@ -21,6 +21,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_25
 }
 
+tasks.withType<JavaExec> {
+    jvmArgs("--enable-native-access=ALL-UNNAMED")
+}
+
 kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25

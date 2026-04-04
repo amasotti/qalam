@@ -1,4 +1,4 @@
-# قلم · Qalam
+# Qalam - Arabic Learning Notes
 
 [![CI](https://github.com/amasotti/qalam/actions/workflows/ci.yml/badge.svg)](https://github.com/amasotti/qalam/actions/workflows/ci.yml)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.3-7F52FF?logo=kotlin&logoColor=white)

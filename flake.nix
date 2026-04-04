@@ -1,5 +1,5 @@
 {
-  description = "na7wi — personal Arabic learning tool dev shell";
+  description = "qalam — personal Arabic learning tool dev shell";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -38,7 +38,7 @@
           JAVA_HOME = "${pkgs.jdk25}";
 
           shellHook = ''
-            echo "na7wi dev shell"
+            echo "qalam dev shell"
             echo "  java   $(java -version 2>&1 | head -1 | cut -d'"' -f2)"
             echo "  node   $(node --version)"
             echo "  pnpm   $(pnpm --version)"

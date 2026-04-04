@@ -1,4 +1,4 @@
-# Product Specification — na7wi
+# Product Specification — qalam
 
 > Technology-agnostic description of what the app is and does.
 > This is the source of truth for story decomposition. If a feature isn't here, it doesn't exist.

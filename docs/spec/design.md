@@ -8,6 +8,7 @@
 > `/Users/antoniomasotti/toni/100_programming/190_frontend/an-na7wi`). Consult it for
 > data model details, migration history (22 SQL files), API contracts, and CSS patterns.
 
+The new name for this project will be `Qalam` (successor of an-na7wi).
 ---
 
 ## Stack

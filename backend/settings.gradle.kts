@@ -4,4 +4,4 @@ pluginManagement {
         mavenCentral()
     }
 }
-rootProject.name="na7wi-backend"
+rootProject.name="qalam-backend"

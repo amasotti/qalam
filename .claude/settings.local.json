@@ -3,7 +3,12 @@
   "model": "claude-sonnet-4-6",
   "permissions": {
     "defaultMode": "plan",
-    "allow": ["Bash(find *)", "Bash(ls *)", "Bash(cat *)", "mcp__claude_ai_Notion__notion-fetch", "mcp__claude_ai_Notion__notion-query-database-view"],
+    "allow": [
+      "Bash(find *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Read(~/toni/100_programming/190_frontend/an-na7wi/*)"
+    ],
     "disableBypassPermissionsMode": "disable",
     "deny": [
       "Bash(scp *)",

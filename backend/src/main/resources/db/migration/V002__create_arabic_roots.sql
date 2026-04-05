@@ -15,3 +15,15 @@ CREATE TABLE arabic_roots (
 
 CREATE INDEX idx_roots_letter_count ON arabic_roots (letter_count);
 CREATE INDEX idx_roots_normalized   ON arabic_roots (normalized_form);
+
+CREATE OR REPLACE FUNCTION set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = now();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER arabic_roots_updated_at
+    BEFORE UPDATE ON arabic_roots
+    FOR EACH ROW EXECUTE FUNCTION set_updated_at();

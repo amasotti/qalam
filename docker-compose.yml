@@ -15,6 +15,32 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
+    networks:
+      - qalam-network
+  backend:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    image: qalam/backend:latest
+    container_name: qalam-backend
+    restart: unless-stopped
+    ports:
+      - "8085:8085"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DOPPLER_TOKEN=${DOPPLER_TOKEN:?Set DOPPLER_TOKEN}
+      - DOPPLER_CONFIG=dev
+      - DOPPLER_PROJECT=qalam
+      - DATABASE_URL=jdbc:postgresql://db:5432/qalam
+      - TZ=Europe/Berlin
+    networks:
+      - qalam-network
 
 volumes:
   pgdata:
+
+networks:
+  qalam-network:
+    driver: bridge

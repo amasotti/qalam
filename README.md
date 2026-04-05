@@ -26,26 +26,17 @@ tools, you might find it useful too.
 
 ## What you need
 
-The dev environment is fully defined in `flake.nix`. If you have Nix with flakes enabled, that's the only thing you
-need:
+| Tool    | Version | How to install                              |
+|---------|---------|---------------------------------------------|
+| JDK     | 25      | [sdkman](https://sdkman.io/): `sdk install java 25-tem` |
+| just    | latest  | `brew install just` / system package        |
+| doppler | latest  | [doppler.com/docs/install](https://docs.doppler.com/docs/install) |
+| Node.js | 24      | system package / `nvm`                      |
+| pnpm    | latest  | `corepack enable && corepack prepare pnpm@latest --activate` |
+| Docker  | any     | Docker Desktop or colima                    |
 
-```bash
-nix develop       # drops you into a shell with JDK 25, just, doppler, pnpm, psql
-```
-
-This provides:
-
-| Tool    | Version | Purpose                         |
-|---------|---------|---------------------------------|
-| JDK     | 25      | Backend build and runtime       |
-| just    | latest  | Task runner (replaces make)     |
-| doppler | latest  | Secrets management              |
-| Node.js | 24      | Frontend build and dev server   |
-| pnpm    | latest  | Frontend package manager        |
-| psql    | 17      | Database CLI for manual queries |
-
-If you don't use Nix, install those tools manually and make sure `JAVA_HOME` points to JDK 25.
-Doppler can be replaced by similar secretOps tools like Vault, Infisical etc.. or with a less secure .env file.
+Make sure `JAVA_HOME` points to JDK 25 (sdkman sets this automatically).
+Doppler can be replaced by Vault, Infisical, or a local `.env` file if needed.
 
 ---
 

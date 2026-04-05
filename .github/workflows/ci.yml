@@ -18,10 +18,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
-      - uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/flake-checker-action@main
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: gradle
       - name: Detekt
-        run: nix develop --command bash -c "cd backend && ./gradlew detekt --no-daemon"
+        run: cd backend && ./gradlew detekt --no-daemon
       - name: Run tests
-        run: nix develop --command bash -c "cd backend && ./gradlew test --no-daemon"
+        run: cd backend && ./gradlew test --no-daemon

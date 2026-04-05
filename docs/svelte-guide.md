@@ -143,10 +143,11 @@ loading/error states. Pattern:
 import {createQuery} from '@tanstack/svelte-query';
 
 export function useTexts() {
-    return createQuery({
+    // Options must be a function — required by @tanstack/svelte-query v6 (Svelte 5)
+    return createQuery(() => ({
         queryKey: ['texts'],
         queryFn: () => fetch('/api/v1/texts').then(r => r.json())
-    });
+    }));
 }
 ```
 
@@ -156,10 +157,11 @@ export function useTexts() {
   const query = useTexts();
 </script>
 
-{#if $query.isPending}  Loading...
-{:else if $query.isError}  Error: {$query.error.message}
+<!-- v6 returns a reactive object, NOT a Svelte store — no $ prefix -->
+{#if query.isPending}  Loading...
+{:else if query.isError}  Error: {query.error.message}
 {:else}
-  {#each $query.data.items as text}
+  {#each query.data.items as text}
     <p>{text.title}</p>
   {/each}
 {/if}

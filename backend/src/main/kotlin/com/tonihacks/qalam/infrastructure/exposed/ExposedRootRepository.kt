@@ -2,6 +2,9 @@ package com.tonihacks.qalam.infrastructure.exposed
 
 import arrow.core.Either
 import arrow.core.left
+import arrow.core.raise.either
+import arrow.core.raise.ensure
+import arrow.core.raise.ensureNotNull
 import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.PageRequest
 import com.tonihacks.qalam.delivery.dto.PaginatedResponse
@@ -42,6 +45,16 @@ class ExposedRootRepository : RootRepository {
                 .right()
         }
 
+    override suspend fun existsByNormalizedForm(form: String): Either<DomainError, Boolean> =
+        suspendTransaction {
+            RootsTable
+                .selectAll()
+                .where { RootsTable.normalizedForm eq form }
+                .empty()
+                .not()
+                .right()
+        }
+
     override suspend fun list(page: PageRequest, letterCount: Int?): Either<DomainError, PaginatedResponse<ArabicRoot>> =
         suspendTransaction {
             val query = RootsTable.selectAll().let { q ->
@@ -72,29 +85,48 @@ class ExposedRootRepository : RootRepository {
                 it[letterCount] = root.letterCount.toShort()
                 it[meaning] = root.meaning
                 it[analysis] = root.analysis
-                it[createdAt] = root.createdAt
-                it[updatedAt] = root.updatedAt
             }
             root.right()
         }
 
     override suspend fun update(root: ArabicRoot): Either<DomainError, ArabicRoot> =
         suspendTransaction {
-            val updated = RootsTable.update({ RootsTable.id eq root.id.value.toKotlinUuid() }) {
-                it[meaning] = root.meaning
-                it[analysis] = root.analysis
-                it[updatedAt] = root.updatedAt
+            either {
+                val rootId = root.id.value
+                val updatedCount = RootsTable.update({ RootsTable.id eq rootId.toKotlinUuid()}) {
+                    it[meaning] = root.meaning
+                    it[analysis] = root.analysis
+                }
+
+                ensure (updatedCount > 0) {
+                    DomainError.NotFound("ArabicRoot", rootId.toString())
+                }
+
+                RootsTable.selectAll()
+                    .where { RootsTable.id eq rootId.toKotlinUuid() }
+                    .singleOrNull()
+                    ?.toArabicRoot()
+                    .let { refreshed ->
+                        ensureNotNull(refreshed) {
+                            DomainError.NotFound("ArabicRoot", rootId.toString())
+                        }
+                    }
             }
-            if (updated == 0) DomainError.NotFound("ArabicRoot", root.id.toString()).left()
-            else root.right()
         }
 
     override suspend fun delete(id: RootId): Either<DomainError, Unit> =
         suspendTransaction {
-            val deleted = RootsTable.deleteWhere { RootsTable.id eq id.value.toKotlinUuid() }
-            if (deleted == 0) DomainError.NotFound("ArabicRoot", id.toString()).left()
-            else Unit.right()
+            either {
+                val deleteCount = RootsTable.deleteWhere { RootsTable.id eq id.value.toKotlinUuid() }
+
+                ensure (deleteCount > 0) {
+                    DomainError.NotFound("ArabicRoot", id.toString())
+                }
+
+                Unit.right()
+            }
         }
+
 }
 
 private fun ResultRow.toArabicRoot() = ArabicRoot(
@@ -108,3 +140,5 @@ private fun ResultRow.toArabicRoot() = ArabicRoot(
     createdAt = this[RootsTable.createdAt],
     updatedAt = this[RootsTable.updatedAt],
 )
+
+

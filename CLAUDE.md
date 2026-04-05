@@ -93,9 +93,6 @@ docker-compose.yml  (to be created)
 - Update `docs/` when behaviour/API/data model changes — proactively, not when asked
 - Tony is an experienced developer — don't over-explain, don't pad responses
 
-## Gradle notes
-gi
-- Version catalog: `gradle/libs.versions.toml`
-- Plugin alias for Kotlin is `kotlinJvm` → use `alias(libs.plugins.kotlinJvm)` (NOT `kotlin.jvm`)
-- `settings.gradle.kts` needs `gradlePluginPortal()` in `pluginManagement.repositories`
-- JVM target: 25
+## Context Budget
+- Read only files directly needed for the current task
+- Do not proactively explore the codebase unless asked or really needed for the task at hand

@@ -26,9 +26,10 @@
 					<p class="text-xs text-muted-foreground uppercase tracking-widest">
 						Body · Noto Naskh Arabic (font-arabic)
 					</p>
-					<p style="font-family: var(--font-arabic); font-size: var(--arabic-font-size-body); line-height: var(--arabic-line-height-body); direction: rtl; text-align: right;">
+					<p class="arabic">
 						كَتَبَ الطالِبُ رِسالةً إلى أستاذِهِ في موضوعِ النَّحوِ العربيِّ القديمِ.
 					</p>
+					<p class="transliteration">kataba ṭ-ṭālibu risālatan ilā ustādhihi fī mawḍūʿi n-naḥwi l-ʿarabiyyi l-qadīm</p>
 					<p class="text-sm text-muted-foreground italic">
 						The student wrote a letter to his professor on the subject of classical Arabic grammar.
 					</p>
@@ -39,9 +40,10 @@
 					<p class="text-xs text-muted-foreground uppercase tracking-widest">
 						Display · Lateef (font-arabic-display)
 					</p>
-					<p style="font-family: var(--font-arabic-display); font-size: var(--arabic-font-size-display); line-height: var(--arabic-line-height-display); direction: rtl; text-align: right;">
+					<p class="arabic-display">
 						القَلَمُ أقوى مِن السَّيف
 					</p>
+					<p class="transliteration">al-qalamu ʾaqwā min as-sayf</p>
 					<p class="text-sm text-muted-foreground italic">
 						The pen is mightier than the sword.
 					</p>
@@ -52,9 +54,10 @@
 					<p class="text-xs text-muted-foreground uppercase tracking-widest">
 						Text passage · Markazi Text (font-arabic-text)
 					</p>
-					<p style="font-family: var(--font-arabic-text); font-size: var(--arabic-font-size-body); line-height: var(--arabic-line-height-text); direction: rtl; text-align: right;">
+					<p class="arabic-text">
 						في البَدءِ كانَ الكَلِمةُ، وكانَتِ الكَلِمةُ عِندَ اللهِ، وكانَتِ الكَلِمةُ اللهَ.
 					</p>
+					<p class="transliteration">fī l-badʾi kāna l-kalimatu, wa-kānati l-kalimatu ʿinda llāhi, wa-kānati l-kalimatu llāha</p>
 					<p class="text-sm text-muted-foreground italic">
 						In the beginning was the Word, and the Word was with God, and the Word was God.
 					</p>

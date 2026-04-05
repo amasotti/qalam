@@ -28,6 +28,9 @@ tasks.withType<JavaExec> {
 kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25
+        freeCompilerArgs = listOf(
+            "-Xopt-in=kotlin.uuid.ExperimentalUuidApi",
+        )
     }
 }
 

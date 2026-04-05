@@ -58,3 +58,32 @@
   flex: 1;
   min-height: 100vh;
 }
+
+
+/* ── Page: Home ── */
+
+.page-home {
+  max-width: 32rem;
+  margin: 4rem auto;
+  padding: 0 var(--content-padding-x);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.page-home-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.page-home-subtitle {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+}
+
+.page-home-status-detail {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+}

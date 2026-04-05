@@ -13,29 +13,29 @@ The new name for this project will be `Qalam` (successor of an-na7wi).
 
 ## Stack
 
-| Layer | Technology |
-|---|---|
-| Backend language | Kotlin 2.3.20, JDK 25 (or latest LTS compatible with tooling) |
-| Backend framework | Ktor 3.4.x (embeddedServer, DSL routing) |
-| Database ORM | Exposed 1.x (SQL DSL — not DAO pattern). **Note**: Exposed 1.x moved to `org.jetbrains.exposed.v1.*` — all imports use this package, not the `org.jetbrains.exposed.sql.*` you'll find in older docs/tutorials. |
-| Migrations | Flyway (SQL files) |
-| Database | PostgreSQL 17 |
-| Serialization | kotlinx.serialization |
-| HTTP client (backend) | Ktor client (for OpenRouter calls) |
-| DI | Koin (when dependency wiring justifies it) |
-| Frontend framework | SvelteKit (Svelte 5, runes API) |
-| Component library | shadcn-svelte (copy-paste, owned components) |
-| Server state | @tanstack/svelte-query |
-| Forms | sveltekit-superforms + Zod |
-| Styling | Tailwind CSS v4 |
-| API types (frontend) | openapi-typescript (generated from backend OpenAPI spec) |
-| AI provider | OpenRouter (OpenAI-compatible) |
-| Build tool (frontend) | Vite (via SvelteKit) |
-| Package manager (frontend) | pnpm |
-| Container runtime | Docker + Docker Compose |
-| Secret management | Doppler |
-| Task runner | just (justfile) |
-| CI | GitHub Actions |
+| Layer                      | Technology                                                                                                                                                                                                      |
+|----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Backend language           | Kotlin 2.3.20, JDK 25 (or latest LTS compatible with tooling)                                                                                                                                                   |
+| Backend framework          | Ktor 3.4.x (embeddedServer, DSL routing)                                                                                                                                                                        |
+| Database ORM               | Exposed 1.x (SQL DSL — not DAO pattern). **Note**: Exposed 1.x moved to `org.jetbrains.exposed.v1.*` — all imports use this package, not the `org.jetbrains.exposed.sql.*` you'll find in older docs/tutorials. |
+| Migrations                 | Flyway (SQL files)                                                                                                                                                                                              |
+| Database                   | PostgreSQL 17                                                                                                                                                                                                   |
+| Serialization              | kotlinx.serialization                                                                                                                                                                                           |
+| HTTP client (backend)      | Ktor client (for OpenRouter calls)                                                                                                                                                                              |
+| DI                         | Koin (when dependency wiring justifies it)                                                                                                                                                                      |
+| Frontend framework         | SvelteKit (Svelte 5, runes API)                                                                                                                                                                                 |
+| Component library          | shadcn-svelte (copy-paste, owned components)                                                                                                                                                                    |
+| Server state               | @tanstack/svelte-query                                                                                                                                                                                          |
+| Forms                      | sveltekit-superforms + Zod                                                                                                                                                                                      |
+| Styling                    | Tailwind CSS v4                                                                                                                                                                                                 |
+| API types (frontend)       | openapi-typescript (generated from backend OpenAPI spec)                                                                                                                                                        |
+| AI provider                | OpenRouter (OpenAI-compatible)                                                                                                                                                                                  |
+| Build tool (frontend)      | Vite (via SvelteKit)                                                                                                                                                                                            |
+| Package manager (frontend) | pnpm                                                                                                                                                                                                            |
+| Container runtime          | Docker + Docker Compose                                                                                                                                                                                         |
+| Secret management          | Doppler                                                                                                                                                                                                         |
+| Task runner                | just (justfile)                                                                                                                                                                                                 |
+| CI                         | GitHub Actions                                                                                                                                                                                                  |
 
 ---
 
@@ -246,5 +246,17 @@ Response shape:
 ```
 
 ### OpenAPI
-Generated at startup, served at `/api/v1/openapi.json` and `/api/v1/swagger-ui`.
-The frontend `pnpm generate:types` fetches this to regenerate the typed client.
+
+The spec is **hand-written** in `backend/src/main/resources/openapi/documentation.yaml`.
+Two Ktor plugins serve it at startup — they are not redundant, they do different things:
+
+| Plugin                | Endpoint               | Purpose                                                         |
+|-----------------------|------------------------|-----------------------------------------------------------------|
+| `ktor-server-openapi` | `/api/v1/openapi.json` | Serves the raw spec (used by Postman and `pnpm generate:types`) |
+| `ktor-server-swagger` | `/api/v1/swagger-ui`   | Serves the interactive Swagger UI                               |
+
+**Maintenance rule**: whenever a route is added or changed, update `documentation.yaml` in the
+same commit. The YAML is the API contract — keeping it stale defeats its purpose.
+
+`pnpm generate:types` (frontend) fetches `/api/v1/openapi.json` from a running backend to
+regenerate the typed client. Run it after any API change.

@@ -3,10 +3,8 @@ package com.tonihacks.qalam.domain.root
 import arrow.core.Either
 import arrow.core.flatMap
 import arrow.core.left
-import arrow.core.raise.Raise
 import arrow.core.raise.either
 import arrow.core.raise.ensure
-import arrow.core.raise.ensureNotNull
 import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.PageRequest
 import com.tonihacks.qalam.delivery.dto.PaginatedResponse
@@ -39,10 +37,16 @@ class RootService(private val repo: RootRepository) {
 
     suspend fun create(req: CreateRootRequest): Either<DomainError, RootResponse> = either {
 
-        // Unwrap the normalized form and existing root checks in a single transaction-like block
         val normalized = RootNormalizer.normalize(req.letters.joinToString(" ")).bind()
-        repo.ensureUnique(normalized.normalizedForm).bind()
+        val rootExistsAlready = repo.existsByNormalizedForm(normalized.normalizedForm).bind()
 
+        ensure(rootExistsAlready.not()) {
+            DomainError.AlreadyExists("ArabicRoot", "root '${normalized.displayForm}' already exists")
+        }
+
+        // The DB also has triggers for updated_at and created_at but those are fallback
+        // Important is when - from the perspective of the application - a root was created
+        // which is why it is good to have it here in the service.
         val now = Clock.System.now()
         val root = ArabicRoot(
             id = RootId(UUID.randomUUID()),
@@ -62,13 +66,7 @@ class RootService(private val repo: RootRepository) {
         parseId(id)
             .flatMap { repo.findById(it) }
             .flatMap { existing ->
-                repo.update(
-                    existing.copy(
-                        meaning = req.meaning,
-                        analysis = req.analysis,
-                        updatedAt = Clock.System.now(),
-                    )
-                )
+                repo.update(existing.copy(meaning = req.meaning, analysis = req.analysis))
             }
             .map { it.toResponse() }
 
@@ -86,9 +84,4 @@ class RootService(private val repo: RootRepository) {
             DomainError.InvalidInput("'$id' is not a valid UUID").left()
         }
 
-    private fun Raise<DomainError>.ensureUnique(root: NormalizedRoot, existing: Any?) {
-        ensure(existing == null) {
-            DomainError.AlreadyExists("ArabicRoot", "Root '${root.displayForm}' already exists")
-        }
-    }
 }

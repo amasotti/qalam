@@ -21,7 +21,7 @@ class RootsIntegrationTest : BaseIntegrationTest() {
                 testApp { client ->
                     val response = client.post("/api/v1/roots") {
                         contentType(ContentType.Application.Json)
-                        setBody("""{"letters":["ر","ح","ب"],"meaning":"openness"}""")
+                        setBody("""{"root":"ر ح ب","meaning":"openness"}""")
                     }
                     response.status shouldBe HttpStatusCode.Created
                     response.bodyAsText() shouldContain "رحب"
@@ -32,7 +32,7 @@ class RootsIntegrationTest : BaseIntegrationTest() {
                 testApp { client ->
                     val response = client.post("/api/v1/roots") {
                         contentType(ContentType.Application.Json)
-                        setBody("""{"letters":["ر"]}""")
+                        setBody("""{"root":"ر"}""")
                     }
                     response.status shouldBe HttpStatusCode.BadRequest
                 }
@@ -42,11 +42,11 @@ class RootsIntegrationTest : BaseIntegrationTest() {
                 testApp { client ->
                     client.post("/api/v1/roots") {
                         contentType(ContentType.Application.Json)
-                        setBody("""{"letters":["ر","ح","ب"],"meaning":"openness"}""")
+                        setBody("""{"root":"ر ح ب","meaning":"openness"}""")
                     }
                     val response = client.post("/api/v1/roots") {
                         contentType(ContentType.Application.Json)
-                        setBody("""{"letters":["ر","ح","ب"],"meaning":"something else"}""")
+                        setBody("""{"root":"ر ح ب","meaning":"something else"}""")
                     }
                     response.status shouldBe HttpStatusCode.Conflict
                 }
@@ -66,7 +66,7 @@ class RootsIntegrationTest : BaseIntegrationTest() {
                 testApp { client ->
                     client.post("/api/v1/roots") {
                         contentType(ContentType.Application.Json)
-                        setBody("""{"letters":["ر","ح","ب"],"meaning":"openness"}""")
+                        setBody("""{"root":"ر ح ب","meaning":"openness"}""")
                     }
                     val response = client.get("/api/v1/roots")
                     response.status shouldBe HttpStatusCode.OK
@@ -78,11 +78,11 @@ class RootsIntegrationTest : BaseIntegrationTest() {
                 testApp { client ->
                     client.post("/api/v1/roots") {
                         contentType(ContentType.Application.Json)
-                        setBody("""{"letters":["ر","ح","ب"],"meaning":"openness"}""")
+                        setBody("""{"root":"ر ح ب","meaning":"openness"}""")
                     }
                     client.post("/api/v1/roots") {
                         contentType(ContentType.Application.Json)
-                        setBody("""{"letters":["ك","ت","ب","ه"],"meaning":"write"}""")
+                        setBody("""{"root":"ك ت ب ه","meaning":"write"}""")
                     }
 
                     val threeOnly = client.get("/api/v1/roots?letterCount=3")
@@ -97,7 +97,7 @@ class RootsIntegrationTest : BaseIntegrationTest() {
                 testApp { client ->
                     val created = client.post("/api/v1/roots") {
                         contentType(ContentType.Application.Json)
-                        setBody("""{"letters":["ر","ح","ب"],"meaning":"openness"}""")
+                        setBody("""{"root":"ر ح ب","meaning":"openness"}""")
                     }
                     val body = created.bodyAsText()
                     val id = Regex(""""id":"([^"]+)"""").find(body)!!.groupValues[1]
@@ -128,7 +128,7 @@ class RootsIntegrationTest : BaseIntegrationTest() {
                 testApp { client ->
                     val created = client.post("/api/v1/roots") {
                         contentType(ContentType.Application.Json)
-                        setBody("""{"letters":["ر","ح","ب"],"meaning":"openness"}""")
+                        setBody("""{"root":"ر ح ب","meaning":"openness"}""")
                     }
                     val id = Regex(""""id":"([^"]+)"""").find(created.bodyAsText())!!.groupValues[1]
 
@@ -157,7 +157,7 @@ class RootsIntegrationTest : BaseIntegrationTest() {
                 testApp { client ->
                     val created = client.post("/api/v1/roots") {
                         contentType(ContentType.Application.Json)
-                        setBody("""{"letters":["ر","ح","ب"],"meaning":"openness"}""")
+                        setBody("""{"root":"ر ح ب","meaning":"openness"}""")
                     }
                     val id = Regex(""""id":"([^"]+)"""").find(created.bodyAsText())!!.groupValues[1]
 

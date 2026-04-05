@@ -46,7 +46,7 @@ class RootServiceTest : FunSpec({
             coEvery { repo.existsByNormalizedForm(r7ab) } returns false.right()
             coEvery { repo.create(any()) } answers { firstArg<ArabicRoot>().right() }
 
-            val result = service.create(CreateRootRequest(r7abLetters, "openness", null))
+            val result = service.create(CreateRootRequest(r7ab, "openness", null))
 
             result.isRight() shouldBe true
             coVerify(exactly = 1) { repo.create(any()) }
@@ -55,14 +55,14 @@ class RootServiceTest : FunSpec({
         test("duplicate normalized form returns AlreadyExists") {
             coEvery { repo.existsByNormalizedForm(r7ab) } returns true.right()
 
-            val result = service.create(CreateRootRequest(r7abLetters, null, null))
+            val result = service.create(CreateRootRequest(r7abDisplayForm, null, null))
 
             result shouldBe DomainError.AlreadyExists("ArabicRoot", "root 'ر-ح-ب' already exists").left()
             coVerify(exactly = 0) { repo.create(any()) }
         }
 
         test("invalid letters propagate as InvalidInput") {
-            val result = service.create(CreateRootRequest(listOf("r", "ح", "ب"), null, null))
+            val result = service.create(CreateRootRequest(root = "سدسجكسكساسك", null, null))
             result.shouldBeInstanceOf<arrow.core.Either.Left<*>>()
         }
     }

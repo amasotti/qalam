@@ -1,6 +1,5 @@
 package com.tonihacks.qalam.delivery
 
-import com.tonihacks.qalam.delivery.dto.ErrorResponse
 import com.tonihacks.qalam.delivery.routes.rootRoutes
 import com.tonihacks.qalam.domain.root.RootService
 import io.ktor.http.*

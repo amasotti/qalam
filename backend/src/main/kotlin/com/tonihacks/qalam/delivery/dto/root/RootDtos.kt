@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CreateRootRequest(
-    val letters: List<String>,
+    val root: String,
     val meaning: String? = null,
     val analysis: String? = null,
 )

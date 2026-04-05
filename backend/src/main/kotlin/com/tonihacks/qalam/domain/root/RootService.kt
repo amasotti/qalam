@@ -37,7 +37,7 @@ class RootService(private val repo: RootRepository) {
 
     suspend fun create(req: CreateRootRequest): Either<DomainError, RootResponse> = either {
 
-        val normalized = RootNormalizer.normalize(req.letters.joinToString(" ")).bind()
+        val normalized = RootNormalizer.normalize(req.root).bind()
         val rootExistsAlready = repo.existsByNormalizedForm(normalized.normalizedForm).bind()
 
         ensure(rootExistsAlready.not()) {

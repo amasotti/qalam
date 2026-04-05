@@ -243,9 +243,8 @@ components:
       type: object
       required: [letters]
       properties:
-        letters:
-          type: array
-          items: { type: string }
+        root:
+          type: string
           minItems: 2
           maxItems: 6
         meaning:

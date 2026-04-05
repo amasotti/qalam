@@ -6,6 +6,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.config.*
 import io.ktor.server.testing.*
+import org.flywaydb.core.Flyway
 import org.testcontainers.containers.PostgreSQLContainer
 
 abstract class BaseIntegrationTest : FreeSpec() {
@@ -16,12 +17,19 @@ abstract class BaseIntegrationTest : FreeSpec() {
                 .withDatabaseName("qalam_test")
                 .withUsername("qalam_test")
                 .withPassword("qalam_test")
-                .also { it.start() }
+                .also { container ->
+                    container.start()
+                    Flyway.configure()
+                        .dataSource(container.jdbcUrl, container.username, container.password)
+                        .locations("classpath:db/migration")
+                        .load()
+                        .migrate()
+                }
     }
 
     /**
      * Starts a full Ktor testApplication wired to the Testcontainers DB.
-     * Flyway runs on first call; subsequent calls are instant (schema already applied).
+     * Schema is already migrated by companion object init; Flyway here is a no-op.
      */
     protected fun testApp(block: suspend ApplicationTestBuilder.(HttpClient) -> Unit) {
         testApplication {
@@ -34,7 +42,7 @@ abstract class BaseIntegrationTest : FreeSpec() {
                     "database.pool.minimumIdle"        to "1",
                     "database.pool.connectionTimeout"  to "5000",
                     "database.pool.idleTimeout"        to "60000",
-                    "database.pool.maxLifetime"        to "120000",
+                    "database.pool.maxLifetime"        to "1800000",
                 )
             }
             application { module() }

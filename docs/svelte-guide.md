@@ -171,7 +171,7 @@ export function useTexts() {
 
 ## API integration
 
-The backend is Ktor at (locally) `http://localhost:8080`. The frontend never hand-writes types — they're generated from
+The backend is Ktor at (locally) `http://localhost:8085`. The frontend never hand-writes types — they're generated from
 the OpenAPI spec:
 
 ```bash

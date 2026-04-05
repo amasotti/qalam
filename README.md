@@ -85,9 +85,9 @@ Full documentation lives in [`docs/`](docs/).
 
 ## Access points (once running)
 
-- API: `http://localhost:8080/api/v1/`
-- Swagger UI: `http://localhost:8080/api/v1/swagger-ui`
-- Health: `http://localhost:8080/health`
+- API: `http://localhost:8085/api/v1/`
+- Swagger UI: `http://localhost:8085/api/v1/swagger-ui`
+- Health: `http://localhost:8085/health`
 
 ---
 

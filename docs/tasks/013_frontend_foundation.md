@@ -26,3 +26,5 @@ start.
 - [ ] 13.6 `[F]` `pnpm generate:types` script: `openapi-typescript` fetching from `/api/v1/openapi.json` → `src/lib/api/types.gen.ts`; commit output
 - [ ] 13.7 `[F]` HTTP client module `src/lib/api/client.ts`: typed fetch wrapper using generated types
 - [ ] 13.8 `[F]` Base UI components audit: verify `Button`, `Input`, `Badge`, `Card` cover all required variants (primary/secondary/outline/danger/ghost); add any missing
+- [ ] 13.9 `[F]` Install biome or another linting tool suitable for the current stack and lint project before M14 to ensure code quality and consistency across the growing codebase
+- [ ] 13.10 `[F]` Add a `CI - Frontend` github action that lints and tests the frontend.

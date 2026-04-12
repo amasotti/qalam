@@ -10,11 +10,11 @@ Consult it for data model details, migration history (22 SQL files), translitera
 
 ```
 backend/      Kotlin + Ktor
-frontend/     SvelteKit (not started yet)
+frontend/     SvelteKit (bootstrapped, M2 complete)
 docs/spec/    Source of truth — product-spec.md, design.md, requirements.md
-docs/tasks.md Living development plan — the authoritative task list
-justfile      (to be created) — all dev commands go here
-docker-compose.yml  (to be created)
+docs/tasks/   Living development plan — one file per milestone (000–020 + backlog)
+justfile      dev commands: just run / just test / just backend / just frontend
+docker-compose.yml  full dev stack (postgres, backend, frontend)
 ```
 
 ## Stack (locked — don't deviate without asking)
@@ -82,14 +82,15 @@ docker-compose.yml  (to be created)
 4. AI features degrade gracefully to 503 `AI_NOT_CONFIGURED` without `OPENROUTER_API_KEY`
 5. No `any` in TypeScript
 6. `just run` starts everything after `doppler login`
-7. the `private-dev` skill MUST be used and loaded in every new session
+7. the `superpowers` skill MUST be used and loaded in every new session
+ 7b. the `agentsys` plugins can be used if helpful
 
 ## Working style with Tony
 
 - One task at a time, stop and share after each logical unit
 - Sketch approach in words before writing real code for non-trivial things
 - Pause at design forks: present options briefly, let Tony choose
-- Tick tasks in `docs/tasks.md` when done
+- Tick tasks in the relevant `docs/tasks/0NN_*.md` file when done
 - Update `docs/` when behaviour/API/data model changes — proactively, not when asked
 - Tony is an experienced developer — don't over-explain, don't pad responses
 

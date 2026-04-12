@@ -18,3 +18,5 @@
 @import "./styles/base.css";
 @import "./styles/arabic.css";
 @import "./styles/layout.css";
+@import "./styles/semantic.css";
+@import "./styles/animations.css";

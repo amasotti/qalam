@@ -1,0 +1,61 @@
+/* ============================================================
+   semantic.css — Domain-semantic utility classes
+   Used on badges, word cards, progress indicators.
+   Never override layout or spacing — colour and text only.
+   ============================================================ */
+
+/* ── Mastery levels ── */
+
+.mastery-new {
+	background-color: hsl(var(--muted));
+	color: hsl(var(--muted-foreground));
+	border-color: hsl(var(--border));
+}
+
+.mastery-learning {
+	background-color: hsl(38 92% 92%);
+	color: hsl(38 80% 28%);
+	border-color: hsl(38 80% 80%);
+}
+
+.dark .mastery-learning {
+	background-color: hsl(38 60% 18%);
+	color: hsl(38 80% 70%);
+	border-color: hsl(38 60% 28%);
+}
+
+.mastery-familiar {
+	background-color: hsl(214 80% 93%);
+	color: hsl(214 70% 35%);
+	border-color: hsl(214 70% 80%);
+}
+
+.dark .mastery-familiar {
+	background-color: hsl(214 50% 18%);
+	color: hsl(214 80% 70%);
+	border-color: hsl(214 50% 28%);
+}
+
+.mastery-known {
+	background-color: hsl(142 60% 90%);
+	color: hsl(142 76% 25%);
+	border-color: hsl(142 50% 75%);
+}
+
+.dark .mastery-known {
+	background-color: hsl(142 40% 18%);
+	color: hsl(142 60% 60%);
+	border-color: hsl(142 40% 28%);
+}
+
+.mastery-mastered {
+	background-color: hsl(158 60% 88%);
+	color: hsl(158 76% 22%);
+	border-color: hsl(158 50% 70%);
+}
+
+.dark .mastery-mastered {
+	background-color: hsl(158 40% 15%);
+	color: hsl(158 60% 55%);
+	border-color: hsl(158 40% 25%);
+}

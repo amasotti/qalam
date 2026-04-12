@@ -1,9 +1,12 @@
 import { defineConfig } from "@hey-api/openapi-ts";
 
-// @ts-ignore
+const input =
+  process.env.OPENAPI_URL ??
+  "../backend/src/main/resources/openapi/documentation.yaml";
+
 export default defineConfig({
   client: "@hey-api/client-fetch",
-  input: "../backend/src/main/resources/openapi/documentation.yaml",
+  input,
   output: {
     path: "src/lib/api",
   },

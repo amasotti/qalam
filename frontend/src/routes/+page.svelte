@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { createQuery } from '@tanstack/svelte-query';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+import { Badge } from '$lib/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+import { createQuery } from '@tanstack/svelte-query';
 
-	const health = createQuery(() => ({
-		queryKey: ['health'],
-		queryFn: async () => {
-			const res = await fetch('/health');
-			if (!res.ok) throw new Error(`${res.status}`);
-			return await res.json() as Promise<{ status: string }>;
-		},
-		retry: false,
-	}));
+const health = createQuery(() => ({
+	queryKey: ['health'],
+	queryFn: async () => {
+		const res = await fetch('/health');
+		if (!res.ok) throw new Error(`${res.status}`);
+		return (await res.json()) as Promise<{ status: string }>;
+	},
+	retry: false,
+}));
 </script>
 
 <div class="page-home">

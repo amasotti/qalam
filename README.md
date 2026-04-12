@@ -4,7 +4,7 @@
 
 <div align="center">
 
-[![CI](https://github.com/amasotti/qalam/actions/workflows/ci.yml/badge.svg)](https://github.com/amasotti/qalam/actions/workflows/ci.yml)
+[![CI - Backend](https://github.com/amasotti/qalam/actions/workflows/ci-backend.yml/badge.svg?branch=main)](https://github.com/amasotti/qalam/actions/workflows/ci-backend.yml)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.3-7F52FF?logo=kotlin&logoColor=white)
 ![Ktor](https://img.shields.io/badge/Ktor-3.x-087CFA?logo=ktor&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

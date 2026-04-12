@@ -1,19 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <!-- Radial bg: slightly lighter centre matching banner atmosphere -->
+    <radialGradient id="bg" cx="0.5" cy="0.45" r="0.65">
+      <stop offset="0%"   stop-color="#152219"/>
+      <stop offset="100%" stop-color="#050c06"/>
+    </radialGradient>
+    <!-- Same cream→green gradient as banner Arabic text -->
+    <linearGradient id="qg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#f0fdf4"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+  </defs>
+
   <!-- Background -->
-  <rect width="32" height="32" rx="6" fill="#0d1710"/>
+  <rect width="32" height="32" rx="6" fill="url(#bg)"/>
 
-  <!-- Green border -->
-  <rect x="1" y="1" width="30" height="30" rx="5" fill="none"
-        stroke="#16a34a" stroke-width="1.2" opacity="0.60"/>
+  <!-- Green border (echoes lattice texture of banner) -->
+  <rect x="1" y="1" width="30" height="30" rx="5"
+        fill="none" stroke="#22c55e" stroke-width="1" opacity="0.55"/>
 
-  <!-- Arabic ق (qaf — first letter of قلم), white for contrast at small sizes -->
+  <!-- Arabic ق — gradient-filled, centred -->
   <text x="16" y="22"
     font-family="'Noto Naskh Arabic','Amiri','Scheherazade New','Traditional Arabic',serif"
     font-size="20" font-weight="700"
     text-anchor="middle"
-    fill="white" opacity="0.92"
+    fill="url(#qg)"
     xml:lang="ar">ق</text>
 
-  <!-- Red accent bar — echoes the banner's margin divider -->
-  <rect x="6" y="27.5" width="20" height="2.5" rx="1" fill="#dc2626" opacity="0.75"/>
+  <!-- Red accent bar — echoes banner bottom border and separator -->
+  <rect x="6" y="27.5" width="20" height="2" rx="1" fill="#dc2626" opacity="0.72"/>
 </svg>

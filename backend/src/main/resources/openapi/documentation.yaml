@@ -18,6 +18,8 @@ tags:
     description: Vocabulary word management
   - name: texts
     description: Arabic text management
+  - name: sentences
+    description: Sentence and alignment token management
   - name: system
     description: Health and API introspection
 
@@ -674,6 +676,299 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /api/v1/texts/{textId}/sentences:
+    get:
+      summary: List sentences for a text
+      operationId: listSentences
+      tags: [sentences]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Array of sentences (no pagination)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SentenceResponse"
+        "404":
+          description: Text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: Create a sentence in a text
+      operationId: createSentence
+      tags: [sentences]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSentenceRequest"
+      responses:
+        "201":
+          description: Sentence created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SentenceResponse"
+        "404":
+          description: Text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error (blank arabicText, unknown enum value)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/texts/{textId}/sentences/{id}:
+    get:
+      summary: Get a sentence by ID
+      operationId: getSentenceById
+      tags: [sentences]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Sentence found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SentenceResponse"
+        "400":
+          description: Malformed UUID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Sentence or text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      summary: Update a sentence (all fields optional — only provided fields change)
+      operationId: updateSentence
+      tags: [sentences]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSentenceRequest"
+      responses:
+        "200":
+          description: Sentence updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SentenceResponse"
+        "404":
+          description: Sentence or text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Delete a sentence
+      operationId: deleteSentence
+      tags: [sentences]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "204":
+          description: Sentence deleted
+        "404":
+          description: Sentence or text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/texts/{textId}/sentences/{id}/tokens:
+    put:
+      summary: Replace all alignment tokens for a sentence
+      operationId: replaceTokens
+      tags: [sentences]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReplaceTokensRequest"
+      responses:
+        "200":
+          description: Tokens replaced
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SentenceResponse"
+        "404":
+          description: Sentence or text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Clear all alignment tokens for a sentence
+      operationId: clearTokens
+      tags: [sentences]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: confirm
+          in: query
+          required: true
+          description: Must be set to "true" to confirm clearing tokens
+          schema: { type: string, enum: ["true"] }
+      responses:
+        "200":
+          description: Tokens cleared
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SentenceResponse"
+        "400":
+          description: Missing or invalid confirm parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Sentence or text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/texts/{textId}/sentences/{id}/auto-tokenize:
+    post:
+      summary: Auto-tokenize a sentence using AI
+      operationId: autoTokenize
+      tags: [sentences]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Tokens generated and set
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SentenceResponse"
+        "404":
+          description: Sentence or text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: AI not configured (OPENROUTER_API_KEY missing)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/texts/{textId}/sentences/{id}/transliterate:
+    post:
+      summary: Generate transliteration for a sentence using AI
+      operationId: transliterateSentence
+      tags: [sentences]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Transliteration generated and set
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SentenceResponse"
+        "404":
+          description: Sentence or text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: AI not configured (OPENROUTER_API_KEY missing)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /health:
     get:
       summary: Health check
@@ -1082,6 +1377,136 @@ components:
         summary:
           type: string
           description: AI-generated summary of the text
+
+    # --- Sentences ---
+
+    AlignmentTokenResponse:
+      type: object
+      required: [id, sentenceId, position, arabic]
+      properties:
+        id:
+          type: string
+          format: uuid
+        sentenceId:
+          type: string
+          format: uuid
+        position:
+          type: integer
+        arabic:
+          type: string
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+        wordId:
+          type: string
+          format: uuid
+          nullable: true
+
+    SentenceResponse:
+      type: object
+      required: [id, textId, position, arabicText, tokensValid, tokens, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        textId:
+          type: string
+          format: uuid
+        position:
+          type: integer
+          description: 1-based ordering within the text
+        arabicText:
+          type: string
+        transliteration:
+          type: string
+          nullable: true
+        freeTranslation:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        tokensValid:
+          type: boolean
+          description: False when arabicText was edited after tokenization
+        tokens:
+          type: array
+          items:
+            $ref: "#/components/schemas/AlignmentTokenResponse"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateSentenceRequest:
+      type: object
+      required: [arabicText]
+      properties:
+        arabicText:
+          type: string
+        position:
+          type: integer
+          nullable: true
+          description: Insertion position (appended at end if omitted)
+        transliteration:
+          type: string
+          nullable: true
+        freeTranslation:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+
+    UpdateSentenceRequest:
+      type: object
+      description: All fields optional — only provided fields are updated
+      properties:
+        arabicText:
+          type: string
+          nullable: true
+        position:
+          type: integer
+          nullable: true
+        transliteration:
+          type: string
+          nullable: true
+        freeTranslation:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+
+    ReplaceTokensRequest:
+      type: object
+      required: [tokens]
+      properties:
+        tokens:
+          type: array
+          items:
+            type: object
+            required: [position, arabic]
+            properties:
+              position:
+                type: integer
+              arabic:
+                type: string
+              transliteration:
+                type: string
+                nullable: true
+              translation:
+                type: string
+                nullable: true
+              wordId:
+                type: string
+                format: uuid
+                nullable: true
 
     # --- Enums ---
 

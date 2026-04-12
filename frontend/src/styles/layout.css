@@ -616,27 +616,26 @@
 	color: hsl(var(--muted-foreground));
 }
 
-/* ── Home — redesigned ── */
+/* ── Home ── */
 
 .home-shell {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding: 5rem var(--content-padding-x) 4rem;
-	gap: 4rem;
+	padding: 4.5rem var(--content-padding-x) 4rem;
+	gap: 3.5rem;
 }
 
-/* Qalam mark */
+/* Qalam mark — dark ink, not green */
 .home-qalam-mark {
 	font-family: var(--font-arabic-display);
 	font-size: 5.5rem;
 	line-height: 1;
 	direction: rtl;
-	color: hsl(var(--primary));
+	color: hsl(var(--foreground));
 	animation: scale-in 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
-	animation-delay: 0ms;
-	/* subtle ink shadow */
-	filter: drop-shadow(0 2px 8px hsl(var(--primary) / 0.2));
+	/* ink texture drop-shadow */
+	filter: drop-shadow(0 3px 6px hsl(var(--foreground) / 0.12));
 }
 
 /* Verse block */
@@ -644,8 +643,8 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 0.875rem;
-	max-width: 36rem;
+	gap: 0.75rem;
+	max-width: 40rem;
 	text-align: center;
 }
 
@@ -653,82 +652,145 @@
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
-	gap: 0.625rem 0.875rem;
+	gap: 0.5rem 1rem;
 	direction: rtl;
 }
 
+/* Each word: quick materialise — decoration, not spectacle */
 .home-verse-word {
 	font-family: var(--font-arabic);
-	font-size: 2rem;
+	font-size: 2.25rem;
 	line-height: 1.5;
-	color: hsl(var(--primary));
+	color: hsl(var(--foreground));
 	opacity: 0;
-	animation: slide-in-up 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+	animation: verse-word-in 350ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .home-verse-transliteration {
 	font-size: 0.875rem;
 	font-style: italic;
 	color: hsl(var(--muted-foreground));
-	letter-spacing: 0.015em;
+	letter-spacing: 0.02em;
 	opacity: 0;
-	animation: fade-in 500ms ease both;
-	animation-delay: 2.4s;
+	animation: fade-in 300ms ease both;
+	animation-delay: 0.9s;
 }
 
 .home-verse-translation {
-	font-size: 0.8rem;
+	font-size: 0.825rem;
 	color: hsl(var(--muted-foreground) / 0.8);
 	opacity: 0;
-	animation: fade-in 500ms ease both;
-	animation-delay: 3.2s;
+	animation: fade-in 300ms ease both;
+	animation-delay: 1.2s;
 }
 
-/* Section nav cards */
+/* Section feature cards — 3+2 centered grid */
 .home-nav-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+	grid-template-columns: repeat(6, 1fr);
 	gap: 1rem;
 	width: 100%;
-	max-width: 46rem;
+	max-width: 52rem;
+}
+
+/* Row 1: three equal cards */
+.home-nav-card:nth-child(1) {
+	grid-column: 1 / 3;
+}
+.home-nav-card:nth-child(2) {
+	grid-column: 3 / 5;
+}
+.home-nav-card:nth-child(3) {
+	grid-column: 5 / 7;
+}
+/* Row 2: two cards, centred */
+.home-nav-card:nth-child(4) {
+	grid-column: 2 / 4;
+}
+.home-nav-card:nth-child(5) {
+	grid-column: 4 / 6;
 }
 
 .home-nav-card {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	text-align: center;
-	gap: 0.5rem;
-	padding: 1.75rem 1rem 1.5rem;
+	gap: 0.875rem;
+	padding: 1.5rem;
 	border: 1px solid hsl(var(--border));
 	border-radius: var(--radius-lg);
 	background: hsl(var(--card));
 	text-decoration: none;
 	color: hsl(var(--card-foreground));
+	box-shadow: 0 1px 3px hsl(0 0% 0% / 0.04);
 	transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
 .home-nav-card:hover {
-	border-color: hsl(var(--primary) / 0.45);
-	box-shadow: 0 4px 20px hsl(var(--primary) / 0.09);
 	transform: translateY(-2px);
+	box-shadow: 0 6px 24px hsl(0 0% 0% / 0.08);
 }
 
+/* Icon square: each section gets its own --section-hue */
 .home-nav-card-icon {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 2.25rem;
-	height: 2.25rem;
+	width: 3rem;
+	height: 3rem;
 	border-radius: var(--radius-md);
-	background: hsl(var(--accent));
-	color: hsl(var(--primary));
-	margin-bottom: 0.25rem;
-	transition: background-color 180ms ease;
+	color: white;
+	flex-shrink: 0;
+	transition: filter 180ms ease;
 }
 
 .home-nav-card:hover .home-nav-card-icon {
-	background: hsl(var(--primary) / 0.12);
+	filter: brightness(1.1);
+}
+
+/* Per-section icon colors */
+.home-nav-card[data-section="roots"] .home-nav-card-icon {
+	background: hsl(142 65% 38%);
+}
+.home-nav-card[data-section="words"] .home-nav-card-icon {
+	background: hsl(224 76% 52%);
+}
+.home-nav-card[data-section="texts"] .home-nav-card-icon {
+	background: hsl(34 85% 48%);
+}
+.home-nav-card[data-section="training"] .home-nav-card-icon {
+	background: hsl(172 68% 36%);
+}
+.home-nav-card[data-section="analytics"] .home-nav-card-icon {
+	background: hsl(258 55% 54%);
+}
+
+/* Hover border accent per section */
+.home-nav-card[data-section="roots"]:hover {
+	border-color: hsl(142 65% 38% / 0.45);
+}
+.home-nav-card[data-section="words"]:hover {
+	border-color: hsl(224 76% 52% / 0.45);
+}
+.home-nav-card[data-section="texts"]:hover {
+	border-color: hsl(34 85% 48% / 0.45);
+}
+.home-nav-card[data-section="training"]:hover {
+	border-color: hsl(172 68% 36% / 0.45);
+}
+.home-nav-card[data-section="analytics"]:hover {
+	border-color: hsl(258 55% 54% / 0.45);
+}
+
+.home-nav-card-header {
+	display: flex;
+	align-items: center;
+	gap: 0.875rem;
+}
+
+.home-nav-card-titles {
+	display: flex;
+	flex-direction: column;
+	gap: 0.1rem;
 }
 
 .home-nav-card-arabic {
@@ -736,15 +798,52 @@
 	font-size: 1.375rem;
 	direction: rtl;
 	color: hsl(var(--foreground));
-	line-height: 1.4;
+	line-height: 1.35;
 }
 
 .home-nav-card-label {
-	font-size: 0.72rem;
-	font-weight: 500;
+	font-size: 0.7rem;
+	font-weight: 600;
 	text-transform: uppercase;
-	letter-spacing: 0.06em;
+	letter-spacing: 0.07em;
 	color: hsl(var(--muted-foreground));
+}
+
+.home-nav-card-desc {
+	font-size: 0.825rem;
+	color: hsl(var(--muted-foreground));
+	line-height: 1.5;
+}
+
+.home-nav-card-cta {
+	font-size: 0.775rem;
+	font-weight: 600;
+	margin-top: auto;
+	display: flex;
+	align-items: center;
+	gap: 0.2rem;
+	transition: gap 150ms ease;
+}
+
+.home-nav-card:hover .home-nav-card-cta {
+	gap: 0.4rem;
+}
+
+/* Per-section CTA color */
+.home-nav-card[data-section="roots"] .home-nav-card-cta {
+	color: hsl(142 65% 38%);
+}
+.home-nav-card[data-section="words"] .home-nav-card-cta {
+	color: hsl(224 76% 52%);
+}
+.home-nav-card[data-section="texts"] .home-nav-card-cta {
+	color: hsl(34 85% 48%);
+}
+.home-nav-card[data-section="training"] .home-nav-card-cta {
+	color: hsl(172 68% 36%);
+}
+.home-nav-card[data-section="analytics"] .home-nav-card-cta {
+	color: hsl(258 55% 54%);
 }
 
 /* Backend status pill */
@@ -766,6 +865,7 @@
 	border-radius: 50%;
 	background: hsl(var(--muted-foreground) / 0.4);
 	flex-shrink: 0;
+	transition: background-color 300ms ease;
 }
 
 .home-status-dot.ok {
@@ -775,4 +875,57 @@
 
 .home-status-dot.error {
 	background: hsl(var(--destructive));
+}
+
+/* ── Home: Resources section ── */
+
+.home-resources {
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+	width: 100%;
+	max-width: 52rem;
+	border-top: 1px solid hsl(var(--border));
+	padding-top: 2rem;
+}
+
+.home-resources-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.625rem;
+}
+
+.home-resources-label {
+	font-size: 0.68rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: hsl(var(--muted-foreground));
+}
+
+.home-resources-links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.home-resource-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	padding: 0.3rem 0.75rem;
+	border: 1px solid hsl(var(--border));
+	border-radius: 999px;
+	background: hsl(var(--card));
+	color: hsl(var(--foreground));
+	font-size: 0.775rem;
+	font-weight: 500;
+	text-decoration: none;
+	transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease;
+}
+
+.home-resource-link:hover {
+	border-color: hsl(var(--primary) / 0.5);
+	color: hsl(var(--primary));
+	background: hsl(var(--accent));
 }

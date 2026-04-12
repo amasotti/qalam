@@ -48,7 +48,7 @@ abstract class BaseIntegrationTest : FreeSpec() {
                 )
             }
             application {
-                module(koinModule {
+                testModule(koinModule {
                     single { AiClient(null) }
                 })
             }

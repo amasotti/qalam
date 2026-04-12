@@ -17,12 +17,20 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-class AiClient(private val apiKey: String?) {
+class AiClient(private val apiKey: String?) : java.io.Closeable {
 
     private val jsonConfig = Json { ignoreUnknownKeys = true }
 
-    private val httpClient = HttpClient(CIO) {
-        install(ContentNegotiation) { json(jsonConfig) }
+    // Created lazily so that test environments with no API key never spin up a CIO engine.
+    private val lazyHttpClient = lazy {
+        HttpClient(CIO) {
+            install(ContentNegotiation) { json(jsonConfig) }
+        }
+    }
+    private val httpClient: HttpClient get() = lazyHttpClient.value
+
+    override fun close() {
+        if (lazyHttpClient.isInitialized()) lazyHttpClient.value.close()
     }
 
     suspend fun generateExamples(

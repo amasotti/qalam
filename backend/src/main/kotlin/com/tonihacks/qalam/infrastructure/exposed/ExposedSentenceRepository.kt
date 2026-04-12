@@ -17,6 +17,7 @@ import com.tonihacks.qalam.domain.word.WordId
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.exceptions.ExposedSQLException
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -63,21 +64,29 @@ class ExposedSentenceRepository : SentenceRepository {
         }
 
     override suspend fun save(sentence: Sentence): Either<DomainError, Sentence> =
-        suspendTransaction {
-            SentencesTable.insert {
-                it[id] = sentence.id.value.toKotlinUuid()
-                it[textId] = sentence.textId.value.toKotlinUuid()
-                it[position] = sentence.position
-                it[arabicText] = sentence.arabicText
-                it[transliteration] = sentence.transliteration
-                it[freeTranslation] = sentence.freeTranslation
-                it[notes] = sentence.notes
-                it[tokensValid] = sentence.tokensValid
-                it[createdAt] = sentence.createdAt
-                it[updatedAt] = sentence.updatedAt
+        try {
+            suspendTransaction {
+                SentencesTable.insert {
+                    it[id] = sentence.id.value.toKotlinUuid()
+                    it[textId] = sentence.textId.value.toKotlinUuid()
+                    it[position] = sentence.position
+                    it[arabicText] = sentence.arabicText
+                    it[transliteration] = sentence.transliteration
+                    it[freeTranslation] = sentence.freeTranslation
+                    it[notes] = sentence.notes
+                    it[tokensValid] = sentence.tokensValid
+                    it[createdAt] = sentence.createdAt
+                    it[updatedAt] = sentence.updatedAt
+                }
+                insertTokens(sentence.tokens)
+                sentence.right()
             }
-            insertTokens(sentence.tokens)
-            sentence.right()
+        } catch (e: ExposedSQLException) {
+            if (e.message?.contains("sentences_text_id_fkey") == true) {
+                DomainError.NotFound("Text", sentence.textId.toString()).left()
+            } else {
+                throw e
+            }
         }
 
     override suspend fun update(sentence: Sentence): Either<DomainError, Sentence> =

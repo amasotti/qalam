@@ -9,5 +9,5 @@ Unified `Text` entity — plain view only in this milestone. Interlinear (senten
 - [x] 5.4 `[B]` Infrastructure: `TextsTable`, `TextTagsTable` + `TextRepository` interface + `ExposedTextRepository` impl (tags loaded with text in one query)
 - [x] 5.5 `[B]` Application: `TextService` — CRUD + advanced search (title, body free text, dialect, difficulty, tag); `Either<DomainError, T>`
 - [x] 5.6 `[B]` Delivery: routes under `/api/v1/texts` — `GET /` (paginated + filters), `GET /{id}`, `POST /`, `PUT /{id}`, `DELETE /{id}`
-- [ ] 5.8 `[B]` Unit tests: `TextService` (MockK), tag handling
-- [ ] 5.9 `[B]` Integration tests: CRUD, search/filter combinations, tag filtering
+- [x] 5.8 `[B]` Unit tests: `TextService` (MockK), tag handling
+- [x] 5.9 `[B]` Integration tests: CRUD, search/filter combinations, tag filtering

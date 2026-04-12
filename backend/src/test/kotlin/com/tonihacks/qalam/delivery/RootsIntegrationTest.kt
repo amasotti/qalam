@@ -12,7 +12,7 @@ class RootsIntegrationTest : BaseIntegrationTest() {
     init {
         beforeEach {
             postgres.createConnection("").use { conn ->
-                conn.createStatement().execute("TRUNCATE TABLE arabic_roots")
+                conn.createStatement().execute("TRUNCATE TABLE arabic_roots CASCADE")
             }
         }
 

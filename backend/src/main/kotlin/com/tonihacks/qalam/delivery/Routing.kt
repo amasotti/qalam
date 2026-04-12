@@ -1,7 +1,9 @@
 package com.tonihacks.qalam.delivery
 
 import com.tonihacks.qalam.delivery.routes.rootRoutes
+import com.tonihacks.qalam.delivery.routes.wordRoutes
 import com.tonihacks.qalam.domain.root.RootService
+import com.tonihacks.qalam.domain.word.WordService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.openapi.*
@@ -16,6 +18,7 @@ private data class HealthResponse(val status: String = "ok")
 
 fun Application.configureRouting() {
     val rootService by inject<RootService>()
+    val wordService by inject<WordService>()
 
     routing {
         get("/health") {
@@ -26,6 +29,7 @@ fun Application.configureRouting() {
             openAPI(path = "openapi.json", swaggerFile = "openapi/documentation.yaml")
             swaggerUI(path = "swagger-ui", swaggerFile = "openapi/documentation.yaml")
             rootRoutes(rootService)
+            wordRoutes(wordService)
         }
     }
 }

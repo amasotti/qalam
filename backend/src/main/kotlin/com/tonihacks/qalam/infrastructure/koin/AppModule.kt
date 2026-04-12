@@ -2,7 +2,11 @@ package com.tonihacks.qalam.infrastructure.koin
 
 import com.tonihacks.qalam.domain.root.RootRepository
 import com.tonihacks.qalam.domain.root.RootService
+import com.tonihacks.qalam.domain.word.WordRepository
+import com.tonihacks.qalam.domain.word.WordService
+import com.tonihacks.qalam.infrastructure.ai.AiClient
 import com.tonihacks.qalam.infrastructure.exposed.ExposedRootRepository
+import com.tonihacks.qalam.infrastructure.exposed.ExposedWordRepository
 import org.koin.dsl.module
 
 val rootsModules = module {
@@ -10,6 +14,12 @@ val rootsModules = module {
     single { RootService(get()) }
 }
 
+val wordsModules = module {
+    single { AiClient(System.getenv("OPENROUTER_API_KEY")) }
+    single<WordRepository> { ExposedWordRepository() }
+    single { WordService(get(), get()) }
+}
+
 val appModule = module {
-    includes(rootsModules)
+    includes(rootsModules, wordsModules)
 }

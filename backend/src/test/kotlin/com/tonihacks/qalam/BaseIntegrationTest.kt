@@ -1,5 +1,6 @@
 package com.tonihacks.qalam
 
+import com.tonihacks.qalam.infrastructure.ai.AiClient
 import io.kotest.core.spec.style.FreeSpec
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -7,6 +8,7 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import org.flywaydb.core.Flyway
+import org.koin.dsl.module as koinModule
 import org.testcontainers.containers.PostgreSQLContainer
 
 abstract class BaseIntegrationTest : FreeSpec() {
@@ -45,7 +47,11 @@ abstract class BaseIntegrationTest : FreeSpec() {
                     "database.pool.maxLifetime"        to "1800000",
                 )
             }
-            application { module() }
+            application {
+                module(koinModule {
+                    single { AiClient(null) }
+                })
+            }
 
             val client = createClient {
                 install(ContentNegotiation) { json() }

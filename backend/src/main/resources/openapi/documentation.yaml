@@ -20,6 +20,10 @@ tags:
     description: Arabic text management
   - name: sentences
     description: Sentence and alignment token management
+  - name: transliteration
+    description: Arabic text transliteration
+  - name: annotations
+    description: Annotation management (vocabulary, grammar, cultural, structure notes)
   - name: system
     description: Health and API introspection
 
@@ -969,6 +973,251 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /api/v1/texts/{textId}/annotations:
+    get:
+      summary: List annotations for a text
+      operationId: listAnnotations
+      tags: [annotations]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: List of annotations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AnnotationResponse"
+        "400":
+          description: Malformed UUID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: Create an annotation for a text
+      operationId: createAnnotation
+      tags: [annotations]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAnnotationRequest"
+      responses:
+        "201":
+          description: Annotation created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnnotationResponse"
+        "404":
+          description: Text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error (blank anchor, unknown type)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/texts/{textId}/annotations/{id}:
+    get:
+      summary: Get an annotation by ID
+      operationId: getAnnotationById
+      tags: [annotations]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Annotation found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnnotationResponse"
+        "404":
+          description: Annotation or text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      summary: Update an annotation (all fields optional)
+      operationId: updateAnnotation
+      tags: [annotations]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAnnotationRequest"
+      responses:
+        "200":
+          description: Annotation updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnnotationResponse"
+        "404":
+          description: Annotation or text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Delete an annotation
+      operationId: deleteAnnotation
+      tags: [annotations]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "204":
+          description: Annotation deleted
+        "404":
+          description: Annotation or text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/texts/{textId}/annotations/{id}/words:
+    post:
+      summary: Link a word to an annotation
+      operationId: addWordLink
+      tags: [annotations]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [wordId]
+              properties:
+                wordId:
+                  type: string
+                  format: uuid
+      responses:
+        "200":
+          description: Word linked, returns updated annotation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnnotationResponse"
+        "404":
+          description: Annotation or word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/texts/{textId}/annotations/{id}/words/{wordId}:
+    delete:
+      summary: Remove a word link from an annotation
+      operationId: removeWordLink
+      tags: [annotations]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: wordId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Word link removed, returns updated annotation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnnotationResponse"
+        "404":
+          description: Annotation or word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/words/{wordId}/annotations:
+    get:
+      summary: List annotations linked to a word (reverse lookup)
+      operationId: getAnnotationsForWord
+      tags: [annotations]
+      parameters:
+        - name: wordId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: List of annotations linked to the word
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AnnotationResponse"
+        "400":
+          description: Malformed UUID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /health:
     get:
       summary: Health check
@@ -994,6 +1243,27 @@ paths:
           description: Swagger UI HTML
         "400":
           description: Bad request
+
+  /api/v1/transliterate:
+    post:
+      summary: Transliterate Arabic text to Latin/chat-alphabet
+      operationId: transliterateText
+      tags: [transliteration]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransliterateRequest'
+      responses:
+        '200':
+          description: Transliteration result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransliterateResponse'
+        '422':
+          description: Validation error
 
 security: []
 
@@ -1508,6 +1778,93 @@ components:
                 format: uuid
                 nullable: true
 
+    # --- Annotations ---
+
+    AnnotationResponse:
+      type: object
+      required: [id, textId, anchor, type, reviewFlag, linkedWordIds, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        textId:
+          type: string
+          format: uuid
+        anchor:
+          type: string
+          description: The anchored text fragment this annotation refers to
+        type:
+          type: string
+          enum: [VOCAB, GRAMMAR, CULTURAL, STRUCTURE]
+        content:
+          type: string
+          nullable: true
+        masteryLevel:
+          type: string
+          nullable: true
+          enum: [NEW, LEARNING, KNOWN, MASTERED]
+        reviewFlag:
+          type: boolean
+        linkedWordIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateAnnotationRequest:
+      type: object
+      required: [anchor, type]
+      properties:
+        anchor:
+          type: string
+        type:
+          type: string
+          enum: [VOCAB, GRAMMAR, CULTURAL, STRUCTURE]
+        content:
+          type: string
+          nullable: true
+        masteryLevel:
+          type: string
+          nullable: true
+          enum: [NEW, LEARNING, KNOWN, MASTERED]
+        reviewFlag:
+          type: boolean
+          default: false
+        linkedWordIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          default: []
+
+    UpdateAnnotationRequest:
+      type: object
+      description: All fields optional — only provided fields are updated
+      properties:
+        anchor:
+          type: string
+          nullable: true
+        type:
+          type: string
+          nullable: true
+          enum: [VOCAB, GRAMMAR, CULTURAL, STRUCTURE]
+        content:
+          type: string
+          nullable: true
+        masteryLevel:
+          type: string
+          nullable: true
+          enum: [NEW, LEARNING, KNOWN, MASTERED]
+        reviewFlag:
+          type: boolean
+          nullable: true
+
     # --- Enums ---
 
     PartOfSpeech:
@@ -1561,3 +1918,18 @@ components:
         size:
           type: integer
           description: Page size requested
+
+    TransliterateRequest:
+      type: object
+      required: [arabic]
+      properties:
+        arabic:
+          type: string
+          description: Arabic text to transliterate
+
+    TransliterateResponse:
+      type: object
+      properties:
+        transliteration:
+          type: string
+          description: Chat-alphabet transliteration of the input

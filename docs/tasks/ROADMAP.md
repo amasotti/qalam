@@ -13,15 +13,15 @@
 
 ## ✅ Done
 
-| Milestone | Summary |
-|-----------|---------|
-| M0 Skeleton | Repo, Docker, justfile, CI skeleton |
-| M1 Backend foundation | Ktor, Exposed, Flyway, Koin, error handling, OpenAPI |
-| M2 Frontend foundation | SvelteKit shell, sidebar, shadcn base, svelte-query, Arabic CSS |
-| M3 Roots domain | Full backend CRUD + tests |
-| M4 Vocabulary domain | Full backend CRUD + AI examples + tests |
-| M5 Texts domain | Full backend CRUD + search/filter + tests |
-| M6 Sentences + tokens | Full backend: sentences, alignment tokens, stale-token invariant, AI transliterate/auto-tokenize, tests |
+| Milestone              | Summary                                                                                                 |
+|------------------------|---------------------------------------------------------------------------------------------------------|
+| M0 Skeleton            | Repo, Docker, justfile, CI skeleton                                                                     |
+| M1 Backend foundation  | Ktor, Exposed, Flyway, Koin, error handling, OpenAPI                                                    |
+| M2 Frontend foundation | SvelteKit shell, sidebar, shadcn base, svelte-query, Arabic CSS                                         |
+| M3 Roots domain        | Full backend CRUD + tests                                                                               |
+| M4 Vocabulary domain   | Full backend CRUD + AI examples + tests                                                                 |
+| M5 Texts domain        | Full backend CRUD + search/filter + tests                                                               |
+| M6 Sentences + tokens  | Full backend: sentences, alignment tokens, stale-token invariant, AI transliterate/auto-tokenize, tests |
 
 ---
 

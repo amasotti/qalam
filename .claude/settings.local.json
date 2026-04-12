@@ -49,14 +49,7 @@
       "Read(~/.zsh_history)",
       "Read(~/.bash_history)"
     ],
-    "defaultMode": "plan",
-    "disableBypassPermissionsMode": "disable"
+    "defaultMode": "auto"
   },
-  "model": "claude-sonnet-4-6",
-  "sandbox": {
-    "enabled": true,
-    "excludedCommands": [
-      "git"
-    ]
-  }
+  "model": "claude-sonnet-4-6"
 }

@@ -16,6 +16,8 @@ tags:
     description: Arabic root management
   - name: words
     description: Vocabulary word management
+  - name: texts
+    description: Arabic text management
   - name: system
     description: Health and API introspection
 
@@ -488,6 +490,190 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /api/v1/texts:
+    get:
+      summary: List texts with optional filters
+      operationId: listTexts
+      tags: [texts]
+      parameters:
+        - name: page
+          in: query
+          description: Page number (1-based)
+          schema: { type: integer, default: 1 }
+        - name: size
+          in: query
+          description: Number of items per page
+          schema: { type: integer, default: 20, maximum: 100 }
+        - name: q
+          in: query
+          description: Free-text search across title and body
+          schema: { type: string }
+        - name: dialect
+          in: query
+          schema: { $ref: "#/components/schemas/Dialect" }
+        - name: difficulty
+          in: query
+          schema: { $ref: "#/components/schemas/Difficulty" }
+        - name: tag
+          in: query
+          description: Filter by tag (exact match)
+          schema: { type: string }
+      responses:
+        "200":
+          description: Paginated list of texts
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PaginatedResponse"
+                  - type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/TextResponse"
+        "400":
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: Create a text
+      operationId: createText
+      tags: [texts]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTextRequest"
+      responses:
+        "201":
+          description: Text created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TextResponse"
+        "422":
+          description: Validation error (blank title or body)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/texts/{id}:
+    get:
+      summary: Get a text by ID
+      operationId: getTextById
+      tags: [texts]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Text found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TextResponse"
+        "400":
+          description: Malformed UUID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      summary: Update a text (all fields optional — only provided fields change)
+      operationId: updateText
+      tags: [texts]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTextRequest"
+      responses:
+        "200":
+          description: Text updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TextResponse"
+        "404":
+          description: Text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Delete a text
+      operationId: deleteText
+      tags: [texts]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "204":
+          description: Text deleted
+        "404":
+          description: Text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/texts/{id}/summarize:
+    post:
+      summary: Generate an AI summary of a text
+      operationId: summarizeText
+      tags: [texts]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Generated summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SummarizeResponse"
+        "404":
+          description: Text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: AI not configured (OPENROUTER_API_KEY missing)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /health:
     get:
       summary: Health check
@@ -787,6 +973,115 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ExampleSentenceResponse"
+
+    # --- Texts ---
+
+    TextResponse:
+      type: object
+      required: [id, title, body, difficulty, dialect, tags, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        body:
+          type: string
+          description: Arabic body content
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+        difficulty:
+          $ref: "#/components/schemas/Difficulty"
+        dialect:
+          $ref: "#/components/schemas/Dialect"
+        comments:
+          type: string
+          nullable: true
+          description: Freetext notes about the text
+        tags:
+          type: array
+          items: { type: string }
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateTextRequest:
+      type: object
+      required: [title, body]
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+          description: Arabic body content
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+        difficulty:
+          allOf:
+            - $ref: "#/components/schemas/Difficulty"
+          default: BEGINNER
+        dialect:
+          allOf:
+            - $ref: "#/components/schemas/Dialect"
+          default: MSA
+        comments:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items: { type: string }
+          default: []
+
+    UpdateTextRequest:
+      type: object
+      description: All fields optional — only provided fields are updated
+      properties:
+        title:
+          type: string
+          nullable: true
+        body:
+          type: string
+          nullable: true
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+        difficulty:
+          nullable: true
+          allOf:
+            - $ref: "#/components/schemas/Difficulty"
+        dialect:
+          nullable: true
+          allOf:
+            - $ref: "#/components/schemas/Dialect"
+        comments:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items: { type: string }
+          nullable: true
+
+    SummarizeResponse:
+      type: object
+      required: [summary]
+      properties:
+        summary:
+          type: string
+          description: AI-generated summary of the text
 
     # --- Enums ---
 

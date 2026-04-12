@@ -19,6 +19,7 @@ import org.jetbrains.exposed.v1.core.Op
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.core.like
 import org.jetbrains.exposed.v1.core.or
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
@@ -43,6 +44,7 @@ class ExposedTextRepository : TextRepository {
             row.toText(tags).right()
         }
 
+    @Suppress("CyclomaticComplexMethod")
     override suspend fun list(page: PageRequest, filters: TextFilters): Either<DomainError, PaginatedResponse<Text>> =
         suspendTransaction {
             // When filtering by tag we join text_tags; otherwise query texts directly.

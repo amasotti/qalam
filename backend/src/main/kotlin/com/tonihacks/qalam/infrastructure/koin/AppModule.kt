@@ -2,10 +2,13 @@ package com.tonihacks.qalam.infrastructure.koin
 
 import com.tonihacks.qalam.domain.root.RootRepository
 import com.tonihacks.qalam.domain.root.RootService
+import com.tonihacks.qalam.domain.text.TextRepository
+import com.tonihacks.qalam.domain.text.TextService
 import com.tonihacks.qalam.domain.word.WordRepository
 import com.tonihacks.qalam.domain.word.WordService
 import com.tonihacks.qalam.infrastructure.ai.AiClient
 import com.tonihacks.qalam.infrastructure.exposed.ExposedRootRepository
+import com.tonihacks.qalam.infrastructure.exposed.ExposedTextRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedWordRepository
 import org.koin.dsl.module
 
@@ -20,6 +23,11 @@ val wordsModules = module {
     single { WordService(get(), get()) }
 }
 
+val textsModule = module {
+    single<TextRepository> { ExposedTextRepository() }
+    single { TextService(get()) }
+}
+
 val appModule = module {
-    includes(rootsModules, wordsModules)
+    includes(rootsModules, wordsModules, textsModule)
 }

@@ -562,7 +562,7 @@
 /* ── Page: Create Root ── */
 
 .page-create-root {
-	max-width: 36rem;
+	max-width: 42rem;
 	margin: 0 auto;
 	padding: 2.5rem var(--content-padding-x) 4rem;
 	display: flex;

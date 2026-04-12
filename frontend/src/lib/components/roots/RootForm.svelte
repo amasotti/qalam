@@ -122,10 +122,12 @@ async function handleSubmit(e: SubmitEvent) {
 		<textarea
 			id="root-analysis"
 			class="root-form-textarea"
-			placeholder="Morphological notes, semantic range…"
+			placeholder="Morphological notes, semantic range… (Markdown supported)"
+			rows={20}
 			bind:value={analysis}
 			disabled={isPending}
 		></textarea>
+		<p class="root-form-hint">Markdown is rendered on the detail page.</p>
 	</div>
 
 	{#if submitError}

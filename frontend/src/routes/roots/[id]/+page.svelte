@@ -2,6 +2,7 @@
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import type { CreateRootRequest, UpdateRootRequest } from '$lib/api/types.gen';
+import Markdown from '$lib/components/Markdown.svelte';
 import RootForm from '$lib/components/roots/RootForm.svelte';
 import { Badge } from '$lib/components/ui/badge';
 import { Button } from '$lib/components/ui/button';
@@ -111,7 +112,7 @@ async function handleDelete() {
 				<div class="root-info-section">
 					<span class="root-info-label">Analysis</span>
 					{#if root.data.analysis}
-						<p class="root-info-value">{root.data.analysis}</p>
+						<Markdown content={root.data.analysis} />
 					{:else}
 						<p class="root-info-value root-info-empty">No analysis recorded</p>
 					{/if}

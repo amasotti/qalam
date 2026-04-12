@@ -1,12 +1,17 @@
 package com.tonihacks.qalam.delivery
 
+import com.tonihacks.qalam.delivery.routes.annotationRoutes
+import com.tonihacks.qalam.delivery.routes.annotationWordRoutes
 import com.tonihacks.qalam.delivery.routes.rootRoutes
 import com.tonihacks.qalam.delivery.routes.sentenceRoutes
 import com.tonihacks.qalam.delivery.routes.textRoutes
+import com.tonihacks.qalam.delivery.routes.transliterationRoutes
 import com.tonihacks.qalam.delivery.routes.wordRoutes
+import com.tonihacks.qalam.domain.annotation.AnnotationService
 import com.tonihacks.qalam.domain.root.RootService
 import com.tonihacks.qalam.domain.sentence.SentenceService
 import com.tonihacks.qalam.domain.text.TextService
+import com.tonihacks.qalam.domain.transliteration.TransliterationService
 import com.tonihacks.qalam.domain.word.WordService
 import com.tonihacks.qalam.infrastructure.ai.AiClient
 import io.ktor.http.*
@@ -25,6 +30,8 @@ fun Application.configureRouting() {
     val wordService by inject<WordService>()
     val textService by inject<TextService>()
     val sentenceService by inject<SentenceService>()
+    val transliterationService by inject<TransliterationService>()
+    val annotationService by inject<AnnotationService>()
     val aiClient by inject<AiClient>()
 
     routing {
@@ -38,6 +45,9 @@ fun Application.configureRouting() {
             wordRoutes(wordService)
             textRoutes(textService)
             sentenceRoutes(sentenceService, aiClient)
+            transliterationRoutes(transliterationService)
+            annotationRoutes(annotationService)
+            annotationWordRoutes(annotationService)
         }
     }
 }

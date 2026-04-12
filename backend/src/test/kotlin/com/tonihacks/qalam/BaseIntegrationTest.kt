@@ -40,9 +40,9 @@ abstract class BaseIntegrationTest : FreeSpec() {
                     "database.password"                to postgres.password,
                     "database.pool.maximumPoolSize"    to "2",
                     "database.pool.minimumIdle"        to "0",
-                    "database.pool.connectionTimeout"  to "3000",
-                    "database.pool.idleTimeout"        to "1000",
-                    "database.pool.maxLifetime"        to "30000",
+                    "database.pool.connectionTimeout"  to "5000",
+                    "database.pool.idleTimeout"        to "10001",
+                    "database.pool.maxLifetime"        to "60000",
                 )
             }
             application {

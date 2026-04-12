@@ -32,4 +32,8 @@ fun Application.configureDatabase() {
         .migrate()
 
     Database.connect(dataSource)
+
+    monitor.subscribe(ApplicationStopped) {
+        dataSource.close()
+    }
 }

@@ -22,26 +22,18 @@
 | M4 Vocabulary domain   | Full backend CRUD + AI examples + tests                                                                 |
 | M5 Texts domain        | Full backend CRUD + search/filter + tests                                                               |
 | M6 Sentences + tokens  | Full backend: sentences, alignment tokens, stale-token invariant, AI transliterate/auto-tokenize, tests |
-
----
-
-## 🔜 Now — Complete the backend
-
-### M7 — Annotations Domain
-*Texts ↔ Words cross-reference. The reverse lookup (word → texts) is a first-class feature.*
-→ `docs/tasks/007_annotations.md`
-
-### M10 — Transliteration Service
-*Copy character map from an-na7wi, wrap in a clean service. ~2h of work.*
-→ `docs/tasks/010_transliteration.md`
+| M7 Annotations domain  | Full backend: annotations CRUD, word-link management, reverse lookup (word → texts), tests              |
+| M10 Transliteration    | Pure transliteration service: Arabic→chat-alphabet map, `POST /api/v1/transliterate`, tests             |
 
 ---
 
 ## 🎯 MVP — Frontend + Go Live
+*Must use the /frontend-design skill for design work, iterate in code.*
 
 ### M13 — Frontend Foundation
 *API type pipeline, brand theme (green/red/near-black), mastery semantic classes, Biome linting.*
 *Must be done before any feature frontend work.*
+*Must use the /frontend-design skill for design work, iterate in code.*
 → `docs/tasks/013_frontend_foundation.md`
 
 ### M14 — Frontend: Roots

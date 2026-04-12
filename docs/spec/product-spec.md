@@ -259,7 +259,6 @@ structured response. No freeform prompting from the UI.
 Preconfigured prompts (v1):
 - `word.examples`: generate 2 example sentences for a vocabulary word
 - `sentence.transliterate`: suggest a transliteration for an Arabic sentence
-- `text.summarize`: generate a short description of an Arabic text
 
 The model is configurable via OpenRouter. All AI features degrade gracefully if
 `OPENROUTER_API_KEY` is absent.

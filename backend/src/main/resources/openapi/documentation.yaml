@@ -1,8 +1,11 @@
-openapi: "3.1.0"
+openapi: "3.0.3"
 info:
   title: Qalam API
   description: Personal Arabic learning tool — backend API
   version: "0.1.0"
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
 
 servers:
   - url: http://localhost:8085
@@ -169,6 +172,291 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /api/v1/words:
+    get:
+      summary: List vocabulary words with optional filters
+      operationId: listWords
+      tags: [words]
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: size
+          in: query
+          schema: { type: integer, default: 20, maximum: 100 }
+        - name: q
+          in: query
+          description: Arabic text substring search
+          schema: { type: string }
+        - name: dialect
+          in: query
+          schema: { $ref: "#/components/schemas/Dialect" }
+        - name: difficulty
+          in: query
+          schema: { $ref: "#/components/schemas/Difficulty" }
+        - name: partOfSpeech
+          in: query
+          schema: { $ref: "#/components/schemas/PartOfSpeech" }
+        - name: masteryLevel
+          in: query
+          schema: { $ref: "#/components/schemas/MasteryLevel" }
+      responses:
+        "200":
+          description: Paginated list of words
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PaginatedResponse"
+                  - type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/WordResponse"
+    post:
+      summary: Create a vocabulary word
+      operationId: createWord
+      tags: [words]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWordRequest"
+      responses:
+        "201":
+          description: Word created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordResponse"
+        "422":
+          description: Validation error (blank arabicText, unknown enum value)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/words/autocomplete:
+    get:
+      summary: Lightweight word search for linking operations
+      operationId: autocompleteWords
+      tags: [words]
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 10, maximum: 50 }
+      responses:
+        "200":
+          description: Matching words (id + arabicText + translation only)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WordAutocompleteResponse"
+
+  /api/v1/words/{id}:
+    get:
+      summary: Get a word by ID
+      operationId: getWordById
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Word found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordResponse"
+        "400":
+          description: Malformed UUID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      summary: Update a word (all fields optional — only provided fields change)
+      operationId: updateWord
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateWordRequest"
+      responses:
+        "200":
+          description: Word updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordResponse"
+        "404":
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Delete a word
+      operationId: deleteWord
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "204":
+          description: Word deleted
+        "404":
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/words/{id}/dictionary-links:
+    get:
+      summary: List dictionary links for a word
+      operationId: listDictionaryLinks
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: List of dictionary links
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DictionaryLinkResponse"
+        "404":
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: Add a dictionary link to a word
+      operationId: addDictionaryLink
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDictionaryLinkRequest"
+      responses:
+        "201":
+          description: Link added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictionaryLinkResponse"
+        "404":
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Unknown dictionary source
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/words/{id}/dictionary-links/{linkId}:
+    delete:
+      summary: Remove a dictionary link from a word
+      operationId: deleteDictionaryLink
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: linkId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "204":
+          description: Link removed
+        "404":
+          description: Word or link not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/words/{id}/examples:
+    post:
+      summary: Generate AI example sentences for a word
+      operationId: generateWordExamples
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Two example sentences
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamplesResponse"
+        "404":
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: AI not configured (OPENROUTER_API_KEY missing)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /health:
     get:
       summary: Health check
@@ -200,6 +488,8 @@ paths:
         "200":
           description: Swagger UI HTML
 
+security: []
+
 components:
   schemas:
     HealthResponse:
@@ -209,6 +499,8 @@ components:
         status:
           type: string
           example: ok
+
+    # --- Roots ---
 
     RootResponse:
       type: object
@@ -241,12 +533,11 @@ components:
 
     CreateRootRequest:
       type: object
-      required: [letters]
+      required: [root]
       properties:
         root:
           type: string
-          minItems: 2
-          maxItems: 6
+          description: "Letters in any format: space/dash/comma-separated or concatenated"
         meaning:
           type: string
           nullable: true
@@ -285,6 +576,208 @@ components:
           type: string
         letterCount:
           type: integer
+
+    # --- Words ---
+
+    WordResponse:
+      type: object
+      required: [id, arabicText, partOfSpeech, dialect, difficulty, masteryLevel, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        arabicText:
+          type: string
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+        exampleSentence:
+          type: string
+          nullable: true
+        partOfSpeech:
+          $ref: "#/components/schemas/PartOfSpeech"
+        dialect:
+          $ref: "#/components/schemas/Dialect"
+        difficulty:
+          $ref: "#/components/schemas/Difficulty"
+        masteryLevel:
+          $ref: "#/components/schemas/MasteryLevel"
+        pronunciationUrl:
+          type: string
+          nullable: true
+        rootId:
+          type: string
+          format: uuid
+          nullable: true
+        derivedFromId:
+          type: string
+          format: uuid
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateWordRequest:
+      type: object
+      required: [arabicText]
+      properties:
+        arabicText:
+          type: string
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+        exampleSentence:
+          type: string
+          nullable: true
+        partOfSpeech:
+          $ref: "#/components/schemas/PartOfSpeech"
+          default: UNKNOWN
+        dialect:
+          $ref: "#/components/schemas/Dialect"
+          default: MSA
+        difficulty:
+          $ref: "#/components/schemas/Difficulty"
+          default: BEGINNER
+        pronunciationUrl:
+          type: string
+          nullable: true
+        rootId:
+          type: string
+          format: uuid
+          nullable: true
+        derivedFromId:
+          type: string
+          format: uuid
+          nullable: true
+
+    UpdateWordRequest:
+      type: object
+      description: All fields optional — only provided fields are updated
+      properties:
+        arabicText:
+          type: string
+          nullable: true
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+        exampleSentence:
+          type: string
+          nullable: true
+        partOfSpeech:
+          $ref: "#/components/schemas/PartOfSpeech"
+          nullable: true
+        dialect:
+          $ref: "#/components/schemas/Dialect"
+          nullable: true
+        difficulty:
+          $ref: "#/components/schemas/Difficulty"
+          nullable: true
+        masteryLevel:
+          $ref: "#/components/schemas/MasteryLevel"
+          nullable: true
+        pronunciationUrl:
+          type: string
+          nullable: true
+        rootId:
+          type: string
+          format: uuid
+          nullable: true
+        derivedFromId:
+          type: string
+          format: uuid
+          nullable: true
+
+    WordAutocompleteResponse:
+      type: object
+      required: [id, arabicText]
+      properties:
+        id:
+          type: string
+          format: uuid
+        arabicText:
+          type: string
+        translation:
+          type: string
+          nullable: true
+
+    DictionaryLinkResponse:
+      type: object
+      required: [id, source, url]
+      properties:
+        id:
+          type: string
+          format: uuid
+        source:
+          $ref: "#/components/schemas/DictionarySource"
+        url:
+          type: string
+          format: uri
+
+    CreateDictionaryLinkRequest:
+      type: object
+      required: [source, url]
+      properties:
+        source:
+          $ref: "#/components/schemas/DictionarySource"
+        url:
+          type: string
+          format: uri
+
+    ExampleSentenceResponse:
+      type: object
+      required: [arabic, transliteration, translation]
+      properties:
+        arabic:
+          type: string
+        transliteration:
+          type: string
+        translation:
+          type: string
+
+    ExamplesResponse:
+      type: object
+      required: [examples]
+      properties:
+        examples:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExampleSentenceResponse"
+
+    # --- Enums ---
+
+    PartOfSpeech:
+      type: string
+      enum: [UNKNOWN, NOUN, VERB, ADJECTIVE, ADVERB, PREPOSITION, PARTICLE, INTERJECTION, CONJUNCTION, PRONOUN]
+
+    Dialect:
+      type: string
+      enum: [TUNISIAN, MOROCCAN, EGYPTIAN, GULF, LEVANTINE, MSA, IRAQI]
+
+    Difficulty:
+      type: string
+      enum: [BEGINNER, INTERMEDIATE, ADVANCED]
+
+    MasteryLevel:
+      type: string
+      enum: [NEW, LEARNING, KNOWN, MASTERED]
+
+    DictionarySource:
+      type: string
+      enum: [ALMANY, LIVING_ARABIC, DERJA_NINJA, REVERSO, WIKTIONARY, ARABIC_STUDENT_DICTIONARY, LANGENSCHEIDT, CUSTOM]
+
+    # --- Common ---
 
     ErrorResponse:
       type: object

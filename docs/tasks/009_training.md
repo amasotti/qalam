@@ -2,6 +2,7 @@
 
 Session-based SRS. Mastery promotion is the core invariant.
 
+- [ ] 9.0 `[B]` Update `documentation.yaml`: add all new schemas (enums: SessionMode, TrainingResult; bodies: TrainingSessionResponse, CreateSessionRequest, RecordResultRequest) and all new paths (`/api/v1/training/sessions` CRUD + result + complete + purge) before implementing routes
 - [ ] 9.1 `[B]` `V014__create_training.sql`: `training_sessions` table (UUID PK, mode VARCHAR CHECK, status VARCHAR CHECK, created_at, completed_at); `training_session_words` (session_id FK, word_id FK, position, result VARCHAR CHECK nullable)
 - [ ] 9.2 `[B]` Domain: `TrainingSession`, `TrainingSessionWord`; enums `SessionMode`, `TrainingResult`; mastery promotion thresholds as named constants
 - [ ] 9.3 `[B]` Application: `TrainingService` — create session (select + shuffle words by mode), record result per word, complete session (promote mastery via `WordProgress`); purge oldest N sessions

@@ -1,5 +1,6 @@
 ## Milestone 17 — Frontend: Training
 
+- [ ] 17.0 `[F]` Re-run `pnpm generate:types` if backend `documentation.yaml` has changed since last type generation; commit updated `types.gen.ts` before writing any typed store/component code
 - [ ] 17.1 `[F]` `TrainingStore`: create session, record result, complete session
 - [ ] 17.2 `[F]` `/training` page: session setup (mode selector + length slider)
 - [ ] 17.3 `[F]` Flashcard view: show front (Arabic or translation, randomised), reveal back, CORRECT / INCORRECT / SKIP buttons

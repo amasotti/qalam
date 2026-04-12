@@ -2,6 +2,7 @@
 
 Texts ↔ Words cross-reference. The reverse lookup (word → texts) is a first-class feature.
 
+- [ ] 7.0 `[B]` Update `documentation.yaml`: add all new schemas (AnnotationResponse, CreateAnnotationRequest, UpdateAnnotationRequest) and all new paths (`/api/v1/texts/{textId}/annotations` CRUD + word-link sub-resource + reverse lookup `GET /api/v1/words/{wordId}/annotations`) before implementing routes
 - [ ] 7.1 `[B]` `V011__create_annotations.sql`: `annotations` table (UUID PK, text_id FK, anchor VARCHAR, type VARCHAR CHECK, content, mastery_level VARCHAR CHECK, review_flag BOOLEAN, created_at, updated_at)
 - [ ] 7.2 `[B]` `V012__create_annotation_words.sql`: `annotation_words` join table (annotation_id FK, word_id FK; composite PK); index on both FKs
 - [ ] 7.3 `[B]` Domain: `Annotation`, `AnnotationId` data classes; `linkedWordIds: List<WordId>`

@@ -26,14 +26,14 @@ tools, you might find it useful too.
 
 ## What you need
 
-| Tool    | Version | How to install                              |
-|---------|---------|---------------------------------------------|
-| JDK     | 25      | [sdkman](https://sdkman.io/): `sdk install java 25-tem` |
-| just    | latest  | `brew install just` / system package        |
+| Tool    | Version | How to install                                                    |
+|---------|---------|-------------------------------------------------------------------|
+| JDK     | 25      | [sdkman](https://sdkman.io/): `sdk install java 25-tem`           |
+| just    | latest  | `brew install just` / system package                              |
 | doppler | latest  | [doppler.com/docs/install](https://docs.doppler.com/docs/install) |
-| Node.js | 24      | system package / `nvm`                      |
-| pnpm    | latest  | `corepack enable && corepack prepare pnpm@latest --activate` |
-| Docker  | any     | Docker Desktop or colima                    |
+| Node.js | 24      | system package / `nvm`                                            |
+| pnpm    | latest  | `corepack enable && corepack prepare pnpm@latest --activate`      |
+| Docker  | any     | Docker Desktop or colima                                          |
 
 Make sure `JAVA_HOME` points to JDK 25 (sdkman sets this automatically).
 Doppler can be replaced by Vault, Infisical, or a local `.env` file if needed.

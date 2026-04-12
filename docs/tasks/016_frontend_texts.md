@@ -1,5 +1,6 @@
 ## Milestone 16 — Frontend: Texts + Annotations
 
+- [ ] 16.0 `[F]` Re-run `pnpm generate:types` if backend `documentation.yaml` has changed since last type generation; commit updated `types.gen.ts` before writing any typed store/component code
 - [ ] 16.1 `[F]` `TextsStore`: list (all filters), single text with sentences and annotations
 - [ ] 16.2 `[F]` `/texts` page: paginated list with filter bar (dialect, difficulty, tag), free-text search
 - [ ] 16.3 `[F]` Text plain view `/texts/[id]`: Arabic / transliteration / translation in aligned columns; click-to-annotate (word/phrase selection → annotation form)

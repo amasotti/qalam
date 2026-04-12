@@ -2,6 +2,7 @@
 
 Unified `Text` entity — plain view only in this milestone. Interlinear (sentences + tokens) added in Milestone 6.
 
+- [ ] 5.0 `[B]` Update `documentation.yaml`: add all new schemas (TextResponse, CreateTextRequest, UpdateTextRequest, SummarizeResponse) and all new paths (`/api/v1/texts` CRUD + `/{id}/summarize`) before implementing routes
 - [ ] 5.1 `[B]` `V007__create_texts.sql`: `texts` table (UUID PK, title, body, transliteration, translation, difficulty, dialect, comments, created_at, updated_at)
 - [ ] 5.2 `[B]` `V008__create_text_tags.sql`: `text_tags` table (text_id FK, tag VARCHAR) — simple join table, no PK needed beyond composite
 - [ ] 5.3 `[B]` Domain: `Text`, `TextId` data classes; tags as `List<String>`

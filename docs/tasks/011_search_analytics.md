@@ -2,6 +2,7 @@
 
 Read-only features. Depend on all prior domains.
 
+- [ ] 11.0 `[B]` Update `documentation.yaml`: add all new schemas (SearchResponse with grouped results, AnalyticsResponse with all sub-shapes) and all new paths (`GET /api/v1/search`, `GET /api/v1/analytics`) before implementing routes
 - [ ] 11.1 `[B]` Global search: `GET /api/v1/search?q=` — results grouped by type (`texts`, `words`, `annotations`); uses `pg_trgm` and `unaccent`
 - [ ] 11.2 `[B]` Advanced text search: title, body free-text, dialect, difficulty, tag — combinable; pushed to SQL (no in-memory filtering)
 - [ ] 11.3 `[B]` Vocabulary autocomplete: already done in 4.8 — confirm it covers token-to-vocabulary linking use case

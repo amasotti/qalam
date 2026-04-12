@@ -2,6 +2,7 @@
 
 Interlinear view — the most behaviourally complex domain. Stale-token logic is the critical invariant.
 
+- [ ] 6.0 `[B]` Update `documentation.yaml`: add all new schemas (SentenceResponse, CreateSentenceRequest, UpdateSentenceRequest, AlignmentTokenResponse, ReplaceTokensRequest) and all new paths (`/api/v1/texts/{textId}/sentences` CRUD + tokens sub-resource + `transliterate` AI endpoint) before implementing routes
 - [ ] 6.1 `[B]` `V009__create_sentences.sql`: `sentences` table (UUID PK, text_id FK, position INT, arabic_text, transliteration, free_translation, notes, tokens_valid BOOLEAN DEFAULT true, created_at, updated_at)
 - [ ] 6.2 `[B]` `V010__create_alignment_tokens.sql`: `alignment_tokens` table (UUID PK, sentence_id FK, position INT, arabic, transliteration, translation, word_id FK nullable); index on `sentence_id`
 - [ ] 6.3 `[B]` Domain: `Sentence`, `SentenceId`, `AlignmentToken` data classes; `tokensValid: Boolean` on `Sentence`

@@ -1,5 +1,6 @@
 ## Milestone 15 — Frontend: Vocabulary
 
+- [ ] 15.0 `[F]` Re-run `pnpm generate:types` if backend `documentation.yaml` has changed since last type generation; commit updated `types.gen.ts` before writing any typed store/component code
 - [ ] 15.1 `[F]` `WordsStore`: list (all filters), single word, autocomplete
 - [ ] 15.2 `[F]` `/words` page: paginated list with filter bar (dialect, difficulty, POS, mastery), search box (Arabic + translation)
 - [ ] 15.3 `[F]` Word detail page `/words/[id]`: all fields, dictionary links, audio player/recorder, derivation chain, linked annotations (reverse lookup)

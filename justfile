@@ -21,6 +21,9 @@ frontend:
 test:
     ./backend/gradlew -p backend test
 
+lint-api:
+    docker run --rm -v $PWD:/spec redocly/cli lint backend/src/main/resources/openapi/documentation.yaml
+
 # Start everything: DB + backend (background) + frontend (foreground)
 # Ctrl+C stops the frontend; run `just stop-db` to tear down the database
 run:

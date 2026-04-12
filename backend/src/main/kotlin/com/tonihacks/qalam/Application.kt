@@ -19,18 +19,3 @@ fun Application.module() {
     configurePlugins()
     configureRouting()
 }
-
-// Test-only entry point — accepts Koin module overrides without Ktor DI interference.
-fun Application.testModule(vararg overrides: org.koin.core.module.Module) {
-    install(Koin) {
-        slf4jLogger()
-        modules(appModule)
-        if (overrides.isNotEmpty()) {
-            allowOverride(true)
-            modules(*overrides)
-        }
-    }
-    configureDatabase()
-    configurePlugins()
-    configureRouting()
-}

@@ -11,6 +11,14 @@ servers:
   - url: http://localhost:8085
     description: Local development
 
+tags:
+  - name: roots
+    description: Arabic root management
+  - name: words
+    description: Vocabulary word management
+  - name: system
+    description: Health and API introspection
+
 paths:
   /api/v1/roots:
     get:
@@ -20,12 +28,15 @@ paths:
       parameters:
         - name: page
           in: query
+          description: Page number (1-based)
           schema: { type: integer, default: 1 }
         - name: size
           in: query
+          description: Number of items per page
           schema: { type: integer, default: 20, maximum: 100 }
         - name: letterCount
           in: query
+          description: Filter by number of root letters (2–6)
           schema: { type: integer, minimum: 2, maximum: 6 }
       responses:
         "200":
@@ -41,6 +52,12 @@ paths:
                         type: array
                         items:
                           $ref: "#/components/schemas/RootResponse"
+        "400":
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
     post:
       summary: Create a new Arabic root
       operationId: createRoot
@@ -180,9 +197,11 @@ paths:
       parameters:
         - name: page
           in: query
+          description: Page number (1-based)
           schema: { type: integer, default: 1 }
         - name: size
           in: query
+          description: Number of items per page
           schema: { type: integer, default: 20, maximum: 100 }
         - name: q
           in: query
@@ -214,6 +233,12 @@ paths:
                         type: array
                         items:
                           $ref: "#/components/schemas/WordResponse"
+        "400":
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
     post:
       summary: Create a vocabulary word
       operationId: createWord
@@ -260,6 +285,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/WordAutocompleteResponse"
+        "400":
+          description: Missing required query parameter `q`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /api/v1/words/{id}:
     get:
@@ -469,6 +500,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthResponse"
+        "400":
+          description: Bad request
 
   /api/v1/openapi.json:
     get:
@@ -478,6 +511,8 @@ paths:
       responses:
         "200":
           description: OpenAPI document
+        "400":
+          description: Bad request
 
   /api/v1/swagger-ui:
     get:
@@ -487,6 +522,8 @@ paths:
       responses:
         "200":
           description: Swagger UI HTML
+        "400":
+          description: Bad request
 
 security: []
 
@@ -639,13 +676,16 @@ components:
           type: string
           nullable: true
         partOfSpeech:
-          $ref: "#/components/schemas/PartOfSpeech"
+          allOf:
+            - $ref: "#/components/schemas/PartOfSpeech"
           default: UNKNOWN
         dialect:
-          $ref: "#/components/schemas/Dialect"
+          allOf:
+            - $ref: "#/components/schemas/Dialect"
           default: MSA
         difficulty:
-          $ref: "#/components/schemas/Difficulty"
+          allOf:
+            - $ref: "#/components/schemas/Difficulty"
           default: BEGINNER
         pronunciationUrl:
           type: string
@@ -676,17 +716,21 @@ components:
           type: string
           nullable: true
         partOfSpeech:
-          $ref: "#/components/schemas/PartOfSpeech"
           nullable: true
+          allOf:
+            - $ref: "#/components/schemas/PartOfSpeech"
         dialect:
-          $ref: "#/components/schemas/Dialect"
           nullable: true
+          allOf:
+            - $ref: "#/components/schemas/Dialect"
         difficulty:
-          $ref: "#/components/schemas/Difficulty"
           nullable: true
+          allOf:
+            - $ref: "#/components/schemas/Difficulty"
         masteryLevel:
-          $ref: "#/components/schemas/MasteryLevel"
           nullable: true
+          allOf:
+            - $ref: "#/components/schemas/MasteryLevel"
         pronunciationUrl:
           type: string
           nullable: true
@@ -796,7 +840,8 @@ components:
       properties:
         items:
           type: array
-          items: {}
+          items:
+            type: object
         total:
           type: integer
           format: int64

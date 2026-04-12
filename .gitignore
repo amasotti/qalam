@@ -13,3 +13,5 @@
 
 # direnv
 .direnv/
+
+.scratch

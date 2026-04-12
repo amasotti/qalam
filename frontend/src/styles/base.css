@@ -62,10 +62,23 @@
 	color: hsl(var(--foreground));
 }
 
-.prose h1 { font-size: 1.3em; }
-.prose h2 { font-size: 1.15em; border-bottom: 1px solid hsl(var(--border)); padding-bottom: 0.25em; }
-.prose h3 { font-size: 1em; }
-.prose h4 { font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.04em; color: hsl(var(--muted-foreground)); }
+.prose h1 {
+	font-size: 1.3em;
+}
+.prose h2 {
+	font-size: 1.15em;
+	border-bottom: 1px solid hsl(var(--border));
+	padding-bottom: 0.25em;
+}
+.prose h3 {
+	font-size: 1em;
+}
+.prose h4 {
+	font-size: 0.9em;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: hsl(var(--muted-foreground));
+}
 
 .prose p {
 	margin-top: 0;

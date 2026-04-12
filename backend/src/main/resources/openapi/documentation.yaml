@@ -503,17 +503,6 @@ paths:
         "400":
           description: Bad request
 
-  /api/v1/openapi.json:
-    get:
-      summary: OpenAPI specification
-      operationId: getOpenApiSpec
-      tags: [system]
-      responses:
-        "200":
-          description: OpenAPI document
-        "400":
-          description: Bad request
-
   /api/v1/swagger-ui:
     get:
       summary: Swagger UI

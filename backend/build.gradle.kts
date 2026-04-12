@@ -53,8 +53,7 @@ dependencies {
     implementation(libs.ktor.server.cors)
     implementation(libs.ktor.serialization.kotlinx.json)
 
-    // OpenAPI + Swagger UI
-    implementation(libs.ktor.server.openapi)
+    // Swagger UI (interactive — no swagger-codegen dependency)
     implementation(libs.ktor.server.swagger)
 
     // Arrow (typed errors)

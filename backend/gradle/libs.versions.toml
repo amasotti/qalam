@@ -61,8 +61,7 @@ postgresql-driver        = { module = "org.postgresql:postgresql",              
 # Arrow
 arrow-core               = { module = "io.arrow-kt:arrow-core",                                           version.ref = "arrow" }
 
-# OpenAPI / Swagger UI
-ktor-server-openapi      = { module = "io.ktor:ktor-server-openapi-jvm",                                  version.ref = "ktor" }
+# Swagger UI (interactive, no codegen dependency)
 ktor-server-swagger      = { module = "io.ktor:ktor-server-swagger-jvm",                                  version.ref = "ktor" }
 
 # Logging

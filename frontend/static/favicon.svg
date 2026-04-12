@@ -1,27 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#2d2a74"/>
-      <stop offset="100%" stop-color="#1a1753"/>
-    </linearGradient>
-    <linearGradient id="letter" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#fcd34d"/>
-      <stop offset="100%" stop-color="#d97706"/>
-    </linearGradient>
-  </defs>
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="#0d1710"/>
 
-  <!-- Rounded background -->
-  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+  <!-- Green border -->
+  <rect x="1" y="1" width="30" height="30" rx="5" fill="none"
+        stroke="#16a34a" stroke-width="1.2" opacity="0.60"/>
 
-  <!-- Subtle inner border -->
-  <rect x="1" y="1" width="30" height="30" rx="6" fill="none"
-        stroke="#f59e0b" stroke-width="0.4" opacity="0.3"/>
-
-  <!-- Arabic letter qaf — first letter of قلم -->
-  <text x="16" y="24"
-    font-family="'Noto Naskh Arabic','Arabic Typesetting','Traditional Arabic','Scheherazade New',serif"
-    font-size="21" font-weight="bold"
+  <!-- Arabic ق (qaf — first letter of قلم), white for contrast at small sizes -->
+  <text x="16" y="22"
+    font-family="'Noto Naskh Arabic','Amiri','Scheherazade New','Traditional Arabic',serif"
+    font-size="20" font-weight="700"
     text-anchor="middle"
-    fill="url(#letter)"
+    fill="white" opacity="0.92"
     xml:lang="ar">ق</text>
+
+  <!-- Red accent bar — echoes the banner's margin divider -->
+  <rect x="6" y="27.5" width="20" height="2.5" rx="1" fill="#dc2626" opacity="0.75"/>
 </svg>

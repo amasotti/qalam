@@ -21,13 +21,14 @@ import com.tonihacks.qalam.domain.word.Word
 import com.tonihacks.qalam.domain.word.WordFilters
 import com.tonihacks.qalam.domain.word.WordId
 import com.tonihacks.qalam.domain.word.WordRepository
+import org.jetbrains.exposed.v1.core.ComparisonOp
+import org.jetbrains.exposed.v1.core.Expression
 import org.jetbrains.exposed.v1.core.Op
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.core.like
-import org.jetbrains.exposed.v1.core.lowerCase
 import org.jetbrains.exposed.v1.core.or
+import org.jetbrains.exposed.v1.core.stringParam
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -35,6 +36,12 @@ import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.update
 import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
+
+/** PostgreSQL ILIKE — case-insensitive LIKE, uses GIN trgm indexes. */
+private infix fun <T : String?> Expression<T>.ilike(pattern: String): Op<Boolean> {
+    val col = this
+    return object : ComparisonOp(col, stringParam(pattern), "ILIKE") {}
+}
 
 class ExposedWordRepository : WordRepository {
 
@@ -67,9 +74,9 @@ class ExposedWordRepository : WordRepository {
                     condition = condition?.and(WordsTable.masteryLevel eq m.name) ?: (WordsTable.masteryLevel eq m.name)
                 }
                 filters.q?.let { queryStr ->
-                    val qCondition = (WordsTable.arabicText.lowerCase() like  "%$queryStr%") or
-                        (WordsTable.translation.lowerCase() like "%$queryStr%") or
-                        (WordsTable.transliteration.lowerCase() like "%$queryStr%")
+                    val qCondition = (WordsTable.arabicText ilike "%$queryStr%") or
+                        (WordsTable.translation ilike "%$queryStr%") or
+                        (WordsTable.transliteration ilike "%$queryStr%")
                     condition = condition?.and(qCondition) ?: qCondition
                 }
 
@@ -90,9 +97,9 @@ class ExposedWordRepository : WordRepository {
             WordsTable
                 .selectAll()
                 .where {
-                    (WordsTable.arabicText like "%$query%") or
-                    (WordsTable.translation like "%$query%") or
-                    (WordsTable.transliteration like "%$query%")
+                    (WordsTable.arabicText ilike "%$query%") or
+                    (WordsTable.translation ilike "%$query%") or
+                    (WordsTable.transliteration ilike "%$query%")
                 }
                 .limit(limit)
                 .map { it.toWord() }

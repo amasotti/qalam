@@ -122,6 +122,159 @@ export type ExamplesResponse = {
     examples: Array<ExampleSentenceResponse>;
 };
 
+export type TextResponse = {
+    id: string;
+    title: string;
+    /**
+     * Arabic body content
+     */
+    body: string;
+    transliteration?: string | null;
+    translation?: string | null;
+    difficulty: Difficulty;
+    dialect: Dialect;
+    /**
+     * Freetext notes about the text
+     */
+    comments?: string | null;
+    tags: Array<string>;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type CreateTextRequest = {
+    title: string;
+    /**
+     * Arabic body content
+     */
+    body: string;
+    transliteration?: string | null;
+    translation?: string | null;
+    difficulty?: Difficulty;
+    dialect?: Dialect;
+    comments?: string | null;
+    tags?: Array<string>;
+};
+
+/**
+ * All fields optional — only provided fields are updated
+ */
+export type UpdateTextRequest = {
+    title?: string | null;
+    body?: string | null;
+    transliteration?: string | null;
+    translation?: string | null;
+    difficulty?: Difficulty | null;
+    dialect?: Dialect | null;
+    comments?: string | null;
+    tags?: Array<string> | null;
+};
+
+export type SummarizeResponse = {
+    /**
+     * AI-generated summary of the text
+     */
+    summary: string;
+};
+
+export type AlignmentTokenResponse = {
+    id: string;
+    sentenceId: string;
+    position: number;
+    arabic: string;
+    transliteration?: string | null;
+    translation?: string | null;
+    wordId?: string | null;
+};
+
+export type SentenceResponse = {
+    id: string;
+    textId: string;
+    /**
+     * 1-based ordering within the text
+     */
+    position: number;
+    arabicText: string;
+    transliteration?: string | null;
+    freeTranslation?: string | null;
+    notes?: string | null;
+    /**
+     * False when arabicText was edited after tokenization
+     */
+    tokensValid: boolean;
+    tokens: Array<AlignmentTokenResponse>;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type CreateSentenceRequest = {
+    arabicText: string;
+    /**
+     * Insertion position (appended at end if omitted)
+     */
+    position?: number | null;
+    transliteration?: string | null;
+    freeTranslation?: string | null;
+    notes?: string | null;
+};
+
+/**
+ * All fields optional — only provided fields are updated
+ */
+export type UpdateSentenceRequest = {
+    arabicText?: string | null;
+    position?: number | null;
+    transliteration?: string | null;
+    freeTranslation?: string | null;
+    notes?: string | null;
+};
+
+export type ReplaceTokensRequest = {
+    tokens: Array<{
+        position: number;
+        arabic: string;
+        transliteration?: string | null;
+        translation?: string | null;
+        wordId?: string | null;
+    }>;
+};
+
+export type AnnotationResponse = {
+    id: string;
+    textId: string;
+    /**
+     * The anchored text fragment this annotation refers to
+     */
+    anchor: string;
+    type: 'VOCAB' | 'GRAMMAR' | 'CULTURAL' | 'STRUCTURE';
+    content?: string | null;
+    masteryLevel?: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
+    reviewFlag: boolean;
+    linkedWordIds: Array<string>;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type CreateAnnotationRequest = {
+    anchor: string;
+    type: 'VOCAB' | 'GRAMMAR' | 'CULTURAL' | 'STRUCTURE';
+    content?: string | null;
+    masteryLevel?: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
+    reviewFlag?: boolean;
+    linkedWordIds?: Array<string>;
+};
+
+/**
+ * All fields optional — only provided fields are updated
+ */
+export type UpdateAnnotationRequest = {
+    anchor?: string | null;
+    type?: 'VOCAB' | 'GRAMMAR' | 'CULTURAL' | 'STRUCTURE';
+    content?: string | null;
+    masteryLevel?: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
+    reviewFlag?: boolean | null;
+};
+
 export type PartOfSpeech = 'UNKNOWN' | 'NOUN' | 'VERB' | 'ADJECTIVE' | 'ADVERB' | 'PREPOSITION' | 'PARTICLE' | 'INTERJECTION' | 'CONJUNCTION' | 'PRONOUN';
 
 export type Dialect = 'TUNISIAN' | 'MOROCCAN' | 'EGYPTIAN' | 'GULF' | 'LEVANTINE' | 'MSA' | 'IRAQI';
@@ -159,6 +312,20 @@ export type PaginatedResponse = {
      * Page size requested
      */
     size: number;
+};
+
+export type TransliterateRequest = {
+    /**
+     * Arabic text to transliterate
+     */
+    arabic: string;
+};
+
+export type TransliterateResponse = {
+    /**
+     * Chat-alphabet transliteration of the input
+     */
+    transliteration?: string;
 };
 
 export type ListRootsData = {
@@ -643,6 +810,708 @@ export type GenerateWordExamplesResponses = {
 
 export type GenerateWordExamplesResponse = GenerateWordExamplesResponses[keyof GenerateWordExamplesResponses];
 
+export type ListTextsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number (1-based)
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        size?: number;
+        /**
+         * Free-text search across title and body
+         */
+        q?: string;
+        dialect?: Dialect;
+        difficulty?: Difficulty;
+        /**
+         * Filter by tag (exact match)
+         */
+        tag?: string;
+    };
+    url: '/api/v1/texts';
+};
+
+export type ListTextsErrors = {
+    /**
+     * Invalid query parameters
+     */
+    400: ErrorResponse;
+};
+
+export type ListTextsError = ListTextsErrors[keyof ListTextsErrors];
+
+export type ListTextsResponses = {
+    /**
+     * Paginated list of texts
+     */
+    200: PaginatedResponse & {
+        items?: Array<TextResponse>;
+    };
+};
+
+export type ListTextsResponse = ListTextsResponses[keyof ListTextsResponses];
+
+export type CreateTextData = {
+    body: CreateTextRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/texts';
+};
+
+export type CreateTextErrors = {
+    /**
+     * Validation error (blank title or body)
+     */
+    422: ErrorResponse;
+};
+
+export type CreateTextError = CreateTextErrors[keyof CreateTextErrors];
+
+export type CreateTextResponses = {
+    /**
+     * Text created
+     */
+    201: TextResponse;
+};
+
+export type CreateTextResponse = CreateTextResponses[keyof CreateTextResponses];
+
+export type DeleteTextData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{id}';
+};
+
+export type DeleteTextErrors = {
+    /**
+     * Text not found
+     */
+    404: ErrorResponse;
+};
+
+export type DeleteTextError = DeleteTextErrors[keyof DeleteTextErrors];
+
+export type DeleteTextResponses = {
+    /**
+     * Text deleted
+     */
+    204: void;
+};
+
+export type DeleteTextResponse = DeleteTextResponses[keyof DeleteTextResponses];
+
+export type GetTextByIdData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{id}';
+};
+
+export type GetTextByIdErrors = {
+    /**
+     * Malformed UUID
+     */
+    400: ErrorResponse;
+    /**
+     * Text not found
+     */
+    404: ErrorResponse;
+};
+
+export type GetTextByIdError = GetTextByIdErrors[keyof GetTextByIdErrors];
+
+export type GetTextByIdResponses = {
+    /**
+     * Text found
+     */
+    200: TextResponse;
+};
+
+export type GetTextByIdResponse = GetTextByIdResponses[keyof GetTextByIdResponses];
+
+export type UpdateTextData = {
+    body: UpdateTextRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{id}';
+};
+
+export type UpdateTextErrors = {
+    /**
+     * Text not found
+     */
+    404: ErrorResponse;
+    /**
+     * Validation error
+     */
+    422: ErrorResponse;
+};
+
+export type UpdateTextError = UpdateTextErrors[keyof UpdateTextErrors];
+
+export type UpdateTextResponses = {
+    /**
+     * Text updated
+     */
+    200: TextResponse;
+};
+
+export type UpdateTextResponse = UpdateTextResponses[keyof UpdateTextResponses];
+
+export type SummarizeTextData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{id}/summarize';
+};
+
+export type SummarizeTextErrors = {
+    /**
+     * Text not found
+     */
+    404: ErrorResponse;
+    /**
+     * AI not configured (OPENROUTER_API_KEY missing)
+     */
+    503: ErrorResponse;
+};
+
+export type SummarizeTextError = SummarizeTextErrors[keyof SummarizeTextErrors];
+
+export type SummarizeTextResponses = {
+    /**
+     * Generated summary
+     */
+    200: SummarizeResponse;
+};
+
+export type SummarizeTextResponse = SummarizeTextResponses[keyof SummarizeTextResponses];
+
+export type ListSentencesData = {
+    body?: never;
+    path: {
+        textId: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/sentences';
+};
+
+export type ListSentencesErrors = {
+    /**
+     * Text not found
+     */
+    404: ErrorResponse;
+};
+
+export type ListSentencesError = ListSentencesErrors[keyof ListSentencesErrors];
+
+export type ListSentencesResponses = {
+    /**
+     * Array of sentences (no pagination)
+     */
+    200: Array<SentenceResponse>;
+};
+
+export type ListSentencesResponse = ListSentencesResponses[keyof ListSentencesResponses];
+
+export type CreateSentenceData = {
+    body: CreateSentenceRequest;
+    path: {
+        textId: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/sentences';
+};
+
+export type CreateSentenceErrors = {
+    /**
+     * Text not found
+     */
+    404: ErrorResponse;
+    /**
+     * Validation error (blank arabicText, unknown enum value)
+     */
+    422: ErrorResponse;
+};
+
+export type CreateSentenceError = CreateSentenceErrors[keyof CreateSentenceErrors];
+
+export type CreateSentenceResponses = {
+    /**
+     * Sentence created
+     */
+    201: SentenceResponse;
+};
+
+export type CreateSentenceResponse = CreateSentenceResponses[keyof CreateSentenceResponses];
+
+export type DeleteSentenceData = {
+    body?: never;
+    path: {
+        textId: string;
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/sentences/{id}';
+};
+
+export type DeleteSentenceErrors = {
+    /**
+     * Sentence or text not found
+     */
+    404: ErrorResponse;
+};
+
+export type DeleteSentenceError = DeleteSentenceErrors[keyof DeleteSentenceErrors];
+
+export type DeleteSentenceResponses = {
+    /**
+     * Sentence deleted
+     */
+    204: void;
+};
+
+export type DeleteSentenceResponse = DeleteSentenceResponses[keyof DeleteSentenceResponses];
+
+export type GetSentenceByIdData = {
+    body?: never;
+    path: {
+        textId: string;
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/sentences/{id}';
+};
+
+export type GetSentenceByIdErrors = {
+    /**
+     * Malformed UUID
+     */
+    400: ErrorResponse;
+    /**
+     * Sentence or text not found
+     */
+    404: ErrorResponse;
+};
+
+export type GetSentenceByIdError = GetSentenceByIdErrors[keyof GetSentenceByIdErrors];
+
+export type GetSentenceByIdResponses = {
+    /**
+     * Sentence found
+     */
+    200: SentenceResponse;
+};
+
+export type GetSentenceByIdResponse = GetSentenceByIdResponses[keyof GetSentenceByIdResponses];
+
+export type UpdateSentenceData = {
+    body: UpdateSentenceRequest;
+    path: {
+        textId: string;
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/sentences/{id}';
+};
+
+export type UpdateSentenceErrors = {
+    /**
+     * Sentence or text not found
+     */
+    404: ErrorResponse;
+    /**
+     * Validation error
+     */
+    422: ErrorResponse;
+};
+
+export type UpdateSentenceError = UpdateSentenceErrors[keyof UpdateSentenceErrors];
+
+export type UpdateSentenceResponses = {
+    /**
+     * Sentence updated
+     */
+    200: SentenceResponse;
+};
+
+export type UpdateSentenceResponse = UpdateSentenceResponses[keyof UpdateSentenceResponses];
+
+export type ClearTokensData = {
+    body?: never;
+    path: {
+        textId: string;
+        id: string;
+    };
+    query: {
+        /**
+         * Must be set to "true" to confirm clearing tokens
+         */
+        confirm: 'true';
+    };
+    url: '/api/v1/texts/{textId}/sentences/{id}/tokens';
+};
+
+export type ClearTokensErrors = {
+    /**
+     * Missing or invalid confirm parameter
+     */
+    400: ErrorResponse;
+    /**
+     * Sentence or text not found
+     */
+    404: ErrorResponse;
+};
+
+export type ClearTokensError = ClearTokensErrors[keyof ClearTokensErrors];
+
+export type ClearTokensResponses = {
+    /**
+     * Tokens cleared
+     */
+    200: SentenceResponse;
+};
+
+export type ClearTokensResponse = ClearTokensResponses[keyof ClearTokensResponses];
+
+export type ReplaceTokensData = {
+    body: ReplaceTokensRequest;
+    path: {
+        textId: string;
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/sentences/{id}/tokens';
+};
+
+export type ReplaceTokensErrors = {
+    /**
+     * Sentence or text not found
+     */
+    404: ErrorResponse;
+};
+
+export type ReplaceTokensError = ReplaceTokensErrors[keyof ReplaceTokensErrors];
+
+export type ReplaceTokensResponses = {
+    /**
+     * Tokens replaced
+     */
+    200: SentenceResponse;
+};
+
+export type ReplaceTokensResponse = ReplaceTokensResponses[keyof ReplaceTokensResponses];
+
+export type AutoTokenizeData = {
+    body?: never;
+    path: {
+        textId: string;
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/sentences/{id}/auto-tokenize';
+};
+
+export type AutoTokenizeErrors = {
+    /**
+     * Sentence or text not found
+     */
+    404: ErrorResponse;
+    /**
+     * AI not configured (OPENROUTER_API_KEY missing)
+     */
+    503: ErrorResponse;
+};
+
+export type AutoTokenizeError = AutoTokenizeErrors[keyof AutoTokenizeErrors];
+
+export type AutoTokenizeResponses = {
+    /**
+     * Tokens generated and set
+     */
+    200: SentenceResponse;
+};
+
+export type AutoTokenizeResponse = AutoTokenizeResponses[keyof AutoTokenizeResponses];
+
+export type TransliterateSentenceData = {
+    body?: never;
+    path: {
+        textId: string;
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/sentences/{id}/transliterate';
+};
+
+export type TransliterateSentenceErrors = {
+    /**
+     * Sentence or text not found
+     */
+    404: ErrorResponse;
+    /**
+     * AI not configured (OPENROUTER_API_KEY missing)
+     */
+    503: ErrorResponse;
+};
+
+export type TransliterateSentenceError = TransliterateSentenceErrors[keyof TransliterateSentenceErrors];
+
+export type TransliterateSentenceResponses = {
+    /**
+     * Transliteration generated and set
+     */
+    200: SentenceResponse;
+};
+
+export type TransliterateSentenceResponse = TransliterateSentenceResponses[keyof TransliterateSentenceResponses];
+
+export type ListAnnotationsData = {
+    body?: never;
+    path: {
+        textId: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/annotations';
+};
+
+export type ListAnnotationsErrors = {
+    /**
+     * Malformed UUID
+     */
+    400: ErrorResponse;
+};
+
+export type ListAnnotationsError = ListAnnotationsErrors[keyof ListAnnotationsErrors];
+
+export type ListAnnotationsResponses = {
+    /**
+     * List of annotations
+     */
+    200: Array<AnnotationResponse>;
+};
+
+export type ListAnnotationsResponse = ListAnnotationsResponses[keyof ListAnnotationsResponses];
+
+export type CreateAnnotationData = {
+    body: CreateAnnotationRequest;
+    path: {
+        textId: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/annotations';
+};
+
+export type CreateAnnotationErrors = {
+    /**
+     * Text not found
+     */
+    404: ErrorResponse;
+    /**
+     * Validation error (blank anchor, unknown type)
+     */
+    422: ErrorResponse;
+};
+
+export type CreateAnnotationError = CreateAnnotationErrors[keyof CreateAnnotationErrors];
+
+export type CreateAnnotationResponses = {
+    /**
+     * Annotation created
+     */
+    201: AnnotationResponse;
+};
+
+export type CreateAnnotationResponse = CreateAnnotationResponses[keyof CreateAnnotationResponses];
+
+export type DeleteAnnotationData = {
+    body?: never;
+    path: {
+        textId: string;
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/annotations/{id}';
+};
+
+export type DeleteAnnotationErrors = {
+    /**
+     * Annotation or text not found
+     */
+    404: ErrorResponse;
+};
+
+export type DeleteAnnotationError = DeleteAnnotationErrors[keyof DeleteAnnotationErrors];
+
+export type DeleteAnnotationResponses = {
+    /**
+     * Annotation deleted
+     */
+    204: void;
+};
+
+export type DeleteAnnotationResponse = DeleteAnnotationResponses[keyof DeleteAnnotationResponses];
+
+export type GetAnnotationByIdData = {
+    body?: never;
+    path: {
+        textId: string;
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/annotations/{id}';
+};
+
+export type GetAnnotationByIdErrors = {
+    /**
+     * Annotation or text not found
+     */
+    404: ErrorResponse;
+};
+
+export type GetAnnotationByIdError = GetAnnotationByIdErrors[keyof GetAnnotationByIdErrors];
+
+export type GetAnnotationByIdResponses = {
+    /**
+     * Annotation found
+     */
+    200: AnnotationResponse;
+};
+
+export type GetAnnotationByIdResponse = GetAnnotationByIdResponses[keyof GetAnnotationByIdResponses];
+
+export type UpdateAnnotationData = {
+    body: UpdateAnnotationRequest;
+    path: {
+        textId: string;
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/annotations/{id}';
+};
+
+export type UpdateAnnotationErrors = {
+    /**
+     * Annotation or text not found
+     */
+    404: ErrorResponse;
+    /**
+     * Validation error
+     */
+    422: ErrorResponse;
+};
+
+export type UpdateAnnotationError = UpdateAnnotationErrors[keyof UpdateAnnotationErrors];
+
+export type UpdateAnnotationResponses = {
+    /**
+     * Annotation updated
+     */
+    200: AnnotationResponse;
+};
+
+export type UpdateAnnotationResponse = UpdateAnnotationResponses[keyof UpdateAnnotationResponses];
+
+export type AddWordLinkData = {
+    body: {
+        wordId: string;
+    };
+    path: {
+        textId: string;
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/annotations/{id}/words';
+};
+
+export type AddWordLinkErrors = {
+    /**
+     * Annotation or word not found
+     */
+    404: ErrorResponse;
+};
+
+export type AddWordLinkError = AddWordLinkErrors[keyof AddWordLinkErrors];
+
+export type AddWordLinkResponses = {
+    /**
+     * Word linked, returns updated annotation
+     */
+    200: AnnotationResponse;
+};
+
+export type AddWordLinkResponse = AddWordLinkResponses[keyof AddWordLinkResponses];
+
+export type RemoveWordLinkData = {
+    body?: never;
+    path: {
+        textId: string;
+        id: string;
+        wordId: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/annotations/{id}/words/{wordId}';
+};
+
+export type RemoveWordLinkErrors = {
+    /**
+     * Annotation or word not found
+     */
+    404: ErrorResponse;
+};
+
+export type RemoveWordLinkError = RemoveWordLinkErrors[keyof RemoveWordLinkErrors];
+
+export type RemoveWordLinkResponses = {
+    /**
+     * Word link removed, returns updated annotation
+     */
+    200: AnnotationResponse;
+};
+
+export type RemoveWordLinkResponse = RemoveWordLinkResponses[keyof RemoveWordLinkResponses];
+
+export type GetAnnotationsForWordData = {
+    body?: never;
+    path: {
+        wordId: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{wordId}/annotations';
+};
+
+export type GetAnnotationsForWordErrors = {
+    /**
+     * Malformed UUID
+     */
+    400: ErrorResponse;
+};
+
+export type GetAnnotationsForWordError = GetAnnotationsForWordErrors[keyof GetAnnotationsForWordErrors];
+
+export type GetAnnotationsForWordResponses = {
+    /**
+     * List of annotations linked to the word
+     */
+    200: Array<AnnotationResponse>;
+};
+
+export type GetAnnotationsForWordResponse = GetAnnotationsForWordResponses[keyof GetAnnotationsForWordResponses];
+
 export type GetHealthData = {
     body?: never;
     path?: never;
@@ -686,3 +1555,26 @@ export type GetSwaggerUiResponses = {
      */
     200: unknown;
 };
+
+export type TransliterateTextData = {
+    body: TransliterateRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/transliterate';
+};
+
+export type TransliterateTextErrors = {
+    /**
+     * Validation error
+     */
+    422: unknown;
+};
+
+export type TransliterateTextResponses = {
+    /**
+     * Transliteration result
+     */
+    200: TransliterateResponse;
+};
+
+export type TransliterateTextResponse = TransliterateTextResponses[keyof TransliterateTextResponses];

@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AddDictionaryLinkData, AddDictionaryLinkErrors, AddDictionaryLinkResponses, AutocompleteWordsData, AutocompleteWordsErrors, AutocompleteWordsResponses, CreateRootData, CreateRootErrors, CreateRootResponses, CreateWordData, CreateWordErrors, CreateWordResponses, DeleteDictionaryLinkData, DeleteDictionaryLinkErrors, DeleteDictionaryLinkResponses, DeleteRootData, DeleteRootErrors, DeleteRootResponses, DeleteWordData, DeleteWordErrors, DeleteWordResponses, GenerateWordExamplesData, GenerateWordExamplesErrors, GenerateWordExamplesResponses, GetHealthData, GetHealthErrors, GetHealthResponses, GetRootByIdData, GetRootByIdErrors, GetRootByIdResponses, GetSwaggerUiData, GetSwaggerUiErrors, GetSwaggerUiResponses, GetWordByIdData, GetWordByIdErrors, GetWordByIdResponses, ListDictionaryLinksData, ListDictionaryLinksErrors, ListDictionaryLinksResponses, ListRootsData, ListRootsErrors, ListRootsResponses, ListWordsData, ListWordsErrors, ListWordsResponses, NormalizeRootData, NormalizeRootErrors, NormalizeRootResponses, UpdateRootData, UpdateRootErrors, UpdateRootResponses, UpdateWordData, UpdateWordErrors, UpdateWordResponses } from './types.gen';
+import type { AddDictionaryLinkData, AddDictionaryLinkErrors, AddDictionaryLinkResponses, AddWordLinkData, AddWordLinkErrors, AddWordLinkResponses, AutocompleteWordsData, AutocompleteWordsErrors, AutocompleteWordsResponses, AutoTokenizeData, AutoTokenizeErrors, AutoTokenizeResponses, ClearTokensData, ClearTokensErrors, ClearTokensResponses, CreateAnnotationData, CreateAnnotationErrors, CreateAnnotationResponses, CreateRootData, CreateRootErrors, CreateRootResponses, CreateSentenceData, CreateSentenceErrors, CreateSentenceResponses, CreateTextData, CreateTextErrors, CreateTextResponses, CreateWordData, CreateWordErrors, CreateWordResponses, DeleteAnnotationData, DeleteAnnotationErrors, DeleteAnnotationResponses, DeleteDictionaryLinkData, DeleteDictionaryLinkErrors, DeleteDictionaryLinkResponses, DeleteRootData, DeleteRootErrors, DeleteRootResponses, DeleteSentenceData, DeleteSentenceErrors, DeleteSentenceResponses, DeleteTextData, DeleteTextErrors, DeleteTextResponses, DeleteWordData, DeleteWordErrors, DeleteWordResponses, GenerateWordExamplesData, GenerateWordExamplesErrors, GenerateWordExamplesResponses, GetAnnotationByIdData, GetAnnotationByIdErrors, GetAnnotationByIdResponses, GetAnnotationsForWordData, GetAnnotationsForWordErrors, GetAnnotationsForWordResponses, GetHealthData, GetHealthErrors, GetHealthResponses, GetRootByIdData, GetRootByIdErrors, GetRootByIdResponses, GetSentenceByIdData, GetSentenceByIdErrors, GetSentenceByIdResponses, GetSwaggerUiData, GetSwaggerUiErrors, GetSwaggerUiResponses, GetTextByIdData, GetTextByIdErrors, GetTextByIdResponses, GetWordByIdData, GetWordByIdErrors, GetWordByIdResponses, ListAnnotationsData, ListAnnotationsErrors, ListAnnotationsResponses, ListDictionaryLinksData, ListDictionaryLinksErrors, ListDictionaryLinksResponses, ListRootsData, ListRootsErrors, ListRootsResponses, ListSentencesData, ListSentencesErrors, ListSentencesResponses, ListTextsData, ListTextsErrors, ListTextsResponses, ListWordsData, ListWordsErrors, ListWordsResponses, NormalizeRootData, NormalizeRootErrors, NormalizeRootResponses, RemoveWordLinkData, RemoveWordLinkErrors, RemoveWordLinkResponses, ReplaceTokensData, ReplaceTokensErrors, ReplaceTokensResponses, SummarizeTextData, SummarizeTextErrors, SummarizeTextResponses, TransliterateSentenceData, TransliterateSentenceErrors, TransliterateSentenceResponses, TransliterateTextData, TransliterateTextErrors, TransliterateTextResponses, UpdateAnnotationData, UpdateAnnotationErrors, UpdateAnnotationResponses, UpdateRootData, UpdateRootErrors, UpdateRootResponses, UpdateSentenceData, UpdateSentenceErrors, UpdateSentenceResponses, UpdateTextData, UpdateTextErrors, UpdateTextResponses, UpdateWordData, UpdateWordErrors, UpdateWordResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -141,6 +141,177 @@ export const deleteDictionaryLink = <ThrowOnError extends boolean = false>(optio
 export const generateWordExamples = <ThrowOnError extends boolean = false>(options: Options<GenerateWordExamplesData, ThrowOnError>) => (options.client ?? client).post<GenerateWordExamplesResponses, GenerateWordExamplesErrors, ThrowOnError>({ url: '/api/v1/words/{id}/examples', ...options });
 
 /**
+ * List texts with optional filters
+ */
+export const listTexts = <ThrowOnError extends boolean = false>(options?: Options<ListTextsData, ThrowOnError>) => (options?.client ?? client).get<ListTextsResponses, ListTextsErrors, ThrowOnError>({ url: '/api/v1/texts', ...options });
+
+/**
+ * Create a text
+ */
+export const createText = <ThrowOnError extends boolean = false>(options: Options<CreateTextData, ThrowOnError>) => (options.client ?? client).post<CreateTextResponses, CreateTextErrors, ThrowOnError>({
+    url: '/api/v1/texts',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete a text
+ */
+export const deleteText = <ThrowOnError extends boolean = false>(options: Options<DeleteTextData, ThrowOnError>) => (options.client ?? client).delete<DeleteTextResponses, DeleteTextErrors, ThrowOnError>({ url: '/api/v1/texts/{id}', ...options });
+
+/**
+ * Get a text by ID
+ */
+export const getTextById = <ThrowOnError extends boolean = false>(options: Options<GetTextByIdData, ThrowOnError>) => (options.client ?? client).get<GetTextByIdResponses, GetTextByIdErrors, ThrowOnError>({ url: '/api/v1/texts/{id}', ...options });
+
+/**
+ * Update a text (all fields optional — only provided fields change)
+ */
+export const updateText = <ThrowOnError extends boolean = false>(options: Options<UpdateTextData, ThrowOnError>) => (options.client ?? client).put<UpdateTextResponses, UpdateTextErrors, ThrowOnError>({
+    url: '/api/v1/texts/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Generate an AI summary of a text
+ */
+export const summarizeText = <ThrowOnError extends boolean = false>(options: Options<SummarizeTextData, ThrowOnError>) => (options.client ?? client).post<SummarizeTextResponses, SummarizeTextErrors, ThrowOnError>({ url: '/api/v1/texts/{id}/summarize', ...options });
+
+/**
+ * List sentences for a text
+ */
+export const listSentences = <ThrowOnError extends boolean = false>(options: Options<ListSentencesData, ThrowOnError>) => (options.client ?? client).get<ListSentencesResponses, ListSentencesErrors, ThrowOnError>({ url: '/api/v1/texts/{textId}/sentences', ...options });
+
+/**
+ * Create a sentence in a text
+ */
+export const createSentence = <ThrowOnError extends boolean = false>(options: Options<CreateSentenceData, ThrowOnError>) => (options.client ?? client).post<CreateSentenceResponses, CreateSentenceErrors, ThrowOnError>({
+    url: '/api/v1/texts/{textId}/sentences',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete a sentence
+ */
+export const deleteSentence = <ThrowOnError extends boolean = false>(options: Options<DeleteSentenceData, ThrowOnError>) => (options.client ?? client).delete<DeleteSentenceResponses, DeleteSentenceErrors, ThrowOnError>({ url: '/api/v1/texts/{textId}/sentences/{id}', ...options });
+
+/**
+ * Get a sentence by ID
+ */
+export const getSentenceById = <ThrowOnError extends boolean = false>(options: Options<GetSentenceByIdData, ThrowOnError>) => (options.client ?? client).get<GetSentenceByIdResponses, GetSentenceByIdErrors, ThrowOnError>({ url: '/api/v1/texts/{textId}/sentences/{id}', ...options });
+
+/**
+ * Update a sentence (all fields optional — only provided fields change)
+ */
+export const updateSentence = <ThrowOnError extends boolean = false>(options: Options<UpdateSentenceData, ThrowOnError>) => (options.client ?? client).put<UpdateSentenceResponses, UpdateSentenceErrors, ThrowOnError>({
+    url: '/api/v1/texts/{textId}/sentences/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Clear all alignment tokens for a sentence
+ */
+export const clearTokens = <ThrowOnError extends boolean = false>(options: Options<ClearTokensData, ThrowOnError>) => (options.client ?? client).delete<ClearTokensResponses, ClearTokensErrors, ThrowOnError>({ url: '/api/v1/texts/{textId}/sentences/{id}/tokens', ...options });
+
+/**
+ * Replace all alignment tokens for a sentence
+ */
+export const replaceTokens = <ThrowOnError extends boolean = false>(options: Options<ReplaceTokensData, ThrowOnError>) => (options.client ?? client).put<ReplaceTokensResponses, ReplaceTokensErrors, ThrowOnError>({
+    url: '/api/v1/texts/{textId}/sentences/{id}/tokens',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Auto-tokenize a sentence using AI
+ */
+export const autoTokenize = <ThrowOnError extends boolean = false>(options: Options<AutoTokenizeData, ThrowOnError>) => (options.client ?? client).post<AutoTokenizeResponses, AutoTokenizeErrors, ThrowOnError>({ url: '/api/v1/texts/{textId}/sentences/{id}/auto-tokenize', ...options });
+
+/**
+ * Generate transliteration for a sentence using AI
+ */
+export const transliterateSentence = <ThrowOnError extends boolean = false>(options: Options<TransliterateSentenceData, ThrowOnError>) => (options.client ?? client).post<TransliterateSentenceResponses, TransliterateSentenceErrors, ThrowOnError>({ url: '/api/v1/texts/{textId}/sentences/{id}/transliterate', ...options });
+
+/**
+ * List annotations for a text
+ */
+export const listAnnotations = <ThrowOnError extends boolean = false>(options: Options<ListAnnotationsData, ThrowOnError>) => (options.client ?? client).get<ListAnnotationsResponses, ListAnnotationsErrors, ThrowOnError>({ url: '/api/v1/texts/{textId}/annotations', ...options });
+
+/**
+ * Create an annotation for a text
+ */
+export const createAnnotation = <ThrowOnError extends boolean = false>(options: Options<CreateAnnotationData, ThrowOnError>) => (options.client ?? client).post<CreateAnnotationResponses, CreateAnnotationErrors, ThrowOnError>({
+    url: '/api/v1/texts/{textId}/annotations',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete an annotation
+ */
+export const deleteAnnotation = <ThrowOnError extends boolean = false>(options: Options<DeleteAnnotationData, ThrowOnError>) => (options.client ?? client).delete<DeleteAnnotationResponses, DeleteAnnotationErrors, ThrowOnError>({ url: '/api/v1/texts/{textId}/annotations/{id}', ...options });
+
+/**
+ * Get an annotation by ID
+ */
+export const getAnnotationById = <ThrowOnError extends boolean = false>(options: Options<GetAnnotationByIdData, ThrowOnError>) => (options.client ?? client).get<GetAnnotationByIdResponses, GetAnnotationByIdErrors, ThrowOnError>({ url: '/api/v1/texts/{textId}/annotations/{id}', ...options });
+
+/**
+ * Update an annotation (all fields optional)
+ */
+export const updateAnnotation = <ThrowOnError extends boolean = false>(options: Options<UpdateAnnotationData, ThrowOnError>) => (options.client ?? client).put<UpdateAnnotationResponses, UpdateAnnotationErrors, ThrowOnError>({
+    url: '/api/v1/texts/{textId}/annotations/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Link a word to an annotation
+ */
+export const addWordLink = <ThrowOnError extends boolean = false>(options: Options<AddWordLinkData, ThrowOnError>) => (options.client ?? client).post<AddWordLinkResponses, AddWordLinkErrors, ThrowOnError>({
+    url: '/api/v1/texts/{textId}/annotations/{id}/words',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Remove a word link from an annotation
+ */
+export const removeWordLink = <ThrowOnError extends boolean = false>(options: Options<RemoveWordLinkData, ThrowOnError>) => (options.client ?? client).delete<RemoveWordLinkResponses, RemoveWordLinkErrors, ThrowOnError>({ url: '/api/v1/texts/{textId}/annotations/{id}/words/{wordId}', ...options });
+
+/**
+ * List annotations linked to a word (reverse lookup)
+ */
+export const getAnnotationsForWord = <ThrowOnError extends boolean = false>(options: Options<GetAnnotationsForWordData, ThrowOnError>) => (options.client ?? client).get<GetAnnotationsForWordResponses, GetAnnotationsForWordErrors, ThrowOnError>({ url: '/api/v1/words/{wordId}/annotations', ...options });
+
+/**
  * Health check
  */
 export const getHealth = <ThrowOnError extends boolean = false>(options?: Options<GetHealthData, ThrowOnError>) => (options?.client ?? client).get<GetHealthResponses, GetHealthErrors, ThrowOnError>({ url: '/health', ...options });
@@ -149,3 +320,15 @@ export const getHealth = <ThrowOnError extends boolean = false>(options?: Option
  * Swagger UI
  */
 export const getSwaggerUi = <ThrowOnError extends boolean = false>(options?: Options<GetSwaggerUiData, ThrowOnError>) => (options?.client ?? client).get<GetSwaggerUiResponses, GetSwaggerUiErrors, ThrowOnError>({ url: '/api/v1/swagger-ui', ...options });
+
+/**
+ * Transliterate Arabic text to Latin/chat-alphabet
+ */
+export const transliterateText = <ThrowOnError extends boolean = false>(options: Options<TransliterateTextData, ThrowOnError>) => (options.client ?? client).post<TransliterateTextResponses, TransliterateTextErrors, ThrowOnError>({
+    url: '/api/v1/transliterate',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});

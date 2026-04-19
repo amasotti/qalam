@@ -54,17 +54,13 @@ async function handleSubmit(e: SubmitEvent) {
 		submitError = 'Title is required';
 		return;
 	}
-	if (!body.trim()) {
-		submitError = 'Arabic body is required';
-		return;
-	}
 
 	try {
 		const req: CreateTextRequest | UpdateTextRequest = {
 			title: title.trim(),
-			body: body.trim(),
-			transliteration: transliteration.trim() || null,
-			translation: translation.trim() || null,
+			body: isEdit ? body.trim() : '',
+			transliteration: isEdit ? (transliteration.trim() || null) : null,
+			translation: isEdit ? (translation.trim() || null) : null,
 			dialect,
 			difficulty,
 			comments: comments.trim() || null,
@@ -114,39 +110,40 @@ async function handleSubmit(e: SubmitEvent) {
 		</div>
 	</div>
 
-	<div class="text-form-field">
-		<label class="text-form-label" for="tf-body">Arabic body</label>
-		<textarea
-			id="tf-body"
-			class="text-form-textarea arabic-text"
-			rows={6}
-			placeholder="أدخل النص العربي هنا…"
-			bind:value={body}
-			required
-		></textarea>
-	</div>
+	{#if isEdit}
+		<div class="text-form-field">
+			<label class="text-form-label" for="tf-body">Arabic body</label>
+			<textarea
+				id="tf-body"
+				class="text-form-textarea arabic-text"
+				rows={5}
+				placeholder="Full Arabic text (optional — used as reading reference)"
+				bind:value={body}
+			></textarea>
+		</div>
 
-	<div class="text-form-field">
-		<label class="text-form-label" for="tf-translit">Transliteration</label>
-		<textarea
-			id="tf-translit"
-			class="text-form-textarea transliteration"
-			rows={3}
-			placeholder="Latin transliteration…"
-			bind:value={transliteration}
-		></textarea>
-	</div>
+		<div class="text-form-field">
+			<label class="text-form-label" for="tf-translit">Transliteration</label>
+			<textarea
+				id="tf-translit"
+				class="text-form-textarea transliteration"
+				rows={3}
+				placeholder="Latin transliteration of the full text…"
+				bind:value={transliteration}
+			></textarea>
+		</div>
 
-	<div class="text-form-field">
-		<label class="text-form-label" for="tf-translation">Translation</label>
-		<textarea
-			id="tf-translation"
-			class="text-form-textarea"
-			rows={3}
-			placeholder="Free translation…"
-			bind:value={translation}
-		></textarea>
-	</div>
+		<div class="text-form-field">
+			<label class="text-form-label" for="tf-translation">Translation</label>
+			<textarea
+				id="tf-translation"
+				class="text-form-textarea"
+				rows={3}
+				placeholder="Free translation of the full text…"
+				bind:value={translation}
+			></textarea>
+		</div>
+	{/if}
 
 	<div class="text-form-field">
 		<label class="text-form-label" for="tf-tags">Tags</label>

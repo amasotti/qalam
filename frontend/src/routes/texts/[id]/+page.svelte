@@ -1,5 +1,5 @@
 <script lang="ts">
-import { ChevronLeft, Pencil, Trash2, X } from 'lucide-svelte';
+import { ChevronLeft, Pencil, Settings, Trash2, X } from 'lucide-svelte';
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import type { UpdateTextRequest } from '$lib/api/types.gen';
@@ -26,12 +26,13 @@ const deleteText = useDeleteText();
 const autoTokenize = useAutoTokenize();
 const markValid = useMarkTokensValid();
 
-let isEditing = $state(false);
+let editingSentences = $state(false);
+let editingInfo = $state(false);
 let deleteConfirm = $state(false);
 
 async function handleUpdate(req: UpdateTextRequest) {
 	await updateText.mutateAsync({ id, body: req });
-	isEditing = false;
+	editingInfo = false;
 }
 
 async function handleDelete() {
@@ -56,19 +57,67 @@ function formatEnum(value: string): string {
 	</a>
 
 	{#if text.isPending}
-		<p class="text-detail-loading">Loading…</p>
+		<p class="text-detail-meta">Loading…</p>
 	{:else if text.isError}
-		<p class="text-detail-error">Text not found.</p>
+		<p class="text-detail-meta" style="color: hsl(var(--destructive));">Text not found.</p>
 	{:else if text.data}
-		{#if isEditing}
-			<!-- ── Edit text metadata ── -->
-			<div class="text-detail-section">
-				<div class="text-edit-header">
-					<h2 class="text-edit-heading">Edit text</h2>
-					<Button variant="ghost" size="sm" onclick={() => (isEditing = false)}>
-						<X size={14} />
-						Cancel
+		<!-- ── Header — always visible ── -->
+		<header class="text-detail-header">
+			<div class="text-detail-title-row">
+				<h1 class="text-detail-title">{text.data.title}</h1>
+				<div class="text-detail-actions">
+					<Button
+						variant={editingSentences ? 'default' : 'outline'}
+						size="sm"
+						onclick={() => { editingSentences = !editingSentences; editingInfo = false; }}
+					>
+						<Pencil size={14} />
+						{editingSentences ? 'Done' : 'Edit'}
 					</Button>
+					<Button
+						variant="ghost"
+						size="sm"
+						onclick={() => { editingInfo = !editingInfo; editingSentences = false; }}
+						title="Edit text info"
+					>
+						<Settings size={14} />
+					</Button>
+					<Button
+						variant="ghost"
+						size="sm"
+						class="btn-outline-danger"
+						disabled={deleteText.isPending}
+						onclick={handleDelete}
+					>
+						<Trash2 size={14} />
+						{deleteConfirm ? 'Sure?' : ''}
+					</Button>
+				</div>
+			</div>
+			<div class="text-detail-badges">
+				<Badge class="difficulty-{text.data.difficulty.toLowerCase()}">
+					{formatEnum(text.data.difficulty)}
+				</Badge>
+				<Badge class="dialect-{text.data.dialect.toLowerCase()}">
+					{text.data.dialect}
+				</Badge>
+				{#each text.data.tags as tag}
+					<Badge variant="outline">{tag}</Badge>
+				{/each}
+			</div>
+			{#if text.data.comments}
+				<p class="text-detail-comments">{text.data.comments}</p>
+			{/if}
+		</header>
+
+		<!-- ── Info edit panel — collapsible ── -->
+		{#if editingInfo}
+			<div class="text-info-panel">
+				<div class="text-info-panel-header">
+					<span class="text-info-panel-title">Text info</span>
+					<button class="text-info-close" onclick={() => (editingInfo = false)} aria-label="Close">
+						<X size={14} />
+					</button>
 				</div>
 				<TextForm
 					isEdit
@@ -84,85 +133,40 @@ function formatEnum(value: string): string {
 						tags: text.data.tags,
 					}}
 					onSubmit={(req) => handleUpdate(req as UpdateTextRequest)}
-					onCancel={() => (isEditing = false)}
+					onCancel={() => (editingInfo = false)}
 				/>
 			</div>
-		{:else}
-			<!-- ── Display mode ── -->
-			<header class="text-detail-header">
-				<div class="text-detail-title-row">
-					<h1 class="text-detail-title">{text.data.title}</h1>
-					<div class="text-detail-actions">
-						<Button variant="outline" size="sm" onclick={() => (isEditing = true)}>
-							<Pencil size={14} />
-							Edit
-						</Button>
-						<Button
-							variant="outline"
-							size="sm"
-							class="btn-outline-danger"
-							disabled={deleteText.isPending}
-							onclick={handleDelete}
-						>
-							<Trash2 size={14} />
-							{deleteConfirm ? 'Confirm?' : 'Delete'}
-						</Button>
-					</div>
-				</div>
-				<div class="text-detail-badges">
-					<Badge class="difficulty-{text.data.difficulty.toLowerCase()}">
-						{formatEnum(text.data.difficulty)}
-					</Badge>
-					<Badge class="dialect-{text.data.dialect.toLowerCase()}">
-						{text.data.dialect}
-					</Badge>
-					{#each text.data.tags as tag}
-						<Badge variant="outline">{tag}</Badge>
-					{/each}
-				</div>
-				{#if text.data.comments}
-					<p class="text-detail-comments">{text.data.comments}</p>
-				{/if}
-			</header>
 		{/if}
 
-		<!-- ── Sentences section ── -->
-		<div class="text-detail-section">
-			<div class="text-section-header">
-				<h2 class="text-section-heading">Interlinear</h2>
-			</div>
-
+		<!-- ── Interlinear — always primary ── -->
+		<section class="interlinear-section">
 			{#if sentences.isPending}
-				<p class="text-detail-loading">Loading sentences…</p>
+				<p class="text-detail-meta">Loading…</p>
 			{:else if sentences.isError}
-				<p class="text-detail-error">Could not load sentences.</p>
-			{:else if !isEditing}
-				<!-- Read-only interlinear view -->
-				{#if (sentences.data ?? []).length === 0}
-					<p class="text-detail-empty">
-						No sentences yet. Switch to edit mode to add sentences.
-					</p>
-				{:else}
-					<div class="interlinear-list">
-						{#each sentences.data ?? [] as sentence (sentence.id)}
-							<InterlinearSentence
-								{sentence}
-								onRetokenize={async (s) => { await autoTokenize.mutateAsync({ textId: id, id: s.id }); }}
-								onMarkValid={async (s) => { await markValid.mutateAsync({ textId: id, id: s.id, currentTokens: s.tokens }); }}
-							/>
-						{/each}
-					</div>
-				{/if}
-			{:else}
-				<!-- Edit mode — sentence editor -->
+				<p class="text-detail-meta" style="color: hsl(var(--destructive));">Could not load sentences.</p>
+			{:else if editingSentences}
 				<SentenceEditor sentences={sentences.data ?? []} textId={id} />
+			{:else if (sentences.data ?? []).length === 0}
+				<div class="interlinear-empty">
+					<p>No sentences yet.</p>
+					<Button variant="outline" size="sm" onclick={() => (editingSentences = true)}>
+						<Pencil size={14} />
+						Add sentences
+					</Button>
+				</div>
+			{:else}
+				{#each sentences.data ?? [] as sentence (sentence.id)}
+					<InterlinearSentence
+						{sentence}
+						onRetokenize={async (s) => { await autoTokenize.mutateAsync({ textId: id, id: s.id }); }}
+						onMarkValid={async (s) => { await markValid.mutateAsync({ textId: id, id: s.id, currentTokens: s.tokens }); }}
+					/>
+				{/each}
 			{/if}
-		</div>
+		</section>
 
-		<!-- ── Full text panel ── -->
-		{#if !isEditing}
-			<FullTextPanel text={text.data} />
-		{/if}
+		<!-- ── Full text body — secondary, bottom ── -->
+		<FullTextPanel text={text.data} />
 	{/if}
 </div>
 
@@ -187,18 +191,13 @@ function formatEnum(value: string): string {
 	color: hsl(var(--foreground));
 }
 
-.text-detail-loading {
+.text-detail-meta {
 	font-size: 0.875rem;
 	color: hsl(var(--muted-foreground));
 }
 
-.text-detail-error {
-	font-size: 0.875rem;
-	color: hsl(var(--destructive));
-}
-
 .text-detail-header {
-	margin-bottom: 2rem;
+	margin-bottom: 1.5rem;
 }
 
 .text-detail-title-row {
@@ -206,7 +205,7 @@ function formatEnum(value: string): string {
 	align-items: flex-start;
 	justify-content: space-between;
 	gap: 1rem;
-	margin-bottom: 0.75rem;
+	margin-bottom: 0.625rem;
 }
 
 .text-detail-title {
@@ -218,15 +217,16 @@ function formatEnum(value: string): string {
 
 .text-detail-actions {
 	display: flex;
-	gap: 0.375rem;
+	gap: 0.25rem;
 	flex-shrink: 0;
+	align-items: center;
 }
 
 .text-detail-badges {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.25rem;
-	margin-bottom: 0.75rem;
+	margin-bottom: 0.5rem;
 }
 
 .text-detail-comments {
@@ -235,46 +235,60 @@ function formatEnum(value: string): string {
 	line-height: 1.6;
 }
 
-.text-detail-section {
-	margin-bottom: 2rem;
+/* Collapsible info panel */
+.text-info-panel {
+	border: 1px solid hsl(var(--border));
+	border-radius: 0.5rem;
+	padding: 1rem;
+	margin-bottom: 1.5rem;
+	background: hsl(var(--muted) / 0.2);
 }
 
-.text-section-header {
+.text-info-panel-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	margin-bottom: 1rem;
 }
 
-.text-section-heading {
+.text-info-panel-title {
 	font-size: 0.8125rem;
 	font-weight: 600;
 	text-transform: uppercase;
-	letter-spacing: 0.06em;
+	letter-spacing: 0.05em;
 	color: hsl(var(--muted-foreground));
 }
 
-.interlinear-list {
-	display: flex;
-	flex-direction: column;
-}
-
-.text-detail-empty {
-	font-size: 0.875rem;
+.text-info-close {
+	border: none;
+	background: none;
+	cursor: pointer;
 	color: hsl(var(--muted-foreground));
-	padding: 2rem 0;
-	text-align: center;
-}
-
-.text-edit-header {
+	padding: 0.125rem;
+	border-radius: 0.25rem;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 1rem;
 }
 
-.text-edit-heading {
-	font-size: 1rem;
-	font-weight: 600;
+.text-info-close:hover {
+	color: hsl(var(--foreground));
+	background: hsl(var(--muted));
+}
+
+/* Interlinear — primary content */
+.interlinear-section {
+	display: flex;
+	flex-direction: column;
+	min-height: 4rem;
+}
+
+.interlinear-empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 3rem 0;
+	color: hsl(var(--muted-foreground));
+	font-size: 0.875rem;
 }
 </style>

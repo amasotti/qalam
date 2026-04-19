@@ -46,7 +46,6 @@ class TextService(private val repo: TextRepository) {
         tags: List<String>,
     ): Either<DomainError, Text> = either {
         if (title.isBlank()) raise(DomainError.ValidationError("title", "Title must not be blank"))
-        if (body.isBlank()) raise(DomainError.ValidationError("body", "Body must not be blank"))
 
         val parsedDifficulty = parseTextEnum("difficulty", difficulty) { Difficulty.fromString(it) }.bind()
         val parsedDialect = parseTextEnum("dialect", dialect) { Dialect.fromString(it) }.bind()

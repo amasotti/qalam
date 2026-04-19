@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Check, ChevronDown, ChevronUp, Cpu, Languages, Pencil, Plus, Trash2, X } from 'lucide-svelte';
+import { Check, ChevronDown, ChevronUp, Pencil, Plus, Trash2, X } from 'lucide-svelte';
 import type { SentenceResponse } from '$lib/api/types.gen';
 import { Button } from '$lib/components/ui/button';
 import StaleTokenBanner from './StaleTokenBanner.svelte';
@@ -10,7 +10,6 @@ import {
 	useCreateSentence,
 	useDeleteSentence,
 	useMarkTokensValid,
-	useTransliterateSentence,
 	useUpdateSentence,
 } from '$lib/stores/texts';
 
@@ -25,7 +24,6 @@ const createSentence = useCreateSentence();
 const updateSentence = useUpdateSentence();
 const deleteSentence = useDeleteSentence();
 const autoTokenize = useAutoTokenize();
-const transliterate = useTransliterateSentence();
 const markValid = useMarkTokensValid();
 
 let editingId = $state<string | null>(null);
@@ -116,14 +114,6 @@ async function handleAdd() {
 	} catch (err) {
 		newError = err instanceof Error ? err.message : 'Create failed';
 	}
-}
-
-async function handleAutoTokenize(s: SentenceResponse) {
-	await autoTokenize.mutateAsync({ textId, id: s.id });
-}
-
-async function handleTransliterate(s: SentenceResponse) {
-	await transliterate.mutateAsync({ textId, id: s.id });
 }
 
 async function handleMarkValid(s: SentenceResponse) {
@@ -230,7 +220,7 @@ async function handleMoveDown(s: SentenceResponse, total: number) {
 
 						{#if !sentence.tokensValid && sentence.tokens.length > 0}
 							<StaleTokenBanner
-								onRetokenize={() => handleAutoTokenize(sentence)}
+								onRetokenize={async () => { await autoTokenize.mutateAsync({ textId, id: sentence.id }); }}
 								onMarkValid={() => handleMarkValid(sentence)}
 								isPending={autoTokenize.isPending || markValid.isPending}
 							/>
@@ -265,26 +255,6 @@ async function handleMoveDown(s: SentenceResponse, total: number) {
 							onclick={() => (tokenEditingId = tokenEditingId === sentence.id ? null : sentence.id)}
 						>
 							Tokens
-						</Button>
-						<Button
-							size="sm"
-							variant="outline"
-							disabled={autoTokenize.isPending}
-							onclick={() => handleAutoTokenize(sentence)}
-							title="AI auto-tokenize"
-						>
-							<Cpu size={12} />
-							Tokenize
-						</Button>
-						<Button
-							size="sm"
-							variant="outline"
-							disabled={transliterate.isPending}
-							onclick={() => handleTransliterate(sentence)}
-							title="AI transliterate"
-						>
-							<Languages size={12} />
-							Translit.
 						</Button>
 						<Button
 							size="sm"

@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CreateTextRequest(
     val title: String,
-    val body: String,
+    val body: String = "",
     val transliteration: String? = null,
     val translation: String? = null,
     val difficulty: String = "BEGINNER",

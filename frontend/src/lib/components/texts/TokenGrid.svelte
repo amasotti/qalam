@@ -28,15 +28,14 @@ let { tokens }: Props = $props();
 
 <style>
 .token-grid {
-	overflow-x: auto;
-	padding-bottom: 0.25rem;
+	padding: 0.25rem 0;
 }
 
 .token-row {
 	display: flex;
-	flex-direction: row-reverse;
+	flex-wrap: wrap;
+	direction: rtl;
 	gap: 0;
-	width: max-content;
 }
 
 .token-cell {
@@ -46,10 +45,6 @@ let { tokens }: Props = $props();
 	padding: 0.25rem 0.625rem;
 	border-inline-end: 1px solid hsl(var(--border) / 0.5);
 	min-width: 4rem;
-}
-
-.token-cell:last-child {
-	border-inline-end: none;
 }
 
 .token-arabic {

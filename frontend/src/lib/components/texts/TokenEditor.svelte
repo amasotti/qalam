@@ -1,16 +1,15 @@
 <script lang="ts">
 import { untrack } from 'svelte';
-import { GripVertical, Plus, Trash2, X } from 'lucide-svelte';
-import type { AlignmentTokenResponse, SentenceResponse } from '$lib/api/types.gen';
+import { Cpu, Plus, Trash2, X } from 'lucide-svelte';
+import type { SentenceResponse } from '$lib/api/types.gen';
 import { Button } from '$lib/components/ui/button';
-import { useClearTokens, useReplaceTokens } from '$lib/stores/texts';
+import { useAutoTokenize, useClearTokens, useReplaceTokens } from '$lib/stores/texts';
 
 interface TokenDraft {
 	id: string;
 	arabic: string;
 	transliteration: string;
 	translation: string;
-	wordId: string | null;
 }
 
 interface Props {
@@ -23,6 +22,7 @@ let { sentence, textId, onClose }: Props = $props();
 
 const replaceTokens = useReplaceTokens();
 const clearTokens = useClearTokens();
+const autoTokenize = useAutoTokenize();
 
 let drafts = $state<TokenDraft[]>(
 	untrack(() =>
@@ -31,7 +31,6 @@ let drafts = $state<TokenDraft[]>(
 			arabic: t.arabic,
 			transliteration: t.transliteration ?? '',
 			translation: t.translation ?? '',
-			wordId: t.wordId ?? null,
 		}))
 	)
 );
@@ -39,14 +38,40 @@ let drafts = $state<TokenDraft[]>(
 let clearConfirm = $state(false);
 let error = $state<string | null>(null);
 
+const isEmpty = $derived(drafts.length === 0);
+
+async function handleAutoTokenize() {
+	error = null;
+
+	// Client-side zip when transliteration is available — instant, no AI call
+	if (sentence.transliteration?.trim()) {
+		const arabicWords = sentence.arabicText.trim().split(/\s+/);
+		const translitWords = sentence.transliteration.trim().split(/\s+/);
+		drafts = arabicWords.map((arabic, i) => ({
+			id: crypto.randomUUID(),
+			arabic,
+			transliteration: translitWords[i] ?? '',
+			translation: '',
+		}));
+		return;
+	}
+
+	// Fallback: AI auto-tokenize when no transliteration exists
+	try {
+		const updated = await autoTokenize.mutateAsync({ textId, id: sentence.id });
+		drafts = updated.tokens.map((t) => ({
+			id: t.id,
+			arabic: t.arabic,
+			transliteration: t.transliteration ?? '',
+			translation: t.translation ?? '',
+		}));
+	} catch (err) {
+		error = err instanceof Error ? err.message : 'Auto-tokenize failed';
+	}
+}
+
 function addToken() {
-	drafts.push({
-		id: crypto.randomUUID(),
-		arabic: '',
-		transliteration: '',
-		translation: '',
-		wordId: null,
-	});
+	drafts.push({ id: crypto.randomUUID(), arabic: '', transliteration: '', translation: '' });
 }
 
 function removeToken(index: number) {
@@ -60,7 +85,7 @@ async function handleSave() {
 		arabic: d.arabic.trim(),
 		transliteration: d.transliteration.trim() || null,
 		translation: d.translation.trim() || null,
-		wordId: d.wordId || null,
+		wordId: null,
 	}));
 
 	if (tokens.some((t) => !t.arabic)) {
@@ -84,7 +109,8 @@ async function handleClear() {
 	}
 	try {
 		await clearTokens.mutateAsync({ textId, id: sentence.id });
-		onClose();
+		drafts = [];
+		clearConfirm = false;
 	} catch (err) {
 		error = err instanceof Error ? err.message : 'Clear failed';
 	}
@@ -93,80 +119,102 @@ async function handleClear() {
 
 <div class="token-editor">
 	<div class="token-editor-header">
-		<span class="token-editor-title">Edit tokens</span>
-		<button class="token-editor-close" onclick={onClose} aria-label="Close token editor">
+		<span class="token-editor-title">Token table</span>
+		<button class="token-editor-close" onclick={onClose} aria-label="Close">
 			<X size={14} />
 		</button>
 	</div>
 
-	<div class="token-editor-hint">Right-to-left order — first token is rightmost word.</div>
-
-	<div class="token-list">
-		{#each drafts as draft, i (draft.id)}
-			<div class="token-draft">
-				<span class="token-drag-handle" aria-hidden="true"><GripVertical size={12} /></span>
-				<div class="token-draft-fields">
+	{#if isEmpty}
+		<div class="token-editor-empty">
+			<p class="token-editor-empty-hint">
+				{#if sentence.transliteration}
+					Arabic and transliteration will be split word-by-word. Fill the translation column manually.
+				{:else}
+					AI will split and transliterate the sentence. Add translations manually.
+				{/if}
+			</p>
+			<div class="token-editor-empty-actions">
+				<Button disabled={autoTokenize.isPending} onclick={handleAutoTokenize}>
+					<Cpu size={14} />
+					{autoTokenize.isPending ? 'Tokenizing…' : 'Auto-tokenize'}
+				</Button>
+				<Button variant="outline" onclick={addToken}>Add row manually</Button>
+			</div>
+		</div>
+	{:else}
+		<!-- Token table: one row per token, three columns -->
+		<div class="token-table" role="table">
+			<div class="token-table-head" role="row">
+				<span class="token-col-label">Arabic</span>
+				<span class="token-col-label">Transliteration</span>
+				<span class="token-col-label">Translation</span>
+				<span></span>
+			</div>
+			{#each drafts as draft, i (draft.id)}
+				<div class="token-table-row" role="row">
 					<input
-						class="token-draft-input arabic"
+						class="token-cell-input arabic"
 						type="text"
 						placeholder="عربي"
 						bind:value={draft.arabic}
 						aria-label="Arabic"
 					/>
 					<input
-						class="token-draft-input transliteration"
+						class="token-cell-input transliteration"
 						type="text"
 						placeholder="translit."
 						bind:value={draft.transliteration}
 						aria-label="Transliteration"
 					/>
 					<input
-						class="token-draft-input"
+						class="token-cell-input"
 						type="text"
 						placeholder="translation"
 						bind:value={draft.translation}
 						aria-label="Translation"
 					/>
+					<button
+						class="token-row-remove"
+						onclick={() => removeToken(i)}
+						aria-label="Remove row"
+					>
+						<Trash2 size={12} />
+					</button>
 				</div>
-				<button
-					class="token-draft-remove"
-					onclick={() => removeToken(i)}
-					aria-label="Remove token"
-				>
-					<Trash2 size={12} />
-				</button>
-			</div>
-		{/each}
-	</div>
+			{/each}
+		</div>
 
-	<Button variant="outline" size="sm" onclick={addToken}>
-		<Plus size={12} />
-		Add token
-	</Button>
+		<Button variant="outline" size="sm" onclick={addToken}>
+			<Plus size={12} />
+			Add row
+		</Button>
 
-	{#if error}
-		<p class="token-editor-error">{error}</p>
+		{#if error}
+			<p class="token-editor-error">{error}</p>
+		{/if}
+
+		<div class="token-editor-actions">
+			<Button size="sm" disabled={replaceTokens.isPending} onclick={handleSave}>
+				{replaceTokens.isPending ? 'Saving…' : 'Save'}
+			</Button>
+			<Button size="sm" variant="outline" disabled={autoTokenize.isPending} onclick={handleAutoTokenize}>
+				<Cpu size={12} />
+				{autoTokenize.isPending ? '…' : 'Re-tokenize'}
+			</Button>
+			<Button
+				size="sm"
+				variant="outline"
+				class="btn-outline-danger"
+				disabled={clearTokens.isPending}
+				onclick={handleClear}
+			>
+				<Trash2 size={12} />
+				{clearConfirm ? 'Confirm?' : 'Clear'}
+			</Button>
+			<Button size="sm" variant="ghost" onclick={onClose}>Cancel</Button>
+		</div>
 	{/if}
-
-	<div class="token-editor-actions">
-		<Button
-			size="sm"
-			disabled={replaceTokens.isPending}
-			onclick={handleSave}
-		>
-			{replaceTokens.isPending ? 'Saving…' : 'Save tokens'}
-		</Button>
-		<Button
-			size="sm"
-			variant="outline"
-			class="btn-outline-danger"
-			disabled={clearTokens.isPending}
-			onclick={handleClear}
-		>
-			{clearConfirm ? 'Confirm clear?' : 'Clear all'}
-		</Button>
-		<Button size="sm" variant="ghost" onclick={onClose}>Cancel</Button>
-	</div>
 </div>
 
 <style>
@@ -207,66 +255,98 @@ async function handleClear() {
 	background: hsl(var(--muted));
 }
 
-.token-editor-hint {
-	font-size: 0.75rem;
-	color: hsl(var(--muted-foreground));
-}
-
-.token-list {
+.token-editor-empty {
 	display: flex;
 	flex-direction: column;
-	gap: 0.375rem;
+	gap: 0.75rem;
 }
 
-.token-draft {
-	display: flex;
-	align-items: center;
-	gap: 0.375rem;
-}
-
-.token-drag-handle {
-	color: hsl(var(--muted-foreground));
-	cursor: grab;
-	flex-shrink: 0;
-}
-
-.token-draft-fields {
-	display: flex;
-	gap: 0.25rem;
-	flex: 1;
-}
-
-.token-draft-input {
-	flex: 1;
-	border: 1px solid hsl(var(--border));
-	border-radius: 0.25rem;
-	padding: 0.25rem 0.375rem;
+.token-editor-empty-hint {
 	font-size: 0.8125rem;
+	color: hsl(var(--muted-foreground));
+	line-height: 1.5;
+}
+
+.token-editor-empty-actions {
+	display: flex;
+	gap: 0.5rem;
+}
+
+/* Table layout */
+.token-table {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr auto;
+	gap: 0;
+	border: 1px solid hsl(var(--border));
+	border-radius: 0.375rem;
+	overflow: hidden;
+}
+
+.token-table-head {
+	display: contents;
+}
+
+.token-col-label {
+	padding: 0.25rem 0.5rem;
+	font-size: 0.6875rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: hsl(var(--muted-foreground));
+	background: hsl(var(--muted) / 0.5);
+	border-bottom: 1px solid hsl(var(--border));
+}
+
+.token-table-row {
+	display: contents;
+}
+
+.token-cell-input {
+	border: none;
+	border-bottom: 1px solid hsl(var(--border) / 0.5);
+	border-right: 1px solid hsl(var(--border) / 0.5);
+	padding: 0.3125rem 0.5rem;
+	font-size: 0.875rem;
 	background: hsl(var(--background));
 	color: hsl(var(--foreground));
 	min-width: 0;
 }
 
-.token-draft-input:focus {
-	outline: none;
-	border-color: hsl(var(--primary));
+.token-cell-input:last-of-type {
+	border-right: none;
 }
 
-.token-draft-remove {
+.token-cell-input:focus {
+	outline: none;
+	background: hsl(var(--primary) / 0.04);
+}
+
+.token-cell-input.arabic {
+	font-family: var(--font-arabic);
+	font-size: 1rem;
+	direction: rtl;
+	text-align: right;
+}
+
+.token-cell-input.transliteration {
+	font-style: italic;
+	color: hsl(var(--muted-foreground));
+}
+
+.token-row-remove {
 	border: none;
-	background: none;
+	border-bottom: 1px solid hsl(var(--border) / 0.5);
+	background: hsl(var(--background));
 	cursor: pointer;
 	color: hsl(var(--muted-foreground));
-	padding: 0.25rem;
-	border-radius: 0.25rem;
+	padding: 0 0.375rem;
 	display: flex;
 	align-items: center;
-	flex-shrink: 0;
 }
 
-.token-draft-remove:hover {
+.token-row-remove:hover {
 	color: hsl(var(--destructive));
-	background: hsl(var(--destructive) / 0.08);
+	background: hsl(var(--destructive) / 0.06);
 }
 
 .token-editor-error {
@@ -277,5 +357,6 @@ async function handleClear() {
 .token-editor-actions {
 	display: flex;
 	gap: 0.375rem;
+	flex-wrap: wrap;
 }
 </style>

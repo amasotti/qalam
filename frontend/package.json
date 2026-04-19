@@ -32,7 +32,7 @@
 	},
 	"dependencies": {
 		"@hey-api/client-fetch": "^0.13.1",
-		"@tanstack/svelte-query": "^6.1.17",
+		"@tanstack/svelte-query": "^6.1.18",
 		"bits-ui": "^2.18.0",
 		"clsx": "^2.1.1",
 		"lucide-svelte": "^1.0.1",

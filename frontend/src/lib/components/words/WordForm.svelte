@@ -49,23 +49,10 @@ let partOfSpeech = $state<PartOfSpeech>(untrack(() => initial.partOfSpeech ?? 'U
 let dialect = $state<Dialect>(untrack(() => initial.dialect ?? 'MSA'));
 let difficulty = $state<Difficulty>(untrack(() => initial.difficulty ?? 'BEGINNER'));
 let pronunciationUrl = $state(untrack(() => initial.pronunciationUrl ?? ''));
-let pronunciationWasAutofilled = $state(false);
 let rootId = $state<string | null>(untrack(() => initial.rootId ?? null));
 let derivedFromId = $state<string | null>(untrack(() => initial.derivedFromId ?? null));
 
 let submitError = $state<string | null>(null);
-
-// Auto-fill Forvo pronunciation URL when arabic text is available
-$effect(() => {
-	const arabic = arabicText.trim();
-	if (arabic && (pronunciationUrl === '' || pronunciationWasAutofilled)) {
-		pronunciationUrl = `https://forvo.com/search/${encodeURIComponent(arabic)}`;
-		pronunciationWasAutofilled = true;
-	} else if (!arabic && pronunciationWasAutofilled) {
-		pronunciationUrl = '';
-		pronunciationWasAutofilled = false;
-	}
-});
 
 // Root selector
 const allRoots = useAllRoots();
@@ -261,21 +248,25 @@ async function handleSubmit(e: SubmitEvent) {
 
 	<!-- Pronunciation URL -->
 	<div class="word-form-field">
-		<label class="word-form-label" for="word-pronunciation">
-			Pronunciation URL
-			{#if pronunciationWasAutofilled}
-				<span class="word-form-hint-inline">· Forvo auto-filled</span>
+		<label class="word-form-label" for="word-pronunciation">Pronunciation URL</label>
+		<div class="word-form-input-row">
+			<input
+				id="word-pronunciation"
+				class="word-form-input"
+				type="url"
+				placeholder="https://forvo.com/search/…"
+				bind:value={pronunciationUrl}
+				disabled={isPending}
+			/>
+			{#if arabicText.trim() && !pronunciationUrl}
+				<button
+					type="button"
+					class="word-form-forvo-btn"
+					onclick={() => { pronunciationUrl = `https://forvo.com/search/${encodeURIComponent(arabicText.trim())}`; }}
+					disabled={isPending}
+				>Forvo</button>
 			{/if}
-		</label>
-		<input
-			id="word-pronunciation"
-			class="word-form-input"
-			type="url"
-			placeholder="https://forvo.com/search/…"
-			bind:value={pronunciationUrl}
-			disabled={isPending}
-			oninput={() => (pronunciationWasAutofilled = false)}
-		/>
+		</div>
 	</div>
 
 	<!-- Root selector -->

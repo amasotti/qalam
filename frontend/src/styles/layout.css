@@ -1255,6 +1255,57 @@
 	color: hsl(var(--muted-foreground));
 }
 
+/* ── Pronunciation badge (view mode) ── */
+
+.pronunciation-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	padding: 0.2rem 0.6rem;
+	border-radius: 999px;
+	border: 1px solid hsl(142 50% 72%);
+	background: hsl(142 60% 90%);
+	color: hsl(142 76% 24%);
+	font-size: 0.72rem;
+	font-weight: 600;
+	text-decoration: none;
+	width: fit-content;
+	transition: opacity 120ms ease;
+}
+
+.pronunciation-badge:hover {
+	opacity: 0.75;
+}
+
+.word-form-input-row {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+.word-form-input-row .word-form-input {
+	flex: 1;
+}
+
+.word-form-forvo-btn {
+	flex-shrink: 0;
+	padding: 0.4rem 0.65rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	border: 1px solid hsl(var(--border));
+	border-radius: var(--radius-md);
+	background: hsl(var(--muted));
+	color: hsl(var(--muted-foreground));
+	cursor: pointer;
+	white-space: nowrap;
+	transition: background 120ms ease, color 120ms ease;
+}
+
+.word-form-forvo-btn:hover {
+	background: hsl(var(--accent));
+	color: hsl(var(--accent-foreground));
+}
+
 .word-form-error {
 	font-size: 0.8rem;
 	color: hsl(var(--destructive));

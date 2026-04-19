@@ -1,0 +1,8 @@
+:80 {
+    root * /srv
+    encode gzip
+
+    # SPA fallback — non-file paths get index.html (client-side routing)
+    try_files {path} /index.html
+    file_server
+}

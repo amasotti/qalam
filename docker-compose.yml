@@ -1,4 +1,23 @@
 services:
+  traefik:
+    image: traefik:v3
+    container_name: qalam-traefik
+    restart: unless-stopped
+    command:
+      - --api.dashboard=true
+      - --api.insecure=true                         # local dev — no auth needed
+      - --providers.docker=true
+      - --providers.docker.exposedByDefault=false    # opt-in via traefik.enable label
+      - --providers.docker.network=qalam-network
+      - --entrypoints.web.address=:80
+    ports:
+      - "80:80"
+      - "8080:8080"    # Traefik dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - qalam-network
+
   db:
     image: postgres:17-alpine
     environment:
@@ -35,11 +54,44 @@ services:
       - DOPPLER_PROJECT=qalam
       - DATABASE_URL=jdbc:postgresql://db:5432/qalam
       - TZ=Europe/Berlin
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.backend.entrypoints=web
+      - traefik.http.routers.backend.rule=PathPrefix(`/api`) || Path(`/health`)
+      - traefik.http.services.backend.loadbalancer.server.port=8085
+    networks:
+      - qalam-network
+
+  # Dev: builds the `deps` stage only, mounts source for hot-reload.
+  # Production: `docker build --target production frontend/`
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+      target: deps
+    container_name: qalam-frontend
+    command: pnpm dev --host
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - frontend_modules:/app/node_modules   # preserves container node_modules
+    environment:
+      - BACKEND_URL=http://backend:8085
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.frontend.entrypoints=web
+      - traefik.http.routers.frontend.rule=PathPrefix(`/`)
+      - traefik.http.routers.frontend.priority=1      # lower than /api and /health
+      - traefik.http.services.frontend.loadbalancer.server.port=5173
+    depends_on:
+      - backend
     networks:
       - qalam-network
 
 volumes:
   pgdata:
+  frontend_modules:
 
 networks:
   qalam-network:

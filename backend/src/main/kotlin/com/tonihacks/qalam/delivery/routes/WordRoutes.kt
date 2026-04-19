@@ -18,12 +18,13 @@ fun Route.wordRoutes(service: WordService) {
             val page = call.request.queryParameters["page"]?.toIntOrNull()
             val size = call.request.queryParameters["size"]?.toIntOrNull()
             val q = call.request.queryParameters["q"]
+            val rootId = call.request.queryParameters["rootId"]
             val dialect = call.request.queryParameters["dialect"]
             val difficulty = call.request.queryParameters["difficulty"]
             val partOfSpeech = call.request.queryParameters["partOfSpeech"]
             val masteryLevel = call.request.queryParameters["masteryLevel"]
 
-            service.list(page, size, q, dialect, difficulty, partOfSpeech, masteryLevel).fold(
+            service.list(page, size, q, rootId, dialect, difficulty, partOfSpeech, masteryLevel).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.OK, it) },
             )

@@ -215,6 +215,10 @@ paths:
           in: query
           description: Arabic text substring search
           schema: { type: string }
+        - name: rootId
+          in: query
+          description: Filter words by root UUID
+          schema: { type: string, format: uuid }
         - name: dialect
           in: query
           schema: { $ref: "#/components/schemas/Dialect" }

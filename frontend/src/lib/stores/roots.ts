@@ -46,19 +46,15 @@ export function useRoot(id: () => string | undefined) {
 	}));
 }
 
-/**
- * Fetch words belonging to a root.
- * Backend has no rootId filter — load all and filter client-side.
- */
 export function useWordsForRoot(rootId: () => string | undefined) {
 	return createQuery(() => ({
 		queryKey: ['words', 'forRoot', rootId()],
 		queryFn: async () => {
 			const resolved = rootId();
-			const { data, error } = await listWords({ query: { size: 500 } });
+			if (!resolved) throw new Error('Missing rootId');
+			const { data, error } = await listWords({ query: { rootId: resolved, size: 100 } });
 			if (error) throw error;
-			const all = (requireData(data, 'listWords').items ?? []) as WordResponse[];
-			return all.filter((w) => w.rootId === resolved);
+			return (requireData(data, 'listWords').items ?? []) as WordResponse[];
 		},
 		enabled: !!rootId(),
 	}));

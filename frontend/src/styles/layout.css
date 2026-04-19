@@ -428,7 +428,12 @@
 	transition:
 		border-color 120ms ease,
 		background-color 120ms ease;
-	cursor: default;
+	cursor: pointer;
+}
+
+.word-chip:hover {
+	border-color: hsl(var(--primary) / 0.4);
+	background: hsl(var(--accent));
 }
 
 .word-chip-arabic {

@@ -49,11 +49,15 @@ class ExposedWordRepository : WordRepository {
                 ?: DomainError.NotFound("Word", id.toString()).left()
         }
 
+    @Suppress("CyclomaticComplexMethod")
     override suspend fun list(page: PageRequest, filters: WordFilters): Either<DomainError, PaginatedResponse<Word>> =
         suspendTransaction {
             val query = WordsTable.selectAll().let { q ->
                 var condition: Op<Boolean>? = null
 
+                filters.rootId?.let { r ->
+                    condition = condition?.and(WordsTable.rootId eq r.value.toKotlinUuid()) ?: (WordsTable.rootId eq r.value.toKotlinUuid())
+                }
                 filters.dialect?.let { d ->
                     condition = condition?.and(WordsTable.dialect eq d.name) ?: (WordsTable.dialect eq d.name)
                 }

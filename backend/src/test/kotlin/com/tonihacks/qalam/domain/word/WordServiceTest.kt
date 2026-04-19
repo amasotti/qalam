@@ -157,7 +157,7 @@ class WordServiceTest : FunSpec({
             coEvery { repo.list(PageRequest(1, 20), WordFilters()) } returns
                 PaginatedResponse(listOf(sampleWord), 1L, 1, 20).right()
 
-            val result = service.list(null, null, null, null, null, null, null)
+            val result = service.list(null, null, null, null, null, null, null, null)
 
             result.isRight() shouldBe true
             result.getOrNull()!!.total shouldBe 1L
@@ -167,7 +167,7 @@ class WordServiceTest : FunSpec({
             coEvery { repo.list(PageRequest(1, 20), WordFilters(dialect = Dialect.MSA)) } returns
                 PaginatedResponse(listOf(sampleWord), 1L, 1, 20).right()
 
-            service.list(null, null, null, "MSA", null, null, null).isRight() shouldBe true
+            service.list(null, null, null, null, "MSA", null, null, null).isRight() shouldBe true
             coVerify { repo.list(PageRequest(1, 20), WordFilters(dialect = Dialect.MSA)) }
         }
     }

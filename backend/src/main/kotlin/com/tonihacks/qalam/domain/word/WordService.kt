@@ -33,6 +33,7 @@ class WordService(
         page: Int?,
         size: Int?,
         q: String?,
+        rootId: String?,
         dialect: String?,
         difficulty: String?,
         partOfSpeech: String?,
@@ -40,6 +41,7 @@ class WordService(
     ): Either<DomainError, PaginatedResponse<WordResponse>> = either {
         val filters = WordFilters(
             q = q,
+            rootId = rootId?.let { parseWordUuid(it, "rootId").bind()?.let { u -> RootId(u) } },
             dialect = dialect?.let { parseWordEnum("dialect", it) { s -> Dialect.fromString(s) }.bind() },
             difficulty = difficulty?.let { parseWordEnum("difficulty", it) { s -> Difficulty.fromString(s) }.bind() },
             partOfSpeech = partOfSpeech?.let { parseWordEnum("partOfSpeech", it) { s -> PartOfSpeech.fromString(s) }.bind() },

@@ -135,7 +135,7 @@ async function handleDelete() {
 				{:else if words.data && words.data.length > 0}
 					<div class="word-family-grid stagger-children">
 						{#each words.data as word (word.id)}
-							<div class="word-chip">
+							<a class="word-chip" href="/words/{word.id}">
 								<span class="word-chip-arabic">{word.arabicText}</span>
 								{#if word.translation}
 									<span class="word-chip-translation">{word.translation}</span>
@@ -145,7 +145,7 @@ async function handleDelete() {
 										{word.masteryLevel.toLowerCase()}
 									</Badge>
 								{/if}
-							</div>
+							</a>
 						{/each}
 					</div>
 				{:else}

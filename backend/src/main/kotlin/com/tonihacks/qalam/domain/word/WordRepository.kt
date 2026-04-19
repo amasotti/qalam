@@ -4,9 +4,11 @@ import arrow.core.Either
 import com.tonihacks.qalam.delivery.dto.PageRequest
 import com.tonihacks.qalam.delivery.dto.PaginatedResponse
 import com.tonihacks.qalam.domain.error.DomainError
+import com.tonihacks.qalam.domain.root.RootId
 
 data class WordFilters(
     val q: String? = null,
+    val rootId: RootId? = null,
     val dialect: Dialect? = null,
     val difficulty: Difficulty? = null,
     val partOfSpeech: PartOfSpeech? = null,

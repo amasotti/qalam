@@ -62,6 +62,10 @@ dump-ls:
 dump-inspect file:
     docker exec qalam-db pg_restore --list /backups/{{file}}
 
+# Restore from a dump file: just dump-restore qalam_20260419_120000.dump
+dump-restore file:
+    docker exec qalam-db pg_restore -U qalam -d qalam --clean --if-exists /backups/{{file}}
+
 # ── Code quality & tooling ───────────────────────────────────────────────────
 
 # Run backend tests (Testcontainers spins its own Postgres — no secrets needed)

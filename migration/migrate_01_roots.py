@@ -19,7 +19,8 @@ with old.cursor() as src, new.cursor() as dst:
     """)
     rows = src.fetchall()
     for (id_, letters_json, norm, disp, lc, meaning, analysis, cat, uat) in rows:
-        letters_list = json.loads(letters_json)
+        # psycopg2 auto-deserialises jsonb → Python list; no json.loads needed
+        letters_list = letters_json if isinstance(letters_json, list) else json.loads(letters_json)
         letters_pg = "{" + ",".join(f'"{l}"' for l in letters_list) + "}"
         dst.execute("""
             INSERT INTO arabic_roots

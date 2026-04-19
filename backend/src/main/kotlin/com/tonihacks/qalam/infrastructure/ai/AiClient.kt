@@ -141,6 +141,7 @@ Sentence: "$arabicText""""
     private fun buildPrompt(arabicText: String, translation: String?): String {
         val translationHint = if (!translation.isNullOrBlank()) " (meaning: \"$translation\")" else ""
         return """Given the Arabic word "$arabicText"$translationHint, provide exactly 2 example sentences.
+One sentence should be in MSA and the other in Tunisian Arabic dialect.
 Return a JSON object with an "examples" array. Each element must have:
 - "arabic": the sentence in Arabic script
 - "transliteration": Latin transliteration

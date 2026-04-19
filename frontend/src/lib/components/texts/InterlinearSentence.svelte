@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { SentenceResponse } from '$lib/api/types.gen';
-import TokenGrid from './TokenGrid.svelte';
 import StaleTokenBanner from './StaleTokenBanner.svelte';
+import TokenGrid from './TokenGrid.svelte';
 
 interface Props {
 	sentence: SentenceResponse;

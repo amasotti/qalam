@@ -1,6 +1,6 @@
 <script lang="ts">
-import { untrack } from 'svelte';
 import { Cpu, Plus, Trash2, X } from 'lucide-svelte';
+import { untrack } from 'svelte';
 import type { SentenceResponse } from '$lib/api/types.gen';
 import { Button } from '$lib/components/ui/button';
 import { useAutoTokenize, useClearTokens, useReplaceTokens } from '$lib/stores/texts';

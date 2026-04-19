@@ -2,9 +2,6 @@
 import { Check, ChevronDown, ChevronUp, Pencil, Plus, Trash2, X } from 'lucide-svelte';
 import type { SentenceResponse } from '$lib/api/types.gen';
 import { Button } from '$lib/components/ui/button';
-import StaleTokenBanner from './StaleTokenBanner.svelte';
-import TokenEditor from './TokenEditor.svelte';
-import TokenGrid from './TokenGrid.svelte';
 import {
 	useAutoTokenize,
 	useCreateSentence,
@@ -12,6 +9,9 @@ import {
 	useMarkTokensValid,
 	useUpdateSentence,
 } from '$lib/stores/texts';
+import StaleTokenBanner from './StaleTokenBanner.svelte';
+import TokenEditor from './TokenEditor.svelte';
+import TokenGrid from './TokenGrid.svelte';
 
 interface Props {
 	sentences: SentenceResponse[];

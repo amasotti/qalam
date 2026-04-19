@@ -20,13 +20,7 @@ interface Props {
 	onCancel: () => void;
 }
 
-let {
-	initial = {},
-	isEdit = false,
-	isPending = false,
-	onSubmit,
-	onCancel,
-}: Props = $props();
+let { initial = {}, isEdit = false, isPending = false, onSubmit, onCancel }: Props = $props();
 
 let title = $state(untrack(() => initial.title ?? ''));
 let body = $state(untrack(() => initial.body ?? ''));
@@ -59,8 +53,8 @@ async function handleSubmit(e: SubmitEvent) {
 		const req: CreateTextRequest | UpdateTextRequest = {
 			title: title.trim(),
 			body: isEdit ? body.trim() : '',
-			transliteration: isEdit ? (transliteration.trim() || null) : null,
-			translation: isEdit ? (translation.trim() || null) : null,
+			transliteration: isEdit ? transliteration.trim() || null : null,
+			translation: isEdit ? translation.trim() || null : null,
 			dialect,
 			difficulty,
 			comments: comments.trim() || null,

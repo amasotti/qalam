@@ -3,12 +3,12 @@ import { ChevronLeft, Pencil, Settings, Trash2, X } from 'lucide-svelte';
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import type { UpdateTextRequest } from '$lib/api/types.gen';
-import { Badge } from '$lib/components/ui/badge';
-import { Button } from '$lib/components/ui/button';
 import FullTextPanel from '$lib/components/texts/FullTextPanel.svelte';
 import InterlinearSentence from '$lib/components/texts/InterlinearSentence.svelte';
 import SentenceEditor from '$lib/components/texts/SentenceEditor.svelte';
 import TextForm from '$lib/components/texts/TextForm.svelte';
+import { Badge } from '$lib/components/ui/badge';
+import { Button } from '$lib/components/ui/button';
 import {
 	useAutoTokenize,
 	useDeleteText,

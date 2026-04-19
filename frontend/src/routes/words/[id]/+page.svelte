@@ -182,7 +182,7 @@ function formatEnum(value: string): string {
 			{/if}
 
 			<!-- ── Dictionary links ── -->
-			<DictionaryLinks wordId={id} />
+			<DictionaryLinks wordId={id} arabicText={word.data.arabicText} />
 
 			<!-- ── AI examples ── -->
 			<AiExamples wordId={id} />

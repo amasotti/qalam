@@ -6,9 +6,10 @@
 
 	interface Props {
 		wordId: string;
+		arabicText: string;
 	}
 
-	const { wordId }: Props = $props();
+	const { wordId, arabicText }: Props = $props();
 
 	// Queries and mutations
 	const linksQuery = useDictionaryLinks(() => wordId);
@@ -19,6 +20,19 @@
 	let selectedSource = $state<DictionarySource>('ALMANY');
 	let urlInput = $state('');
 	let addError = $state('');
+	let urlWasAutofilled = $state(false);
+
+	// URL templates for dictionary sources
+	const URL_TEMPLATES: Partial<Record<DictionarySource, string>> = {
+		ALMANY: 'https://www.almaany.com/en/dict/ar-en/{word}',
+		LIVING_ARABIC: 'https://www.livingarabic.com/en/search?q={word}',
+		DERJA_NINJA: 'https://derja.ninja/search?search={word}&script=arabic',
+		REVERSO: 'https://dictionary.reverso.net/arabic-english/{word}',
+		WIKTIONARY: 'https://en.wiktionary.org/wiki/{word}',
+		ARABIC_STUDENT_DICTIONARY: 'https://www.arabicstudentsdictionary.com/search?q={word}',
+		LANGENSCHEIDT: 'https://de.langenscheidt.com/arabisch-deutsch/{word}',
+		// CUSTOM: no template
+	};
 
 	const sourceLabels: Record<DictionarySource, string> = {
 		ALMANY: 'Almany',
@@ -42,6 +56,21 @@
 		'CUSTOM',
 	];
 
+	// Autofill URL when source changes
+	$effect(() => {
+		const template = URL_TEMPLATES[selectedSource];
+		if (template && (urlInput === '' || urlWasAutofilled)) {
+			urlInput = template.replace('{word}', encodeURIComponent(arabicText));
+			urlWasAutofilled = true;
+		} else if (!template) {
+			// CUSTOM — clear autofilled url but not manual
+			if (urlWasAutofilled) {
+				urlInput = '';
+				urlWasAutofilled = false;
+			}
+		}
+	});
+
 	function truncateUrl(url: string, maxLength: number = 50): string {
 		if (url.length <= maxLength) return url;
 		return `${url.substring(0, maxLength)}…`;
@@ -61,6 +90,7 @@
 			{
 				onSuccess: () => {
 					urlInput = '';
+					urlWasAutofilled = false;
 					selectedSource = 'ALMANY';
 				},
 				onError: (error) => {
@@ -127,6 +157,7 @@
 				class="dict-links-add-input"
 				placeholder="Enter URL"
 				disabled={isAddPending}
+				oninput={() => { urlWasAutofilled = false }}
 			/>
 		</div>
 

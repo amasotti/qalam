@@ -27,15 +27,12 @@
 | M13 Frontend Foundation  | Brand tokens (green/red/near-black), mastery classes, animations, typed API client, Biome, CI           |
 | M14 Frontend: Roots     | Full implementation of roots component in the frontend                                                  |
 | M15 Frontend: Vocabulary | Words list + detail + create/edit. Migrated data lands here first.                                      |
+| M16 Frontend: Texts      | Interlinear view (sentence-by-sentence, token triplets, stale-token UX, AI auto-tokenize), edit mode, full-text panel. No annotations (deferred). |
 
 ---
 
 ## 🎯 MVP — Frontend + Go Live
 *Must use the /frontend-design skill for design work, iterate in code.*
-
-### M16 — Frontend: Texts
-*The primary daily-use screen. Interlinear view, annotation panel, word linking.*
-→ `docs/tasks/016_frontend_texts.md`
 
 ### M19 — Data Migration (Phase 1: Core data)
 *Migrate roots → words → texts only. Enough to start daily use.*

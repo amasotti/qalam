@@ -5,25 +5,30 @@ import {
 	createWord,
 	deleteDictionaryLink,
 	deleteWord,
+	deleteWordExample,
 	generateWordExamples,
 	getAnnotationsForWord,
 	getWordById,
 	listDictionaryLinks,
+	listWordExamples,
 	listWords,
+	saveWordExample,
 	updateWord,
 } from '$lib/api/sdk.gen';
 import type {
+	AiExamplesResponse,
 	AnnotationResponse,
 	CreateDictionaryLinkRequest,
+	CreateWordExampleRequest,
 	CreateWordRequest,
 	Dialect,
 	DictionaryLinkResponse,
 	Difficulty,
-	ExamplesResponse,
 	MasteryLevel,
 	PartOfSpeech,
 	UpdateWordRequest,
 	WordAutocompleteResponse,
+	WordExampleResponse,
 	WordResponse,
 } from '$lib/api/types.gen';
 
@@ -183,12 +188,53 @@ export function useDeleteDictionaryLink() {
 	}));
 }
 
+export function useWordExamples(id: () => string | undefined) {
+	return createQuery(() => ({
+		queryKey: ['words', id(), 'examples'],
+		queryFn: async () => {
+			const resolvedId = id();
+			if (!resolvedId) throw new Error('Missing word id');
+			const { data, error } = await listWordExamples({ path: { id: resolvedId } });
+			if (error) throw error;
+			return requireData(data, 'listWordExamples') as WordExampleResponse[];
+		},
+		enabled: !!id(),
+	}));
+}
+
+export function useSaveWordExample() {
+	const qc = useQueryClient();
+	return createMutation(() => ({
+		mutationFn: async ({ id, body }: { id: string; body: CreateWordExampleRequest }) => {
+			const { data, error } = await saveWordExample({ path: { id }, body });
+			if (error) throw error;
+			return requireData(data, 'saveWordExample') as WordExampleResponse;
+		},
+		onSuccess: (_data, variables) => {
+			qc.invalidateQueries({ queryKey: ['words', variables.id, 'examples'] });
+		},
+	}));
+}
+
+export function useDeleteWordExample() {
+	const qc = useQueryClient();
+	return createMutation(() => ({
+		mutationFn: async ({ id, exampleId }: { id: string; exampleId: string }) => {
+			const { error } = await deleteWordExample({ path: { id, exampleId } });
+			if (error) throw error;
+		},
+		onSuccess: (_data, variables) => {
+			qc.invalidateQueries({ queryKey: ['words', variables.id, 'examples'] });
+		},
+	}));
+}
+
 export function useGenerateExamples() {
 	return createMutation(() => ({
 		mutationFn: async (id: string) => {
 			const { data, error } = await generateWordExamples({ path: { id } });
 			if (error) throw error;
-			return requireData(data, 'generateWordExamples') as ExamplesResponse;
+			return requireData(data, 'generateWordExamples') as AiExamplesResponse;
 		},
 	}));
 }

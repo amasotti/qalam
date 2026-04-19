@@ -9,7 +9,8 @@
       "Bash(./gradlew test:*)",
       "Bash(pnpm lint:*)",
       "Bash(pnpm biome:*)",
-      "WebFetch(domain:localhost)"
+      "WebFetch(domain:localhost)",
+      "Bash(curl:*)"
     ],
     "deny": [
       "Bash(scp *)",

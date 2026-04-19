@@ -25,9 +25,7 @@ fun Application.configurePlugins() {
     install(CallLogging)
 
     install(CORS) {
-        allowHost("localhost:3000")
-        allowHost("localhost:4173")
-        allowHost("localhost:5173")
+        anyHost()
         allowHeader(HttpHeaders.ContentType)
         allowMethod(HttpMethod.Put)
         allowMethod(HttpMethod.Delete)

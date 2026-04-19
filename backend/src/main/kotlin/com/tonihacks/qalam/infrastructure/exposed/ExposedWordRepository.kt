@@ -18,6 +18,8 @@ import com.tonihacks.qalam.domain.word.Difficulty
 import com.tonihacks.qalam.domain.word.MasteryLevel
 import com.tonihacks.qalam.domain.word.PartOfSpeech
 import com.tonihacks.qalam.domain.word.Word
+import com.tonihacks.qalam.domain.word.WordExample
+import com.tonihacks.qalam.domain.word.WordExampleId
 import com.tonihacks.qalam.domain.word.WordFilters
 import com.tonihacks.qalam.domain.word.WordId
 import com.tonihacks.qalam.domain.word.WordRepository
@@ -105,7 +107,6 @@ class ExposedWordRepository : WordRepository {
                     it[arabicText] = word.arabicText
                     it[transliteration] = word.transliteration
                     it[translation] = word.translation
-                    it[exampleSentence] = word.exampleSentence
                     it[partOfSpeech] = word.partOfSpeech.name
                     it[dialect] = word.dialect.name
                     it[difficulty] = word.difficulty.name
@@ -141,7 +142,6 @@ class ExposedWordRepository : WordRepository {
                     it[arabicText] = word.arabicText
                     it[transliteration] = word.transliteration
                     it[translation] = word.translation
-                    it[exampleSentence] = word.exampleSentence
                     it[partOfSpeech] = word.partOfSpeech.name
                     it[dialect] = word.dialect.name
                     it[difficulty] = word.difficulty.name
@@ -201,6 +201,38 @@ class ExposedWordRepository : WordRepository {
                 ensure(deleteCount > 0) { DomainError.NotFound("DictionaryLink", linkId.toString()) }
             }
         }
+
+    override suspend fun findExamples(wordId: WordId): Either<DomainError, List<WordExample>> =
+        suspendTransaction {
+            WordExamplesTable
+                .selectAll()
+                .where { WordExamplesTable.wordId eq wordId.value.toKotlinUuid() }
+                .map { it.toWordExample() }
+                .right()
+        }
+
+    override suspend fun addExample(example: WordExample): Either<DomainError, WordExample> =
+        suspendTransaction {
+            WordExamplesTable.insert {
+                it[id] = example.id.value.toKotlinUuid()
+                it[wordId] = example.wordId.value.toKotlinUuid()
+                it[arabic] = example.arabic
+                it[transliteration] = example.transliteration
+                it[translation] = example.translation
+            }
+            example.right()
+        }
+
+    override suspend fun deleteExample(wordId: WordId, exampleId: WordExampleId): Either<DomainError, Unit> =
+        suspendTransaction {
+            either {
+                val deleteCount = WordExamplesTable.deleteWhere {
+                    (WordExamplesTable.id eq exampleId.value.toKotlinUuid()) and
+                    (WordExamplesTable.wordId eq wordId.value.toKotlinUuid())
+                }
+                ensure(deleteCount > 0) { DomainError.NotFound("WordExample", exampleId.toString()) }
+            }
+        }
 }
 
 @OptIn(kotlin.uuid.ExperimentalUuidApi::class)
@@ -209,7 +241,6 @@ private fun ResultRow.toWord() = Word(
     arabicText = this[WordsTable.arabicText],
     transliteration = this[WordsTable.transliteration],
     translation = this[WordsTable.translation],
-    exampleSentence = this[WordsTable.exampleSentence],
     partOfSpeech = PartOfSpeech.fromString(this[WordsTable.partOfSpeech]) ?: PartOfSpeech.UNKNOWN,
     dialect = Dialect.fromString(this[WordsTable.dialect]) ?: Dialect.MSA,
     difficulty = Difficulty.fromString(this[WordsTable.difficulty]) ?: Difficulty.BEGINNER,
@@ -219,6 +250,16 @@ private fun ResultRow.toWord() = Word(
     derivedFromId = this[WordsTable.derivedFromId]?.toJavaUuid()?.let { WordId(it) },
     createdAt = this[WordsTable.createdAt],
     updatedAt = this[WordsTable.updatedAt],
+)
+
+@OptIn(kotlin.uuid.ExperimentalUuidApi::class)
+private fun ResultRow.toWordExample() = WordExample(
+    id = WordExampleId(this[WordExamplesTable.id].toJavaUuid()),
+    wordId = WordId(this[WordExamplesTable.wordId].toJavaUuid()),
+    arabic = this[WordExamplesTable.arabic],
+    transliteration = this[WordExamplesTable.transliteration],
+    translation = this[WordExamplesTable.translation],
+    createdAt = this[WordExamplesTable.createdAt],
 )
 
 @OptIn(kotlin.uuid.ExperimentalUuidApi::class)

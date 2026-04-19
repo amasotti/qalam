@@ -4,7 +4,7 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.sentence.TokenInputDto
-import com.tonihacks.qalam.delivery.dto.word.ExampleSentenceResponse
+import com.tonihacks.qalam.delivery.dto.word.AiExampleSentence
 import com.tonihacks.qalam.domain.error.DomainError
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -36,7 +36,7 @@ class AiClient(private val apiKey: String?) : java.io.Closeable {
     suspend fun generateExamples(
         arabicText: String,
         translation: String?,
-    ): Either<DomainError, List<ExampleSentenceResponse>> {
+    ): Either<DomainError, List<AiExampleSentence>> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
         val prompt = buildPrompt(arabicText, translation)
@@ -167,7 +167,7 @@ Return a JSON object with an "examples" array. Each element must have:
     private data class Choice(val message: Message)
 
     @Serializable
-    private data class ExamplesPayload(val examples: List<ExampleSentenceResponse>)
+    private data class ExamplesPayload(val examples: List<AiExampleSentence>)
 
     @Serializable
     private data class TokensPayload(val tokens: List<TokenInputDto>)

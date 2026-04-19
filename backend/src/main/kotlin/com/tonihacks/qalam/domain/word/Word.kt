@@ -14,12 +14,25 @@ value class DictionaryLinkId(val value: UUID) {
     override fun toString(): String = value.toString()
 }
 
+@JvmInline
+value class WordExampleId(val value: UUID) {
+    override fun toString(): String = value.toString()
+}
+
+data class WordExample(
+    val id: WordExampleId,
+    val wordId: WordId,
+    val arabic: String,
+    val transliteration: String?,
+    val translation: String?,
+    val createdAt: Instant,
+)
+
 data class Word(
     val id: WordId,
     val arabicText: String,
     val transliteration: String?,
     val translation: String?,
-    val exampleSentence: String?,
     val partOfSpeech: PartOfSpeech,
     val dialect: Dialect,
     val difficulty: Difficulty,

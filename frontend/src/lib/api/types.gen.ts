@@ -53,7 +53,6 @@ export type WordResponse = {
     arabicText: string;
     transliteration?: string | null;
     translation?: string | null;
-    exampleSentence?: string | null;
     partOfSpeech: PartOfSpeech;
     dialect: Dialect;
     difficulty: Difficulty;
@@ -69,7 +68,6 @@ export type CreateWordRequest = {
     arabicText: string;
     transliteration?: string | null;
     translation?: string | null;
-    exampleSentence?: string | null;
     partOfSpeech?: PartOfSpeech;
     dialect?: Dialect;
     difficulty?: Difficulty;
@@ -85,7 +83,6 @@ export type UpdateWordRequest = {
     arabicText?: string | null;
     transliteration?: string | null;
     translation?: string | null;
-    exampleSentence?: string | null;
     partOfSpeech?: PartOfSpeech | null;
     dialect?: Dialect | null;
     difficulty?: Difficulty | null;
@@ -112,14 +109,28 @@ export type CreateDictionaryLinkRequest = {
     url: string;
 };
 
-export type ExampleSentenceResponse = {
+export type WordExampleResponse = {
+    id: string;
+    arabic: string;
+    transliteration?: string | null;
+    translation?: string | null;
+    createdAt: string;
+};
+
+export type CreateWordExampleRequest = {
+    arabic: string;
+    transliteration?: string | null;
+    translation?: string | null;
+};
+
+export type AiExampleSentence = {
     arabic: string;
     transliteration: string;
     translation: string;
 };
 
-export type ExamplesResponse = {
-    examples: Array<ExampleSentenceResponse>;
+export type AiExamplesResponse = {
+    examples: Array<AiExampleSentence>;
 };
 
 export type TextResponse = {
@@ -779,13 +790,99 @@ export type DeleteDictionaryLinkResponses = {
 
 export type DeleteDictionaryLinkResponse = DeleteDictionaryLinkResponses[keyof DeleteDictionaryLinkResponses];
 
-export type GenerateWordExamplesData = {
+export type ListWordExamplesData = {
     body?: never;
     path: {
         id: string;
     };
     query?: never;
     url: '/api/v1/words/{id}/examples';
+};
+
+export type ListWordExamplesErrors = {
+    /**
+     * Word not found
+     */
+    404: ErrorResponse;
+};
+
+export type ListWordExamplesError = ListWordExamplesErrors[keyof ListWordExamplesErrors];
+
+export type ListWordExamplesResponses = {
+    /**
+     * List of saved examples
+     */
+    200: Array<WordExampleResponse>;
+};
+
+export type ListWordExamplesResponse = ListWordExamplesResponses[keyof ListWordExamplesResponses];
+
+export type SaveWordExampleData = {
+    body: CreateWordExampleRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/examples';
+};
+
+export type SaveWordExampleErrors = {
+    /**
+     * Word not found
+     */
+    404: ErrorResponse;
+    /**
+     * Validation error
+     */
+    422: ErrorResponse;
+};
+
+export type SaveWordExampleError = SaveWordExampleErrors[keyof SaveWordExampleErrors];
+
+export type SaveWordExampleResponses = {
+    /**
+     * Example saved
+     */
+    201: WordExampleResponse;
+};
+
+export type SaveWordExampleResponse = SaveWordExampleResponses[keyof SaveWordExampleResponses];
+
+export type DeleteWordExampleData = {
+    body?: never;
+    path: {
+        id: string;
+        exampleId: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/examples/{exampleId}';
+};
+
+export type DeleteWordExampleErrors = {
+    /**
+     * Word or example not found
+     */
+    404: ErrorResponse;
+};
+
+export type DeleteWordExampleError = DeleteWordExampleErrors[keyof DeleteWordExampleErrors];
+
+export type DeleteWordExampleResponses = {
+    /**
+     * Example deleted
+     */
+    204: void;
+};
+
+export type DeleteWordExampleResponse = DeleteWordExampleResponses[keyof DeleteWordExampleResponses];
+
+export type GenerateWordExamplesData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/examples/generate';
 };
 
 export type GenerateWordExamplesErrors = {
@@ -803,9 +900,9 @@ export type GenerateWordExamplesError = GenerateWordExamplesErrors[keyof Generat
 
 export type GenerateWordExamplesResponses = {
     /**
-     * Two example sentences
+     * AI-generated example sentences
      */
-    200: ExamplesResponse;
+    200: AiExamplesResponse;
 };
 
 export type GenerateWordExamplesResponse = GenerateWordExamplesResponses[keyof GenerateWordExamplesResponses];

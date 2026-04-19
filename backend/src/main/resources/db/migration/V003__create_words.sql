@@ -6,7 +6,6 @@ CREATE TABLE words (
     arabic_text       TEXT        NOT NULL,
     transliteration   TEXT,
     translation       TEXT,
-    example_sentence  TEXT,
     part_of_speech    VARCHAR(20) NOT NULL DEFAULT 'UNKNOWN'
                       CHECK (part_of_speech IN ('UNKNOWN','NOUN','VERB','ADJECTIVE','ADVERB',
                                                 'PREPOSITION','PARTICLE','INTERJECTION',

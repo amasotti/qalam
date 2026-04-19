@@ -2,6 +2,7 @@ package com.tonihacks.qalam.delivery.routes
 
 import com.tonihacks.qalam.delivery.respondError
 import com.tonihacks.qalam.delivery.dto.word.CreateDictionaryLinkRequest
+import com.tonihacks.qalam.delivery.dto.word.CreateWordExampleRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordRequest
 import com.tonihacks.qalam.delivery.dto.word.UpdateWordRequest
 import com.tonihacks.qalam.domain.word.WordService
@@ -98,8 +99,35 @@ fun Route.wordRoutes(service: WordService) {
             )
         }
 
-        // AI examples
+        // Saved examples sub-resource
+        get("/{id}/examples") {
+            val id = call.parameters["id"]!!
+            service.getExamples(id).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.OK, it) },
+            )
+        }
+
         post("/{id}/examples") {
+            val id = call.parameters["id"]!!
+            val req = call.receive<CreateWordExampleRequest>()
+            service.saveExample(id, req).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.Created, it) },
+            )
+        }
+
+        delete("/{id}/examples/{exampleId}") {
+            val id = call.parameters["id"]!!
+            val exampleId = call.parameters["exampleId"]!!
+            service.deleteExample(id, exampleId).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.NoContent) },
+            )
+        }
+
+        // AI generation (ephemeral — does not persist)
+        post("/{id}/examples/generate") {
             val id = call.parameters["id"]!!
             service.generateExamples(id).fold(
                 { call.respondError(it) },

@@ -7,12 +7,14 @@ import arrow.core.raise.either
 import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.PageRequest
 import com.tonihacks.qalam.delivery.dto.PaginatedResponse
+import com.tonihacks.qalam.delivery.dto.word.AiExamplesResponse
 import com.tonihacks.qalam.delivery.dto.word.CreateDictionaryLinkRequest
+import com.tonihacks.qalam.delivery.dto.word.CreateWordExampleRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordRequest
 import com.tonihacks.qalam.delivery.dto.word.DictionaryLinkResponse
-import com.tonihacks.qalam.delivery.dto.word.ExamplesResponse
 import com.tonihacks.qalam.delivery.dto.word.UpdateWordRequest
 import com.tonihacks.qalam.delivery.dto.word.WordAutocompleteResponse
+import com.tonihacks.qalam.delivery.dto.word.WordExampleResponse
 import com.tonihacks.qalam.delivery.dto.word.WordResponse
 import com.tonihacks.qalam.delivery.dto.word.toAutocompleteResponse
 import com.tonihacks.qalam.delivery.dto.word.toResponse
@@ -70,7 +72,6 @@ class WordService(
             arabicText = req.arabicText.trim(),
             transliteration = req.transliteration,
             translation = req.translation,
-            exampleSentence = req.exampleSentence,
             partOfSpeech = pos,
             dialect = dialect,
             difficulty = difficulty,
@@ -106,7 +107,6 @@ class WordService(
             arabicText = req.arabicText?.trim() ?: existing.arabicText,
             transliteration = req.transliteration ?: existing.transliteration,
             translation = req.translation ?: existing.translation,
-            exampleSentence = req.exampleSentence ?: existing.exampleSentence,
             partOfSpeech = pos,
             dialect = dialect,
             difficulty = difficulty,
@@ -152,11 +152,43 @@ class WordService(
         repo.deleteDictionaryLink(wId, lId).bind()
     }
 
-    suspend fun generateExamples(wordId: String): Either<DomainError, ExamplesResponse> = either {
+    suspend fun generateExamples(wordId: String): Either<DomainError, AiExamplesResponse> = either {
         val id = parseWordId(wordId).bind()
         val word = repo.findById(id).bind()
         val examples = aiClient.generateExamples(word.arabicText, word.translation).bind()
-        ExamplesResponse(examples)
+        AiExamplesResponse(examples)
+    }
+
+    suspend fun getExamples(wordId: String): Either<DomainError, List<WordExampleResponse>> = either {
+        val id = parseWordId(wordId).bind()
+        repo.findById(id).bind()
+        repo.findExamples(id).bind().map { it.toResponse() }
+    }
+
+    suspend fun saveExample(wordId: String, req: CreateWordExampleRequest): Either<DomainError, WordExampleResponse> = either {
+        if (req.arabic.isBlank()) raise(DomainError.ValidationError("arabic", "Arabic text must not be blank"))
+        val id = parseWordId(wordId).bind()
+        repo.findById(id).bind()
+        val example = WordExample(
+            id = WordExampleId(UUID.randomUUID()),
+            wordId = id,
+            arabic = req.arabic.trim(),
+            transliteration = req.transliteration?.trim()?.takeIf { it.isNotEmpty() },
+            translation = req.translation?.trim()?.takeIf { it.isNotEmpty() },
+            createdAt = Clock.System.now(),
+        )
+        repo.addExample(example).bind().toResponse()
+    }
+
+    suspend fun deleteExample(wordId: String, exampleId: String): Either<DomainError, Unit> = either {
+        val wId = parseWordId(wordId).bind()
+        repo.findById(wId).bind()
+        val eId = try {
+            WordExampleId(UUID.fromString(exampleId))
+        } catch (_: IllegalArgumentException) {
+            raise(DomainError.InvalidInput("'$exampleId' is not a valid UUID"))
+        }
+        repo.deleteExample(wId, eId).bind()
     }
 }
 

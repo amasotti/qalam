@@ -467,8 +467,92 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
   /api/v1/words/{id}/examples:
+    get:
+      summary: List saved example sentences for a word
+      operationId: listWordExamples
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: List of saved examples
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WordExampleResponse"
+        "404":
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
     post:
-      summary: Generate AI example sentences for a word
+      summary: Save an example sentence for a word
+      operationId: saveWordExample
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWordExampleRequest"
+      responses:
+        "201":
+          description: Example saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordExampleResponse"
+        "404":
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/words/{id}/examples/{exampleId}:
+    delete:
+      summary: Delete a saved example sentence
+      operationId: deleteWordExample
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: exampleId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "204":
+          description: Example deleted
+        "404":
+          description: Word or example not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/words/{id}/examples/generate:
+    post:
+      summary: Generate AI example sentences (ephemeral — does not persist)
       operationId: generateWordExamples
       tags: [words]
       parameters:
@@ -478,11 +562,11 @@ paths:
           schema: { type: string, format: uuid }
       responses:
         "200":
-          description: Two example sentences
+          description: AI-generated example sentences
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ExamplesResponse"
+                $ref: "#/components/schemas/AiExamplesResponse"
         "404":
           description: Word not found
           content:
@@ -1371,9 +1455,6 @@ components:
         translation:
           type: string
           nullable: true
-        exampleSentence:
-          type: string
-          nullable: true
         partOfSpeech:
           $ref: "#/components/schemas/PartOfSpeech"
         dialect:
@@ -1412,9 +1493,6 @@ components:
         translation:
           type: string
           nullable: true
-        exampleSentence:
-          type: string
-          nullable: true
         partOfSpeech:
           allOf:
             - $ref: "#/components/schemas/PartOfSpeech"
@@ -1450,9 +1528,6 @@ components:
           type: string
           nullable: true
         translation:
-          type: string
-          nullable: true
-        exampleSentence:
           type: string
           nullable: true
         partOfSpeech:
@@ -1519,7 +1594,39 @@ components:
           type: string
           format: uri
 
-    ExampleSentenceResponse:
+    WordExampleResponse:
+      type: object
+      required: [id, arabic, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        arabic:
+          type: string
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateWordExampleRequest:
+      type: object
+      required: [arabic]
+      properties:
+        arabic:
+          type: string
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+
+    AiExampleSentence:
       type: object
       required: [arabic, transliteration, translation]
       properties:
@@ -1530,14 +1637,14 @@ components:
         translation:
           type: string
 
-    ExamplesResponse:
+    AiExamplesResponse:
       type: object
       required: [examples]
       properties:
         examples:
           type: array
           items:
-            $ref: "#/components/schemas/ExampleSentenceResponse"
+            $ref: "#/components/schemas/AiExampleSentence"
 
     # --- Texts ---
 

@@ -8,7 +8,9 @@
       "Read(~/toni/100_programming/190_frontend/an-na7wi/*)",
       "Bash(./gradlew test:*)",
       "Bash(pnpm lint:*)",
-      "Bash(pnpm biome:*)"
+      "Bash(pnpm biome:*)",
+      "Read(//Users/toni/halb-personal/an-na7wi/backend/src/**)",
+      "Read(//Users/toni/halb-personal/an-na7wi/database/**)"
     ],
     "deny": [
       "Bash(scp *)",

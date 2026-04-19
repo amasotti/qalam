@@ -23,4 +23,7 @@ interface WordRepository {
     suspend fun findDictionaryLinks(wordId: WordId): Either<DomainError, List<DictionaryLink>>
     suspend fun addDictionaryLink(link: DictionaryLink): Either<DomainError, DictionaryLink>
     suspend fun deleteDictionaryLink(wordId: WordId, linkId: DictionaryLinkId): Either<DomainError, Unit>
+    suspend fun findExamples(wordId: WordId): Either<DomainError, List<WordExample>>
+    suspend fun addExample(example: WordExample): Either<DomainError, WordExample>
+    suspend fun deleteExample(wordId: WordId, exampleId: WordExampleId): Either<DomainError, Unit>
 }

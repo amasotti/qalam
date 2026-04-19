@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AddDictionaryLinkData, AddDictionaryLinkErrors, AddDictionaryLinkResponses, AddWordLinkData, AddWordLinkErrors, AddWordLinkResponses, AutocompleteWordsData, AutocompleteWordsErrors, AutocompleteWordsResponses, AutoTokenizeData, AutoTokenizeErrors, AutoTokenizeResponses, ClearTokensData, ClearTokensErrors, ClearTokensResponses, CreateAnnotationData, CreateAnnotationErrors, CreateAnnotationResponses, CreateRootData, CreateRootErrors, CreateRootResponses, CreateSentenceData, CreateSentenceErrors, CreateSentenceResponses, CreateTextData, CreateTextErrors, CreateTextResponses, CreateWordData, CreateWordErrors, CreateWordResponses, DeleteAnnotationData, DeleteAnnotationErrors, DeleteAnnotationResponses, DeleteDictionaryLinkData, DeleteDictionaryLinkErrors, DeleteDictionaryLinkResponses, DeleteRootData, DeleteRootErrors, DeleteRootResponses, DeleteSentenceData, DeleteSentenceErrors, DeleteSentenceResponses, DeleteTextData, DeleteTextErrors, DeleteTextResponses, DeleteWordData, DeleteWordErrors, DeleteWordResponses, GenerateWordExamplesData, GenerateWordExamplesErrors, GenerateWordExamplesResponses, GetAnnotationByIdData, GetAnnotationByIdErrors, GetAnnotationByIdResponses, GetAnnotationsForWordData, GetAnnotationsForWordErrors, GetAnnotationsForWordResponses, GetHealthData, GetHealthErrors, GetHealthResponses, GetRootByIdData, GetRootByIdErrors, GetRootByIdResponses, GetSentenceByIdData, GetSentenceByIdErrors, GetSentenceByIdResponses, GetSwaggerUiData, GetSwaggerUiErrors, GetSwaggerUiResponses, GetTextByIdData, GetTextByIdErrors, GetTextByIdResponses, GetWordByIdData, GetWordByIdErrors, GetWordByIdResponses, ListAnnotationsData, ListAnnotationsErrors, ListAnnotationsResponses, ListDictionaryLinksData, ListDictionaryLinksErrors, ListDictionaryLinksResponses, ListRootsData, ListRootsErrors, ListRootsResponses, ListSentencesData, ListSentencesErrors, ListSentencesResponses, ListTextsData, ListTextsErrors, ListTextsResponses, ListWordsData, ListWordsErrors, ListWordsResponses, NormalizeRootData, NormalizeRootErrors, NormalizeRootResponses, RemoveWordLinkData, RemoveWordLinkErrors, RemoveWordLinkResponses, ReplaceTokensData, ReplaceTokensErrors, ReplaceTokensResponses, SummarizeTextData, SummarizeTextErrors, SummarizeTextResponses, TransliterateSentenceData, TransliterateSentenceErrors, TransliterateSentenceResponses, TransliterateTextData, TransliterateTextErrors, TransliterateTextResponses, UpdateAnnotationData, UpdateAnnotationErrors, UpdateAnnotationResponses, UpdateRootData, UpdateRootErrors, UpdateRootResponses, UpdateSentenceData, UpdateSentenceErrors, UpdateSentenceResponses, UpdateTextData, UpdateTextErrors, UpdateTextResponses, UpdateWordData, UpdateWordErrors, UpdateWordResponses } from './types.gen';
+import type { AddDictionaryLinkData, AddDictionaryLinkErrors, AddDictionaryLinkResponses, AddWordLinkData, AddWordLinkErrors, AddWordLinkResponses, AutocompleteWordsData, AutocompleteWordsErrors, AutocompleteWordsResponses, AutoTokenizeData, AutoTokenizeErrors, AutoTokenizeResponses, ClearTokensData, ClearTokensErrors, ClearTokensResponses, CreateAnnotationData, CreateAnnotationErrors, CreateAnnotationResponses, CreateRootData, CreateRootErrors, CreateRootResponses, CreateSentenceData, CreateSentenceErrors, CreateSentenceResponses, CreateTextData, CreateTextErrors, CreateTextResponses, CreateWordData, CreateWordErrors, CreateWordResponses, DeleteAnnotationData, DeleteAnnotationErrors, DeleteAnnotationResponses, DeleteDictionaryLinkData, DeleteDictionaryLinkErrors, DeleteDictionaryLinkResponses, DeleteRootData, DeleteRootErrors, DeleteRootResponses, DeleteSentenceData, DeleteSentenceErrors, DeleteSentenceResponses, DeleteTextData, DeleteTextErrors, DeleteTextResponses, DeleteWordData, DeleteWordErrors, DeleteWordExampleData, DeleteWordExampleErrors, DeleteWordExampleResponses, DeleteWordResponses, GenerateWordExamplesData, GenerateWordExamplesErrors, GenerateWordExamplesResponses, GetAnnotationByIdData, GetAnnotationByIdErrors, GetAnnotationByIdResponses, GetAnnotationsForWordData, GetAnnotationsForWordErrors, GetAnnotationsForWordResponses, GetHealthData, GetHealthErrors, GetHealthResponses, GetRootByIdData, GetRootByIdErrors, GetRootByIdResponses, GetSentenceByIdData, GetSentenceByIdErrors, GetSentenceByIdResponses, GetSwaggerUiData, GetSwaggerUiErrors, GetSwaggerUiResponses, GetTextByIdData, GetTextByIdErrors, GetTextByIdResponses, GetWordByIdData, GetWordByIdErrors, GetWordByIdResponses, ListAnnotationsData, ListAnnotationsErrors, ListAnnotationsResponses, ListDictionaryLinksData, ListDictionaryLinksErrors, ListDictionaryLinksResponses, ListRootsData, ListRootsErrors, ListRootsResponses, ListSentencesData, ListSentencesErrors, ListSentencesResponses, ListTextsData, ListTextsErrors, ListTextsResponses, ListWordExamplesData, ListWordExamplesErrors, ListWordExamplesResponses, ListWordsData, ListWordsErrors, ListWordsResponses, NormalizeRootData, NormalizeRootErrors, NormalizeRootResponses, RemoveWordLinkData, RemoveWordLinkErrors, RemoveWordLinkResponses, ReplaceTokensData, ReplaceTokensErrors, ReplaceTokensResponses, SaveWordExampleData, SaveWordExampleErrors, SaveWordExampleResponses, SummarizeTextData, SummarizeTextErrors, SummarizeTextResponses, TransliterateSentenceData, TransliterateSentenceErrors, TransliterateSentenceResponses, TransliterateTextData, TransliterateTextErrors, TransliterateTextResponses, UpdateAnnotationData, UpdateAnnotationErrors, UpdateAnnotationResponses, UpdateRootData, UpdateRootErrors, UpdateRootResponses, UpdateSentenceData, UpdateSentenceErrors, UpdateSentenceResponses, UpdateTextData, UpdateTextErrors, UpdateTextResponses, UpdateWordData, UpdateWordErrors, UpdateWordResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -136,9 +136,31 @@ export const addDictionaryLink = <ThrowOnError extends boolean = false>(options:
 export const deleteDictionaryLink = <ThrowOnError extends boolean = false>(options: Options<DeleteDictionaryLinkData, ThrowOnError>) => (options.client ?? client).delete<DeleteDictionaryLinkResponses, DeleteDictionaryLinkErrors, ThrowOnError>({ url: '/api/v1/words/{id}/dictionary-links/{linkId}', ...options });
 
 /**
- * Generate AI example sentences for a word
+ * List saved example sentences for a word
  */
-export const generateWordExamples = <ThrowOnError extends boolean = false>(options: Options<GenerateWordExamplesData, ThrowOnError>) => (options.client ?? client).post<GenerateWordExamplesResponses, GenerateWordExamplesErrors, ThrowOnError>({ url: '/api/v1/words/{id}/examples', ...options });
+export const listWordExamples = <ThrowOnError extends boolean = false>(options: Options<ListWordExamplesData, ThrowOnError>) => (options.client ?? client).get<ListWordExamplesResponses, ListWordExamplesErrors, ThrowOnError>({ url: '/api/v1/words/{id}/examples', ...options });
+
+/**
+ * Save an example sentence for a word
+ */
+export const saveWordExample = <ThrowOnError extends boolean = false>(options: Options<SaveWordExampleData, ThrowOnError>) => (options.client ?? client).post<SaveWordExampleResponses, SaveWordExampleErrors, ThrowOnError>({
+    url: '/api/v1/words/{id}/examples',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete a saved example sentence
+ */
+export const deleteWordExample = <ThrowOnError extends boolean = false>(options: Options<DeleteWordExampleData, ThrowOnError>) => (options.client ?? client).delete<DeleteWordExampleResponses, DeleteWordExampleErrors, ThrowOnError>({ url: '/api/v1/words/{id}/examples/{exampleId}', ...options });
+
+/**
+ * Generate AI example sentences (ephemeral — does not persist)
+ */
+export const generateWordExamples = <ThrowOnError extends boolean = false>(options: Options<GenerateWordExamplesData, ThrowOnError>) => (options.client ?? client).post<GenerateWordExamplesResponses, GenerateWordExamplesErrors, ThrowOnError>({ url: '/api/v1/words/{id}/examples/generate', ...options });
 
 /**
  * List texts with optional filters

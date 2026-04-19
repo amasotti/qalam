@@ -10,7 +10,6 @@ object WordsTable : Table("words") {
     val arabicText = text("arabic_text")
     val transliteration = text("transliteration").nullable()
     val translation = text("translation").nullable()
-    val exampleSentence = text("example_sentence").nullable()
     val partOfSpeech = varchar("part_of_speech", 20)
     val dialect = varchar("dialect", 20)
     val difficulty = varchar("difficulty", 20)
@@ -34,6 +33,20 @@ object WordDictionaryLinksTable : Table("word_dictionary_links") {
     val wordId = uuid("word_id")
     val linkSource = varchar("source", 30)
     val url = text("url")
+
+    @OptIn(ExperimentalUuidApi::class)
+    override val primaryKey = PrimaryKey(id)
+}
+
+object WordExamplesTable : Table("word_examples") {
+    @OptIn(ExperimentalUuidApi::class)
+    val id = uuid("id")
+    @OptIn(ExperimentalUuidApi::class)
+    val wordId = uuid("word_id")
+    val arabic = text("arabic")
+    val transliteration = text("transliteration").nullable()
+    val translation = text("translation").nullable()
+    val createdAt = timestamp("created_at")
 
     @OptIn(ExperimentalUuidApi::class)
     override val primaryKey = PrimaryKey(id)

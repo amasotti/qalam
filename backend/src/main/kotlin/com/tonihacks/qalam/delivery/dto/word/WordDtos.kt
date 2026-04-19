@@ -2,6 +2,7 @@ package com.tonihacks.qalam.delivery.dto.word
 
 import com.tonihacks.qalam.domain.word.DictionaryLink
 import com.tonihacks.qalam.domain.word.Word
+import com.tonihacks.qalam.domain.word.WordExample
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,7 +10,6 @@ data class CreateWordRequest(
     val arabicText: String,
     val transliteration: String? = null,
     val translation: String? = null,
-    val exampleSentence: String? = null,
     val partOfSpeech: String = "UNKNOWN",
     val dialect: String = "MSA",
     val difficulty: String = "BEGINNER",
@@ -23,7 +23,6 @@ data class UpdateWordRequest(
     val arabicText: String? = null,
     val transliteration: String? = null,
     val translation: String? = null,
-    val exampleSentence: String? = null,
     val partOfSpeech: String? = null,
     val dialect: String? = null,
     val difficulty: String? = null,
@@ -39,7 +38,6 @@ data class WordResponse(
     val arabicText: String,
     val transliteration: String?,
     val translation: String?,
-    val exampleSentence: String?,
     val partOfSpeech: String,
     val dialect: String,
     val difficulty: String,
@@ -72,21 +70,36 @@ data class DictionaryLinkResponse(
 )
 
 @Serializable
-data class ExampleSentenceResponse(
+data class WordExampleResponse(
+    val id: String,
+    val arabic: String,
+    val transliteration: String?,
+    val translation: String?,
+    val createdAt: String,
+)
+
+@Serializable
+data class CreateWordExampleRequest(
+    val arabic: String,
+    val transliteration: String? = null,
+    val translation: String? = null,
+)
+
+@Serializable
+data class AiExampleSentence(
     val arabic: String,
     val transliteration: String,
     val translation: String,
 )
 
 @Serializable
-data class ExamplesResponse(val examples: List<ExampleSentenceResponse>)
+data class AiExamplesResponse(val examples: List<AiExampleSentence>)
 
 fun Word.toResponse() = WordResponse(
     id = id.toString(),
     arabicText = arabicText,
     transliteration = transliteration,
     translation = translation,
-    exampleSentence = exampleSentence,
     partOfSpeech = partOfSpeech.name,
     dialect = dialect.name,
     difficulty = difficulty.name,
@@ -102,6 +115,14 @@ fun Word.toAutocompleteResponse() = WordAutocompleteResponse(
     id = id.toString(),
     arabicText = arabicText,
     translation = translation,
+)
+
+fun WordExample.toResponse() = WordExampleResponse(
+    id = id.toString(),
+    arabic = arabic,
+    transliteration = transliteration,
+    translation = translation,
+    createdAt = createdAt.toString(),
 )
 
 fun DictionaryLink.toResponse() = DictionaryLinkResponse(

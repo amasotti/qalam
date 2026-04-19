@@ -1,0 +1,230 @@
+# Changelog
+
+All notable changes to this project will be documented in this file (created with git cliff).
+
+## [0.0.1-alpha.1] - 2026-04-19
+
+### 🚀 Features
+
+
+- Blank init repo ([ea870c4](https://github.com/amasotti/qalam/commit/ea870c48b2bc0f5b6ead841650f92533cacbcfd1))
+
+- Spec driven steering files ([8304158](https://github.com/amasotti/qalam/commit/83041583b10c55f2ef99395d48565b4b633c8b21))
+
+- Setup backend ([4691fcd](https://github.com/amasotti/qalam/commit/4691fcd2b6e64767f0e52df002874621b825448e))
+
+- Nix setup ([c6c9fac](https://github.com/amasotti/qalam/commit/c6c9fac608c54cf5991934dce719f86ea50e8f74))
+
+- Add initial application structure and dependencies ([82f2de9](https://github.com/amasotti/qalam/commit/82f2de9be71f9dec839085c34040fa77c59507d4))
+
+- *(M0)* Add CI configuration for backend tests with Gradle ([8c21eff](https://github.com/amasotti/qalam/commit/8c21eff7fb564edc2795e0d1dc564baba0454338))
+
+- Update CI configuration to use Nix and improve test execution ([273d91e](https://github.com/amasotti/qalam/commit/273d91ea18484d749ed7ef87b873dd3ba5ffaab2))
+
+- *(M1)* Setup of ktor framework ([9deadf2](https://github.com/amasotti/qalam/commit/9deadf2141c180ad168b8b1e4801641a9808c2ff))
+
+- *(2.1)* Scaffold frontend ([8e21c85](https://github.com/amasotti/qalam/commit/8e21c851850ea72da18ec71c9208f7bfb358ca27))
+
+- Add favicon ([bf45f87](https://github.com/amasotti/qalam/commit/bf45f87f547c8505642d6cb5443eacbc9c5dcda6))
+
+- Add font support ([50cdec1](https://github.com/amasotti/qalam/commit/50cdec155e3dfafba872d2b9e5b6129bc92bf811))
+
+- Main layout and app.css modularization ([84bce3d](https://github.com/amasotti/qalam/commit/84bce3deac3e061123a9969b4e8cafcb36e06c69))
+
+- Add tanstack query for svelte ([1e5fae0](https://github.com/amasotti/qalam/commit/1e5fae0e0d98a6f5102e311b2a5bd9a87c8a3eda))
+
+- Add local proxy for backend via vite ([e05b878](https://github.com/amasotti/qalam/commit/e05b878bd001016454870dd0443516b9fe314820))
+
+- Main fe layout ([a9eac16](https://github.com/amasotti/qalam/commit/a9eac162ae6199bee8099a6e33fe6ceaf49c91e3))
+
+- Add migration for root table ([b0be86a](https://github.com/amasotti/qalam/commit/b0be86ac6b8cabf0a6424753b74cfbb7c5a874eb))
+
+- Root model and root normalizer ([28cb49a](https://github.com/amasotti/qalam/commit/28cb49a3d0e819be99767ceb937073d9cb497f79))
+
+- Root db layer ([1e1e5d9](https://github.com/amasotti/qalam/commit/1e1e5d9e96cb7603121163ab7a70b70418c41823))
+
+- Implement the root service ([3c424c2](https://github.com/amasotti/qalam/commit/3c424c2efeabcf4bf5848ba76dbc9e32f4e46e1e))
+
+- Implement routing for roots endpoints ([f2c92fc](https://github.com/amasotti/qalam/commit/f2c92fc6517f539f0854ae48a6b9d01a0f224ddb))
+
+- Update CreateRootRequest to use 'root' instead of 'letters' ([c42c4ae](https://github.com/amasotti/qalam/commit/c42c4aef650df263a05c6b862226de5caa17fee6))
+
+- Containerize backend ([d01667f](https://github.com/amasotti/qalam/commit/d01667f874c81dd6e16ecc7b59425fa70c693581))
+
+- Add vocabulary management tables and indexes for words, dictionary links, and progress tracking ([66ed434](https://github.com/amasotti/qalam/commit/66ed4346a5cf275dff50ba3dd59d6a3551957b9b))
+
+- Word entity and related classes ([be97583](https://github.com/amasotti/qalam/commit/be9758357d81f7c9aac9feffda032cfcbb7bd8b8))
+
+- Word routing ([d93904c](https://github.com/amasotti/qalam/commit/d93904c554eee55a658fdc0f43d1b77283bbdc07))
+
+- AI client for word examples ([d158b71](https://github.com/amasotti/qalam/commit/d158b71e8ed75a8501a944a8383c93db7c26284e))
+
+- Add OpenAPI TypeScript configuration and auto-generated client files ([1a621ec](https://github.com/amasotti/qalam/commit/1a621ec573fc529cd3048bd1f3274f8a0b72e41f))
+
+- Design texts endpoints ([8b98530](https://github.com/amasotti/qalam/commit/8b985307b45ee731a4d3ade0202f3c8e07d324dc))
+
+- Implement texts and text_tags tables with initial schema and triggers ([334211e](https://github.com/amasotti/qalam/commit/334211e0ae3ebe0d76c8627920e097663f7d0932))
+
+- Refactor application module setup and add test module for Koin integration ([44078bd](https://github.com/amasotti/qalam/commit/44078bda38f7f43b8981dd7ce83c116f21b54407))
+
+- Add text management module with repository, service, and routes ([835fc19](https://github.com/amasotti/qalam/commit/835fc197cdb9c1e6bda09fb2df4cecbede7e2406))
+
+- Implement domain, infrastructure, and application layers for text management with CRUD operations and routing ([a85ec47](https://github.com/amasotti/qalam/commit/a85ec4772245aab042b2fb4fd639fad1412a796a))
+
+- Api model for sentence endpoints ([2794ae0](https://github.com/amasotti/qalam/commit/2794ae0ddd4a121ccbf84e49f9c8dcae2f12b644))
+
+- Db migrations and repositories for sentences ([acb1647](https://github.com/amasotti/qalam/commit/acb1647e983a02798dddbc0c897c6254fb1d9d8d))
+
+- Db migrations and repositories for sentences ([0c576d6](https://github.com/amasotti/qalam/commit/0c576d61590d03a090441018cbe9790d32db005d))
+
+- Sentence dto and classes ([8914e49](https://github.com/amasotti/qalam/commit/8914e49126b963e28f3d994896fc104041cadee1))
+
+- Implement auto-tokenization and transliteration for Arabic sentences ([9e739f4](https://github.com/amasotti/qalam/commit/9e739f4da710ff068e582cb5d3dcb405e5e974c0))
+
+- Add Kover plugin for code coverage ([56ee34c](https://github.com/amasotti/qalam/commit/56ee34c15c557d65f6b6ad9008345a8ffd5caa94))
+
+- Add endpoints for annotations and translitteration ([1cc3922](https://github.com/amasotti/qalam/commit/1cc3922a8fda136dd0f01b5b72e365b3f91fe7f6))
+
+- *(M7)* Implement annotations domain, persistence, and REST API ([e2a727d](https://github.com/amasotti/qalam/commit/e2a727de3151a211196b15c7229c627da0557f5a))
+
+- *(M10)* Implement transliteration service and REST endpoint ([7967445](https://github.com/amasotti/qalam/commit/7967445ce375e9cc44d18ee55e96194499e526c7))
+
+- Renew banner ([5a2ed1d](https://github.com/amasotti/qalam/commit/5a2ed1d3033afe19f4464e7fb71b44c760ac3bba))
+
+- Foundation of frontend and linting ([f507042](https://github.com/amasotti/qalam/commit/f507042670ff8cfc6bf2274bc61c2f87f932ed8e))
+
+- M14 - root page ([6a16cfd](https://github.com/amasotti/qalam/commit/6a16cfd4dae4232172dfd33b5a9ffd9daaa13d39))
+
+- Support markdown ([3be13db](https://github.com/amasotti/qalam/commit/3be13dbc47c8166535d16b3e1c225f1fc4b6df17))
+
+- Homepage redesign ([0bf96ea](https://github.com/amasotti/qalam/commit/0bf96ea012060320df3f49f6411bc9327e44daaa))
+
+- Homepage redesign v2 ([3326838](https://github.com/amasotti/qalam/commit/3326838aa28410edca5c774e593e61dcf201d967))
+
+- M15 - vocabulary ([ffb23a5](https://github.com/amasotti/qalam/commit/ffb23a5fce38ea28a0d89bf1909680f9ca81eebd))
+
+- Autofill dictionary links ([37a5a99](https://github.com/amasotti/qalam/commit/37a5a99d393ec47310d093ac15e497e77990a7c8))
+
+- Word example setup ([ea8dbf5](https://github.com/amasotti/qalam/commit/ea8dbf5368828116ff36f010faa5acd7cefdc002))
+
+- Word example setup ([b62d562](https://github.com/amasotti/qalam/commit/b62d56256e9a9f1d3e3d97f922bd23f41e378d1f))
+
+- Word example setup (frontend adjustments) ([35b10ce](https://github.com/amasotti/qalam/commit/35b10ce142062f65419eb2ae8a6282f0813aa052))
+
+- Enhance dictionary links UI and functionality ([ac3f810](https://github.com/amasotti/qalam/commit/ac3f8108839c76e4ee65c853c8391314639c737c))
+
+- Implement auto-fill for pronunciation URL and enhance button styles ([58bb125](https://github.com/amasotti/qalam/commit/58bb125c3eff5661e8b71f820c47d1c7075de7b7))
+
+- M16 - text feature ([ca471df](https://github.com/amasotti/qalam/commit/ca471df04dc4cb35570e11c26c3577f6aecc812b))
+
+- Enhance text editing features with collapsible info panel and improved UI ([fbf5efa](https://github.com/amasotti/qalam/commit/fbf5efaeb1c544cf2f8fa2956b1d8a44d1b8051c))
+
+### 🐛 Bug Fixes
+
+
+- Ai-client injection for tests ([ae9d596](https://github.com/amasotti/qalam/commit/ae9d5969f33107c721a3d5500333a42af82c91cd))
+
+### 🚜 Refactor
+
+
+- Remove deprecated swagger codegen v3, use generate-types in frontend ([153a521](https://github.com/amasotti/qalam/commit/153a521d5f6fba6e0145c0225937c72fab86bff5))
+
+- Avoid having a separate entry point for tests ([a3df675](https://github.com/amasotti/qalam/commit/a3df67544c5a86608f621a637f6bf564451fd9ef))
+
+- Change const to let for variable declarations in Svelte components ([55e56a7](https://github.com/amasotti/qalam/commit/55e56a79f2d48d3baf6e512aa0364e98e2ee2956))
+
+- General purpose extension for Exposed ([f8adcc1](https://github.com/amasotti/qalam/commit/f8adcc1cf8da45ceae108aeed0ace87489b911e9))
+
+### 🧪 Testing
+
+
+- Word service ([4e12a5e](https://github.com/amasotti/qalam/commit/4e12a5e92ba4ff300a051d33c86874c3261d9426))
+
+- Complete M5 write tests for text entities ([9f31a9e](https://github.com/amasotti/qalam/commit/9f31a9e35bb331589d9c3ec69d39b2b64ad30156))
+
+- Sentence milestone ([478434f](https://github.com/amasotti/qalam/commit/478434f360f1b378f368c07046b4dde194beaefd))
+
+- Improve setup base integration test ([3198102](https://github.com/amasotti/qalam/commit/3198102e81bf6e64e6b652465ca9e93088729835))
+
+- Fix word tests after refactoring ([934553b](https://github.com/amasotti/qalam/commit/934553b38e130bd03da5f3c22351977e34ec2c2b))
+
+- Post-refactoring this test is not needed anymore ([2f90c9d](https://github.com/amasotti/qalam/commit/2f90c9d1c35ab38e3c2e33cc609dd082cc36cfc9))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Rename to qalam ([3880e3a](https://github.com/amasotti/qalam/commit/3880e3a85baeeaffc584bd3486be0987e8202440))
+
+- Add claude settings ([bf18235](https://github.com/amasotti/qalam/commit/bf18235e0c8daac6847e499f6e1663717eddfbc9))
+
+- *(0.4-0.5)* Skeleton setup justfile ([d59d6da](https://github.com/amasotti/qalam/commit/d59d6da1482774383b0547cf2952602f418398c5))
+
+- Add claude.md ([0388fdf](https://github.com/amasotti/qalam/commit/0388fdfd23b32da1a6c712ad7ab2902de2370ee0))
+
+- Agents.md is a symlink to claude ([727823e](https://github.com/amasotti/qalam/commit/727823e626c9f2b40ee3b0c2582d6abbf02e1d12))
+
+- Adjust permissions ([4e8ce21](https://github.com/amasotti/qalam/commit/4e8ce213e8ad2be1bdfcc12ee9977ffbc461f781))
+
+- Update plan ([a2eed42](https://github.com/amasotti/qalam/commit/a2eed420786783503b053d34f8ea8e717077115b))
+
+- Use latest vesions for nix actions ([4ae906c](https://github.com/amasotti/qalam/commit/4ae906cc2da06d2fa59c572796ddd3b5b660ed2c))
+
+- Rename CI ([0aad2c3](https://github.com/amasotti/qalam/commit/0aad2c3b0f587462080732917389044122e1d9fd))
+
+- Remove cache (pay to use) ([758a6f5](https://github.com/amasotti/qalam/commit/758a6f5f22d38822697ba002d0a041e9b57e3b0d))
+
+- Allow ktor wildcard import ([db57181](https://github.com/amasotti/qalam/commit/db571813b6d88baaaac58a453dc1f93e99259897))
+
+- Enable native access for JavaExec tasks ([587a35b](https://github.com/amasotti/qalam/commit/587a35b794347f56737457f7077c02ea601af4bd))
+
+- Add cors whitelist for svelte frontend ([f71e8bc](https://github.com/amasotti/qalam/commit/f71e8bca7513b1c1315497e982b119bff0d2fba2))
+
+- Test fe stack ([9ab1868](https://github.com/amasotti/qalam/commit/9ab186813754a62646c5f346bf4a476253833ba7))
+
+- *(ai)* Improve task management and context budget ([b29a00f](https://github.com/amasotti/qalam/commit/b29a00f2b60344419c2e65facc3ea8b5fd3a7cc5))
+
+- Prepare new task file ([155f215](https://github.com/amasotti/qalam/commit/155f215491413d203ab4a019f6efb2fbad816d91))
+
+- Add note on frontend tooling ([c6ff126](https://github.com/amasotti/qalam/commit/c6ff126a681e8ee817244f13af7e334e88df2469))
+
+- Update kotest and add opt-in for UUID ([e3ed812](https://github.com/amasotti/qalam/commit/e3ed812cbd464ec1db927a96500b55c670f74758))
+
+- Remove nix - overkill for this project and setup ([7008ae3](https://github.com/amasotti/qalam/commit/7008ae3e952e507e0e79e2fa524964041df27749))
+
+- Fix and update action ([320f62f](https://github.com/amasotti/qalam/commit/320f62f411cfbf04c9643599ca5db5cbf7993e2e))
+
+- Update detekt config ([0c8147d](https://github.com/amasotti/qalam/commit/0c8147df9f30bc7e9a38eefaf6326cfb2ec9b624))
+
+- Add DB triggers for updated NOW ([1710746](https://github.com/amasotti/qalam/commit/1710746321917846d99a229c15fc56f7548ed3a9))
+
+- Improve repositories using either blocks ([2280303](https://github.com/amasotti/qalam/commit/2280303a151e1a226b31d90de0d214c942b5546a))
+
+- Update application port to 8085 (conflict with other apps) ([5403ac3](https://github.com/amasotti/qalam/commit/5403ac3f4e4ffc67c7120499d1d989b51d4367a0))
+
+- Relax detekt rules ([f5279b9](https://github.com/amasotti/qalam/commit/f5279b979164a9e57eb7545e11c95ce7d315716b))
+
+- Update .gitignore and documentation.yaml for new directories and API descriptions ([ea08bef](https://github.com/amasotti/qalam/commit/ea08bef83ed2cfc6aea3e4571bb933b850034ccd))
+
+- Remove nonsense requirement ([e82d75c](https://github.com/amasotti/qalam/commit/e82d75caa6a3499e7ceb96cc9cc4f87bdcc24b74))
+
+- Minimal changes in banner ([6ed253a](https://github.com/amasotti/qalam/commit/6ed253aed43f35eb71d5f15b59cdfe027a25aa58))
+
+- Lint ([8d48ca9](https://github.com/amasotti/qalam/commit/8d48ca9c0c2694bce1640cfc5b2dd7cc4b7c2d21))
+
+- Tooling - dependabot and cliff.toml ([30d756d](https://github.com/amasotti/qalam/commit/30d756db7a1b65e43cfc5f5abdf63c63a90b5aae))
+
+- Update deps ([9a6520b](https://github.com/amasotti/qalam/commit/9a6520b67fd6fa7d410b98803b7f32f1b6868819))
+
+- Update deps frontend and lint ([08195e8](https://github.com/amasotti/qalam/commit/08195e871d8e5414b79dbe7e9eba324327db8c18))
+
+- Improve forvo handling ([890d4e0](https://github.com/amasotti/qalam/commit/890d4e070e1bdfb19f02c0b6508d19797f7c6d3b))
+
+- Improve forvo handling ([93f6dfb](https://github.com/amasotti/qalam/commit/93f6dfb01d07b010dcf1ddbeaee642ae8499b603))
+
+- Clean up imports and improve code formatting in multiple components ([ac70838](https://github.com/amasotti/qalam/commit/ac708385364f8366affb316449effaccac32d1a6))
+
+- Add linter overrides for Svelte files to adjust style and correctness rules ([dafd7f5](https://github.com/amasotti/qalam/commit/dafd7f58c402ea1090850e58f1f43ad9c694d779))
+
+- Lint ([0646e7c](https://github.com/amasotti/qalam/commit/0646e7cbf525a08e8fc2672b044b5095d6bf89a4))
+
+<!-- generated by git-cliff -->

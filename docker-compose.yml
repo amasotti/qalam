@@ -20,6 +20,7 @@ services:
 
   db:
     image: postgres:17-alpine
+    container_name: qalam-db
     environment:
       POSTGRES_DB: qalam
       POSTGRES_USER: qalam
@@ -28,12 +29,30 @@ services:
       - "5431:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./backups:/backups
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U qalam -d qalam"]
       interval: 5s
       timeout: 5s
       retries: 10
       start_period: 10s
+    labels:
+      ofelia.enabled: "true"
+      ofelia.job-exec.pg-dump.schedule: "@hourly"
+      ofelia.job-exec.pg-dump.command: "sh -c 'pg_dump -U qalam -Fc qalam > /backups/qalam_$(date +%Y%m%d_%H%M%S).dump'"
+    networks:
+      - qalam-network
+
+  ofelia:
+    image: mcuadros/ofelia:latest
+    container_name: qalam-ofelia
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - qalam-network
   backend:

@@ -15,3 +15,8 @@
 .direnv/
 
 .scratch
+
+# pg_dump backups (mounted into db container)
+backups/*.dump
+backups/*.sql
+backups/*.gz

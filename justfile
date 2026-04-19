@@ -49,6 +49,19 @@ db:
     docker compose up -d db
     docker compose exec -T db pg_isready -U qalam -d qalam
 
+# On-demand pg_dump (custom format, compressed) — written to ./backups/
+dump:
+    docker exec qalam-db sh -c 'pg_dump -U qalam -Fc qalam > /backups/qalam_$(date +%Y%m%d_%H%M%S).dump'
+    @echo "Dump written to ./backups/"
+
+# List available dumps
+dump-ls:
+    @ls -lh backups/ 2>/dev/null || echo "No backups yet."
+
+# Inspect a dump's table of contents without restoring: just dump-inspect qalam_20260419_120000.dump
+dump-inspect file:
+    docker exec qalam-db pg_restore --list /backups/{{file}}
+
 # ── Code quality & tooling ───────────────────────────────────────────────────
 
 # Run backend tests (Testcontainers spins its own Postgres — no secrets needed)

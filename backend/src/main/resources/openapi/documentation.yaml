@@ -1569,18 +1569,22 @@ components:
           type: string
           nullable: true
         partOfSpeech:
+          type: string
           nullable: true
           allOf:
             - $ref: "#/components/schemas/PartOfSpeech"
         dialect:
+          type: string
           nullable: true
           allOf:
             - $ref: "#/components/schemas/Dialect"
         difficulty:
+          type: string
           nullable: true
           allOf:
             - $ref: "#/components/schemas/Difficulty"
         masteryLevel:
+          type: string
           nullable: true
           allOf:
             - $ref: "#/components/schemas/MasteryLevel"
@@ -1770,10 +1774,12 @@ components:
           type: string
           nullable: true
         difficulty:
+          type: string
           nullable: true
           allOf:
             - $ref: "#/components/schemas/Difficulty"
         dialect:
+          type: string
           nullable: true
           allOf:
             - $ref: "#/components/schemas/Dialect"

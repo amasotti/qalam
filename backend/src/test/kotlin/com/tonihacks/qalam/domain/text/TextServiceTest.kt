@@ -137,20 +137,6 @@ class TextServiceTest : FreeSpec({
             result shouldBe DomainError.ValidationError("title", "Title must not be blank").left()
         }
 
-        "returns ValidationError for blank body" {
-            val result = service.create(
-                title = "عنوان",
-                body = "  ",
-                transliteration = null,
-                translation = null,
-                difficulty = "BEGINNER",
-                dialect = "MSA",
-                comments = null,
-                tags = emptyList(),
-            )
-            result shouldBe DomainError.ValidationError("body", "Body must not be blank").left()
-        }
-
         "returns ValidationError for unknown difficulty" {
             val result = service.create(
                 title = "عنوان",

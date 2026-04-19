@@ -538,6 +538,10 @@ export type ListWordsData = {
          * Arabic text substring search
          */
         q?: string;
+        /**
+         * Filter words by root UUID
+         */
+        rootId?: string;
         dialect?: Dialect;
         difficulty?: Difficulty;
         partOfSpeech?: PartOfSpeech;

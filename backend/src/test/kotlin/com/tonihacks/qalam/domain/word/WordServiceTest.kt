@@ -32,7 +32,6 @@ class WordServiceTest : FunSpec({
         arabicText = "كَتَبَ",
         transliteration = "kataba",
         translation = "to write",
-        exampleSentence = null,
         partOfSpeech = PartOfSpeech.VERB,
         dialect = Dialect.MSA,
         difficulty = Difficulty.BEGINNER,

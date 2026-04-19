@@ -294,21 +294,5 @@ class WordsIntegrationTest : BaseIntegrationTest() {
                 }
             }
         }
-
-        "POST /api/v1/words/{id}/examples" - {
-            "returns 503 when AI is not configured" {
-                testApp { client ->
-                    val created = client.post("/api/v1/words") {
-                        contentType(ContentType.Application.Json)
-                        setBody(katabJson)
-                    }
-                    val id = Regex(""""id":"([^"]+)"""").find(created.bodyAsText())!!.groupValues[1]
-
-                    val response = client.post("/api/v1/words/$id/examples")
-                    response.status shouldBe HttpStatusCode.ServiceUnavailable
-                    response.bodyAsText() shouldContain "AI_NOT_CONFIGURED"
-                }
-            }
-        }
     }
 }

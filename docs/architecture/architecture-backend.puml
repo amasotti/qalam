@@ -1,0 +1,109 @@
+@startuml Qalam — Backend Architecture
+!theme plain
+skinparam defaultFontName Helvetica
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #444444
+skinparam ArrowThickness 1.5
+skinparam componentStyle rectangle
+
+title Qalam Backend — Clean / Onion Architecture\n(dependencies point inward only)
+
+' ── Delivery layer ────────────────────────────────────────────────────────────
+package "Delivery  [delivery/]" #E3F2FD {
+    component "Ktor Routes\n(routing DSL)" as routes
+    component "DTOs\n(kotlinx.serialization)" as dtos
+    component "ErrorMapping\n(DomainError → HTTP status)" as errmap
+    component "OpenAPI / Swagger UI\n(/api/v1/openapi.json)" as openapi
+}
+
+' ── Application layer ─────────────────────────────────────────────────────────
+package "Application  [services]" #E8F5E9 {
+    component "RootService" as svcRoot
+    component "WordService" as svcWord
+    component "TextService" as svcText
+    component "SentenceService" as svcSentence
+    component "AnnotationService" as svcAnnotation
+}
+
+' ── Domain layer ──────────────────────────────────────────────────────────────
+package "Domain  [domain/]" #FFF8E1 {
+    component "Entities\nRoot · Word · Text\nSentence · Annotation" as entities
+    component "DomainError\n(sealed class — no framework deps)" as domErr
+    interface "Repository Interfaces\n(IRootRepo · IWordRepo · …)" as repoIface
+}
+
+' ── Infrastructure layer ──────────────────────────────────────────────────────
+package "Infrastructure  [infrastructure/]" #FCE4EC {
+    component "Exposed Repositories\n(implements repo interfaces)" as repos
+    component "Exposed Tables\n(SQL DSL — no DAO)" as tables
+    component "AiClient\n(OpenRouter / OpenAI-compat.)" as aiClient
+    component "Koin Module\n(DI wiring at startup)" as koin
+    component "Flyway Migrations\n(V001 … V0NN .sql)" as flyway
+}
+
+database "PostgreSQL 17" as pg {
+    storage "uuid-ossp\npg_trgm\nunaccent" as pgExt
+}
+
+cloud "OpenRouter API" as openrouterApi
+
+' ── Dependency arrows ─────────────────────────────────────────────────────────
+routes    -->  dtos
+routes    -->  errmap
+routes    -->  svcRoot
+routes    -->  svcWord
+routes    -->  svcText
+routes    -->  svcSentence
+routes    -->  svcAnnotation
+
+svcRoot      --> entities
+svcRoot      --> domErr
+svcRoot      --> repoIface
+svcWord      --> entities
+svcWord      --> domErr
+svcWord      --> repoIface
+svcText      --> entities
+svcText      --> domErr
+svcText      --> repoIface
+svcSentence  --> entities
+svcSentence  --> domErr
+svcSentence  --> repoIface
+svcAnnotation --> entities
+svcAnnotation --> domErr
+svcAnnotation --> repoIface
+svcText      ..> aiClient : <<optional>>\nAI_NOT_CONFIGURED\n→ 503 gracefully
+
+repos     ..|>  repoIface : implements
+repos     -->   tables
+tables    -->   pg
+flyway    -->   pg
+
+koin      -->   repos        : binds impl
+koin      -->   svcRoot      : injects
+koin      -->   svcWord      : injects
+koin      -->   svcText      : injects
+koin      -->   svcSentence  : injects
+koin      -->   svcAnnotation : injects
+
+aiClient  -->  openrouterApi : HTTPS
+
+' ── Notes ─────────────────────────────────────────────────────────────────────
+note right of routes
+  Services return Either<DomainError, T>
+  Routes fold the result:
+    Left  → respondError (mapped HTTP status)
+    Right → respond(result)
+end note
+
+note right of domErr
+  Zero framework or ORM imports.
+  Pure Kotlin — fully testable.
+end note
+
+note bottom of koin
+  Constructor injection only.
+  No KoinComponent sprinkled
+  across the codebase.
+end note
+
+@enduml

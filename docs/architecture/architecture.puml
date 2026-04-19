@@ -1,0 +1,51 @@
+@startuml Qalam — System Architecture
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+skinparam defaultFontName Helvetica
+LAYOUT_WITH_LEGEND()
+
+title Qalam — Container Diagram
+
+' ── Actors ──────────────────────────────────────────────────────────────────
+Person(user, "Toni", "Single user.\nArabic learner.")
+
+' ── External systems ─────────────────────────────────────────────────────────
+System_Ext(openrouter, "OpenRouter", "AI gateway\n(OpenAI-compatible API)")
+System_Ext(doppler,    "Doppler",    "Secret management.\nInjects env vars at container start.")
+System_Ext(ghcr,       "GitHub Actions + GHCR", "CI — lint / test / build.\nRelease images on git tag push.")
+
+' ── Docker Compose stack ─────────────────────────────────────────────────────
+System_Boundary(compose, "Docker Compose — qalam") {
+
+    Container(traefik, "Traefik v3", "Edge router", "Single ingress on :80.\nLabel-based auto-routing.\nDashboard on :8080.")
+
+    Container(frontend, "Frontend", "SvelteKit 5 · Vite · Node 24 Alpine", "Arabic learning SPA.\nTexts · Vocabulary · Roots\nSRS training · Annotations.\nHot-reload in dev (Vite dev server).\nProduction: Caddy serving static build.")
+
+    Container(backend, "Backend", "Kotlin 2 · Ktor 3 · JVM 25 · Netty", "REST API under /api/v1/.\nClean / Onion architecture.\nOpenAPI spec → /api/v1/openapi.json\nSwagger UI → /api/v1/swagger-ui.")
+
+    ContainerDb(db, "PostgreSQL 17", "Relational database", "Texts · Sentences · Words\nRoots · Annotations\nVocabulary (SRS state).\nExtensions: uuid-ossp · pg_trgm · unaccent.")
+
+    Container(traefik_dash, "Traefik Dashboard", "Traefik built-in", "Live routing & service health\nvisible at :8080.\n(local dev only — insecure mode)")
+}
+
+' ── Future services (planned, not yet implemented) ────────────────────────────
+System_Boundary(future, "Planned additions (docker compose --profile monitoring)") {
+    Container(grafana,  "Grafana",        "Monitoring",        "Dashboards")
+    Container(ofelia,   "Ofelia",         "Docker cron runner","Scheduled DB backups")
+}
+
+' ── Relationships ─────────────────────────────────────────────────────────────
+Rel(user,       traefik,   "HTTP",              ":80")
+Rel(traefik,    frontend,  "/* routes",         ":5173 dev  /  :80 prod (Caddy)")
+Rel(traefik,    backend,   "/api/* · /health",  ":8085")
+Rel(traefik,    traefik_dash, "internal",       ":8080")
+
+Rel(backend,    db,          "SQL via Exposed DSL", "JDBC / :5432")
+Rel(backend,    openrouter,  "HTTPS",               "OpenAI-compat. completions API\n(degrades gracefully if unconfigured)")
+Rel(doppler,    backend,     "Env vars injected",   "DOPPLER_TOKEN at startup")
+Rel(ghcr,       compose,     "CI secrets",          "DOPPLER_TOKEN in Actions")
+
+Rel(ofelia,  db, "pg_dump", "scheduled backup")
+Rel(grafana, db, "metrics", "postgres-exporter")
+
+@enduml

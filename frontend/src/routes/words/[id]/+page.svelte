@@ -3,12 +3,19 @@ import { ChevronLeft, ExternalLink, Pencil, Trash2 } from 'lucide-svelte';
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import type { UpdateWordRequest } from '$lib/api/types.gen';
+import { Badge } from '$lib/components/ui/badge';
+import { Button } from '$lib/components/ui/button';
 import AiExamples from '$lib/components/words/AiExamples.svelte';
 import DictionaryLinks from '$lib/components/words/DictionaryLinks.svelte';
 import WordForm from '$lib/components/words/WordForm.svelte';
-import { Badge } from '$lib/components/ui/badge';
-import { Button } from '$lib/components/ui/button';
-import { useDeleteWord, useDeleteWordExample, useUpdateWord, useWord, useWordAnnotations, useWordExamples } from '$lib/stores/words';
+import {
+	useDeleteWord,
+	useDeleteWordExample,
+	useUpdateWord,
+	useWord,
+	useWordAnnotations,
+	useWordExamples,
+} from '$lib/stores/words';
 
 const id = $derived(page.params.id ?? '');
 const word = useWord(() => id);

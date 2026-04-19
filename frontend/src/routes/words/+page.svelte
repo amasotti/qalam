@@ -1,9 +1,9 @@
 <script lang="ts">
 import { Plus, Search } from 'lucide-svelte';
-import { Button } from '$lib/components/ui/button';
-import { Badge } from '$lib/components/ui/badge';
-import { useWords } from '$lib/stores/words';
 import type { Dialect, Difficulty, MasteryLevel, PartOfSpeech } from '$lib/api/types.gen';
+import { Badge } from '$lib/components/ui/badge';
+import { Button } from '$lib/components/ui/button';
+import { useWords } from '$lib/stores/words';
 
 const PAGE_SIZE = 30;
 
@@ -40,7 +40,7 @@ const total = $derived(words.data?.total ?? 0);
 const totalPages = $derived(Math.max(1, Math.ceil(total / PAGE_SIZE)));
 
 const hasActiveFilters = $derived(
-	!!debouncedSearch.trim() || !!dialect || !!difficulty || !!partOfSpeech || !!masteryLevel,
+	!!debouncedSearch.trim() || !!dialect || !!difficulty || !!partOfSpeech || !!masteryLevel
 );
 
 function formatEnum(value: string): string {

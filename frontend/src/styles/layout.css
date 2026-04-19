@@ -1298,7 +1298,9 @@
 	color: hsl(var(--muted-foreground));
 	cursor: pointer;
 	white-space: nowrap;
-	transition: background 120ms ease, color 120ms ease;
+	transition:
+		background 120ms ease,
+		color 120ms ease;
 }
 
 .word-form-forvo-btn:hover {
@@ -1480,14 +1482,46 @@
 }
 
 /* Per-source colors */
-.dict-badge-almany          { background: hsl(217 91% 93%); color: hsl(217 80% 32%); border-color: hsl(217 70% 78%); }
-.dict-badge-living_arabic   { background: hsl(180 58% 90%); color: hsl(180 70% 24%); border-color: hsl(180 50% 72%); }
-.dict-badge-derja_ninja     { background: hsl(271 80% 93%); color: hsl(271 60% 38%); border-color: hsl(271 55% 78%); }
-.dict-badge-reverso         { background: hsl(24 90% 92%);  color: hsl(24 75% 28%);  border-color: hsl(24 75% 76%); }
-.dict-badge-wiktionary      { background: hsl(var(--muted)); color: hsl(var(--muted-foreground)); border-color: hsl(var(--border)); }
-.dict-badge-arabic_student_dictionary { background: hsl(142 60% 90%); color: hsl(142 76% 24%); border-color: hsl(142 50% 72%); }
-.dict-badge-langenscheidt   { background: hsl(48 95% 90%);  color: hsl(48 80% 26%);  border-color: hsl(48 75% 70%); }
-.dict-badge-custom          { background: hsl(var(--muted)); color: hsl(var(--foreground)); border-color: hsl(var(--border)); }
+.dict-badge-almany {
+	background: hsl(217 91% 93%);
+	color: hsl(217 80% 32%);
+	border-color: hsl(217 70% 78%);
+}
+.dict-badge-living_arabic {
+	background: hsl(180 58% 90%);
+	color: hsl(180 70% 24%);
+	border-color: hsl(180 50% 72%);
+}
+.dict-badge-derja_ninja {
+	background: hsl(271 80% 93%);
+	color: hsl(271 60% 38%);
+	border-color: hsl(271 55% 78%);
+}
+.dict-badge-reverso {
+	background: hsl(24 90% 92%);
+	color: hsl(24 75% 28%);
+	border-color: hsl(24 75% 76%);
+}
+.dict-badge-wiktionary {
+	background: hsl(var(--muted));
+	color: hsl(var(--muted-foreground));
+	border-color: hsl(var(--border));
+}
+.dict-badge-arabic_student_dictionary {
+	background: hsl(142 60% 90%);
+	color: hsl(142 76% 24%);
+	border-color: hsl(142 50% 72%);
+}
+.dict-badge-langenscheidt {
+	background: hsl(48 95% 90%);
+	color: hsl(48 80% 26%);
+	border-color: hsl(48 75% 70%);
+}
+.dict-badge-custom {
+	background: hsl(var(--muted));
+	color: hsl(var(--foreground));
+	border-color: hsl(var(--border));
+}
 
 /* Manual add section */
 .dict-links-manual {
@@ -1917,7 +1951,9 @@
 	color: hsl(var(--muted-foreground));
 	padding: 0.125rem 0.25rem;
 	border-radius: var(--radius-sm);
-	transition: color 120ms ease, background 120ms ease;
+	transition:
+		color 120ms ease,
+		background 120ms ease;
 }
 
 .word-example-delete:hover {

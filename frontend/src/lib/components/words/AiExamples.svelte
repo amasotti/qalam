@@ -1,86 +1,84 @@
 <script lang="ts">
-	import { useGenerateExamples, useSaveWordExample } from '$lib/stores/words';
-	import type { AiExampleSentence } from '$lib/api/types.gen';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import { Sparkles, Check, X, RefreshCw } from 'lucide-svelte';
+import { Check, RefreshCw, Sparkles, X } from 'lucide-svelte';
+import type { AiExampleSentence } from '$lib/api/types.gen';
+import Button from '$lib/components/ui/button/button.svelte';
+import { useGenerateExamples, useSaveWordExample } from '$lib/stores/words';
 
-	interface Props {
-		wordId: string;
-	}
+interface Props {
+	wordId: string;
+}
 
-	const { wordId }: Props = $props();
+const { wordId }: Props = $props();
 
-	// Mutations
-	const generateMutation = useGenerateExamples();
-	const saveMutation = useSaveWordExample();
+// Mutations
+const generateMutation = useGenerateExamples();
+const saveMutation = useSaveWordExample();
 
-	// State
-	let isExpanded = $state(false);
-	let examples = $state<AiExampleSentence[]>([]);
-	let errorMessage = $state('');
-	let isAiNotConfigured = $state(false);
+// State
+let isExpanded = $state(false);
+let examples = $state<AiExampleSentence[]>([]);
+let errorMessage = $state('');
+let isAiNotConfigured = $state(false);
 
-	function handleGenerateClick() {
-		examples = [];
-		errorMessage = '';
-		isAiNotConfigured = false;
+function handleGenerateClick() {
+	examples = [];
+	errorMessage = '';
+	isAiNotConfigured = false;
 
-		generateMutation.mutate(wordId, {
-			onSuccess: (data) => {
-				examples = data.examples;
-				isExpanded = true;
+	generateMutation.mutate(wordId, {
+		onSuccess: (data) => {
+			examples = data.examples;
+			isExpanded = true;
+		},
+		onError: (error) => {
+			const errorObj = error as unknown as { status?: number; message?: string };
+			if (errorObj.status === 503) {
+				isAiNotConfigured = true;
+			} else {
+				errorMessage = errorObj.message || 'Failed to generate examples. Please try again.';
+			}
+			isExpanded = true;
+		},
+	});
+}
+
+function handleUseExample(example: AiExampleSentence) {
+	saveMutation.mutate(
+		{
+			id: wordId,
+			body: {
+				arabic: example.arabic,
+				transliteration: example.transliteration,
+				translation: example.translation,
+			},
+		},
+		{
+			onSuccess: () => {
+				isExpanded = false;
+				examples = [];
+				errorMessage = '';
 			},
 			onError: (error) => {
-				const errorObj = error as unknown as { status?: number; message?: string };
-				if (errorObj.status === 503) {
-					isAiNotConfigured = true;
-				} else {
-					errorMessage =
-						errorObj.message || 'Failed to generate examples. Please try again.';
-				}
-				isExpanded = true;
+				errorMessage = error instanceof Error ? error.message : 'Failed to save example';
 			},
-		});
-	}
+		}
+	);
+}
 
-	function handleUseExample(example: AiExampleSentence) {
-		saveMutation.mutate(
-			{
-				id: wordId,
-				body: {
-					arabic: example.arabic,
-					transliteration: example.transliteration,
-					translation: example.translation,
-				},
-			},
-			{
-				onSuccess: () => {
-					isExpanded = false;
-					examples = [];
-					errorMessage = '';
-				},
-				onError: (error) => {
-					errorMessage =
-						error instanceof Error ? error.message : 'Failed to save example';
-				},
-			}
-		);
-	}
+function handleDiscard() {
+	isExpanded = false;
+	examples = [];
+	errorMessage = '';
+	isAiNotConfigured = false;
+}
 
-	function handleDiscard() {
-		isExpanded = false;
-		examples = [];
-		errorMessage = '';
-		isAiNotConfigured = false;
-	}
+function handleGenerateAgain() {
+	handleGenerateClick();
+}
 
-	function handleGenerateAgain() {
-		handleGenerateClick();
-	}
-
-	const isGenerateLoading = $derived(generateMutation.isPending);
-	const isSaveLoading = $derived(saveMutation.isPending);
-	const isAnyLoading = $derived(isGenerateLoading || isSaveLoading);
+const isGenerateLoading = $derived(generateMutation.isPending);
+const isSaveLoading = $derived(saveMutation.isPending);
+const isAnyLoading = $derived(isGenerateLoading || isSaveLoading);
 </script>
 
 <div class="ai-examples">

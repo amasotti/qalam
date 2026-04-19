@@ -66,7 +66,7 @@ const filteredRoots = $derived.by((): RootResponse[] => {
 		(r: RootResponse) =>
 			r.normalizedForm.toLowerCase().includes(f) ||
 			(r.meaning ?? '').toLowerCase().includes(f) ||
-			r.displayForm.includes(f),
+			r.displayForm.includes(f)
 	);
 });
 
@@ -75,10 +75,8 @@ let derivedFromQuery = $state('');
 let derivedFromDebounced = $state('');
 let derivedFromSelected = $state<WordAutocompleteResponse | null>(
 	untrack(() =>
-		initial.derivedFromId
-			? { id: initial.derivedFromId, arabicText: '', translation: null }
-			: null,
-	),
+		initial.derivedFromId ? { id: initial.derivedFromId, arabicText: '', translation: null } : null
+	)
 );
 let showAutocompleteDropdown = $state(false);
 

@@ -14,7 +14,7 @@ mockk                = "1.14.9"
 testcontainers       = "1.21.4"
 hikaricp             = "7.0.2"
 postgresql           = "42.7.10"
-arrow                = "2.1.2"
+arrow                = "2.2.2.1"
 
 [libraries]
 kotlin-stdlib            = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8",                        version.ref = "kotlin" }

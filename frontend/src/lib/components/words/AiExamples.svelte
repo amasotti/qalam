@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { useGenerateExamples, useUpdateWord } from '$lib/stores/words';
-	import type { ExampleSentenceResponse } from '$lib/api/types.gen';
+	import { useGenerateExamples, useSaveWordExample } from '$lib/stores/words';
+	import type { AiExampleSentence } from '$lib/api/types.gen';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Sparkles, Check, X, RefreshCw } from 'lucide-svelte';
 
@@ -12,11 +12,11 @@
 
 	// Mutations
 	const generateMutation = useGenerateExamples();
-	const updateMutation = useUpdateWord();
+	const saveMutation = useSaveWordExample();
 
 	// State
 	let isExpanded = $state(false);
-	let examples = $state<ExampleSentenceResponse[]>([]);
+	let examples = $state<AiExampleSentence[]>([]);
 	let errorMessage = $state('');
 	let isAiNotConfigured = $state(false);
 
@@ -43,9 +43,16 @@
 		});
 	}
 
-	function handleUseExample(example: ExampleSentenceResponse) {
-		updateMutation.mutate(
-			{ id: wordId, body: { exampleSentence: example.arabic } },
+	function handleUseExample(example: AiExampleSentence) {
+		saveMutation.mutate(
+			{
+				id: wordId,
+				body: {
+					arabic: example.arabic,
+					transliteration: example.transliteration,
+					translation: example.translation,
+				},
+			},
 			{
 				onSuccess: () => {
 					isExpanded = false;
@@ -72,8 +79,8 @@
 	}
 
 	const isGenerateLoading = $derived(generateMutation.isPending);
-	const isUpdateLoading = $derived(updateMutation.isPending);
-	const isAnyLoading = $derived(isGenerateLoading || isUpdateLoading);
+	const isSaveLoading = $derived(saveMutation.isPending);
+	const isAnyLoading = $derived(isGenerateLoading || isSaveLoading);
 </script>
 
 <div class="ai-examples">

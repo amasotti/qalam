@@ -8,13 +8,15 @@ import DictionaryLinks from '$lib/components/words/DictionaryLinks.svelte';
 import WordForm from '$lib/components/words/WordForm.svelte';
 import { Badge } from '$lib/components/ui/badge';
 import { Button } from '$lib/components/ui/button';
-import { useDeleteWord, useUpdateWord, useWord, useWordAnnotations } from '$lib/stores/words';
+import { useDeleteWord, useDeleteWordExample, useUpdateWord, useWord, useWordAnnotations, useWordExamples } from '$lib/stores/words';
 
 const id = $derived(page.params.id ?? '');
 const word = useWord(() => id);
 const annotations = useWordAnnotations(() => id);
+const examples = useWordExamples(() => id);
 const updateWord = useUpdateWord();
 const deleteWord = useDeleteWord();
+const deleteExample = useDeleteWordExample();
 
 let isEditing = $state(false);
 let deleteConfirm = $state(false);
@@ -70,7 +72,6 @@ function formatEnum(value: string): string {
 					arabicText: word.data.arabicText,
 					transliteration: word.data.transliteration ?? null,
 					translation: word.data.translation ?? null,
-					exampleSentence: word.data.exampleSentence ?? null,
 					partOfSpeech: word.data.partOfSpeech,
 					dialect: word.data.dialect,
 					difficulty: word.data.difficulty,
@@ -135,11 +136,31 @@ function formatEnum(value: string): string {
 				</div>
 
 				<div class="word-info-section">
-					<span class="word-info-label">Example sentence</span>
-					{#if word.data.exampleSentence}
-						<p class="word-info-value arabic">{word.data.exampleSentence}</p>
+					<span class="word-info-label">Examples</span>
+					{#if examples.isPending}
+						<p class="word-info-empty" style="font-size:0.8rem">Loading…</p>
+					{:else if (examples.data ?? []).length === 0}
+						<p class="word-info-value word-info-empty">No examples saved yet</p>
 					{:else}
-						<p class="word-info-value word-info-empty">No example recorded</p>
+						<ul class="word-examples-list">
+							{#each examples.data ?? [] as ex (ex.id)}
+								<li class="word-example-item">
+									<p class="word-example-arabic arabic">{ex.arabic}</p>
+									{#if ex.transliteration}
+										<p class="word-example-transliteration">{ex.transliteration}</p>
+									{/if}
+									{#if ex.translation}
+										<p class="word-example-translation">{ex.translation}</p>
+									{/if}
+									<button
+										class="word-example-delete"
+										onclick={() => deleteExample.mutate({ id, exampleId: ex.id })}
+										disabled={deleteExample.isPending}
+										aria-label="Delete example"
+									>×</button>
+								</li>
+							{/each}
+						</ul>
 					{/if}
 				</div>
 

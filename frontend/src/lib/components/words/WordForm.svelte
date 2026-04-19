@@ -18,7 +18,6 @@ interface Props {
 		arabicText: string;
 		transliteration: string | null;
 		translation: string | null;
-		exampleSentence: string | null;
 		partOfSpeech: PartOfSpeech;
 		dialect: Dialect;
 		difficulty: Difficulty;
@@ -46,7 +45,6 @@ let {
 let arabicText = $state(untrack(() => initial.arabicText ?? ''));
 let transliteration = $state(untrack(() => initial.transliteration ?? ''));
 let translation = $state(untrack(() => initial.translation ?? ''));
-let exampleSentence = $state(untrack(() => initial.exampleSentence ?? ''));
 let partOfSpeech = $state<PartOfSpeech>(untrack(() => initial.partOfSpeech ?? 'UNKNOWN'));
 let dialect = $state<Dialect>(untrack(() => initial.dialect ?? 'MSA'));
 let difficulty = $state<Difficulty>(untrack(() => initial.difficulty ?? 'BEGINNER'));
@@ -124,7 +122,6 @@ async function handleSubmit(e: SubmitEvent) {
 			await onSubmit({
 				transliteration: transliteration.trim() || null,
 				translation: translation.trim() || null,
-				exampleSentence: exampleSentence.trim() || null,
 				partOfSpeech,
 				dialect,
 				difficulty,
@@ -138,7 +135,6 @@ async function handleSubmit(e: SubmitEvent) {
 				arabicText: arabicText.trim(),
 				transliteration: transliteration.trim() || null,
 				translation: translation.trim() || null,
-				exampleSentence: exampleSentence.trim() || null,
 				partOfSpeech,
 				dialect,
 				difficulty,
@@ -202,20 +198,6 @@ async function handleSubmit(e: SubmitEvent) {
 			bind:value={translation}
 			disabled={isPending}
 		/>
-	</div>
-
-	<!-- Example sentence -->
-	<div class="word-form-field">
-		<label class="word-form-label" for="word-example">Example sentence</label>
-		<textarea
-			id="word-example"
-			class="word-form-textarea arabic-input"
-			placeholder="مثال على استخدام الكلمة"
-			rows={4}
-			bind:value={exampleSentence}
-			disabled={isPending}
-			dir="rtl"
-		></textarea>
 	</div>
 
 	<!-- POS / Dialect / Difficulty — 3-col grid -->

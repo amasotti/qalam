@@ -1,12 +1,12 @@
-## Milestone 16 — Frontend: Texts + Annotations
+## Milestone 16 — Frontend: Texts (Interlinear View)
 
-- [ ] 16.0 `[F]` Re-run `pnpm generate:types` if backend `documentation.yaml` has changed since last type generation;
-- [ ] 16.1 `[F]` `TextsStore`: list (all filters), single text with sentences and annotations
-- [ ] 16.2 `[F]` `/texts` page: paginated list with filter bar (dialect, difficulty, tag), free-text search
-- [ ] 16.3 `[F]` Text plain view `/texts/[id]`: Arabic / transliteration / translation in aligned columns; click-to-annotate (word/phrase selection → annotation form)
-- [ ] 16.4 `[F]` Annotation panel: list annotations for a text, show type/mastery/review flag, link/unlink vocabulary words (autocomplete)
-- [ ] 16.5 `[F]` Text interlinear view toggle: switch between plain and gloss view on the same text
-- [ ] 16.6 `[F]` Interlinear editor: sentence list, reorder sentences; per-sentence: edit Arabic text (shows stale-token warning if tokens exist), manage tokens (manual + AI auto-tokenize), link tokens to vocabulary words
-- [ ] 16.7 `[F]` Stale-token UX: when sentence text edited and `tokensValid = false`, show banner with "Re-tokenize" and "Mark as valid" actions
-- [ ] 16.8 `[F]` Create/edit text form: all fields, tag input (freeform array)
-- [ ] 16.9 `[F]` Component tests: annotation creation flow, stale-token warning, interlinear editor
+**Scope decision**: Only interlinear view is built. No plain 3-column view. No annotations (deferred to backlog). Display + edit mode toggle on `/texts/[id]`.
+
+- [x] 16.0 `[F]` Re-run `pnpm generate:types` — types confirmed current
+- [x] 16.1 `[F]` `TextsStore`: list (all filters), single text, sentences with tokens, CRUD texts, CRUD sentences, token ops (replace, clear, auto-tokenize, transliterate, mark-valid)
+- [x] 16.2 `[F]` `/texts` page: paginated list with filter bar (dialect, difficulty, tag), free-text search
+- [x] 16.3 `[F]` `/texts/new` — create text form (title, dialect, difficulty, body, transliteration, translation, tags, comments)
+- [x] 16.4 `[F]` `/texts/[id]` display mode: interlinear sentence list (token triplet grid + free translation + notes per sentence), full Arabic+transliteration panel at bottom
+- [x] 16.5 `[F]` `/texts/[id]` edit mode: text metadata editing, sentence add/delete/reorder, per-sentence edit (Arabic triggers stale-token), token editor (manual triplets), AI auto-tokenize, AI transliterate
+- [x] 16.6 `[F]` Stale-token UX: banner when `tokensValid=false` with "Re-tokenize" and "Mark as valid" actions; mark-valid uses replaceTokens with existing tokens (sets tokensValid=true server-side)
+- [x] 16.7 `[F]` Type-check pass: `pnpm check` — 0 errors, 0 warnings

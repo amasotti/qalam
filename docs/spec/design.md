@@ -200,7 +200,7 @@ config file is committed. A `DOPPLER_TOKEN` is the only secret needed in CI.
 Backup is fully automated via **Ofelia** (a Docker-native cron job runner) as a container in
 the compose stack. No manual shell scripts, no cron tab on the host.
 
-Ofelia schedules `pg_dump` on a configurable interval (default: daily). Dumps are written to a
+Ofelia schedules `pg_dump` on a configurable interval (default: hourly). Dumps are written to a
 named volume. An optional rclone container syncs dumps to Backblaze B2 or S3 on the same schedule.
 
 Restore is a `just restore F=<dump-file>` recipe that:

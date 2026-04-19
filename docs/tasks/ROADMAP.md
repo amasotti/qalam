@@ -43,7 +43,7 @@
 → `docs/tasks/019_migration.md`
 
 ### M12.4 — Backup
-*Daily `pg_dump` via Ofelia cron before trusting the system with real data.*
+*Hourly `pg_dump` via Ofelia cron before trusting the system with real data.*
 *Single task extracted from M12 — do not wait for all of M12.*
 
 ---

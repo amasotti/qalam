@@ -14,6 +14,11 @@ See `ROADMAP.md` for the full picture and ordering rationale.
 - **M19 Migration Phase 2** — sentences, annotations, training sessions (Phase 1: roots/words/texts is MVP)
 - **M20 E2E tests** — post-MVP polish
 
+## Deferred from M16 (texts)
+
+- **Annotations** (full feature) — click-to-annotate on Arabic text, annotation panel, annotation CRUD, vocabulary links from annotations, SRS mastery per annotation. Backend API exists (`/texts/{id}/annotations`), types generated, but zero frontend built. Session needed to design UX carefully before implementing.
+- **Plain text view** — 3-column Arabic / transliteration / translation layout. Removed from M16 scope; interlinear-only is the target philosophy. Reconsider only if a reading-flow use case emerges.
+
 ## Infrastructure / ops backlog
 
 - Monitoring stack (Prometheus + Grafana + cAdvisor + postgres-exporter via Docker Compose profiles)

@@ -175,11 +175,12 @@ function formatEnum(value: string): string {
 						<Badge class="mastery-{word.masteryLevel.toLowerCase()}">
 							{formatEnum(word.masteryLevel)}
 						</Badge>
-						{#if word.partOfSpeech}
-							<Badge>
-								{formatEnum(word.partOfSpeech)}
-							</Badge>
-						{/if}
+						<Badge class="difficulty-{word.difficulty.toLowerCase()}">
+							{formatEnum(word.difficulty)}
+						</Badge>
+						<Badge class="dialect-{word.dialect.toLowerCase()}">
+							{word.dialect}
+						</Badge>
 					</div>
 				</a>
 			{/each}

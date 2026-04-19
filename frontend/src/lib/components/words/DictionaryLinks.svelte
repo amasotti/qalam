@@ -2,7 +2,7 @@
 	import { useAddDictionaryLink, useDeleteDictionaryLink, useDictionaryLinks } from '$lib/stores/words';
 	import type { CreateDictionaryLinkRequest, DictionarySource } from '$lib/api/types.gen';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { Trash2, ExternalLink, Plus } from 'lucide-svelte';
+	import { ExternalLink, Plus, BookOpen } from 'lucide-svelte';
 
 	interface Props {
 		wordId: string;
@@ -11,18 +11,10 @@
 
 	const { wordId, arabicText }: Props = $props();
 
-	// Queries and mutations
 	const linksQuery = useDictionaryLinks(() => wordId);
 	const addMutation = useAddDictionaryLink();
 	const deleteMutation = useDeleteDictionaryLink();
 
-	// Form state
-	let selectedSource = $state<DictionarySource>('ALMANY');
-	let urlInput = $state('');
-	let addError = $state('');
-	let urlWasAutofilled = $state(false);
-
-	// URL templates for dictionary sources
 	const URL_TEMPLATES: Partial<Record<DictionarySource, string>> = {
 		ALMANY: 'https://www.almaany.com/en/dict/ar-en/{word}',
 		LIVING_ARABIC: 'https://www.livingarabic.com/en/search?q={word}',
@@ -31,16 +23,15 @@
 		WIKTIONARY: 'https://en.wiktionary.org/wiki/{word}',
 		ARABIC_STUDENT_DICTIONARY: 'https://www.arabicstudentsdictionary.com/search?q={word}',
 		LANGENSCHEIDT: 'https://de.langenscheidt.com/arabisch-deutsch/{word}',
-		// CUSTOM: no template
 	};
 
 	const sourceLabels: Record<DictionarySource, string> = {
-		ALMANY: 'Almany',
+		ALMANY: 'Almaany',
 		LIVING_ARABIC: 'Living Arabic',
 		DERJA_NINJA: 'Derja Ninja',
 		REVERSO: 'Reverso',
 		WIKTIONARY: 'Wiktionary',
-		ARABIC_STUDENT_DICTIONARY: 'Arabic Student Dictionary',
+		ARABIC_STUDENT_DICTIONARY: 'ASD',
 		LANGENSCHEIDT: 'Langenscheidt',
 		CUSTOM: 'Custom',
 	};
@@ -56,122 +47,165 @@
 		'CUSTOM',
 	];
 
-	// Autofill URL when source changes
+	let showManual = $state(false);
+	let selectedSource = $state<DictionarySource>('ALMANY');
+	let urlInput = $state('');
+	let urlWasAutofilled = $state(false);
+	let addError = $state('');
+	let isAddingAll = $state(false);
+
 	$effect(() => {
 		const template = URL_TEMPLATES[selectedSource];
 		if (template && (urlInput === '' || urlWasAutofilled)) {
 			urlInput = template.replace('{word}', encodeURIComponent(arabicText));
 			urlWasAutofilled = true;
-		} else if (!template) {
-			// CUSTOM — clear autofilled url but not manual
-			if (urlWasAutofilled) {
-				urlInput = '';
-				urlWasAutofilled = false;
-			}
+		} else if (!template && urlWasAutofilled) {
+			urlInput = '';
+			urlWasAutofilled = false;
 		}
 	});
 
-	function truncateUrl(url: string, maxLength: number = 50): string {
-		if (url.length <= maxLength) return url;
-		return `${url.substring(0, maxLength)}…`;
+	const links = $derived(linksQuery.data ?? []);
+	const existingSources = $derived(new Set(links.map((l) => l.source)));
+	const missingTemplated = $derived(
+		(Object.keys(URL_TEMPLATES) as DictionarySource[]).filter((s) => !existingSources.has(s)),
+	);
+
+	async function handleAddAll() {
+		isAddingAll = true;
+		addError = '';
+		try {
+			for (const source of missingTemplated) {
+				const template = URL_TEMPLATES[source]!;
+				await addMutation.mutateAsync({
+					id: wordId,
+					body: { source, url: template.replace('{word}', encodeURIComponent(arabicText)) },
+				});
+			}
+		} catch {
+			addError = 'Failed to add some dictionaries';
+		} finally {
+			isAddingAll = false;
+		}
 	}
 
-	function handleAddLink() {
+	function handleOpenAll() {
+		links.forEach((link, i) => {
+			setTimeout(() => window.open(link.url, '_blank', 'noopener,noreferrer'), i * 120);
+		});
+	}
+
+	function handleAddOne() {
 		if (!urlInput.trim()) return;
-
 		addError = '';
-		const request: CreateDictionaryLinkRequest = {
-			source: selectedSource,
-			url: urlInput,
-		};
-
 		addMutation.mutate(
-			{ id: wordId, body: request },
+			{ id: wordId, body: { source: selectedSource, url: urlInput } as CreateDictionaryLinkRequest },
 			{
 				onSuccess: () => {
 					urlInput = '';
 					urlWasAutofilled = false;
 					selectedSource = 'ALMANY';
+					showManual = false;
 				},
-				onError: (error) => {
-					addError = error instanceof Error ? error.message : 'Failed to add link';
+				onError: (e) => {
+					addError = e instanceof Error ? e.message : 'Failed to add link';
 				},
-			}
+			},
 		);
 	}
-
-	function handleDeleteLink(linkId: string) {
-		deleteMutation.mutate({ id: wordId, linkId });
-	}
-
-	const isLoading = $derived(linksQuery.isPending);
-	const isError = $derived(linksQuery.isError);
-	const links = $derived(linksQuery.data ?? []);
-	const isAddPending = $derived(addMutation.isPending);
-	const isAddDisabled = $derived(isAddPending || !urlInput.trim());
 </script>
 
 <div class="dict-links">
-	<h3 class="dict-links-title">Dictionary Links</h3>
+	<div class="dict-links-header">
+		<h3 class="dict-links-title">Dictionaries</h3>
+		<div class="dict-links-header-actions">
+			{#if links.length > 0}
+				<Button size="sm" variant="ghost" onclick={handleOpenAll}>
+					<BookOpen size={14} />
+					Open all
+				</Button>
+			{/if}
+			{#if missingTemplated.length > 0}
+				<Button size="sm" variant="ghost" onclick={handleAddAll} disabled={isAddingAll}>
+					<Plus size={14} />
+					{isAddingAll ? 'Adding…' : 'Add all'}
+				</Button>
+			{/if}
+		</div>
+	</div>
 
-	{#if isLoading}
-		<p>Loading links…</p>
-	{:else if isError}
-		<p>Could not load links.</p>
-	{:else if links.length === 0 && !isAddPending}
+	{#if linksQuery.isPending}
+		<p class="dict-links-empty">Loading…</p>
+	{:else if linksQuery.isError}
+		<p class="dict-links-empty">Could not load links.</p>
+	{:else if links.length === 0}
 		<p class="dict-links-empty">No dictionary links yet.</p>
-	{/if}
-
-	{#if links.length > 0}
-		<ul class="dict-links-list">
+	{:else}
+		<div class="dict-badges">
 			{#each links as link (link.id)}
-				<li class="dict-link-item">
-					<span class="dict-link-source">{sourceLabels[link.source]}</span>
-					<a href={link.url} target="_blank" class="dict-link-url">
-						{truncateUrl(link.url)}
-						<ExternalLink size={16} />
+				<div class="dict-badge dict-badge-{link.source.toLowerCase()}">
+					<a
+						href={link.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="dict-badge-link"
+						title={link.url}
+					>
+						{sourceLabels[link.source]}
+						<ExternalLink size={11} />
 					</a>
 					<button
-						class="dict-link-delete"
-						onclick={() => handleDeleteLink(link.id)}
+						class="dict-badge-delete"
+						onclick={() => deleteMutation.mutate({ id: wordId, linkId: link.id })}
 						disabled={deleteMutation.isPending}
-						aria-label="Delete link"
-					>
-						<Trash2 size={18} />
-					</button>
-				</li>
+						aria-label="Remove {sourceLabels[link.source]}"
+					>×</button>
+				</div>
 			{/each}
-		</ul>
+		</div>
 	{/if}
 
-	<div class="dict-links-add">
-		<div class="dict-links-add-row">
-			<select bind:value={selectedSource} class="dict-links-add-select" disabled={isAddPending}>
-				{#each sources as source}
-					<option value={source}>{sourceLabels[source]}</option>
-				{/each}
-			</select>
-			<input
-				type="url"
-				bind:value={urlInput}
-				class="dict-links-add-input"
-				placeholder="Enter URL"
-				disabled={isAddPending}
-				oninput={() => { urlWasAutofilled = false }}
-			/>
-		</div>
-
-		{#if addError}
-			<p class="dict-links-add-error">{addError}</p>
-		{/if}
-
-		<Button
-			onclick={handleAddLink}
-			disabled={isAddDisabled}
-			size="sm"
+	<div class="dict-links-manual">
+		<button
+			class="dict-links-manual-toggle"
+			onclick={() => (showManual = !showManual)}
 		>
-			<Plus size={16} />
-			Add link
-		</Button>
+			{showManual ? '− Hide manual add' : '+ Custom / single'}
+		</button>
+
+		{#if showManual}
+			<div class="dict-links-add">
+				<div class="dict-links-add-row">
+					<select
+						bind:value={selectedSource}
+						class="dict-links-add-select"
+						disabled={addMutation.isPending}
+					>
+						{#each sources as source}
+							<option value={source}>{sourceLabels[source]}</option>
+						{/each}
+					</select>
+					<input
+						type="url"
+						bind:value={urlInput}
+						class="dict-links-add-input"
+						placeholder="URL"
+						disabled={addMutation.isPending}
+						oninput={() => (urlWasAutofilled = false)}
+					/>
+				</div>
+				{#if addError}
+					<p class="dict-links-add-error">{addError}</p>
+				{/if}
+				<Button
+					onclick={handleAddOne}
+					disabled={addMutation.isPending || !urlInput.trim()}
+					size="sm"
+				>
+					<Plus size={14} />
+					Add
+				</Button>
+			</div>
+		{/if}
 	</div>
 </div>

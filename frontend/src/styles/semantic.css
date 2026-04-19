@@ -59,3 +59,127 @@
 	color: hsl(158 60% 55%);
 	border-color: hsl(158 40% 25%);
 }
+
+/* ── Difficulty ── */
+
+.difficulty-beginner {
+	background-color: hsl(217 91% 93%);
+	color: hsl(217 80% 32%);
+	border-color: hsl(217 70% 80%);
+}
+
+.dark .difficulty-beginner {
+	background-color: hsl(217 55% 18%);
+	color: hsl(217 80% 72%);
+	border-color: hsl(217 50% 30%);
+}
+
+.difficulty-intermediate {
+	background-color: hsl(38 92% 92%);
+	color: hsl(38 80% 28%);
+	border-color: hsl(38 80% 78%);
+}
+
+.dark .difficulty-intermediate {
+	background-color: hsl(38 60% 18%);
+	color: hsl(38 80% 70%);
+	border-color: hsl(38 60% 30%);
+}
+
+.difficulty-advanced {
+	background-color: hsl(0 86% 93%);
+	color: hsl(0 70% 32%);
+	border-color: hsl(0 70% 82%);
+}
+
+.dark .difficulty-advanced {
+	background-color: hsl(0 50% 18%);
+	color: hsl(0 70% 70%);
+	border-color: hsl(0 50% 30%);
+}
+
+/* ── Dialect ── */
+
+.dialect-msa {
+	background-color: hsl(246 80% 93%);
+	color: hsl(246 60% 38%);
+	border-color: hsl(246 60% 80%);
+}
+
+.dark .dialect-msa {
+	background-color: hsl(246 40% 18%);
+	color: hsl(246 70% 72%);
+	border-color: hsl(246 40% 30%);
+}
+
+.dialect-tunisian {
+	background-color: hsl(180 58% 90%);
+	color: hsl(180 70% 24%);
+	border-color: hsl(180 50% 75%);
+}
+
+.dark .dialect-tunisian {
+	background-color: hsl(180 40% 15%);
+	color: hsl(180 60% 60%);
+	border-color: hsl(180 40% 26%);
+}
+
+.dialect-moroccan {
+	background-color: hsl(24 90% 92%);
+	color: hsl(24 75% 28%);
+	border-color: hsl(24 75% 78%);
+}
+
+.dark .dialect-moroccan {
+	background-color: hsl(24 55% 18%);
+	color: hsl(24 80% 68%);
+	border-color: hsl(24 55% 30%);
+}
+
+.dialect-egyptian {
+	background-color: hsl(48 95% 90%);
+	color: hsl(48 80% 26%);
+	border-color: hsl(48 75% 72%);
+}
+
+.dark .dialect-egyptian {
+	background-color: hsl(48 55% 16%);
+	color: hsl(48 80% 68%);
+	border-color: hsl(48 55% 28%);
+}
+
+.dialect-gulf {
+	background-color: hsl(271 80% 93%);
+	color: hsl(271 60% 38%);
+	border-color: hsl(271 55% 80%);
+}
+
+.dark .dialect-gulf {
+	background-color: hsl(271 40% 18%);
+	color: hsl(271 70% 72%);
+	border-color: hsl(271 40% 30%);
+}
+
+.dialect-levantine {
+	background-color: hsl(198 80% 90%);
+	color: hsl(198 70% 26%);
+	border-color: hsl(198 65% 75%);
+}
+
+.dark .dialect-levantine {
+	background-color: hsl(198 45% 16%);
+	color: hsl(198 70% 66%);
+	border-color: hsl(198 45% 28%);
+}
+
+.dialect-iraqi {
+	background-color: hsl(340 70% 92%);
+	color: hsl(340 65% 32%);
+	border-color: hsl(340 60% 80%);
+}
+
+.dark .dialect-iraqi {
+	background-color: hsl(340 42% 17%);
+	color: hsl(340 65% 70%);
+	border-color: hsl(340 42% 28%);
+}

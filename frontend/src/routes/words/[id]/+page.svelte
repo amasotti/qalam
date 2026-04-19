@@ -92,10 +92,10 @@ function formatEnum(value: string): string {
 						<div class="word-hero-transliteration">{word.data.transliteration}</div>
 					{/if}
 					<div class="word-hero-chips">
-						<span class="word-hero-chip">{formatEnum(word.data.partOfSpeech)}</span>
-						<span class="word-hero-chip">{word.data.dialect}</span>
-						<span class="word-hero-chip">{formatEnum(word.data.difficulty)}</span>
-						<Badge class="mastery-{word.data.masteryLevel.toLowerCase()}" variant="outline">
+						<Badge variant="outline">{formatEnum(word.data.partOfSpeech)}</Badge>
+						<Badge variant="outline" class="dialect-{word.data.dialect.toLowerCase()}">{word.data.dialect}</Badge>
+						<Badge variant="outline" class="difficulty-{word.data.difficulty.toLowerCase()}">{formatEnum(word.data.difficulty)}</Badge>
+						<Badge variant="outline" class="mastery-{word.data.masteryLevel.toLowerCase()}">
 							{formatEnum(word.data.masteryLevel)}
 						</Badge>
 					</div>

@@ -13,37 +13,27 @@
 
 ## ✅ Done
 
-| Milestone               | Summary                                                                                                 |
-|-------------------------|---------------------------------------------------------------------------------------------------------|
-| M0 Skeleton             | Repo, Docker, justfile, CI skeleton                                                                     |
-| M1 Backend foundation   | Ktor, Exposed, Flyway, Koin, error handling, OpenAPI                                                    |
-| M2 Frontend foundation  | SvelteKit shell, sidebar, shadcn base, svelte-query, Arabic CSS                                         |
-| M3 Roots domain         | Full backend CRUD + tests                                                                               |
-| M4 Vocabulary domain    | Full backend CRUD + AI examples + tests                                                                 |
-| M5 Texts domain         | Full backend CRUD + search/filter + tests                                                               |
-| M6 Sentences + tokens   | Full backend: sentences, alignment tokens, stale-token invariant, AI transliterate/auto-tokenize, tests |
-| M7 Annotations domain   | Full backend: annotations CRUD, word-link management, reverse lookup (word → texts), tests              |
-| M10 Transliteration     | Pure transliteration service: Arabic→chat-alphabet map, `POST /api/v1/transliterate`, tests             |
-| M13 Frontend Foundation | Brand tokens (green/red/near-black), mastery classes, animations, typed API client, Biome, CI           |
+| Milestone                | Summary                                                                                                 |
+|--------------------------|---------------------------------------------------------------------------------------------------------|
+| M0 Skeleton              | Repo, Docker, justfile, CI skeleton                                                                     |
+| M1 Backend foundation    | Ktor, Exposed, Flyway, Koin, error handling, OpenAPI                                                    |
+| M2 Frontend foundation   | SvelteKit shell, sidebar, shadcn base, svelte-query, Arabic CSS                                         |
+| M3 Roots domain          | Full backend CRUD + tests                                                                               |
+| M4 Vocabulary domain     | Full backend CRUD + AI examples + tests                                                                 |
+| M5 Texts domain          | Full backend CRUD + search/filter + tests                                                               |
+| M6 Sentences + tokens    | Full backend: sentences, alignment tokens, stale-token invariant, AI transliterate/auto-tokenize, tests |
+| M7 Annotations domain    | Full backend: annotations CRUD, word-link management, reverse lookup (word → texts), tests              |
+| M10 Transliteration      | Pure transliteration service: Arabic→chat-alphabet map, `POST /api/v1/transliterate`, tests             |
+| M13 Frontend Foundation  | Brand tokens (green/red/near-black), mastery classes, animations, typed API client, Biome, CI           |
+| M14 Frontend: Roots     | Full implementation of roots component in the frontend                                                  |
+| M15 Frontend: Vocabulary | Words list + detail + create/edit. Migrated data lands here first.                                      |
 
 ---
 
 ## 🎯 MVP — Frontend + Go Live
 *Must use the /frontend-design skill for design work, iterate in code.*
 
-### ✅ M13 — Frontend Foundation
-*API type pipeline, brand theme (green/red/near-black), mastery semantic classes, Biome linting.*
-→ `docs/tasks/013_frontend_foundation.md`
-
-### ✅ M14 — Frontend: Roots
-*Small scope. Validates full stack end-to-end before heavier pages.*
-→ `docs/tasks/014_frontend_roots.md`
-
-### M15 — Frontend: Vocabulary
-*Words list + detail + create/edit. Migrated data lands here first.*
-→ `docs/tasks/015_frontend_vocabulary.md`
-
-### M16 — Frontend: Texts + Annotations
+### M16 — Frontend: Texts
 *The primary daily-use screen. Interlinear view, annotation panel, word linking.*
 → `docs/tasks/016_frontend_texts.md`
 

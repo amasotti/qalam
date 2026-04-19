@@ -1349,87 +1349,120 @@
 	border-top: 1px solid hsl(var(--border));
 }
 
+.dict-links-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+}
+
 .dict-links-title {
 	font-size: 1rem;
 	font-weight: 600;
 	color: hsl(var(--foreground));
 }
 
-.dict-links-list {
-	list-style: none;
+.dict-links-header-actions {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+/* Badge pills row */
+.dict-badges {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.375rem;
+}
+
+.dict-badge {
+	display: inline-flex;
+	align-items: center;
+	border-radius: 999px;
+	border: 1px solid currentColor;
+	font-size: 0.72rem;
+	font-weight: 600;
+	overflow: hidden;
+	transition: opacity 120ms ease;
+}
+
+.dict-badge-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	padding: 0.2rem 0.55rem;
+	text-decoration: none;
+	color: inherit;
+	transition: opacity 120ms ease;
+}
+
+.dict-badge-link:hover {
+	opacity: 0.75;
+}
+
+.dict-badge-delete {
+	padding: 0.2rem 0.4rem;
+	background: none;
+	border: none;
+	border-left: 1px solid currentColor;
+	cursor: pointer;
+	color: inherit;
+	opacity: 0.55;
+	font-size: 0.85rem;
+	line-height: 1;
+	transition: opacity 120ms ease;
+}
+
+.dict-badge-delete:hover {
+	opacity: 1;
+}
+
+.dict-badge-delete:disabled {
+	cursor: not-allowed;
+	opacity: 0.3;
+}
+
+/* Per-source colors */
+.dict-badge-almany          { background: hsl(217 91% 93%); color: hsl(217 80% 32%); border-color: hsl(217 70% 78%); }
+.dict-badge-living_arabic   { background: hsl(180 58% 90%); color: hsl(180 70% 24%); border-color: hsl(180 50% 72%); }
+.dict-badge-derja_ninja     { background: hsl(271 80% 93%); color: hsl(271 60% 38%); border-color: hsl(271 55% 78%); }
+.dict-badge-reverso         { background: hsl(24 90% 92%);  color: hsl(24 75% 28%);  border-color: hsl(24 75% 76%); }
+.dict-badge-wiktionary      { background: hsl(var(--muted)); color: hsl(var(--muted-foreground)); border-color: hsl(var(--border)); }
+.dict-badge-arabic_student_dictionary { background: hsl(142 60% 90%); color: hsl(142 76% 24%); border-color: hsl(142 50% 72%); }
+.dict-badge-langenscheidt   { background: hsl(48 95% 90%);  color: hsl(48 80% 26%);  border-color: hsl(48 75% 70%); }
+.dict-badge-custom          { background: hsl(var(--muted)); color: hsl(var(--foreground)); border-color: hsl(var(--border)); }
+
+/* Manual add section */
+.dict-links-manual {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
 }
 
-.dict-link-item {
-	display: flex;
-	align-items: center;
-	gap: 0.75rem;
-	padding: 0.5rem 0.75rem;
-	border: 1px solid hsl(var(--border));
-	border-radius: var(--radius-md);
-	background: hsl(var(--card));
-}
-
-.dict-link-source {
-	font-size: 0.75rem;
-	font-weight: 600;
-	color: hsl(var(--muted-foreground));
-	min-width: 7rem;
-	text-transform: uppercase;
-	letter-spacing: 0.04em;
-}
-
-.dict-link-url {
-	flex: 1;
-	display: inline-flex;
-	align-items: center;
-	gap: 0.25rem;
-	font-size: 0.8rem;
-	color: hsl(var(--foreground));
-	text-decoration: none;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	transition: color 120ms ease;
-}
-
-.dict-link-url:hover {
-	color: hsl(var(--primary));
-}
-
-.dict-link-delete {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 0.25rem;
+.dict-links-manual-toggle {
+	background: none;
 	border: none;
-	background: transparent;
+	padding: 0;
+	font-size: 0.78rem;
 	color: hsl(var(--muted-foreground));
 	cursor: pointer;
-	border-radius: var(--radius-sm);
-	flex-shrink: 0;
-	transition:
-		color 120ms ease,
-		background-color 120ms ease;
+	text-align: left;
+	transition: color 120ms ease;
+	width: fit-content;
 }
 
-.dict-link-delete:hover {
-	color: hsl(var(--destructive));
-	background: hsl(var(--destructive) / 0.08);
-}
-
-.dict-link-delete:disabled {
-	opacity: 0.4;
-	cursor: not-allowed;
+.dict-links-manual-toggle:hover {
+	color: hsl(var(--foreground));
 }
 
 .dict-links-add {
 	display: flex;
 	flex-direction: column;
-	gap: 0.25rem;
-	padding-top: 0.5rem;
+	gap: 0.5rem;
+	padding: 0.75rem;
+	border: 1px solid hsl(var(--border));
+	border-radius: var(--radius-md);
+	background: hsl(var(--muted) / 0.3);
 }
 
 .dict-links-add-row {
@@ -1479,7 +1512,6 @@
 .dict-links-add-error {
 	font-size: 0.8rem;
 	color: hsl(var(--destructive));
-	margin-top: 0.25rem;
 }
 
 .dict-links-empty {

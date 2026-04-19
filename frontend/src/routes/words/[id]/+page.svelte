@@ -169,13 +169,14 @@ function formatEnum(value: string): string {
 					<div class="word-info-section">
 						<span class="word-info-label">Pronunciation</span>
 						<a
-							class="word-info-link"
+							class="pronunciation-badge"
 							href={word.data.pronunciationUrl}
 							target="_blank"
 							rel="noopener noreferrer"
+							title={word.data.pronunciationUrl}
 						>
-							<ExternalLink size={13} />
-							{word.data.pronunciationUrl}
+							<ExternalLink size={11} />
+							Forvo
 						</a>
 					</div>
 				{/if}

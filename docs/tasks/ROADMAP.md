@@ -35,7 +35,7 @@
 *API type pipeline, brand theme (green/red/near-black), mastery semantic classes, Biome linting.*
 → `docs/tasks/013_frontend_foundation.md`
 
-### M14 — Frontend: Roots
+### ✅ M14 — Frontend: Roots
 *Small scope. Validates full stack end-to-end before heavier pages.*
 → `docs/tasks/014_frontend_roots.md`
 

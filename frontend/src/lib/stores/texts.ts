@@ -9,6 +9,7 @@ import {
 	getTextById,
 	listSentences,
 	listTexts,
+	reorderSentences,
 	replaceTokens,
 	transliterateSentence,
 	updateSentence,
@@ -20,6 +21,7 @@ import type {
 	CreateTextRequest,
 	Dialect,
 	Difficulty,
+	ReorderSentencesRequest,
 	ReplaceTokensRequest,
 	SentenceResponse,
 	TextResponse,
@@ -110,7 +112,7 @@ export function useUpdateText() {
 			return requireData(data, 'updateText') as TextResponse;
 		},
 		onSuccess: (_data, variables) => {
-			qc.invalidateQueries({ queryKey: ['texts', variables.id] });
+			qc.invalidateQueries({ queryKey: ['texts', variables.id], exact: true });
 			qc.invalidateQueries({ queryKey: ['texts', 'all'] });
 		},
 	}));
@@ -238,6 +240,21 @@ export function useTransliterateSentence() {
 			const { data, error } = await transliterateSentence({ path: { textId, id } });
 			if (error) throw error;
 			return requireData(data, 'transliterateSentence') as SentenceResponse;
+		},
+		onSuccess: (_data, variables) => {
+			qc.invalidateQueries({ queryKey: ['texts', variables.textId, 'sentences'] });
+		},
+	}));
+}
+
+export function useReorderSentences() {
+	const qc = useQueryClient();
+	return createMutation(() => ({
+		mutationFn: async ({ textId, orderedIds }: { textId: string; orderedIds: string[] }) => {
+			const body: ReorderSentencesRequest = { orderedIds };
+			const { data, error } = await reorderSentences({ path: { textId }, body });
+			if (error) throw error;
+			return requireData(data, 'reorderSentences') as SentenceResponse[];
 		},
 		onSuccess: (_data, variables) => {
 			qc.invalidateQueries({ queryKey: ['texts', variables.textId, 'sentences'] });

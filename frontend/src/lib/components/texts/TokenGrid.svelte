@@ -9,18 +9,18 @@ let { tokens }: Props = $props();
 </script>
 
 {#if tokens.length > 0}
-	<div class="token-grid" role="table" aria-label="Word alignment tokens">
-		<div class="token-row" role="row">
+	<div class="token-grid">
+		<div class="token-row">
 			{#each tokens as token (token.id)}
-				<div class="token-cell" role="cell">
-					<span class="token-arabic arabic">{token.arabic}</span>
+				<dl class="token-cell">
+					<dt class="token-arabic arabic-text">{token.arabic}</dt>
 					{#if token.transliteration}
-						<span class="token-translit transliteration">{token.transliteration}</span>
+						<dd class="token-translit transliteration">{token.transliteration}</dd>
 					{/if}
 					{#if token.translation}
-						<span class="token-translation">{token.translation}</span>
+						<dd class="token-translation">{token.translation}</dd>
 					{/if}
-				</div>
+				</dl>
 			{/each}
 		</div>
 	</div>
@@ -45,6 +45,7 @@ let { tokens }: Props = $props();
 	padding: 0.25rem 0.625rem;
 	border-inline-end: 1px solid hsl(var(--border) / 0.5);
 	min-width: 4rem;
+	margin: 0;
 }
 
 .token-arabic {
@@ -54,11 +55,13 @@ let { tokens }: Props = $props();
 
 .token-translit {
 	font-size: 0.8125rem;
+	margin: 0;
 }
 
 .token-translation {
 	font-size: 0.75rem;
 	color: hsl(var(--foreground) / 0.7);
 	text-align: center;
+	margin: 0;
 }
 </style>

@@ -240,6 +240,10 @@ export type UpdateSentenceRequest = {
     notes?: string | null;
 };
 
+export type ReorderSentencesRequest = {
+    orderedIds: Array<string>;
+};
+
 export type ReplaceTokensRequest = {
     tokens: Array<{
         position: number;
@@ -1155,6 +1159,37 @@ export type CreateSentenceResponses = {
 };
 
 export type CreateSentenceResponse = CreateSentenceResponses[keyof CreateSentenceResponses];
+
+export type ReorderSentencesData = {
+    body: ReorderSentencesRequest;
+    path: {
+        textId: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{textId}/sentences/reorder';
+};
+
+export type ReorderSentencesErrors = {
+    /**
+     * Invalid input
+     */
+    400: ErrorResponse;
+    /**
+     * Text not found
+     */
+    404: ErrorResponse;
+};
+
+export type ReorderSentencesError = ReorderSentencesErrors[keyof ReorderSentencesErrors];
+
+export type ReorderSentencesResponses = {
+    /**
+     * Sentences in new order
+     */
+    200: Array<SentenceResponse>;
+};
+
+export type ReorderSentencesResponse = ReorderSentencesResponses[keyof ReorderSentencesResponses];
 
 export type DeleteSentenceData = {
     body?: never;

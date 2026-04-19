@@ -35,6 +35,20 @@ let drafts = $state<TokenDraft[]>(
 	)
 );
 
+// Re-sync when external update changes token set (e.g., auto-tokenize fires while editor is open)
+$effect(() => {
+	const incomingIds = sentence.tokens.map((t) => t.id).join(',');
+	const draftIds = untrack(() => drafts.map((d) => d.id).join(','));
+	if (incomingIds !== draftIds) {
+		drafts = sentence.tokens.map((t) => ({
+			id: t.id,
+			arabic: t.arabic,
+			transliteration: t.transliteration ?? '',
+			translation: t.translation ?? '',
+		}));
+	}
+});
+
 let clearConfirm = $state(false);
 let error = $state<string | null>(null);
 
@@ -154,7 +168,7 @@ async function handleClear() {
 			{#each drafts as draft, i (draft.id)}
 				<div class="token-table-row" role="row">
 					<input
-						class="token-cell-input arabic"
+						class="token-cell-input arabic-text"
 						type="text"
 						placeholder="عربي"
 						bind:value={draft.arabic}
@@ -321,8 +335,7 @@ async function handleClear() {
 	background: hsl(var(--primary) / 0.04);
 }
 
-.token-cell-input.arabic {
-	font-family: var(--font-arabic);
+.token-cell-input.arabic-text {
 	font-size: 1rem;
 	direction: rtl;
 	text-align: right;

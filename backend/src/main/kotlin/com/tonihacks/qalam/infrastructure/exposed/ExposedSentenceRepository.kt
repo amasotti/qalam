@@ -165,9 +165,38 @@ class ExposedSentenceRepository : SentenceRepository {
             val max = SentencesTable
                 .selectAll()
                 .where { SentencesTable.textId eq textId.value.toKotlinUuid() }
-                .maxByOrNull { SentencesTable.position }
+                .maxByOrNull { it[SentencesTable.position] }
                 ?.get(SentencesTable.position)
             (max ?: 0).right()
+        }
+
+    override suspend fun reorder(textId: TextId, orderedIds: List<SentenceId>): Either<DomainError, List<Sentence>> =
+        suspendTransaction {
+            either {
+                // Phase 1: temp positions to avoid UNIQUE (text_id, position) conflict
+                orderedIds.forEachIndexed { i, sid ->
+                    SentencesTable.update({ SentencesTable.id eq sid.value.toKotlinUuid() }) {
+                        it[position] = 10000 + i
+                    }
+                }
+                // Phase 2: final positions 1..N
+                orderedIds.forEachIndexed { i, sid ->
+                    SentencesTable.update({ SentencesTable.id eq sid.value.toKotlinUuid() }) {
+                        it[position] = i + 1
+                    }
+                }
+                val rows = SentencesTable
+                    .selectAll()
+                    .where { SentencesTable.textId eq textId.value.toKotlinUuid() }
+                    .orderBy(SentencesTable.position)
+                    .toList()
+                val sentenceKotlinIds = rows.map { it[SentencesTable.id] }
+                val tokensBySentenceId = loadTokensByKotlinUuid(sentenceKotlinIds)
+                rows.map { row ->
+                    val sid = row[SentencesTable.id]
+                    row.toSentence(tokensBySentenceId[sid] ?: emptyList())
+                }
+            }
         }
 
     // --- private helpers ---

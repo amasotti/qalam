@@ -74,9 +74,9 @@ class SentenceService(private val repo: SentenceRepository) {
         val updated = existing.copy(
             arabicText = arabicText ?: existing.arabicText,
             position = position ?: existing.position,
-            transliteration = transliteration ?: existing.transliteration,
-            freeTranslation = freeTranslation ?: existing.freeTranslation,
-            notes = notes ?: existing.notes,
+            transliteration = clearable(transliteration, existing.transliteration),
+            freeTranslation = clearable(freeTranslation, existing.freeTranslation),
+            notes = clearable(notes, existing.notes),
             tokensValid = if (arabicChanged) false else existing.tokensValid,
             updatedAt = Clock.System.now(),
         )
@@ -114,4 +114,14 @@ class SentenceService(private val repo: SentenceRepository) {
 
     suspend fun clearTokens(id: SentenceId): Either<DomainError, Sentence> =
         repo.replaceTokens(id, emptyList())
+
+    suspend fun reorder(textId: TextId, orderedIds: List<SentenceId>): Either<DomainError, List<Sentence>> =
+        repo.reorder(textId, orderedIds)
+}
+
+/** null = keep existing, blank = clear to null, non-blank = use new value */
+private fun clearable(incoming: String?, existing: String?): String? = when {
+    incoming == null -> existing
+    incoming.isBlank() -> null
+    else -> incoming
 }

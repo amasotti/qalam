@@ -14,4 +14,6 @@ interface SentenceRepository {
     suspend fun replaceTokens(sentenceId: SentenceId, tokens: List<AlignmentToken>): Either<DomainError, Sentence>
     /** Returns the current max position for sentences in a text (0 if none). */
     suspend fun maxPosition(textId: TextId): Either<DomainError, Int>
+    /** Reorder sentences: set positions 1..N in the given id order. Two-phase to avoid UNIQUE conflict. */
+    suspend fun reorder(textId: TextId, orderedIds: List<SentenceId>): Either<DomainError, List<Sentence>>
 }

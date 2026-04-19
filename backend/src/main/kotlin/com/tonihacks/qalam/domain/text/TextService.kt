@@ -92,11 +92,11 @@ class TextService(private val repo: TextRepository) {
         val updated = existing.copy(
             title = title?.trim() ?: existing.title,
             body = body ?: existing.body,
-            transliteration = transliteration ?: existing.transliteration,
-            translation = translation ?: existing.translation,
+            transliteration = clearable(transliteration, existing.transliteration),
+            translation = clearable(translation, existing.translation),
             difficulty = parsedDifficulty,
             dialect = parsedDialect,
-            comments = comments ?: existing.comments,
+            comments = clearable(comments, existing.comments),
             tags = tags?.map { it.trim() }?.filter { it.isNotEmpty() }?.distinct() ?: existing.tags,
             updatedAt = Clock.System.now(),
         )
@@ -105,6 +105,13 @@ class TextService(private val repo: TextRepository) {
 
     suspend fun delete(id: String): Either<DomainError, Unit> =
         parseTextId(id).flatMap { repo.delete(it) }
+}
+
+/** null = keep existing, blank = clear to null, non-blank = use new value */
+private fun clearable(incoming: String?, existing: String?): String? = when {
+    incoming == null -> existing
+    incoming.isBlank() -> null
+    else -> incoming
 }
 
 // --- top-level helpers ---

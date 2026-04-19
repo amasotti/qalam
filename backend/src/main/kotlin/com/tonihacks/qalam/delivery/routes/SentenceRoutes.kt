@@ -2,6 +2,7 @@ package com.tonihacks.qalam.delivery.routes
 
 import com.tonihacks.qalam.delivery.respondError
 import com.tonihacks.qalam.delivery.dto.sentence.CreateSentenceRequest
+import com.tonihacks.qalam.delivery.dto.sentence.ReorderSentencesRequest
 import com.tonihacks.qalam.delivery.dto.sentence.ReplaceTokensRequest
 import com.tonihacks.qalam.delivery.dto.sentence.UpdateSentenceRequest
 import com.tonihacks.qalam.delivery.dto.sentence.toResponse
@@ -47,6 +48,23 @@ fun Route.sentenceRoutes(service: SentenceService, aiClient: AiClient) {
             ).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.Created, it.toResponse()) },
+            )
+        }
+
+        put("/reorder") {
+            val textId = call.parameters["textId"]?.toUuidOrNull()
+                ?: return@put call.respondError(DomainError.InvalidInput("'${call.parameters["textId"]}' is not a valid UUID"))
+
+            val req = call.receive<ReorderSentencesRequest>()
+            val orderedIds = req.orderedIds.map { raw ->
+                val uuid = raw.toUuidOrNull()
+                    ?: return@put call.respondError(DomainError.InvalidInput("'$raw' is not a valid UUID"))
+                SentenceId(uuid)
+            }
+
+            service.reorder(TextId(textId), orderedIds).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.OK, it.map { s -> s.toResponse() }) },
             )
         }
 

@@ -7,9 +7,10 @@ interface Props {
 	sentence: SentenceResponse;
 	onRetokenize?: (sentence: SentenceResponse) => Promise<void>;
 	onMarkValid?: (sentence: SentenceResponse) => Promise<void>;
+	isPending?: boolean;
 }
 
-let { sentence, onRetokenize, onMarkValid }: Props = $props();
+let { sentence, onRetokenize, onMarkValid, isPending = false }: Props = $props();
 
 const showStaleBanner = $derived(!sentence.tokensValid && sentence.tokens.length > 0);
 </script>
@@ -28,6 +29,7 @@ const showStaleBanner = $derived(!sentence.tokensValid && sentence.tokens.length
 			<StaleTokenBanner
 				onRetokenize={() => onRetokenize!(sentence)}
 				onMarkValid={() => onMarkValid!(sentence)}
+				{isPending}
 			/>
 		{/if}
 

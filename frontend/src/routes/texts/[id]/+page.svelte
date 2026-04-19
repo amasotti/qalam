@@ -158,6 +158,7 @@ function formatEnum(value: string): string {
 				{#each sentences.data ?? [] as sentence (sentence.id)}
 					<InterlinearSentence
 						{sentence}
+						isPending={autoTokenize.isPending || markValid.isPending}
 						onRetokenize={async (s) => { await autoTokenize.mutateAsync({ textId: id, id: s.id }); }}
 						onMarkValid={async (s) => { await markValid.mutateAsync({ textId: id, id: s.id, currentTokens: s.tokens }); }}
 					/>

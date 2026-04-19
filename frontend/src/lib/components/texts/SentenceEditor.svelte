@@ -7,6 +7,7 @@ import {
 	useCreateSentence,
 	useDeleteSentence,
 	useMarkTokensValid,
+	useReorderSentences,
 	useUpdateSentence,
 } from '$lib/stores/texts';
 import StaleTokenBanner from './StaleTokenBanner.svelte';
@@ -23,12 +24,14 @@ let { sentences, textId }: Props = $props();
 const createSentence = useCreateSentence();
 const updateSentence = useUpdateSentence();
 const deleteSentence = useDeleteSentence();
+const reorderSentences = useReorderSentences();
 const autoTokenize = useAutoTokenize();
 const markValid = useMarkTokensValid();
 
 let editingId = $state<string | null>(null);
 let tokenEditingId = $state<string | null>(null);
 let deleteConfirm = $state<string | null>(null);
+let deleteError = $state<string | null>(null);
 
 let editArabic = $state('');
 let editTranslit = $state('');
@@ -83,10 +86,15 @@ async function handleUpdate(sentence: SentenceResponse) {
 async function handleDelete(id: string) {
 	if (deleteConfirm !== id) {
 		deleteConfirm = id;
+		deleteError = null;
 		setTimeout(() => (deleteConfirm = null), 3000);
 		return;
 	}
-	await deleteSentence.mutateAsync({ textId, id });
+	try {
+		await deleteSentence.mutateAsync({ textId, id });
+	} catch (err) {
+		deleteError = err instanceof Error ? err.message : 'Delete failed';
+	}
 	deleteConfirm = null;
 }
 
@@ -122,20 +130,20 @@ async function handleMarkValid(s: SentenceResponse) {
 
 async function handleMoveUp(s: SentenceResponse) {
 	if (s.position <= 1) return;
-	await updateSentence.mutateAsync({
-		textId,
-		id: s.id,
-		body: { position: s.position - 1 },
-	});
+	const ordered = [...sentences].sort((a, b) => a.position - b.position);
+	const idx = ordered.findIndex((x) => x.id === s.id);
+	if (idx <= 0) return;
+	[ordered[idx - 1], ordered[idx]] = [ordered[idx], ordered[idx - 1]];
+	await reorderSentences.mutateAsync({ textId, orderedIds: ordered.map((x) => x.id) });
 }
 
 async function handleMoveDown(s: SentenceResponse, total: number) {
 	if (s.position >= total) return;
-	await updateSentence.mutateAsync({
-		textId,
-		id: s.id,
-		body: { position: s.position + 1 },
-	});
+	const ordered = [...sentences].sort((a, b) => a.position - b.position);
+	const idx = ordered.findIndex((x) => x.id === s.id);
+	if (idx < 0 || idx >= ordered.length - 1) return;
+	[ordered[idx], ordered[idx + 1]] = [ordered[idx + 1], ordered[idx]];
+	await reorderSentences.mutateAsync({ textId, orderedIds: ordered.map((x) => x.id) });
 }
 </script>
 
@@ -148,7 +156,7 @@ async function handleMoveDown(s: SentenceResponse, total: number) {
 					<button
 						class="order-btn"
 						onclick={() => handleMoveUp(sentence)}
-						disabled={sentence.position === 1 || updateSentence.isPending}
+						disabled={sentence.position === 1 || reorderSentences.isPending}
 						aria-label="Move sentence up"
 					>
 						<ChevronUp size={12} />
@@ -156,7 +164,7 @@ async function handleMoveDown(s: SentenceResponse, total: number) {
 					<button
 						class="order-btn"
 						onclick={() => handleMoveDown(sentence, sentences.length)}
-						disabled={sentence.position === sentences.length || updateSentence.isPending}
+						disabled={sentence.position === sentences.length || reorderSentences.isPending}
 						aria-label="Move sentence down"
 					>
 						<ChevronDown size={12} />
@@ -267,6 +275,9 @@ async function handleMoveDown(s: SentenceResponse, total: number) {
 							{deleteConfirm === sentence.id ? 'Confirm?' : 'Delete'}
 						</Button>
 					</div>
+				{/if}
+				{#if deleteError}
+					<p class="sentence-delete-error">{deleteError}</p>
 				{/if}
 
 				{#if tokenEditingId === sentence.id}
@@ -476,7 +487,8 @@ async function handleMoveDown(s: SentenceResponse, total: number) {
 	border-color: hsl(var(--primary));
 }
 
-.sentence-edit-error {
+.sentence-edit-error,
+.sentence-delete-error {
 	font-size: 0.8125rem;
 	color: hsl(var(--destructive));
 }

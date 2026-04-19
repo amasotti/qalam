@@ -62,6 +62,11 @@ data class ReplaceTokensRequest(
     val tokens: List<TokenInputDto>,
 )
 
+@Serializable
+data class ReorderSentencesRequest(
+    val orderedIds: List<String>,
+)
+
 fun AlignmentToken.toResponse() = AlignmentTokenResponse(
     id = id.toString(),
     sentenceId = sentenceId.toString(),

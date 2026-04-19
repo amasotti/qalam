@@ -824,6 +824,44 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /api/v1/texts/{textId}/sentences/reorder:
+    put:
+      summary: Reorder all sentences in a text
+      operationId: reorderSentences
+      tags: [sentences]
+      parameters:
+        - name: textId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReorderSentencesRequest"
+      responses:
+        "200":
+          description: Sentences in new order
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SentenceResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Text not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /api/v1/texts/{textId}/sentences/{id}:
     get:
       summary: Get a sentence by ID
@@ -1859,6 +1897,16 @@ components:
         notes:
           type: string
           nullable: true
+
+    ReorderSentencesRequest:
+      type: object
+      required: [orderedIds]
+      properties:
+        orderedIds:
+          type: array
+          items:
+            type: string
+            format: uuid
 
     ReplaceTokensRequest:
       type: object

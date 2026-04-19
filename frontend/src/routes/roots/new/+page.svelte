@@ -1,9 +1,9 @@
 <script lang="ts">
+import { ChevronLeft } from 'lucide-svelte';
 import { goto } from '$app/navigation';
 import type { CreateRootRequest, UpdateRootRequest } from '$lib/api/types.gen';
 import RootForm from '$lib/components/roots/RootForm.svelte';
 import { useCreateRoot } from '$lib/stores/roots';
-import { ChevronLeft } from 'lucide-svelte';
 
 const createRoot = useCreateRoot();
 

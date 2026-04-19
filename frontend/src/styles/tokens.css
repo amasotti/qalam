@@ -7,8 +7,9 @@
 
 @theme {
 	/* ·· Latin UI font ·· */
-	--font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-		"Segoe UI Symbol", "Noto Color Emoji";
+	--font-sans:
+		ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+		"Noto Color Emoji";
 
 	/* ·· Arabic font families ··
      body    → Noto Naskh Arabic + Lateef    (UI labels, word cards, short strings)

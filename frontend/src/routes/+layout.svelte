@@ -1,8 +1,8 @@
 <script lang="ts">
 import '../app.css';
-import { page } from '$app/state';
 import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 import { BarChart2, BookOpen, Dumbbell, House, ScrollText, Sprout } from 'lucide-svelte';
+import { page } from '$app/state';
 
 const { children } = $props();
 

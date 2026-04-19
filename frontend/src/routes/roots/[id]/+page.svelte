@@ -1,4 +1,5 @@
 <script lang="ts">
+import { ChevronLeft, Pencil, Trash2 } from 'lucide-svelte';
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import type { CreateRootRequest, UpdateRootRequest } from '$lib/api/types.gen';
@@ -7,7 +8,6 @@ import RootForm from '$lib/components/roots/RootForm.svelte';
 import { Badge } from '$lib/components/ui/badge';
 import { Button } from '$lib/components/ui/button';
 import { useDeleteRoot, useRoot, useUpdateRoot, useWordsForRoot } from '$lib/stores/roots';
-import { ChevronLeft, Pencil, Trash2 } from 'lucide-svelte';
 
 const id = $derived(page.params.id ?? '');
 const root = useRoot(() => id);

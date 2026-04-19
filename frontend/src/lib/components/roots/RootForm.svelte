@@ -1,8 +1,8 @@
 <script lang="ts">
+import { untrack } from 'svelte';
 import type { CreateRootRequest, NormalizeResponse, UpdateRootRequest } from '$lib/api/types.gen';
 import { Button } from '$lib/components/ui/button';
 import { useNormalizeRoot } from '$lib/stores/roots';
-import { untrack } from 'svelte';
 
 interface Props {
 	/** Prefill values (edit mode) */

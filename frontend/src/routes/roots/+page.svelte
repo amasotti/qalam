@@ -1,7 +1,7 @@
 <script lang="ts">
+import { Plus, Search } from 'lucide-svelte';
 import { Button } from '$lib/components/ui/button';
 import { useAllRoots } from '$lib/stores/roots';
-import { Plus, Search } from 'lucide-svelte';
 
 const roots = useAllRoots();
 

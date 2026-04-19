@@ -1,3 +1,4 @@
+import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query';
 import {
 	createRoot,
 	deleteRoot,
@@ -13,7 +14,6 @@ import type {
 	UpdateRootRequest,
 	WordResponse,
 } from '$lib/api/types.gen';
-import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query';
 
 function requireData<T>(data: T | undefined, label: string): T {
 	if (data === undefined) throw new Error(`${label}: empty response`);

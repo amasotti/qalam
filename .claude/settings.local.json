@@ -49,7 +49,7 @@
       "Read(~/.zsh_history)",
       "Read(~/.bash_history)"
     ],
-    "defaultMode": "auto"
+    "defaultMode": "acceptEdits"
   },
   "model": "claude-sonnet-4-6"
 }

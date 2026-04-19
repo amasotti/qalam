@@ -26,6 +26,8 @@ import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.like
+import org.jetbrains.exposed.v1.core.lowerCase
+import org.jetbrains.exposed.v1.core.or
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -65,7 +67,9 @@ class ExposedWordRepository : WordRepository {
                     condition = condition?.and(WordsTable.masteryLevel eq m.name) ?: (WordsTable.masteryLevel eq m.name)
                 }
                 filters.q?.let { queryStr ->
-                    val qCondition = WordsTable.arabicText like "%$queryStr%"
+                    val qCondition = (WordsTable.arabicText.lowerCase() like  "%$queryStr%") or
+                        (WordsTable.translation.lowerCase() like "%$queryStr%") or
+                        (WordsTable.transliteration.lowerCase() like "%$queryStr%")
                     condition = condition?.and(qCondition) ?: qCondition
                 }
 
@@ -85,7 +89,11 @@ class ExposedWordRepository : WordRepository {
         suspendTransaction {
             WordsTable
                 .selectAll()
-                .where { WordsTable.arabicText like "%$query%" }
+                .where {
+                    (WordsTable.arabicText like "%$query%") or
+                    (WordsTable.translation like "%$query%") or
+                    (WordsTable.transliteration like "%$query%")
+                }
                 .limit(limit)
                 .map { it.toWord() }
                 .right()

@@ -28,20 +28,8 @@
 | M14 Frontend: Roots     | Full implementation of roots component in the frontend                                                  |
 | M15 Frontend: Vocabulary | Words list + detail + create/edit. Migrated data lands here first.                                      |
 | M16 Frontend: Texts      | Interlinear view (sentence-by-sentence, token triplets, stale-token UX, AI auto-tokenize), edit mode, full-text panel. No annotations (deferred). |
-
----
-
-## 🎯 MVP — Frontend + Go Live
-*Must use the /frontend-design skill for design work, iterate in code.*
-
-### M19 — Data Migration (Phase 1: Core data)
-*Migrate roots → words → texts only. Enough to start daily use.*
-*Sentences/annotations/training migrate in Phase 2 after M7 frontend is stable.*
-→ `docs/tasks/019_migration.md`
-
-### M12.4 — Backup
-*Hourly `pg_dump` via Ofelia cron before trusting the system with real data.*
-*Single task extracted from M12 — do not wait for all of M12.*
+| M19 Data Migration (Phase 1) | SQL script to migrate core data: roots → words → texts. Enough to start daily use. Sentences/annotations/training migrate in Phase 2 after M7 frontend is stable. |
+| M12.4 Backup              | Hourly `pg_dump` via Ofelia cron before trusting the system with real data. Single task extracted from M12 — do not wait for all of M12. |
 
 ---
 

@@ -60,6 +60,18 @@
 	border-color: hsl(158 40% 25%);
 }
 
+/* ── Buttons ── */
+
+.btn-outline-danger {
+	color: hsl(var(--destructive)) !important;
+	border-color: hsl(var(--destructive) / 0.4) !important;
+}
+
+.btn-outline-danger:hover {
+	background-color: hsl(var(--destructive) / 0.06) !important;
+	border-color: hsl(var(--destructive) / 0.7) !important;
+}
+
 /* ── Difficulty ── */
 
 .difficulty-beginner {

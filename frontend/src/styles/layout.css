@@ -1249,6 +1249,12 @@
 	margin-top: 0.125rem;
 }
 
+.word-form-hint-inline {
+	font-size: 0.72rem;
+	font-weight: 400;
+	color: hsl(var(--muted-foreground));
+}
+
 .word-form-error {
 	font-size: 0.8rem;
 	color: hsl(var(--destructive));

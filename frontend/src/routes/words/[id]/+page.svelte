@@ -102,7 +102,7 @@ function formatEnum(value: string): string {
 				</div>
 				<div class="word-hero-actions">
 					<Button
-						variant="outline"
+						variant="default"
 						size="sm"
 						onclick={() => {
 							isEditing = true;
@@ -113,7 +113,8 @@ function formatEnum(value: string): string {
 						Edit
 					</Button>
 					<Button
-						variant={deleteConfirm ? 'destructive' : 'ghost'}
+						variant={deleteConfirm ? 'destructive' : 'outline'}
+						class={deleteConfirm ? '' : 'btn-outline-danger'}
 						size="sm"
 						onclick={handleDelete}
 						disabled={deleteWord.isPending}

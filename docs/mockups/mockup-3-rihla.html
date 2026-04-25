@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qalam — Mockup 3: Riḥla (رحلة)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sand:         #FAF7F2;
+    --sand-dark:    #F0E8D8;
+    --sand-darker:  #E0D0B4;
+    --ink:          #1A1510;
+    --ink-mid:      #4A3C2C;
+    --ink-light:    #7A6A58;
+    --terra:        #B84020;
+    --terra-soft:   #D05030;
+    --terra-pale:   #F5DDD6;
+    --ocean:        #2A5878;
+    --ocean-soft:   #3A6A8A;
+    --ocean-pale:   #D0E8F5;
+    --gold:         #C07A20;
+    --gold-pale:    #FBF0DC;
+    --border:       #DDD0BA;
+    --sidebar-bg:   #F0E8D8;
+    --sidebar-border: #DDD0BA;
+  }
+
+  body {
+    font-family: 'DM Sans', 'Helvetica Neue', sans-serif;
+    background: var(--sand);
+    color: var(--ink);
+    display: flex;
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--sidebar-bg);
+    min-height: 100vh;
+    position: fixed;
+    left: 0; top: 0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--sidebar-border);
+  }
+
+  .sidebar-header {
+    padding: 2rem 1.5rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .brand-ar {
+    font-family: 'Amiri', serif;
+    font-size: 3rem;
+    color: var(--terra);
+    direction: rtl;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .brand-name {
+    font-family: 'Lora', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-top: 0.125rem;
+  }
+
+  .brand-tagline {
+    font-size: 0.72rem;
+    color: var(--ink-light);
+    font-style: italic;
+    margin-top: 0.25rem;
+  }
+
+  .sidebar-nav {
+    padding: 1.25rem 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .nav-section-label {
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    padding: 0.75rem 0.75rem 0.375rem;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0.75rem;
+    color: var(--ink-mid);
+    text-decoration: none;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    transition: all 150ms ease;
+    font-weight: 400;
+  }
+
+  .nav-link .ar {
+    font-family: 'Amiri', serif;
+    font-size: 1rem;
+    color: var(--ink-light);
+    direction: rtl;
+    transition: color 150ms;
+  }
+
+  .nav-link:hover {
+    background: rgba(184,64,32,0.07);
+    color: var(--terra);
+  }
+
+  .nav-link:hover .ar { color: var(--terra-soft); }
+
+  .nav-link.active {
+    background: var(--terra-pale);
+    color: var(--terra);
+    font-weight: 500;
+  }
+
+  .nav-link.active .ar { color: var(--terra); }
+
+  /* Progress bar at bottom of sidebar */
+  .sidebar-progress {
+    padding: 1rem 1.5rem 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .progress-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 0.375rem;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--terra), var(--gold));
+    border-radius: 2px;
+    width: 38%;
+  }
+
+  .progress-note {
+    font-size: 0.7rem;
+    color: var(--ink-light);
+  }
+
+  /* ── Main ── */
+  .main {
+    margin-left: 240px;
+    flex: 1;
+    min-height: 100vh;
+  }
+
+  /* Breadcrumb */
+  .breadcrumb {
+    padding: 1.25rem 3rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--ink-light);
+    background: var(--sand);
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 120ms;
+  }
+
+  .breadcrumb a:hover { color: var(--terra); }
+  .breadcrumb-sep { opacity: 0.4; }
+  .breadcrumb-current { color: var(--ink); font-weight: 500; }
+
+  .page {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 0;
+    min-height: calc(100vh - 50px);
+  }
+
+  /* ── Left: main content ── */
+  .content {
+    padding: 3rem;
+    border-right: 1px solid var(--border);
+  }
+
+  /* ── Word hero ── */
+  .hero {
+    margin-bottom: 3rem;
+    position: relative;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-decoration {
+    position: absolute;
+    top: -0.5rem;
+    right: 0;
+    font-family: 'Amiri', serif;
+    font-size: 8rem;
+    color: var(--terra);
+    opacity: 0.04;
+    direction: rtl;
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+    font-weight: 700;
+  }
+
+  .hero-word {
+    font-family: 'Amiri', serif;
+    font-size: 7rem;
+    direction: rtl;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 0.75rem;
+    position: relative;
+  }
+
+  .hero-translit {
+    font-family: 'Lora', serif;
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--terra);
+    margin-bottom: 1.25rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+  }
+
+  .hero-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .hero-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .chip {
+    padding: 0.25rem 0.875rem;
+    font-size: 0.72rem;
+    border-radius: 999px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+
+  .chip-outline {
+    border: 1px solid var(--border);
+    color: var(--ink-mid);
+    background: transparent;
+  }
+
+  .chip-ocean {
+    background: var(--ocean-pale);
+    color: var(--ocean);
+    border: 1px solid rgba(42,88,120,0.2);
+  }
+
+  .chip-terra {
+    background: var(--terra-pale);
+    color: var(--terra);
+    border: 1px solid rgba(184,64,32,0.2);
+  }
+
+  .chip-gold {
+    background: var(--gold-pale);
+    color: var(--gold);
+    border: 1px solid rgba(192,122,32,0.25);
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 150ms ease;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--ink-mid);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn:hover { border-color: var(--ink-mid); color: var(--ink); }
+  .btn-primary { background: var(--terra); color: white; border-color: var(--terra); }
+  .btn-primary:hover { background: var(--terra-soft); }
+
+  /* ── Content sections ── */
+  .content-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .translation-text {
+    font-family: 'Lora', serif;
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: var(--ink);
+    font-weight: 400;
+  }
+
+  /* ── Examples ── */
+  .example-item {
+    padding: 1.25rem;
+    border-left: 3px solid var(--terra);
+    background: var(--sand-dark);
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 0.75rem;
+  }
+
+  .example-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 1.625rem;
+    direction: rtl;
+    text-align: right;
+    color: var(--ink);
+    line-height: 1.7;
+    margin-bottom: 0.375rem;
+  }
+
+  .example-translit {
+    font-family: 'Lora', serif;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--terra);
+    margin-bottom: 0.2rem;
+  }
+
+  .example-trans {
+    font-size: 0.85rem;
+    color: var(--ink-mid);
+  }
+
+  /* ── Dict ── */
+  .dict-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .dict-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.875rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 120ms;
+    border: 1px solid;
+  }
+
+  .dict-pill:hover { opacity: 0.75; }
+  .dict-almany { background: hsl(217 91% 95%); color: hsl(217 80% 32%); border-color: hsl(217 70% 80%); }
+  .dict-living { background: hsl(180 58% 92%); color: hsl(180 70% 26%); border-color: hsl(180 50% 74%); }
+  .dict-wikt   { background: var(--sand-dark); color: var(--ink-mid); border-color: var(--border); }
+  .dict-derja  { background: hsl(271 80% 95%); color: hsl(271 60% 38%); border-color: hsl(271 55% 80%); }
+
+  /* ── Right sidebar ── */
+  .meta-sidebar {
+    padding: 3rem 2rem;
+    background: var(--sand);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .meta-card {
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 1px 4px rgba(26,21,16,0.04);
+  }
+
+  .meta-card-title {
+    font-family: 'Lora', serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    letter-spacing: 0.02em;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-bottom: 0.875rem;
+  }
+  .meta-row:last-child { margin-bottom: 0; }
+
+  .meta-key {
+    font-size: 0.6rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-light);
+  }
+
+  .meta-val {
+    font-size: 0.875rem;
+    color: var(--ink);
+  }
+
+  /* Mastery gauge */
+  .mastery-gauge {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .mastery-steps {
+    display: flex;
+    gap: 3px;
+  }
+
+  .mastery-step {
+    flex: 1;
+    height: 5px;
+    border-radius: 2px;
+    background: var(--border);
+  }
+
+  .mastery-step.filled { background: var(--terra); }
+
+  .mastery-label {
+    font-size: 0.72rem;
+    color: var(--terra);
+    font-weight: 500;
+  }
+
+  .pron-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8rem;
+    color: var(--ocean);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 120ms;
+    padding: 0.375rem 0.625rem;
+    border: 1px solid rgba(42,88,120,0.25);
+    border-radius: 6px;
+    background: var(--ocean-pale);
+    width: fit-content;
+  }
+
+  .pron-link:hover { color: var(--ocean-soft); }
+
+  .root-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    text-decoration: none;
+    color: var(--terra);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: gap 150ms;
+  }
+
+  .root-link:hover { gap: 0.6rem; }
+
+  .root-ar {
+    font-family: 'Amiri', serif;
+    font-size: 1.5rem;
+    direction: rtl;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-brand">
+      <span class="brand-ar">قلم</span>
+      <span class="brand-name">Qalam</span>
+      <span class="brand-tagline">your arabic companion</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <span class="nav-section-label">Study</span>
+    <a href="#" class="nav-link">
+      Words
+      <span class="ar">كلمات</span>
+    </a>
+    <a href="#" class="nav-link active">
+      Roots
+      <span class="ar">جذور</span>
+    </a>
+    <a href="#" class="nav-link">
+      Texts
+      <span class="ar">نصوص</span>
+    </a>
+    <span class="nav-section-label">Practice</span>
+    <a href="#" class="nav-link">
+      Training
+      <span class="ar">تدريب</span>
+    </a>
+    <a href="#" class="nav-link">
+      Analytics
+      <span class="ar">إحصاء</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-progress">
+    <div class="progress-label">Vocabulary progress</div>
+    <div class="progress-track">
+      <div class="progress-fill"></div>
+    </div>
+    <div class="progress-note">142 of 380 words mastered</div>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="breadcrumb">
+    <a href="#">Words</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-current">كَتَبَ</span>
+  </div>
+
+  <div class="page">
+    <!-- Left: content -->
+    <div class="content">
+
+      <div class="hero">
+        <div class="hero-decoration">ك</div>
+        <div class="hero-word">كَتَبَ</div>
+        <div class="hero-translit">kataba</div>
+        <div class="hero-meta-row">
+          <div class="hero-chips">
+            <span class="chip chip-outline">Verb</span>
+            <span class="chip chip-ocean">MSA</span>
+            <span class="chip chip-outline">Intermediate</span>
+            <span class="chip chip-gold">Familiar</span>
+          </div>
+          <div class="hero-actions">
+            <button class="btn btn-primary">Edit</button>
+            <button class="btn">Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Translation -->
+      <div class="content-section">
+        <div class="section-label">Translation</div>
+        <p class="translation-text">to write, to compose, to correspond</p>
+      </div>
+
+      <!-- Examples -->
+      <div class="content-section">
+        <div class="section-label">Examples</div>
+
+        <div class="example-item">
+          <p class="example-arabic">كَتَبَ الطَّالِبُ رِسَالَةً إِلَى أُسْتَاذِهِ</p>
+          <p class="example-translit">kataba ṭ-ṭālibu risālatan ilā ustādhihi</p>
+          <p class="example-trans">The student wrote a letter to his professor</p>
+        </div>
+
+        <div class="example-item">
+          <p class="example-arabic">تَكْتُبُ كُلَّ يَوْمٍ فِي دَفْتَرِهَا</p>
+          <p class="example-translit">taktubu kulla yawmin fī daftarihā</p>
+          <p class="example-trans">She writes every day in her notebook</p>
+        </div>
+      </div>
+
+      <!-- Dictionary -->
+      <div class="content-section">
+        <div class="section-label">Dictionary sources</div>
+        <div class="dict-pills">
+          <a href="#" class="dict-pill dict-almany">Almany ↗</a>
+          <a href="#" class="dict-pill dict-living">Living Arabic ↗</a>
+          <a href="#" class="dict-pill dict-wikt">Wiktionary ↗</a>
+          <a href="#" class="dict-pill dict-derja">Derja.ninja ↗</a>
+        </div>
+      </div>
+
+      <!-- Annotations -->
+      <div class="content-section">
+        <div class="section-label">Annotations</div>
+        <p style="font-size:0.875rem;color:var(--ink-light);font-style:italic">No annotations link this word yet.</p>
+      </div>
+    </div>
+
+    <!-- Right: meta sidebar -->
+    <div class="meta-sidebar">
+
+      <!-- Root -->
+      <div class="meta-card">
+        <div class="meta-card-title">Root</div>
+        <span class="root-ar">ك – ت – ب</span>
+        <a href="#" class="root-link">View root family →</a>
+      </div>
+
+      <!-- Pronunciation -->
+      <div class="meta-card">
+        <div class="meta-card-title">Pronunciation</div>
+        <a href="#" class="pron-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          Listen on Forvo
+        </a>
+      </div>
+
+      <!-- Mastery -->
+      <div class="meta-card">
+        <div class="meta-card-title">Mastery level</div>
+        <div class="mastery-gauge">
+          <div class="mastery-steps">
+            <div class="mastery-step filled"></div>
+            <div class="mastery-step filled"></div>
+            <div class="mastery-step filled"></div>
+            <div class="mastery-step"></div>
+            <div class="mastery-step"></div>
+          </div>
+          <span class="mastery-label">Familiar</span>
+        </div>
+      </div>
+
+      <!-- Word facts -->
+      <div class="meta-card">
+        <div class="meta-card-title">Word details</div>
+        <div class="meta-row">
+          <span class="meta-key">Part of speech</span>
+          <span class="meta-val">Verb (فعل)</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Dialect</span>
+          <span class="meta-val">MSA</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Difficulty</span>
+          <span class="meta-val">Intermediate</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Added</span>
+          <span class="meta-val">3 months ago</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

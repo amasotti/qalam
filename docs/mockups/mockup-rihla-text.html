@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qalam Rihla — Text Detail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500&family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sand:         #FAF7F2;
+    --sand-dark:    #F0E8D8;
+    --sand-darker:  #E0D0B4;
+    --ink:          #1A1510;
+    --ink-mid:      #4A3C2C;
+    --ink-light:    #7A6A58;
+    --terra:        #B84020;
+    --terra-soft:   #D05030;
+    --terra-pale:   #F5DDD6;
+    --ocean:        #2A5878;
+    --ocean-soft:   #3A6A8A;
+    --ocean-pale:   #D0E8F5;
+    --sage:         #4A7258;
+    --sage-pale:    #D8EDE0;
+    --amber:        #C07820;
+    --amber-pale:   #FBF0DC;
+    --gold:         #C07A20;
+    --border:       #DDD0BA;
+    --sidebar-bg:   #F0E8D8;
+  }
+
+  body {
+    font-family: 'DM Sans', 'Helvetica Neue', sans-serif;
+    background: var(--sand);
+    color: var(--ink);
+    display: flex;
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── Sidebar (same as Rihla) ── */
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--sidebar-bg);
+    min-height: 100vh;
+    position: fixed;
+    left: 0; top: 0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+  }
+
+  .sidebar-header { padding: 1.75rem 1.5rem 1.25rem; border-bottom: 1px solid var(--border); }
+  .brand-ar { font-family: 'Amiri', serif; font-size: 2.75rem; color: var(--terra); direction: rtl; line-height: 1; display: block; }
+  .brand-name { font-family: 'Lora', serif; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-light); margin-top: 0.125rem; display: block; }
+
+  .sidebar-nav { padding: 1rem 0.75rem; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .nav-section-label { font-size: 0.58rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-light); padding: 0.625rem 0.5rem 0.25rem; }
+
+  .nav-link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.5rem 0.625rem; color: var(--ink-mid); text-decoration: none;
+    font-size: 0.825rem; border-radius: 6px; transition: all 150ms ease;
+  }
+  .nav-link .ar { font-family: 'Amiri', serif; font-size: 0.95rem; color: var(--ink-light); direction: rtl; }
+  .nav-link:hover { background: rgba(184,64,32,0.07); color: var(--terra); }
+  .nav-link.active { background: var(--terra-pale); color: var(--terra); font-weight: 500; }
+  .nav-link.active .ar { color: var(--terra); }
+
+  .sidebar-progress { padding: 1rem 1.25rem 1.5rem; border-top: 1px solid var(--border); }
+  .progress-label { font-size: 0.6rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-light); margin-bottom: 0.5rem; }
+  .progress-track { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 0.35rem; }
+  .progress-fill { height: 100%; background: linear-gradient(to right, var(--terra), var(--gold)); border-radius: 2px; width: 38%; }
+  .progress-note { font-size: 0.68rem; color: var(--ink-light); }
+
+  /* ── Main ── */
+  .main { margin-left: 220px; flex: 1; }
+
+  .breadcrumb {
+    padding: 1rem 2.5rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.775rem; color: var(--ink-light);
+  }
+  .breadcrumb a { color: inherit; text-decoration: none; }
+  .breadcrumb a:hover { color: var(--terra); }
+  .breadcrumb-sep { opacity: 0.4; }
+  .breadcrumb-current { color: var(--ink); font-weight: 500; }
+
+  /* ── Two-column layout ── */
+  .page-layout {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    min-height: calc(100vh - 46px);
+  }
+
+  .content { padding: 2.5rem 3rem; border-right: 1px solid var(--border); }
+  .right-panel { padding: 2.5rem 1.75rem; background: var(--sand); display: flex; flex-direction: column; gap: 1.75rem; }
+
+  /* ── Text header ── */
+  .text-header { margin-bottom: 2.5rem; }
+
+  .text-title {
+    font-family: 'Lora', serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .text-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.875rem; }
+
+  .chip {
+    padding: 0.2rem 0.75rem;
+    font-size: 0.7rem; font-weight: 500; border-radius: 999px;
+    border: 1px solid;
+  }
+  .chip-ocean { background: var(--ocean-pale); color: var(--ocean); border-color: rgba(42,88,120,0.2); }
+  .chip-terra { background: var(--terra-pale); color: var(--terra); border-color: rgba(184,64,32,0.2); }
+  .chip-amber { background: var(--amber-pale); color: var(--amber); border-color: rgba(192,120,32,0.25); }
+  .chip-muted { background: var(--sand-dark); color: var(--ink-light); border-color: var(--border); }
+
+  .text-comments {
+    font-size: 0.875rem; color: var(--ink-light); line-height: 1.6;
+    font-style: italic;
+    padding-left: 1rem;
+    border-left: 2px solid var(--border);
+  }
+
+  .text-actions { display: flex; gap: 0.5rem; }
+
+  .btn {
+    padding: 0.4rem 1rem; border-radius: 6px; font-size: 0.78rem; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--border); background: transparent;
+    color: var(--ink-mid); transition: all 150ms; font-family: 'DM Sans', sans-serif;
+  }
+  .btn:hover { border-color: var(--ink-mid); color: var(--ink); }
+  .btn-primary { background: var(--terra); color: white; border-color: var(--terra); }
+  .btn-primary:hover { background: var(--terra-soft); }
+
+  /* ── Section label ── */
+  .section-label {
+    font-size: 0.62rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-light); margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── Interlinear sentence ── */
+  .sentence-block {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 0 1rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .sentence-block:last-child { border-bottom: none; }
+
+  .sentence-num {
+    color: var(--ink-light);
+    font-size: 0.7rem;
+    font-family: 'Lora', serif;
+    font-style: italic;
+    padding-top: 0.6rem;
+    text-align: right;
+    opacity: 0.6;
+  }
+
+  .sentence-body { display: flex; flex-direction: column; gap: 0.625rem; }
+
+  /* Arabic line — big, right-aligned, dominant */
+  .sentence-arabic {
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: 1.75rem;
+    direction: rtl;
+    text-align: right;
+    color: var(--ink);
+    line-height: 2;
+    letter-spacing: 0.02em;
+  }
+
+  /* Transliteration */
+  .sentence-translit {
+    font-family: 'Lora', serif;
+    font-size: 0.875rem;
+    font-style: italic;
+    color: var(--terra);
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Token grid — the interlinear morphological breakdown ── */
+  .token-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    direction: rtl;
+    padding: 0.875rem;
+    background: var(--sand-dark);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .token-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: 5px;
+    background: white;
+    border: 1px solid var(--border);
+    min-width: 3.5rem;
+    transition: border-color 120ms, box-shadow 120ms;
+    cursor: default;
+    text-align: center;
+  }
+
+  .token-cell:hover {
+    border-color: var(--terra);
+    box-shadow: 0 2px 8px rgba(184,64,32,0.1);
+  }
+
+  .token-ar {
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: 1.1rem;
+    color: var(--ink);
+    line-height: 1.4;
+    direction: rtl;
+  }
+
+  .token-translit {
+    font-family: 'Lora', serif;
+    font-size: 0.6rem;
+    font-style: italic;
+    color: var(--terra);
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .token-pos {
+    font-size: 0.55rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.1rem 0.4rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .pos-noun   { background: var(--ocean-pale); color: var(--ocean); }
+  .pos-verb   { background: var(--terra-pale); color: var(--terra); }
+  .pos-particle { background: var(--sand-darker); color: var(--ink-light); }
+  .pos-adj    { background: var(--sage-pale); color: var(--sage); }
+  .pos-prep   { background: var(--amber-pale); color: var(--amber); }
+
+  .token-gloss {
+    font-size: 0.62rem;
+    color: var(--ink-mid);
+    line-height: 1.2;
+    text-align: center;
+    direction: ltr;
+    max-width: 5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ── Free translation ── */
+  .sentence-translation {
+    font-size: 0.875rem;
+    color: var(--ink-mid);
+    line-height: 1.7;
+    padding: 0.625rem 0.875rem;
+    border-left: 2px solid var(--terra);
+    background: rgba(184,64,32,0.03);
+    border-radius: 0 4px 4px 0;
+    font-family: 'Lora', serif;
+    font-style: italic;
+  }
+
+  .sentence-trans-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--terra);
+    margin-right: 0.5rem;
+    font-style: normal;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .sentence-notes {
+    font-size: 0.8rem;
+    color: var(--ink-light);
+    line-height: 1.6;
+    font-style: italic;
+    padding: 0.375rem 0;
+  }
+
+  .sentence-notes-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-light);
+    margin-right: 0.4rem;
+    font-style: normal;
+  }
+
+  /* ── Full text panel ── */
+  .full-text-panel {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .full-text-arabic {
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: 1.5rem;
+    direction: rtl;
+    text-align: right;
+    line-height: 2.2;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+  }
+
+  .full-text-translit {
+    font-family: 'Lora', serif;
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--terra);
+    line-height: 1.9;
+    margin-bottom: 0.875rem;
+  }
+
+  .full-text-translation {
+    font-size: 0.9rem;
+    color: var(--ink-mid);
+    line-height: 1.75;
+  }
+
+  /* ── Right panel cards ── */
+  .meta-card {
+    padding: 1.125rem 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 1px 4px rgba(26,21,16,0.04);
+  }
+
+  .meta-card-title {
+    font-family: 'Lora', serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.875rem;
+    letter-spacing: 0.02em;
+  }
+
+  .meta-row { display: flex; flex-direction: column; gap: 0.15rem; margin-bottom: 0.75rem; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-key { font-size: 0.58rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-light); }
+  .meta-val { font-size: 0.82rem; color: var(--ink); }
+
+  /* Progress bar - mastery breakdown in right panel */
+  .mastery-breakdown { display: flex; flex-direction: column; gap: 0.5rem; }
+  .mastery-bar-row { display: flex; align-items: center; gap: 0.625rem; font-size: 0.72rem; }
+  .mastery-bar-label { width: 4.5rem; color: var(--ink-light); }
+  .mastery-bar-track { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .mastery-bar-fill { height: 100%; border-radius: 2px; }
+  .mastery-bar-count { width: 1.5rem; text-align: right; color: var(--ink-mid); font-variant-numeric: tabular-nums; }
+  .fill-mastered { background: var(--sage); width: 45%; }
+  .fill-known    { background: #8BC48A; width: 25%; }
+  .fill-familiar { background: var(--amber); width: 20%; }
+  .fill-learning { background: var(--terra); width: 10%; }
+
+  /* Source link */
+  .source-link {
+    display: inline-flex; align-items: center; gap: 0.375rem;
+    font-size: 0.78rem; color: var(--ocean); text-decoration: none;
+    border: 1px solid rgba(42,88,120,0.2); border-radius: 6px;
+    padding: 0.35rem 0.75rem; background: var(--ocean-pale);
+    transition: opacity 120ms; width: fit-content;
+  }
+  .source-link:hover { opacity: 0.75; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <span class="brand-ar">قلم</span>
+    <span class="brand-name">Qalam</span>
+  </div>
+  <nav class="sidebar-nav">
+    <span class="nav-section-label">Study</span>
+    <a href="#" class="nav-link"><span>Words</span><span class="ar">كلمات</span></a>
+    <a href="#" class="nav-link"><span>Roots</span><span class="ar">جذور</span></a>
+    <a href="#" class="nav-link active"><span>Texts</span><span class="ar">نصوص</span></a>
+    <span class="nav-section-label">Practice</span>
+    <a href="#" class="nav-link"><span>Training</span><span class="ar">تدريب</span></a>
+    <a href="#" class="nav-link"><span>Analytics</span><span class="ar">إحصاء</span></a>
+  </nav>
+  <div class="sidebar-progress">
+    <div class="progress-label">Vocabulary progress</div>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <div class="progress-note">142 of 380 words mastered</div>
+  </div>
+</aside>
+
+<!-- Main -->
+<div class="main">
+  <div class="breadcrumb">
+    <a href="#">Texts</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-current">النص التونسي</span>
+  </div>
+
+  <div class="page-layout">
+
+    <!-- Left: content -->
+    <div class="content">
+
+      <!-- Text header -->
+      <div class="text-header">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:0.75rem">
+          <h1 class="text-title">النص التونسي — درس في المقهى</h1>
+          <div class="text-actions">
+            <button class="btn btn-primary">Edit</button>
+            <button class="btn">Delete</button>
+          </div>
+        </div>
+
+        <div class="text-chips">
+          <span class="chip chip-amber">Intermediate</span>
+          <span class="chip chip-ocean">Tunisian</span>
+          <span class="chip chip-muted">dialogue</span>
+          <span class="chip chip-muted">daily life</span>
+        </div>
+
+        <p class="text-comments">A short dialogue between two friends ordering coffee in a Tunis café. Focus on everyday Tunisian dialect forms.</p>
+      </div>
+
+      <!-- Interlinear section -->
+      <div class="section-label">Interlinear analysis</div>
+
+      <!-- Sentence 1 -->
+      <div class="sentence-block">
+        <span class="sentence-num">١</span>
+        <div class="sentence-body">
+          <div class="sentence-arabic">أَشْنُوَّ تَشْرَبْ؟</div>
+          <div class="sentence-translit">ašnuwwa tašrab?</div>
+
+          <!-- Token grid -->
+          <div class="token-grid">
+            <div class="token-cell">
+              <span class="token-ar">أَشْنُوَّ</span>
+              <span class="token-translit">ašnuwwa</span>
+              <span class="token-pos pos-particle">interrog.</span>
+              <span class="token-gloss">what</span>
+            </div>
+            <div class="token-cell">
+              <span class="token-ar">تَشْرَبْ</span>
+              <span class="token-translit">tašrab</span>
+              <span class="token-pos pos-verb">verb</span>
+              <span class="token-gloss">you drink</span>
+            </div>
+          </div>
+
+          <div class="sentence-translation">
+            <span class="sentence-trans-label">Trans.</span>
+            What are you drinking?
+          </div>
+        </div>
+      </div>
+
+      <!-- Sentence 2 -->
+      <div class="sentence-block">
+        <span class="sentence-num">٢</span>
+        <div class="sentence-body">
+          <div class="sentence-arabic">نَحِبّ قَهْوَة بِلْحَلِيب، بَرَاكَا مِنْ سُكَّر</div>
+          <div class="sentence-translit">naḥibb qahwa bilḥalīb, barāka min sukkar</div>
+
+          <div class="token-grid">
+            <div class="token-cell">
+              <span class="token-ar">نَحِبّ</span>
+              <span class="token-translit">naḥibb</span>
+              <span class="token-pos pos-verb">verb</span>
+              <span class="token-gloss">I want</span>
+            </div>
+            <div class="token-cell">
+              <span class="token-ar">قَهْوَة</span>
+              <span class="token-translit">qahwa</span>
+              <span class="token-pos pos-noun">noun</span>
+              <span class="token-gloss">coffee</span>
+            </div>
+            <div class="token-cell">
+              <span class="token-ar">بِلْحَلِيب</span>
+              <span class="token-translit">bilḥalīb</span>
+              <span class="token-pos pos-prep">prep+n</span>
+              <span class="token-gloss">with milk</span>
+            </div>
+            <div class="token-cell">
+              <span class="token-ar">بَرَاكَا</span>
+              <span class="token-translit">barāka</span>
+              <span class="token-pos pos-particle">particle</span>
+              <span class="token-gloss">enough</span>
+            </div>
+            <div class="token-cell">
+              <span class="token-ar">مِنْ</span>
+              <span class="token-translit">min</span>
+              <span class="token-pos pos-prep">prep</span>
+              <span class="token-gloss">of/from</span>
+            </div>
+            <div class="token-cell">
+              <span class="token-ar">سُكَّر</span>
+              <span class="token-translit">sukkar</span>
+              <span class="token-pos pos-noun">noun</span>
+              <span class="token-gloss">sugar</span>
+            </div>
+          </div>
+
+          <div class="sentence-translation">
+            <span class="sentence-trans-label">Trans.</span>
+            I'd like a coffee with milk, no sugar please.
+          </div>
+          <div class="sentence-notes">
+            <span class="sentence-notes-label">Note.</span>
+            <em>نَحِبّ</em> in Tunisian means "I want / I'd like", unlike MSA where it means "I love". <em>بَرَاكَا مِنْ</em> is a polite refusal formula ("enough of…").
+          </div>
+        </div>
+      </div>
+
+      <!-- Sentence 3 -->
+      <div class="sentence-block">
+        <span class="sentence-num">٣</span>
+        <div class="sentence-body">
+          <div class="sentence-arabic">وَأَنَا نَاخُذْ شَاي بِلْنِعْنَع، يَعْطِيكْ الصِّحَّة</div>
+          <div class="sentence-translit">wa-anā nāxuð šāy bilniʕniʕ, yaʕṭīk iṣṣiḥḥa</div>
+
+          <div class="token-grid">
+            <div class="token-cell">
+              <span class="token-ar">وَأَنَا</span>
+              <span class="token-translit">wa-anā</span>
+              <span class="token-pos pos-particle">conj+pro</span>
+              <span class="token-gloss">and I</span>
+            </div>
+            <div class="token-cell">
+              <span class="token-ar">نَاخُذْ</span>
+              <span class="token-translit">nāxuð</span>
+              <span class="token-pos pos-verb">verb</span>
+              <span class="token-gloss">I'll take</span>
+            </div>
+            <div class="token-cell">
+              <span class="token-ar">شَاي</span>
+              <span class="token-translit">šāy</span>
+              <span class="token-pos pos-noun">noun</span>
+              <span class="token-gloss">tea</span>
+            </div>
+            <div class="token-cell">
+              <span class="token-ar">بِلْنِعْنَع</span>
+              <span class="token-translit">bilniʕniʕ</span>
+              <span class="token-pos pos-prep">prep+n</span>
+              <span class="token-gloss">with mint</span>
+            </div>
+            <div class="token-cell">
+              <span class="token-ar">يَعْطِيكْ الصِّحَّة</span>
+              <span class="token-translit">yaʕṭīk iṣṣiḥḥa</span>
+              <span class="token-pos pos-verb">phrase</span>
+              <span class="token-gloss">bless you</span>
+            </div>
+          </div>
+
+          <div class="sentence-translation">
+            <span class="sentence-trans-label">Trans.</span>
+            And I'll have mint tea. Bless you! (said in gratitude)
+          </div>
+          <div class="sentence-notes">
+            <span class="sentence-notes-label">Note.</span>
+            يَعْطِيكْ الصِّحَّة — lit. "may God give you health", a polite expression of thanks used after receiving service.
+          </div>
+        </div>
+      </div>
+
+      <!-- Full text panel -->
+      <div class="full-text-panel">
+        <div class="section-label" style="margin-bottom:1.25rem">Full text</div>
+        <div class="full-text-arabic">
+          أَشْنُوَّ تَشْرَبْ؟ نَحِبّ قَهْوَة بِلْحَلِيب، بَرَاكَا مِنْ سُكَّر. وَأَنَا نَاخُذْ شَاي بِلْنِعْنَع، يَعْطِيكْ الصِّحَّة.
+        </div>
+        <div class="full-text-translit">
+          ašnuwwa tašrab? naḥibb qahwa bilḥalīb, barāka min sukkar. wa-anā nāxuð šāy bilniʕniʕ, yaʕṭīk iṣṣiḥḥa.
+        </div>
+        <div class="full-text-translation">
+          What are you drinking? I'd like a coffee with milk, no sugar please. And I'll have mint tea. Bless you!
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right panel -->
+    <div class="right-panel">
+
+      <div class="meta-card">
+        <div class="meta-card-title">Text details</div>
+        <div class="meta-row">
+          <span class="meta-key">Dialect</span>
+          <span class="meta-val">Tunisian (دارجة)</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Difficulty</span>
+          <span class="meta-val">Intermediate</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Sentences</span>
+          <span class="meta-val">3</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Tokens</span>
+          <span class="meta-val">13 annotated</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Added</span>
+          <span class="meta-val">2 weeks ago</span>
+        </div>
+      </div>
+
+      <div class="meta-card">
+        <div class="meta-card-title">Words in this text</div>
+        <div class="mastery-breakdown">
+          <div class="mastery-bar-row">
+            <span class="mastery-bar-label">Mastered</span>
+            <div class="mastery-bar-track"><div class="mastery-bar-fill fill-mastered"></div></div>
+            <span class="mastery-bar-count">6</span>
+          </div>
+          <div class="mastery-bar-row">
+            <span class="mastery-bar-label">Known</span>
+            <div class="mastery-bar-track"><div class="mastery-bar-fill fill-known"></div></div>
+            <span class="mastery-bar-count">3</span>
+          </div>
+          <div class="mastery-bar-row">
+            <span class="mastery-bar-label">Familiar</span>
+            <div class="mastery-bar-track"><div class="mastery-bar-fill fill-familiar"></div></div>
+            <span class="mastery-bar-count">3</span>
+          </div>
+          <div class="mastery-bar-row">
+            <span class="mastery-bar-label">Learning</span>
+            <div class="mastery-bar-track"><div class="mastery-bar-fill fill-learning"></div></div>
+            <span class="mastery-bar-count">1</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="meta-card">
+        <div class="meta-card-title">Tags</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.375rem">
+          <span class="chip chip-muted" style="font-size:0.68rem">dialogue</span>
+          <span class="chip chip-muted" style="font-size:0.68rem">daily life</span>
+          <span class="chip chip-muted" style="font-size:0.68rem">food</span>
+        </div>
+      </div>
+
+      <div class="meta-card">
+        <div class="meta-card-title">Actions</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem">
+          <button class="btn" style="text-align:left;width:100%">+ Add sentence</button>
+          <button class="btn" style="text-align:left;width:100%">⟳ Re-tokenize all</button>
+          <a href="#" class="source-link">Practice words →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

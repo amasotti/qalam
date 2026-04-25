@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qalam Rihla — Root Detail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500&family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sand:         #FAF7F2;
+    --sand-dark:    #F0E8D8;
+    --sand-darker:  #E0D0B4;
+    --ink:          #1A1510;
+    --ink-mid:      #4A3C2C;
+    --ink-light:    #7A6A58;
+    --terra:        #B84020;
+    --terra-soft:   #D05030;
+    --terra-pale:   #F5DDD6;
+    --ocean:        #2A5878;
+    --ocean-pale:   #D0E8F5;
+    --sage:         #4A7258;
+    --sage-pale:    #D8EDE0;
+    --sage-dark:    #2E5240;
+    --amber:        #C07820;
+    --amber-pale:   #FBF0DC;
+    --amber-dark:   #7A4C10;
+    --purple:       #6040A0;
+    --purple-pale:  #EDE8F5;
+    --rose:         #A02850;
+    --rose-pale:    #F5D8E0;
+    --gold:         #C07A20;
+    --border:       #DDD0BA;
+    --sidebar-bg:   #F0E8D8;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--sand);
+    color: var(--ink);
+    display: flex;
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 220px; flex-shrink: 0; background: var(--sidebar-bg);
+    min-height: 100vh; position: fixed; left: 0; top: 0;
+    display: flex; flex-direction: column; border-right: 1px solid var(--border);
+  }
+  .sidebar-header { padding: 1.75rem 1.5rem 1.25rem; border-bottom: 1px solid var(--border); }
+  .brand-ar { font-family: 'Amiri', serif; font-size: 2.75rem; color: var(--terra); direction: rtl; line-height: 1; display: block; }
+  .brand-name { font-family: 'Lora', serif; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-light); margin-top: 0.125rem; display: block; }
+  .sidebar-nav { padding: 1rem 0.75rem; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .nav-section-label { font-size: 0.58rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-light); padding: 0.625rem 0.5rem 0.25rem; }
+  .nav-link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.5rem 0.625rem; color: var(--ink-mid); text-decoration: none;
+    font-size: 0.825rem; border-radius: 6px; transition: all 150ms;
+  }
+  .nav-link .ar { font-family: 'Amiri', serif; font-size: 0.95rem; color: var(--ink-light); direction: rtl; }
+  .nav-link:hover { background: rgba(184,64,32,0.07); color: var(--terra); }
+  .nav-link.active { background: var(--terra-pale); color: var(--terra); font-weight: 500; }
+  .nav-link.active .ar { color: var(--terra); }
+  .sidebar-progress { padding: 1rem 1.25rem 1.5rem; border-top: 1px solid var(--border); }
+  .progress-label { font-size: 0.6rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-light); margin-bottom: 0.5rem; }
+  .progress-track { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 0.35rem; }
+  .progress-fill { height: 100%; background: linear-gradient(to right, var(--terra), var(--gold)); border-radius: 2px; width: 38%; }
+  .progress-note { font-size: 0.68rem; color: var(--ink-light); }
+
+  /* ── Main ── */
+  .main { margin-left: 220px; flex: 1; }
+
+  .breadcrumb {
+    padding: 1rem 2.5rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.775rem; color: var(--ink-light);
+  }
+  .breadcrumb a { color: inherit; text-decoration: none; }
+  .breadcrumb a:hover { color: var(--terra); }
+  .breadcrumb-sep { opacity: 0.4; }
+  .breadcrumb-current { color: var(--ink); font-weight: 500; font-family: 'Amiri', serif; font-size: 1rem; direction: rtl; }
+
+  /* ── Page grid ── */
+  .page-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    min-height: calc(100vh - 46px);
+  }
+
+  .content { padding: 2.5rem 3rem; border-right: 1px solid var(--border); }
+  .right-panel { padding: 2.5rem 1.75rem; display: flex; flex-direction: column; gap: 1.75rem; }
+
+  /* ── Root hero ── */
+  .root-hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-bottom: 2.5rem;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  /* Ghost Arabic watermark behind the hero */
+  .root-hero::before {
+    content: 'ك ت ب';
+    position: absolute;
+    right: -1rem;
+    top: -1.5rem;
+    font-family: 'Amiri', serif;
+    font-size: 10rem;
+    color: var(--terra);
+    opacity: 0.04;
+    direction: rtl;
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+    letter-spacing: 0.5rem;
+  }
+
+  .root-hero-left { display: flex; flex-direction: column; gap: 1rem; }
+
+  /* Individual letter tiles */
+  .root-letters {
+    display: flex;
+    gap: 0.75rem;
+    direction: rtl;
+    align-items: flex-end;
+  }
+
+  .root-letter-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    position: relative;
+  }
+
+  .root-letter-tile::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%; right: 50%;
+    height: 2px;
+    background: var(--terra);
+    border-radius: 1px;
+    transition: left 200ms, right 200ms;
+  }
+
+  .root-letter-tile:hover::after {
+    left: 0; right: 0;
+  }
+
+  .root-letter-ar {
+    font-family: 'Amiri', serif;
+    font-size: 4.5rem;
+    color: var(--ink);
+    line-height: 1;
+    direction: rtl;
+    letter-spacing: 0.02em;
+  }
+
+  .root-letter-translit {
+    font-family: 'Lora', serif;
+    font-size: 0.72rem;
+    font-style: italic;
+    color: var(--terra);
+    text-align: center;
+  }
+
+  /* Separator between tiles */
+  .root-letter-sep {
+    font-family: 'Lora', serif;
+    font-size: 1.5rem;
+    color: var(--sand-darker);
+    padding-bottom: 0.75rem;
+    align-self: flex-end;
+    line-height: 1;
+  }
+
+  .root-hero-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .root-normalized {
+    font-family: 'Amiri', serif;
+    font-size: 1.1rem;
+    color: var(--ink-light);
+    direction: rtl;
+    font-style: italic;
+  }
+
+  .root-letter-count {
+    display: inline-flex;
+    padding: 0.2rem 0.75rem;
+    border-radius: 999px;
+    background: var(--sand-dark);
+    color: var(--ink-light);
+    font-size: 0.7rem;
+    border: 1px solid var(--border);
+  }
+
+  .root-hero-actions { display: flex; gap: 0.5rem; align-self: flex-start; }
+
+  .btn {
+    padding: 0.45rem 1.1rem; border-radius: 6px; font-size: 0.78rem; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--border); background: transparent;
+    color: var(--ink-mid); transition: all 150ms; font-family: 'DM Sans', sans-serif;
+  }
+  .btn:hover { border-color: var(--ink-mid); color: var(--ink); }
+  .btn-primary { background: var(--terra); color: white; border-color: var(--terra); }
+  .btn-primary:hover { background: var(--terra-soft); }
+
+  /* ── Section label ── */
+  .section-label {
+    font-size: 0.62rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-light); margin-bottom: 1.25rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── Meaning ── */
+  .meaning-text {
+    font-family: 'Lora', serif;
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: var(--ink);
+    font-weight: 400;
+    margin-bottom: 2.5rem;
+    padding-left: 1.25rem;
+    border-left: 3px solid var(--terra);
+  }
+
+  /* ── Analysis ── */
+  .analysis-body {
+    font-size: 0.9rem;
+    line-height: 1.85;
+    color: var(--ink-mid);
+    margin-bottom: 2.5rem;
+  }
+
+  .analysis-body p { margin-bottom: 0.875rem; }
+  .analysis-body p:last-child { margin-bottom: 0; }
+
+  .analysis-body strong { color: var(--ink); font-weight: 600; }
+  .analysis-body em { font-style: italic; color: var(--terra); }
+
+  .analysis-body code {
+    font-family: 'Amiri', serif;
+    font-size: 1rem;
+    background: var(--sand-dark);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    direction: rtl;
+    color: var(--ink);
+  }
+
+  /* ── Word family ── */
+  .word-family-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .word-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 1rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: white;
+    text-decoration: none;
+    color: var(--ink);
+    box-shadow: 0 1px 3px rgba(26,21,16,0.04);
+    transition: all 180ms ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Mastery color strip at top */
+  .word-chip::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .word-chip.mastery-mastered::before { background: var(--sage); }
+  .word-chip.mastery-known::before    { background: #8BC48A; }
+  .word-chip.mastery-familiar::before { background: var(--amber); }
+  .word-chip.mastery-learning::before { background: var(--terra); }
+  .word-chip.mastery-new::before      { background: var(--border); }
+
+  .word-chip:hover {
+    border-color: var(--terra);
+    box-shadow: 0 4px 16px rgba(184,64,32,0.1);
+    transform: translateY(-2px);
+  }
+
+  .word-chip-ar {
+    font-family: 'Amiri', serif;
+    font-size: 1.75rem;
+    direction: rtl;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  .word-chip-translit {
+    font-family: 'Lora', serif;
+    font-size: 0.65rem;
+    font-style: italic;
+    color: var(--terra);
+  }
+
+  .word-chip-trans {
+    font-size: 0.68rem;
+    color: var(--ink-light);
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .word-chip-pos {
+    font-size: 0.55rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+  }
+
+  .pos-verb    { background: var(--terra-pale); color: var(--terra); }
+  .pos-noun    { background: var(--ocean-pale); color: var(--ocean); }
+  .pos-adj     { background: var(--sage-pale); color: var(--sage); }
+  .pos-pattern { background: var(--amber-pale); color: var(--amber); }
+  .pos-other   { background: var(--sand-dark); color: var(--ink-light); }
+
+  /* Mastery label chip on word card */
+  .mastery-chip {
+    font-size: 0.55rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .m-mastered { background: var(--sage-pale); color: var(--sage-dark); }
+  .m-known    { background: #E0F0DE; color: #3A6438; }
+  .m-familiar { background: var(--amber-pale); color: var(--amber-dark); }
+  .m-learning { background: var(--terra-pale); color: var(--terra); }
+  .m-new      { background: var(--sand-dark); color: var(--ink-light); }
+
+  /* ── Right panel ── */
+  .meta-card {
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 1px 4px rgba(26,21,16,0.04);
+  }
+
+  .meta-card-title {
+    font-family: 'Lora', serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .meta-row { display: flex; flex-direction: column; gap: 0.15rem; margin-bottom: 0.75rem; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-key { font-size: 0.58rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-light); }
+  .meta-val { font-size: 0.82rem; color: var(--ink); }
+  .meta-val.ar { font-family: 'Amiri', serif; font-size: 1.2rem; direction: rtl; }
+
+  /* Mastery distribution in right panel */
+  .family-mastery {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .mastery-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.72rem;
+  }
+
+  .mastery-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-mastered { background: var(--sage); }
+  .dot-known    { background: #8BC48A; }
+  .dot-familiar { background: var(--amber); }
+  .dot-learning { background: var(--terra); }
+  .dot-new      { background: var(--border); }
+
+  .mastery-bar-outer { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .mastery-bar-inner { height: 100%; border-radius: 2px; }
+  .bi-mastered { background: var(--sage); width: 40%; }
+  .bi-known    { background: #8BC48A; width: 20%; }
+  .bi-familiar { background: var(--amber); width: 25%; }
+  .bi-learning { background: var(--terra); width: 10%; }
+  .bi-new      { background: var(--sand-darker); width: 5%; }
+
+  .mastery-count { width: 1.5rem; text-align: right; color: var(--ink-light); }
+
+  /* Quick nav to word */
+  .related-words-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .related-word-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.625rem;
+    border-radius: 6px;
+    background: var(--sand-dark);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    transition: all 150ms;
+  }
+
+  .related-word-link:hover {
+    border-color: var(--terra);
+    background: var(--terra-pale);
+  }
+
+  .related-word-ar {
+    font-family: 'Amiri', serif;
+    font-size: 1.25rem;
+    color: var(--ink);
+    direction: rtl;
+  }
+
+  .related-word-trans {
+    font-size: 0.72rem;
+    color: var(--ink-light);
+  }
+
+  /* Chip reuse */
+  .chip {
+    padding: 0.2rem 0.75rem; font-size: 0.7rem; font-weight: 500;
+    border-radius: 999px; border: 1px solid;
+  }
+  .chip-muted { background: var(--sand-dark); color: var(--ink-light); border-color: var(--border); }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <span class="brand-ar">قلم</span>
+    <span class="brand-name">Qalam</span>
+  </div>
+  <nav class="sidebar-nav">
+    <span class="nav-section-label">Study</span>
+    <a href="#" class="nav-link"><span>Words</span><span class="ar">كلمات</span></a>
+    <a href="#" class="nav-link active"><span>Roots</span><span class="ar">جذور</span></a>
+    <a href="#" class="nav-link"><span>Texts</span><span class="ar">نصوص</span></a>
+    <span class="nav-section-label">Practice</span>
+    <a href="#" class="nav-link"><span>Training</span><span class="ar">تدريب</span></a>
+    <a href="#" class="nav-link"><span>Analytics</span><span class="ar">إحصاء</span></a>
+  </nav>
+  <div class="sidebar-progress">
+    <div class="progress-label">Vocabulary progress</div>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <div class="progress-note">142 of 380 words mastered</div>
+  </div>
+</aside>
+
+<!-- Main -->
+<div class="main">
+  <div class="breadcrumb">
+    <a href="#">Roots</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-current">كَتَبَ</span>
+  </div>
+
+  <div class="page-layout">
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Root hero: letter tiles -->
+      <div class="root-hero">
+        <div class="root-hero-left">
+          <div class="root-letters">
+            <div class="root-letter-tile">
+              <span class="root-letter-ar">ب</span>
+              <span class="root-letter-translit">b</span>
+            </div>
+            <span class="root-letter-sep">—</span>
+            <div class="root-letter-tile">
+              <span class="root-letter-ar">ت</span>
+              <span class="root-letter-translit">t</span>
+            </div>
+            <span class="root-letter-sep">—</span>
+            <div class="root-letter-tile">
+              <span class="root-letter-ar">ك</span>
+              <span class="root-letter-translit">k</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem">
+            <span class="root-normalized">كَتَبَ — k-t-b</span>
+            <span class="root-letter-count">3 letters</span>
+          </div>
+        </div>
+        <div class="root-hero-actions">
+          <button class="btn btn-primary">Edit</button>
+          <button class="btn">Delete</button>
+        </div>
+      </div>
+
+      <!-- Meaning -->
+      <div class="section-label">Core meaning</div>
+      <p class="meaning-text">to write, to inscribe, to record — the fundamental act of putting marks on a surface to communicate meaning</p>
+
+      <!-- Analysis -->
+      <div class="section-label" style="margin-bottom:1rem">Analysis</div>
+      <div class="analysis-body">
+        <p>The root <strong>ك-ت-ب</strong> (k-t-b) is one of the most productive roots in Arabic, covering the entire semantic field of writing and recording. The basic form <em>كَتَبَ</em> (kataba, "he wrote") follows the standard Form I triliteral verb pattern.</p>
+        <p>Notable derived forms: <em>كِتَاب</em> (kitāb, "book") follows the <code>فِعَال</code> pattern for instruments/objects; <em>كَاتِب</em> (kātib, "writer, scribe") is the active participle; <em>مَكْتُوب</em> (maktūb, "written, letter, fate") the passive participle — which acquired the extended meaning of "fate" in many dialects (what is written = what is destined).</p>
+        <p>In Tunisian dialect: <em>كتب</em> preserves the core meaning. The Form II <em>كَتَّب</em> (kattab, "to teach writing") is less common. <em>مَكْتُوب</em> is widely used for both "letter" and "fate/destiny".</p>
+      </div>
+
+      <!-- Word family -->
+      <div class="section-label">
+        Word family
+        <span style="font-size:0.72rem;color:var(--ink-light);text-transform:none;letter-spacing:0;font-family:'DM Sans',sans-serif;margin-left:-0.5rem">8 words</span>
+      </div>
+
+      <div class="word-family-grid">
+
+        <a href="#" class="word-chip mastery-mastered">
+          <span class="word-chip-ar">كَتَبَ</span>
+          <span class="word-chip-translit">kataba</span>
+          <span class="word-chip-trans">to write</span>
+          <span class="word-chip-pos pos-verb">verb</span>
+          <span class="mastery-chip m-mastered">mastered</span>
+        </a>
+
+        <a href="#" class="word-chip mastery-mastered">
+          <span class="word-chip-ar">كِتَاب</span>
+          <span class="word-chip-translit">kitāb</span>
+          <span class="word-chip-trans">book</span>
+          <span class="word-chip-pos pos-noun">noun</span>
+          <span class="mastery-chip m-mastered">mastered</span>
+        </a>
+
+        <a href="#" class="word-chip mastery-known">
+          <span class="word-chip-ar">كَاتِب</span>
+          <span class="word-chip-translit">kātib</span>
+          <span class="word-chip-trans">writer, scribe</span>
+          <span class="word-chip-pos pos-noun">noun</span>
+          <span class="mastery-chip m-known">known</span>
+        </a>
+
+        <a href="#" class="word-chip mastery-familiar">
+          <span class="word-chip-ar">مَكْتُوب</span>
+          <span class="word-chip-translit">maktūb</span>
+          <span class="word-chip-trans">written; fate</span>
+          <span class="word-chip-pos pos-pattern">pass. part.</span>
+          <span class="mastery-chip m-familiar">familiar</span>
+        </a>
+
+        <a href="#" class="word-chip mastery-familiar">
+          <span class="word-chip-ar">مَكْتَب</span>
+          <span class="word-chip-translit">maktab</span>
+          <span class="word-chip-trans">office, desk</span>
+          <span class="word-chip-pos pos-noun">noun</span>
+          <span class="mastery-chip m-familiar">familiar</span>
+        </a>
+
+        <a href="#" class="word-chip mastery-learning">
+          <span class="word-chip-ar">كِتَابَة</span>
+          <span class="word-chip-translit">kitāba</span>
+          <span class="word-chip-trans">writing (act)</span>
+          <span class="word-chip-pos pos-noun">noun</span>
+          <span class="mastery-chip m-learning">learning</span>
+        </a>
+
+        <a href="#" class="word-chip mastery-learning">
+          <span class="word-chip-ar">كُتَّاب</span>
+          <span class="word-chip-translit">kuttāb</span>
+          <span class="word-chip-trans">Quranic school</span>
+          <span class="word-chip-pos pos-noun">noun</span>
+          <span class="mastery-chip m-learning">learning</span>
+        </a>
+
+        <a href="#" class="word-chip mastery-new">
+          <span class="word-chip-ar">اكْتَتَبَ</span>
+          <span class="word-chip-translit">iktataba</span>
+          <span class="word-chip-trans">to subscribe</span>
+          <span class="word-chip-pos pos-verb">verb VIII</span>
+          <span class="mastery-chip m-new">new</span>
+        </a>
+
+      </div>
+
+    </div>
+
+    <!-- Right panel -->
+    <div class="right-panel">
+
+      <div class="meta-card">
+        <div class="meta-card-title">Root details</div>
+        <div class="meta-row">
+          <span class="meta-key">Display form</span>
+          <span class="meta-val ar">كَتَبَ</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Normalized</span>
+          <span class="meta-val">k-t-b</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Letter count</span>
+          <span class="meta-val">3 (trilateral)</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Word family</span>
+          <span class="meta-val">8 words</span>
+        </div>
+      </div>
+
+      <!-- Mastery breakdown -->
+      <div class="meta-card">
+        <div class="meta-card-title">Family mastery</div>
+        <div class="family-mastery">
+          <div class="mastery-row">
+            <span class="mastery-dot dot-mastered"></span>
+            <span style="flex:0 0 4.5rem;font-size:0.72rem;color:var(--ink-light)">Mastered</span>
+            <div class="mastery-bar-outer"><div class="mastery-bar-inner bi-mastered"></div></div>
+            <span class="mastery-count">2</span>
+          </div>
+          <div class="mastery-row">
+            <span class="mastery-dot dot-known"></span>
+            <span style="flex:0 0 4.5rem;font-size:0.72rem;color:var(--ink-light)">Known</span>
+            <div class="mastery-bar-outer"><div class="mastery-bar-inner bi-known"></div></div>
+            <span class="mastery-count">1</span>
+          </div>
+          <div class="mastery-row">
+            <span class="mastery-dot dot-familiar"></span>
+            <span style="flex:0 0 4.5rem;font-size:0.72rem;color:var(--ink-light)">Familiar</span>
+            <div class="mastery-bar-outer"><div class="mastery-bar-inner bi-familiar"></div></div>
+            <span class="mastery-count">2</span>
+          </div>
+          <div class="mastery-row">
+            <span class="mastery-dot dot-learning"></span>
+            <span style="flex:0 0 4.5rem;font-size:0.72rem;color:var(--ink-light)">Learning</span>
+            <div class="mastery-bar-outer"><div class="mastery-bar-inner bi-learning"></div></div>
+            <span class="mastery-count">2</span>
+          </div>
+          <div class="mastery-row">
+            <span class="mastery-dot dot-new"></span>
+            <span style="flex:0 0 4.5rem;font-size:0.72rem;color:var(--ink-light)">New</span>
+            <div class="mastery-bar-outer"><div class="mastery-bar-inner bi-new"></div></div>
+            <span class="mastery-count">1</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick access to key words -->
+      <div class="meta-card">
+        <div class="meta-card-title">Key words</div>
+        <div class="related-words-list">
+          <a href="#" class="related-word-link">
+            <span class="related-word-ar">كَتَبَ</span>
+            <span class="related-word-trans">to write →</span>
+          </a>
+          <a href="#" class="related-word-link">
+            <span class="related-word-ar">كِتَاب</span>
+            <span class="related-word-trans">book →</span>
+          </a>
+          <a href="#" class="related-word-link">
+            <span class="related-word-ar">مَكْتُوب</span>
+            <span class="related-word-trans">written; fate →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="meta-card">
+        <div class="meta-card-title">Actions</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem">
+          <button class="btn" style="text-align:left;width:100%">+ Add word to family</button>
+          <button class="btn" style="text-align:left;width:100%">Practice this root</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

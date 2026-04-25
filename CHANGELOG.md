@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.0.2] - 2026-04-25
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/4df60e3968dd80b8be2cf9df44c0515ea4306326..d9b595c23ce829178e995a377730782e1a221ba4)
+### 🚀 Features
+
+
+- Add Conflict error type for uniqueness constraint violations ([6b654d5](https://github.com/amasotti/qalam/commit/6b654d581b32fe86dfea4597c25eb8692eebcf86))
+
+- Add OpenAPI smoke test for route registration in Ktor ([63862ad](https://github.com/amasotti/qalam/commit/63862adb28ea484620777cd5a6326faa1c27d8a3))
+
+- Add error page component for improved user feedback ([9d9cba3](https://github.com/amasotti/qalam/commit/9d9cba3cde572d97260a25d84a965e832b5c8d1a))
+
+- Add Playwright E2E tests for navigation, roots, texts, and words ([b75125a](https://github.com/amasotti/qalam/commit/b75125a223050392e6eb710c3841ebd37b24eacb))
+
+### 🚜 Refactor
+
+
+- Replace parameter extraction with getOrFail for improved error handling ([0e619eb](https://github.com/amasotti/qalam/commit/0e619eb0cab14d6641d558b9e24238bcb06324b2))
+
+- Remove default AiClient instantiation in WordService constructor ([9689718](https://github.com/amasotti/qalam/commit/9689718c4e2eaf7b17eed2bcb978a2a094309a1f))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Add CI checks before release job ([8fc7ea1](https://github.com/amasotti/qalam/commit/8fc7ea104e36e8df948fbabfeed35f7e9ef71d3f))
+
+- Remove useless constructor argument for AI client ([d8de126](https://github.com/amasotti/qalam/commit/d8de12674c8587d62b863b55b85f76a3594dc32b))
+
+- Drop duplicate TRGM indexes for Arabic words and translations ([c765718](https://github.com/amasotti/qalam/commit/c765718ee077472cb7fc05fc351a187797fe64f7))
+
+- Fix tests and run formatter ([d9b595c](https://github.com/amasotti/qalam/commit/d9b595c23ce829178e995a377730782e1a221ba4))
+
 ## [0.0.1] - 2026-04-25
 
 [Compare with last version](https://github.com/amasotti/qalam/compare/19fe633fd2d01cf1df88f0f99c03f676fffafa4d..4df60e3968dd80b8be2cf9df44c0515ea4306326)

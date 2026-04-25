@@ -2092,14 +2092,6 @@
 	margin-bottom: 2rem;
 }
 
-.root-hero-arabic {
-	font-family: var(--font-arabic-display);
-	font-size: 4rem;
-	line-height: 1.2;
-	direction: rtl;
-	color: hsl(var(--foreground));
-}
-
 .root-hero-meta {
 	display: flex;
 	flex-direction: column;

@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.3.0] - 2026-04-25
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/4d8000034c8c0c8eb759db41f29739d57e2f333f..b71756355d810ae5dcbc536732ca0180aa5fdfc5)
+### 🚀 Features
+
+
+- Enhance VocabLookupDrawer with search input and improved lookup handling ([071e46d](https://github.com/amasotti/qalam/commit/071e46d3c9f26b7312925d97220538eedb6dffc3))
+
+- Add sorting functionality to text filters with sortBy and sortDesc options ([9d6785f](https://github.com/amasotti/qalam/commit/9d6785f82e30e2a2d6d1e34d5d7c1d9bcb901c92))
+
+- Extend service.list method to support additional parameters ([bd2d5cd](https://github.com/amasotti/qalam/commit/bd2d5cd79c750ffb87a87dfbed5b903b032bf2bf))
+
+- Add sync endpoint to rebuild text from its sentences ([262f3f0](https://github.com/amasotti/qalam/commit/262f3f07a7a11d389dde6a479a5451878bdf6cf8))
+
+- Update TextService to include SentenceRepository and improve test assertions ([109cdc5](https://github.com/amasotti/qalam/commit/109cdc5c3e36668d88b18aabebcba411dcbfacff))
+
+- Enhance tokenization process to include transliteration and translation fields ([b717563](https://github.com/amasotti/qalam/commit/b71756355d810ae5dcbc536732ca0180aa5fdfc5))
+
+### 🧪 Testing
+
+
+- Fix e2e tests after refactoring in FE ([3ec126b](https://github.com/amasotti/qalam/commit/3ec126ba8bcc020eccac12bde1c0e063822a3511))
+
+- Fix e2e tests after refactoring in FE ([51884ad](https://github.com/amasotti/qalam/commit/51884ad967402deb8d2887dc7c136bb7d1bf0707))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Run formatter ([2e57293](https://github.com/amasotti/qalam/commit/2e57293e87eb50da9e9fb32e4e8f84abaf90f586))
+
 ## [0.2.0] - 2026-04-25
 
 [Compare with last version](https://github.com/amasotti/qalam/compare/bc0a2050836cc4a6152636ad40e0c8acd154c402..4d8000034c8c0c8eb759db41f29739d57e2f333f)

@@ -80,7 +80,12 @@ async function handleAddAll() {
 	addError = '';
 	try {
 		for (const source of missingTemplated) {
-			const template = URL_TEMPLATES[source]!;
+			const template = URL_TEMPLATES[source];
+
+			if (!template) {
+				throw new Error(`No URL template for source ${source}`);
+			}
+
 			await addMutation.mutateAsync({
 				id: wordId,
 				body: { source, url: template.replace('{word}', encodeURIComponent(arabicText)) },

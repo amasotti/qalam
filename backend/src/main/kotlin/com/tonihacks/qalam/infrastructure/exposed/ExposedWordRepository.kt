@@ -22,12 +22,14 @@ import com.tonihacks.qalam.domain.word.WordExample
 import com.tonihacks.qalam.domain.word.WordExampleId
 import com.tonihacks.qalam.domain.word.WordFilters
 import com.tonihacks.qalam.domain.word.WordId
+import com.tonihacks.qalam.domain.word.WordProgress
 import com.tonihacks.qalam.domain.word.WordRepository
 import org.jetbrains.exposed.v1.core.Op
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.or
+import kotlin.time.Clock
 import org.postgresql.util.PSQLState
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
@@ -237,6 +239,70 @@ class ExposedWordRepository : WordRepository {
                 ensure(deleteCount > 0) { DomainError.NotFound("WordExample", exampleId.toString()) }
             }
         }
+
+    override suspend fun findForTraining(
+        masteryLevel: MasteryLevel?,
+        limit: Int,
+    ): Either<DomainError, List<Word>> =
+        suspendTransaction {
+            try {
+                val query = WordsTable.selectAll()
+                val filtered = if (masteryLevel != null) {
+                    query.where { WordsTable.masteryLevel eq masteryLevel.name }
+                } else {
+                    query
+                }
+                filtered.toList().shuffled().take(limit).map { it.toWord() }.right()
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                DomainError.DatabaseError.left()
+            }
+        }
+
+    override suspend fun getProgress(wordId: WordId): Either<DomainError, WordProgress> =
+        suspendTransaction {
+            try {
+                WordProgressTable
+                    .selectAll()
+                    .where { WordProgressTable.wordId eq wordId.value.toKotlinUuid() }
+                    .singleOrNull()
+                    ?.toWordProgress()
+                    ?.right()
+                    ?: DomainError.NotFound("WordProgress", wordId.value.toString()).left()
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                DomainError.DatabaseError.left()
+            }
+        }
+
+    override suspend fun updateProgress(progress: WordProgress): Either<DomainError, Unit> =
+        suspendTransaction {
+            either {
+                val updatedCount = WordProgressTable.update({
+                    WordProgressTable.wordId eq progress.wordId.value.toKotlinUuid()
+                }) {
+                    it[consecutiveCorrect] = progress.consecutiveCorrect
+                    it[totalAttempts]      = progress.totalAttempts
+                    it[totalCorrect]       = progress.totalCorrect
+                    it[lastReviewedAt]     = progress.lastReviewedAt
+                }
+                ensure(updatedCount > 0) { DomainError.NotFound("WordProgress", progress.wordId.value.toString()) }
+            }
+        }
+
+    override suspend fun updateMasteryLevel(
+        wordId: WordId,
+        level: MasteryLevel,
+    ): Either<DomainError, Unit> =
+        suspendTransaction {
+            try {
+                WordsTable.update({ WordsTable.id eq wordId.value.toKotlinUuid() }) {
+                    it[masteryLevel] = level.name
+                    it[updatedAt]    = Clock.System.now()
+                }
+                Unit.right()
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                DomainError.DatabaseError.left()
+            }
+        }
 }
 
 @OptIn(kotlin.uuid.ExperimentalUuidApi::class)
@@ -272,4 +338,13 @@ private fun ResultRow.toDictionaryLink() = DictionaryLink(
     wordId = WordId(this[WordDictionaryLinksTable.wordId].toJavaUuid()),
     source = DictionarySource.fromString(this[WordDictionaryLinksTable.linkSource]) ?: DictionarySource.CUSTOM,
     url = this[WordDictionaryLinksTable.url],
+)
+
+@OptIn(kotlin.uuid.ExperimentalUuidApi::class)
+private fun ResultRow.toWordProgress() = WordProgress(
+    wordId = WordId(this[WordProgressTable.wordId].toJavaUuid()),
+    consecutiveCorrect = this[WordProgressTable.consecutiveCorrect],
+    totalAttempts = this[WordProgressTable.totalAttempts],
+    totalCorrect = this[WordProgressTable.totalCorrect],
+    lastReviewedAt = this[WordProgressTable.lastReviewedAt],
 )

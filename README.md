@@ -5,89 +5,146 @@
 <div align="center">
 
 [![CI - Backend](https://github.com/amasotti/qalam/actions/workflows/ci-backend.yml/badge.svg?branch=main)](https://github.com/amasotti/qalam/actions/workflows/ci-backend.yml)
+[![CI - Frontend](https://github.com/amasotti/qalam/actions/workflows/ci-frontend.yml/badge.svg?branch=main)](https://github.com/amasotti/qalam/actions/workflows/ci-frontend.yml)
+
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.3-7F52FF?logo=kotlin&logoColor=white)
 ![Ktor](https://img.shields.io/badge/Ktor-3.x-087CFA?logo=ktor&logoColor=white)
+![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 </div>
 
-*Qalam* (قلم — "pen") is the rewrite of [An-Na7wi](https://github.com/amasotti/an-na7wi), my personal Arabic learning
-platform. The old stack (Quarkus + Nuxt) served me well but accumulated too many rough edges and given it was a learning project
-in first place, why not keep learning with some other stack? :D This is the clean version: Ktor + SvelteKit, better data model and service / use-case layer, same goal.
+---
 
-**What it does**: manage Arabic texts with interlinear glosses, explore word roots and vocabulary in depth, annotate
-passages, and drill with a spaced-repetition flashcard system. AI-assisted transliteration and example generation are
-built in but entirely optional — the app works without an API key.
+*Qalam* (قلم — "pen") manages Arabic texts with interlinear glosses, a root-linked vocabulary
+graph, and SRS flashcard drills. The backend is Ktor on Kotlin 2 with Arrow-typed service
+boundaries, Exposed as the SQL DSL, and a clean onion architecture; the frontend is SvelteKit on
+Svelte 5 runes with Tailwind v4. Built for one user — the developer — but open for anyone to explore, fork, or steal ideas from.
 
-**Who it's for**: me. Single user, no auth, no multi-tenancy. If you're also learning Arabic and like building your own
-tools, you might find it useful too.
+| Layer    | Stack                                                         |
+|----------|---------------------------------------------------------------|
+| Backend  | Kotlin 2.3 · Ktor 3.x · Exposed · Arrow · Koin               |
+| Frontend | SvelteKit · Svelte 5 runes · Tailwind v4 · shadcn-svelte      |
+| Database | PostgreSQL 17 · Flyway · `pg_trgm` · `unaccent`               |
+| AI       | OpenRouter — optional, degrades gracefully to 503 without key |
+| Tooling  | just · Doppler · Docker Compose · GitHub Actions              |
 
 ---
 
-## What you need
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="docs/assets/home.png" alt="Home — module overview"/><br/>
+      <sub>Home — module overview</sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="docs/assets/interlinear_text.png" alt="Interlinear gloss view"/><br/>
+      <sub>Interlinear gloss — token-by-token alignment</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/assets/word_detail.png" alt="Word detail"/><br/>
+      <sub>Word detail — mastery, examples, dictionary links</sub>
+    </td>
+    <td align="center">
+      <img src="docs/assets/root_detail.png" alt="Root detail"/><br/>
+      <sub>Root detail — trilateral root with AI-generated meaning notes</sub>
+    </td>
+  </tr>
+</table>
 
-| Tool    | Version | How to install                                                    |
-|---------|---------|-------------------------------------------------------------------|
-| JDK     | 25      | [sdkman](https://sdkman.io/): `sdk install java 25-tem`           |
-| just    | latest  | `brew install just` / system package                              |
-| doppler | latest  | [doppler.com/docs/install](https://docs.doppler.com/docs/install) |
-| Node.js | 24      | system package / `nvm`                                            |
-| pnpm    | latest  | `corepack enable && corepack prepare pnpm@latest --activate`      |
-| Docker  | any     | Docker Desktop or colima                                          |
+---
 
-Make sure `JAVA_HOME` points to JDK 25 (sdkman sets this automatically).
-Doppler can be replaced by Vault, Infisical, or a local `.env` file if needed.
+## Features
+
+### نصوص — Texts
+
+Arabic passages with optional transliteration and translation, tagged by dialect (MSA, Tunisian,
+Egyptian, Levantine, and more) and difficulty. A plain annotated view and a sentence-level
+interlinear gloss view are properties of the same text entity — not separate content types. Select
+any span to open an annotation form; annotations link back to vocabulary entries.
+
+### جذور — Roots
+
+Arabic's trilateral root system is a first-class citizen. Each word links to its root; the root
+page shows the derivation graph and an AI-generated semantic note covering the root's core meaning,
+its derived forms, and how meaning shifts across them. All graph queries are depth-limited to
+prevent runaway traversal on the self-referential `derivedFrom` relation.
+
+### كلمات — Words
+
+Full word entries: part of speech, dialect, mastery level (unseen → learning → reviewing →
+mastered), example sentences with transliteration, and a curated set of dictionary links (Almaany,
+Living Arabic Project, Darja Ninja, Reverso, Wiktionary, and others). The AI layer can generate
+additional examples on demand; it is disabled cleanly when no API key is configured.
+
+### تدريب — Training
+
+Session-based SRS flashcard drills. Each session surfaces words due for review based on mastery
+level. A correct answer promotes the word; an incorrect one holds it at the current level. No
+external SRS library — the scheduling logic is intentionally simple and fully owned.
+
+### إحصاءات — Statistics
+
+Vocabulary growth over time, mastery distribution across the full word set, and per-dialect
+breakdowns. Useful for seeing where gaps are and how the knowledge base is growing.
 
 ---
 
 ## Getting started
 
-One-time setup:
+**Prerequisites:**
+
+| Tool    | Version | How to install                                                    |
+|---------|---------|-------------------------------------------------------------------|
+| JDK     | 25      | [sdkman](https://sdkman.io/): `sdk install java 25-tem`           |
+| just    | latest  | `brew install just` / system package                              |
+| Doppler | latest  | [doppler.com/docs/install](https://docs.doppler.com/docs/install) |
+| Node.js | 24      | system package / nvm                                              |
+| pnpm    | latest  | `corepack enable && corepack prepare pnpm@latest --activate`      |
+| Docker  | any     | Docker Desktop or Colima                                          |
+
+`JAVA_HOME` must point to JDK 25 (sdkman sets this automatically). Doppler can be swapped for
+Vault, Infisical, or a plain `.env` file.
+
+**One-time setup:**
 
 ```bash
 doppler login
 doppler setup    # project: qalam, config: dev
 ```
 
-Then:
+**Run everything:**
 
 ```bash
-just run         # start Postgres + Ktor backend
+just run         # Postgres + backend + frontend
 ```
 
-Or in parts:
+**Run in parts:**
 
 ```bash
 just start-db    # Postgres only (Docker Compose)
-just backend     # Ktor backend (requires DB running)
+just backend     # Ktor backend (requires DB)
+just frontend    # SvelteKit dev server (requires backend)
 just test        # backend tests (Testcontainers — no external DB needed)
 just stop-db     # shut down Postgres
 ```
 
 ---
 
-## What's in here
+## Access points
 
-- **Texts** — add Arabic passages, attach transliteration and translation, tag by dialect and difficulty
-- **Interlinear glosses** — break texts into sentences, align each token to a vocabulary word
-- **Roots** — explore the trilateral root system; words link back to their root
-- **Vocabulary** — full word entries with POS, dialect, mastery level, dictionary links, audio, and example sentences
-- **Annotations** — highlight and annotate phrases within texts; link annotations to vocabulary words
-- **SRS training** — session-based flashcard drills with mastery promotion
-- **AI features** — transliteration, example generation, and auto-tokenization via OpenRouter (gracefully disabled if no
-  key is set)
-
----
+| Service    | URL                                        |
+|------------|--------------------------------------------|
+| Frontend        | http://localhost                           |
+| API             | http://localhost/api/v1/                   |
+| Swagger UI      | http://localhost/api/v1/swagger-ui         |
+| Health          | http://localhost/health                    |
+| Traefik dashboard | http://localhost:8083                    |
 
 Full documentation lives in [`docs/`](docs/).
-
----
-
-## Access points (once running)
-
-- API: `http://localhost:8085/api/v1/`
-- Swagger UI: `http://localhost:8085/api/v1/swagger-ui`
-- Health: `http://localhost:8085/health`
 
 ---
 

@@ -181,13 +181,6 @@ export type UpdateTextRequest = {
     tags?: Array<string> | null;
 };
 
-export type SummarizeResponse = {
-    /**
-     * AI-generated summary of the text
-     */
-    summary: string;
-};
-
 export type AlignmentTokenResponse = {
     id: string;
     sentenceId: string;
@@ -288,6 +281,118 @@ export type UpdateAnnotationRequest = {
     content?: string | null;
     masteryLevel?: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
     reviewFlag?: boolean | null;
+};
+
+export type CreateSessionRequest = {
+    /**
+     * Training mode (e.g., ARABIC_TO_TRANSLITERATION, ARABIC_TO_TRANSLATION, etc.)
+     */
+    mode: string;
+    /**
+     * Number of words to include in the session
+     */
+    size: number;
+};
+
+export type TrainingSessionWordResponse = {
+    wordId: string;
+    arabicText: string;
+    transliteration?: string | null;
+    translation: string | null;
+    /**
+     * What is shown on the front of the card (ARABIC or TRANSLATION)
+     */
+    frontSide: 'ARABIC' | 'TRANSLATION';
+    /**
+     * Position within the session (0-based)
+     */
+    position: number;
+    /**
+     * Result recorded for this word (CORRECT, INCORRECT, SKIPPED)
+     */
+    result?: 'CORRECT' | 'INCORRECT' | 'SKIPPED';
+    /**
+     * Current mastery level for this word
+     */
+    masteryLevel: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
+};
+
+export type TrainingSessionResponse = {
+    id: string;
+    mode: string;
+    status: 'ACTIVE' | 'COMPLETED';
+    words: Array<TrainingSessionWordResponse>;
+    createdAt: string;
+    completedAt?: string | null;
+};
+
+export type RecordResultRequest = {
+    wordId: string;
+    result: 'CORRECT' | 'INCORRECT' | 'SKIPPED';
+};
+
+export type MasteryPromotionResponse = {
+    wordId: string;
+    from: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
+    to: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
+};
+
+export type RecordResultResponse = {
+    wordId: string;
+    result: 'CORRECT' | 'INCORRECT' | 'SKIPPED';
+    masteryPromotion?: MasteryPromotionResponse;
+};
+
+export type SessionSummaryResponse = {
+    sessionId: string;
+    mode: string;
+    totalWords: number;
+    correct: number;
+    incorrect: number;
+    skipped: number;
+    /**
+     * Accuracy as a percentage (0.0-100.0)
+     */
+    accuracy: number;
+    promotions: Array<MasteryPromotionResponse>;
+    completedAt: string;
+};
+
+export type TrainingSessionListItemResponse = {
+    id: string;
+    mode: string;
+    status: 'ACTIVE' | 'COMPLETED';
+    totalWords: number;
+    correctCount: number;
+    incorrectCount: number;
+    skippedCount: number;
+    accuracy: number;
+    createdAt: string;
+    completedAt?: string | null;
+};
+
+export type PaginatedSessionsResponse = {
+    items: Array<TrainingSessionListItemResponse>;
+    total: number;
+    page: number;
+    size: number;
+};
+
+export type TrainingStatsResponse = {
+    /**
+     * Count of words at each mastery level (e.g., {NEW: 5, LEARNING: 10, KNOWN: 8, MASTERED: 12})
+     */
+    masteryDistribution: {
+        [key: string]: number;
+    };
+    /**
+     * Total number of training sessions completed
+     */
+    totalSessions: number;
+    /**
+     * Recently completed sessions (up to 10)
+     */
+    recentSessions: Array<TrainingSessionListItemResponse>;
 };
 
 export type PartOfSpeech = 'UNKNOWN' | 'NOUN' | 'VERB' | 'ADJECTIVE' | 'ADVERB' | 'PREPOSITION' | 'PARTICLE' | 'INTERJECTION' | 'CONJUNCTION' | 'PRONOUN';
@@ -1075,37 +1180,6 @@ export type UpdateTextResponses = {
 
 export type UpdateTextResponse = UpdateTextResponses[keyof UpdateTextResponses];
 
-export type SummarizeTextData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/api/v1/texts/{id}/summarize';
-};
-
-export type SummarizeTextErrors = {
-    /**
-     * Text not found
-     */
-    404: ErrorResponse;
-    /**
-     * AI not configured (OPENROUTER_API_KEY missing)
-     */
-    503: ErrorResponse;
-};
-
-export type SummarizeTextError = SummarizeTextErrors[keyof SummarizeTextErrors];
-
-export type SummarizeTextResponses = {
-    /**
-     * Generated summary
-     */
-    200: SummarizeResponse;
-};
-
-export type SummarizeTextResponse = SummarizeTextResponses[keyof SummarizeTextResponses];
-
 export type ListSentencesData = {
     body?: never;
     path: {
@@ -1691,6 +1765,199 @@ export type GetSwaggerUiResponses = {
      */
     200: unknown;
 };
+
+export type ListTrainingSessionsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number (1-based)
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        size?: number;
+    };
+    url: '/api/v1/training/sessions';
+};
+
+export type ListTrainingSessionsErrors = {
+    /**
+     * Invalid query parameters
+     */
+    400: ErrorResponse;
+};
+
+export type ListTrainingSessionsError = ListTrainingSessionsErrors[keyof ListTrainingSessionsErrors];
+
+export type ListTrainingSessionsResponses = {
+    /**
+     * Paginated list of training sessions
+     */
+    200: PaginatedSessionsResponse;
+};
+
+export type ListTrainingSessionsResponse = ListTrainingSessionsResponses[keyof ListTrainingSessionsResponses];
+
+export type CreateTrainingSessionData = {
+    body: CreateSessionRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/training/sessions';
+};
+
+export type CreateTrainingSessionErrors = {
+    /**
+     * Invalid request (missing/invalid mode or size)
+     */
+    400: ErrorResponse;
+    /**
+     * No words available for the requested size
+     */
+    422: ErrorResponse;
+};
+
+export type CreateTrainingSessionError = CreateTrainingSessionErrors[keyof CreateTrainingSessionErrors];
+
+export type CreateTrainingSessionResponses = {
+    /**
+     * Training session created
+     */
+    201: TrainingSessionResponse;
+};
+
+export type CreateTrainingSessionResponse = CreateTrainingSessionResponses[keyof CreateTrainingSessionResponses];
+
+export type GetTrainingSessionData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/training/sessions/{id}';
+};
+
+export type GetTrainingSessionErrors = {
+    /**
+     * Malformed UUID
+     */
+    400: ErrorResponse;
+    /**
+     * Training session not found
+     */
+    404: ErrorResponse;
+};
+
+export type GetTrainingSessionError = GetTrainingSessionErrors[keyof GetTrainingSessionErrors];
+
+export type GetTrainingSessionResponses = {
+    /**
+     * Training session found
+     */
+    200: TrainingSessionResponse;
+};
+
+export type GetTrainingSessionResponse = GetTrainingSessionResponses[keyof GetTrainingSessionResponses];
+
+export type RecordTrainingResultData = {
+    body: RecordResultRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/training/sessions/{id}/results';
+};
+
+export type RecordTrainingResultErrors = {
+    /**
+     * Malformed UUID or invalid result
+     */
+    400: ErrorResponse;
+    /**
+     * Session or word not found
+     */
+    404: ErrorResponse;
+    /**
+     * Session already completed
+     */
+    409: ErrorResponse;
+};
+
+export type RecordTrainingResultError = RecordTrainingResultErrors[keyof RecordTrainingResultErrors];
+
+export type RecordTrainingResultResponses = {
+    /**
+     * Result recorded (may include mastery promotion)
+     */
+    200: RecordResultResponse;
+};
+
+export type RecordTrainingResultResponse = RecordTrainingResultResponses[keyof RecordTrainingResultResponses];
+
+export type CompleteTrainingSessionData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/training/sessions/{id}/complete';
+};
+
+export type CompleteTrainingSessionErrors = {
+    /**
+     * Malformed UUID
+     */
+    400: ErrorResponse;
+    /**
+     * Session not found
+     */
+    404: ErrorResponse;
+    /**
+     * Session already completed
+     */
+    409: ErrorResponse;
+};
+
+export type CompleteTrainingSessionError = CompleteTrainingSessionErrors[keyof CompleteTrainingSessionErrors];
+
+export type CompleteTrainingSessionResponses = {
+    /**
+     * Session completed with summary
+     */
+    200: SessionSummaryResponse;
+};
+
+export type CompleteTrainingSessionResponse = CompleteTrainingSessionResponses[keyof CompleteTrainingSessionResponses];
+
+export type GetTrainingStatsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/training/stats';
+};
+
+export type GetTrainingStatsErrors = {
+    /**
+     * Bad request
+     */
+    400: ErrorResponse;
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse;
+};
+
+export type GetTrainingStatsError = GetTrainingStatsErrors[keyof GetTrainingStatsErrors];
+
+export type GetTrainingStatsResponses = {
+    /**
+     * Training statistics (mastery distribution, session counts)
+     */
+    200: TrainingStatsResponse;
+};
+
+export type GetTrainingStatsResponse = GetTrainingStatsResponses[keyof GetTrainingStatsResponses];
 
 export type TransliterateTextData = {
     body: TransliterateRequest;

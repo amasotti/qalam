@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AddDictionaryLinkData, AddDictionaryLinkErrors, AddDictionaryLinkResponses, AddWordLinkData, AddWordLinkErrors, AddWordLinkResponses, AutocompleteWordsData, AutocompleteWordsErrors, AutocompleteWordsResponses, AutoTokenizeData, AutoTokenizeErrors, AutoTokenizeResponses, ClearTokensData, ClearTokensErrors, ClearTokensResponses, CreateAnnotationData, CreateAnnotationErrors, CreateAnnotationResponses, CreateRootData, CreateRootErrors, CreateRootResponses, CreateSentenceData, CreateSentenceErrors, CreateSentenceResponses, CreateTextData, CreateTextErrors, CreateTextResponses, CreateWordData, CreateWordErrors, CreateWordResponses, DeleteAnnotationData, DeleteAnnotationErrors, DeleteAnnotationResponses, DeleteDictionaryLinkData, DeleteDictionaryLinkErrors, DeleteDictionaryLinkResponses, DeleteRootData, DeleteRootErrors, DeleteRootResponses, DeleteSentenceData, DeleteSentenceErrors, DeleteSentenceResponses, DeleteTextData, DeleteTextErrors, DeleteTextResponses, DeleteWordData, DeleteWordErrors, DeleteWordExampleData, DeleteWordExampleErrors, DeleteWordExampleResponses, DeleteWordResponses, GenerateWordExamplesData, GenerateWordExamplesErrors, GenerateWordExamplesResponses, GetAnnotationByIdData, GetAnnotationByIdErrors, GetAnnotationByIdResponses, GetAnnotationsForWordData, GetAnnotationsForWordErrors, GetAnnotationsForWordResponses, GetHealthData, GetHealthErrors, GetHealthResponses, GetRootByIdData, GetRootByIdErrors, GetRootByIdResponses, GetSentenceByIdData, GetSentenceByIdErrors, GetSentenceByIdResponses, GetSwaggerUiData, GetSwaggerUiErrors, GetSwaggerUiResponses, GetTextByIdData, GetTextByIdErrors, GetTextByIdResponses, GetWordByIdData, GetWordByIdErrors, GetWordByIdResponses, ListAnnotationsData, ListAnnotationsErrors, ListAnnotationsResponses, ListDictionaryLinksData, ListDictionaryLinksErrors, ListDictionaryLinksResponses, ListRootsData, ListRootsErrors, ListRootsResponses, ListSentencesData, ListSentencesErrors, ListSentencesResponses, ListTextsData, ListTextsErrors, ListTextsResponses, ListWordExamplesData, ListWordExamplesErrors, ListWordExamplesResponses, ListWordsData, ListWordsErrors, ListWordsResponses, NormalizeRootData, NormalizeRootErrors, NormalizeRootResponses, RemoveWordLinkData, RemoveWordLinkErrors, RemoveWordLinkResponses, ReorderSentencesData, ReorderSentencesErrors, ReorderSentencesResponses, ReplaceTokensData, ReplaceTokensErrors, ReplaceTokensResponses, SaveWordExampleData, SaveWordExampleErrors, SaveWordExampleResponses, SummarizeTextData, SummarizeTextErrors, SummarizeTextResponses, TransliterateSentenceData, TransliterateSentenceErrors, TransliterateSentenceResponses, TransliterateTextData, TransliterateTextErrors, TransliterateTextResponses, UpdateAnnotationData, UpdateAnnotationErrors, UpdateAnnotationResponses, UpdateRootData, UpdateRootErrors, UpdateRootResponses, UpdateSentenceData, UpdateSentenceErrors, UpdateSentenceResponses, UpdateTextData, UpdateTextErrors, UpdateTextResponses, UpdateWordData, UpdateWordErrors, UpdateWordResponses } from './types.gen';
+import type { AddDictionaryLinkData, AddDictionaryLinkErrors, AddDictionaryLinkResponses, AddWordLinkData, AddWordLinkErrors, AddWordLinkResponses, AutocompleteWordsData, AutocompleteWordsErrors, AutocompleteWordsResponses, AutoTokenizeData, AutoTokenizeErrors, AutoTokenizeResponses, ClearTokensData, ClearTokensErrors, ClearTokensResponses, CompleteTrainingSessionData, CompleteTrainingSessionErrors, CompleteTrainingSessionResponses, CreateAnnotationData, CreateAnnotationErrors, CreateAnnotationResponses, CreateRootData, CreateRootErrors, CreateRootResponses, CreateSentenceData, CreateSentenceErrors, CreateSentenceResponses, CreateTextData, CreateTextErrors, CreateTextResponses, CreateTrainingSessionData, CreateTrainingSessionErrors, CreateTrainingSessionResponses, CreateWordData, CreateWordErrors, CreateWordResponses, DeleteAnnotationData, DeleteAnnotationErrors, DeleteAnnotationResponses, DeleteDictionaryLinkData, DeleteDictionaryLinkErrors, DeleteDictionaryLinkResponses, DeleteRootData, DeleteRootErrors, DeleteRootResponses, DeleteSentenceData, DeleteSentenceErrors, DeleteSentenceResponses, DeleteTextData, DeleteTextErrors, DeleteTextResponses, DeleteWordData, DeleteWordErrors, DeleteWordExampleData, DeleteWordExampleErrors, DeleteWordExampleResponses, DeleteWordResponses, GenerateWordExamplesData, GenerateWordExamplesErrors, GenerateWordExamplesResponses, GetAnnotationByIdData, GetAnnotationByIdErrors, GetAnnotationByIdResponses, GetAnnotationsForWordData, GetAnnotationsForWordErrors, GetAnnotationsForWordResponses, GetHealthData, GetHealthErrors, GetHealthResponses, GetRootByIdData, GetRootByIdErrors, GetRootByIdResponses, GetSentenceByIdData, GetSentenceByIdErrors, GetSentenceByIdResponses, GetSwaggerUiData, GetSwaggerUiErrors, GetSwaggerUiResponses, GetTextByIdData, GetTextByIdErrors, GetTextByIdResponses, GetTrainingSessionData, GetTrainingSessionErrors, GetTrainingSessionResponses, GetTrainingStatsData, GetTrainingStatsErrors, GetTrainingStatsResponses, GetWordByIdData, GetWordByIdErrors, GetWordByIdResponses, ListAnnotationsData, ListAnnotationsErrors, ListAnnotationsResponses, ListDictionaryLinksData, ListDictionaryLinksErrors, ListDictionaryLinksResponses, ListRootsData, ListRootsErrors, ListRootsResponses, ListSentencesData, ListSentencesErrors, ListSentencesResponses, ListTextsData, ListTextsErrors, ListTextsResponses, ListTrainingSessionsData, ListTrainingSessionsErrors, ListTrainingSessionsResponses, ListWordExamplesData, ListWordExamplesErrors, ListWordExamplesResponses, ListWordsData, ListWordsErrors, ListWordsResponses, NormalizeRootData, NormalizeRootErrors, NormalizeRootResponses, RecordTrainingResultData, RecordTrainingResultErrors, RecordTrainingResultResponses, RemoveWordLinkData, RemoveWordLinkErrors, RemoveWordLinkResponses, ReorderSentencesData, ReorderSentencesErrors, ReorderSentencesResponses, ReplaceTokensData, ReplaceTokensErrors, ReplaceTokensResponses, SaveWordExampleData, SaveWordExampleErrors, SaveWordExampleResponses, TransliterateSentenceData, TransliterateSentenceErrors, TransliterateSentenceResponses, TransliterateTextData, TransliterateTextErrors, TransliterateTextResponses, UpdateAnnotationData, UpdateAnnotationErrors, UpdateAnnotationResponses, UpdateRootData, UpdateRootErrors, UpdateRootResponses, UpdateSentenceData, UpdateSentenceErrors, UpdateSentenceResponses, UpdateTextData, UpdateTextErrors, UpdateTextResponses, UpdateWordData, UpdateWordErrors, UpdateWordResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -202,11 +202,6 @@ export const updateText = <ThrowOnError extends boolean = false>(options: Option
 });
 
 /**
- * Generate an AI summary of a text
- */
-export const summarizeText = <ThrowOnError extends boolean = false>(options: Options<SummarizeTextData, ThrowOnError>) => (options.client ?? client).post<SummarizeTextResponses, SummarizeTextErrors, ThrowOnError>({ url: '/api/v1/texts/{id}/summarize', ...options });
-
-/**
  * List sentences for a text
  */
 export const listSentences = <ThrowOnError extends boolean = false>(options: Options<ListSentencesData, ThrowOnError>) => (options.client ?? client).get<ListSentencesResponses, ListSentencesErrors, ThrowOnError>({ url: '/api/v1/texts/{textId}/sentences', ...options });
@@ -354,6 +349,50 @@ export const getHealth = <ThrowOnError extends boolean = false>(options?: Option
  * Swagger UI
  */
 export const getSwaggerUi = <ThrowOnError extends boolean = false>(options?: Options<GetSwaggerUiData, ThrowOnError>) => (options?.client ?? client).get<GetSwaggerUiResponses, GetSwaggerUiErrors, ThrowOnError>({ url: '/api/v1/swagger-ui', ...options });
+
+/**
+ * List training sessions with pagination
+ */
+export const listTrainingSessions = <ThrowOnError extends boolean = false>(options?: Options<ListTrainingSessionsData, ThrowOnError>) => (options?.client ?? client).get<ListTrainingSessionsResponses, ListTrainingSessionsErrors, ThrowOnError>({ url: '/api/v1/training/sessions', ...options });
+
+/**
+ * Create a new training session
+ */
+export const createTrainingSession = <ThrowOnError extends boolean = false>(options: Options<CreateTrainingSessionData, ThrowOnError>) => (options.client ?? client).post<CreateTrainingSessionResponses, CreateTrainingSessionErrors, ThrowOnError>({
+    url: '/api/v1/training/sessions',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get a training session by ID
+ */
+export const getTrainingSession = <ThrowOnError extends boolean = false>(options: Options<GetTrainingSessionData, ThrowOnError>) => (options.client ?? client).get<GetTrainingSessionResponses, GetTrainingSessionErrors, ThrowOnError>({ url: '/api/v1/training/sessions/{id}', ...options });
+
+/**
+ * Record a result for a word in the current session
+ */
+export const recordTrainingResult = <ThrowOnError extends boolean = false>(options: Options<RecordTrainingResultData, ThrowOnError>) => (options.client ?? client).post<RecordTrainingResultResponses, RecordTrainingResultErrors, ThrowOnError>({
+    url: '/api/v1/training/sessions/{id}/results',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Mark a training session as complete
+ */
+export const completeTrainingSession = <ThrowOnError extends boolean = false>(options: Options<CompleteTrainingSessionData, ThrowOnError>) => (options.client ?? client).post<CompleteTrainingSessionResponses, CompleteTrainingSessionErrors, ThrowOnError>({ url: '/api/v1/training/sessions/{id}/complete', ...options });
+
+/**
+ * Get training statistics
+ */
+export const getTrainingStats = <ThrowOnError extends boolean = false>(options?: Options<GetTrainingStatsData, ThrowOnError>) => (options?.client ?? client).get<GetTrainingStatsResponses, GetTrainingStatsErrors, ThrowOnError>({ url: '/api/v1/training/stats', ...options });
 
 /**
  * Transliterate Arabic text to Latin/chat-alphabet

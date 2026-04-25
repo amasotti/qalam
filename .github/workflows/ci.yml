@@ -8,6 +8,10 @@ on:
   workflow_dispatch:
   workflow_call:
 
+permissions:
+  contents: read
+  pull-requests: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -18,13 +22,21 @@ jobs:
     name: Detect changes
     runs-on: ubuntu-latest
     outputs:
-      backend: ${{ steps.filter.outputs.backend }}
-      frontend: ${{ steps.filter.outputs.frontend }}
+      backend: ${{ steps.filter.outputs.backend || steps.force.outputs.all }}
+      frontend: ${{ steps.filter.outputs.frontend || steps.force.outputs.all }}
     steps:
       - uses: actions/checkout@v6
 
+      # On workflow_call (triggered from release) there is no PR context —
+      # skip path detection and run everything.
+      - name: Force all jobs
+        id: force
+        if: github.event_name == 'workflow_call'
+        run: echo "all=true" >> "$GITHUB_OUTPUT"
+
       - uses: dorny/paths-filter@v4
         id: filter
+        if: github.event_name != 'workflow_call'
         with:
           filters: |
             backend:
@@ -38,7 +50,7 @@ jobs:
   backend:
     name: Backend — lint & test
     needs: changes
-    if: needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -64,7 +76,7 @@ jobs:
   frontend:
     name: Frontend — lint, type-check & build
     needs: changes
-    if: needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -100,7 +112,7 @@ jobs:
   openapi-lint:
     name: OpenAPI — lint spec
     needs: changes
-    if: needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

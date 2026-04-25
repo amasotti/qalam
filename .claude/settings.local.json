@@ -11,7 +11,8 @@
       "Bash(pnpm biome:*)",
       "WebFetch(domain:localhost)",
       "Bash(curl:*)",
-      "Bash(jar tf *)"
+      "Bash(jar tf *)",
+      "Bash(jar xf *)"
     ],
     "deny": [
       "Bash(scp *)",

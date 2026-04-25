@@ -246,18 +246,13 @@ class ExposedWordRepository : WordRepository {
     ): Either<DomainError, List<Word>> =
         suspendTransaction {
             try {
-                val words = WordsTable
-                    .selectAll()
-                    .apply {
-                        if (masteryLevel != null) {
-                            where { WordsTable.masteryLevel eq masteryLevel.name }
-                        }
-                    }
-                    .toList()
-                    .shuffled()
-                    .take(limit)
-                    .map { it.toWord() }
-                words.right()
+                val query = WordsTable.selectAll()
+                val filtered = if (masteryLevel != null) {
+                    query.where { WordsTable.masteryLevel eq masteryLevel.name }
+                } else {
+                    query
+                }
+                filtered.toList().shuffled().take(limit).map { it.toWord() }.right()
             } catch (e: Exception) {
                 DomainError.DatabaseError.left()
             }
@@ -280,8 +275,8 @@ class ExposedWordRepository : WordRepository {
 
     override suspend fun updateProgress(progress: WordProgress): Either<DomainError, Unit> =
         suspendTransaction {
-            try {
-                WordProgressTable.update({
+            either {
+                val updatedCount = WordProgressTable.update({
                     WordProgressTable.wordId eq progress.wordId.value.toKotlinUuid()
                 }) {
                     it[consecutiveCorrect] = progress.consecutiveCorrect
@@ -289,9 +284,7 @@ class ExposedWordRepository : WordRepository {
                     it[totalCorrect]       = progress.totalCorrect
                     it[lastReviewedAt]     = progress.lastReviewedAt
                 }
-                Unit.right()
-            } catch (e: Exception) {
-                DomainError.DatabaseError.left()
+                ensure(updatedCount > 0) { DomainError.NotFound("WordProgress", progress.wordId.value.toString()) }
             }
         }
 

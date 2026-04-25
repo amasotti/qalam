@@ -127,7 +127,7 @@ Confirm array length matches your split. Spot-check one sentence's tokens — ve
 
 Use Arabi chat alphabet, close to dialect pronunciation. Default dialect: **Tunisian** unless stated otherwise.
 
-- `9` for قاف (`قهوة` → `9ahwa`)
+- `9` for قاف
 - `5` for خاء
 - `3` for عين
 - `7` for حاء
@@ -140,6 +140,7 @@ curl -s -X POST http://localhost:8085/api/v1/transliterate \
 ```
 
 If the conjunction `و` is attached orthographically, keep it attached in the transliteration too.
+3ayn is always rendered as `3`. So `I do` is `na3mel`, never `namel`.
 
 ---
 

@@ -15,12 +15,20 @@ let summary = $state<SessionSummaryResponse | null>(null);
 let currentIndex = $state(0);
 let isPending = $state(false);
 
-const words = $derived<TrainingSessionWordResponse[]>(
-	(session.data?.words ?? []).filter((w) => w.result === null || w.result === undefined)
-);
+// Snapshot unanswered words once on load — never re-derive from server state mid-session.
+// Re-deriving causes the array to shrink on each background refetch, which breaks currentIndex.
+let localWords = $state<TrainingSessionWordResponse[]>([]);
 
-const currentWord = $derived(words[currentIndex] ?? null);
-const isFinished = $derived(currentWord === null && session.data !== undefined);
+$effect(() => {
+	if (session.data && localWords.length === 0) {
+		localWords = (session.data.words ?? []).filter(
+			(w) => w.result === null || w.result === undefined
+		);
+	}
+});
+
+const currentWord = $derived(localWords[currentIndex] ?? null);
+const isFinished = $derived(currentWord === null && localWords.length > 0);
 
 async function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
 	const sid = sessionId;
@@ -31,7 +39,7 @@ async function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
 			sessionId: sid,
 			body: { wordId: currentWord.wordId, result },
 		});
-		if (currentIndex + 1 >= words.length) {
+		if (currentIndex + 1 >= localWords.length) {
 			summary = await complete.mutateAsync(sid);
 		} else {
 			currentIndex += 1;
@@ -52,7 +60,7 @@ async function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
 {:else if currentWord}
   <div class="session-header">
     <span class="progress">
-      {currentIndex + 1} / {session.data?.words.length ?? '?'}
+      {currentIndex + 1} / {localWords.length}
     </span>
     <span class="mode">{session.data?.mode}</span>
   </div>

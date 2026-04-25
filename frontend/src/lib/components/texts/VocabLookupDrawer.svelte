@@ -16,24 +16,35 @@ let { open, token, onclose, onannotate }: Props = $props();
 
 const lookup = useLookupWordByArabic();
 
+let searchText = $state('');
 let found = $state<WordResponse | null>(null);
 let notFound = $state(false);
 let loading = $state(false);
+
+function doLookup(arabic: string) {
+	found = null;
+	notFound = false;
+	loading = true;
+	lookup.mutateAsync(arabic).then((word) => {
+		found = word;
+		notFound = word === null;
+		loading = false;
+	});
+}
 
 $effect(() => {
 	if (!open || !token) return;
 	const arabic = token.arabic;
 	untrack(() => {
-		found = null;
-		notFound = false;
-		loading = true;
-		lookup.mutateAsync(arabic).then((word) => {
-			found = word;
-			notFound = word === null;
-			loading = false;
-		});
+		searchText = arabic;
+		doLookup(arabic);
 	});
 });
+
+function handleBlur() {
+	const q = searchText.trim();
+	if (q) doLookup(q);
+}
 
 function handleAnnotate() {
 	if (!token) return;
@@ -42,10 +53,9 @@ function handleAnnotate() {
 }
 
 function handleCreated(_wordId: string) {
-	if (!token) return;
 	loading = true;
 	notFound = false;
-	lookup.mutateAsync(token.arabic).then((word) => {
+	lookup.mutateAsync(searchText).then((word) => {
 		found = word;
 		loading = false;
 	});
@@ -69,7 +79,13 @@ function handleKeydown(e: KeyboardEvent) {
 
   <aside class="vocab-drawer" transition:fly={{ x: 360, duration: 220, opacity: 1 }}>
     <header class="vocab-header">
-      <span class="vocab-header-arabic arabic-text">{token?.arabic ?? ''}</span>
+      <input
+        class="vocab-header-input arabic-text"
+        bind:value={searchText}
+        onblur={handleBlur}
+        aria-label="Lookup word"
+        dir="rtl"
+      />
       <button class="vocab-close" onclick={onclose} aria-label="Close">×</button>
     </header>
 
@@ -93,20 +109,18 @@ function handleKeydown(e: KeyboardEvent) {
       {:else if notFound}
         <p class="vocab-state-msg vocab-not-found-msg">Not in vocabulary yet.</p>
         <QuickAddWordForm
-          arabicText={token?.arabic ?? ''}
+          arabicText={searchText}
           onCreated={handleCreated}
           onCancel={onclose}
         />
       {/if}
     </div>
 
-    {#if found}
-      <footer class="vocab-footer">
-        <button class="vocab-annotate-btn" onclick={handleAnnotate}>
-          View / Add Annotations →
-        </button>
-      </footer>
-    {/if}
+    <footer class="vocab-footer">
+      <button class="vocab-annotate-btn" onclick={handleAnnotate}>
+        {found ? 'View / Add Annotations →' : 'Annotate this token →'}
+      </button>
+    </footer>
   </aside>
 {/if}
 
@@ -138,8 +152,24 @@ function handleKeydown(e: KeyboardEvent) {
   padding: 1rem 1.25rem;
   border-bottom: 1px solid hsl(var(--border));
   flex-shrink: 0;
+  gap: 0.5rem;
 }
-.vocab-header-arabic { font-size: 1.5rem; line-height: 1.4; }
+.vocab-header-input {
+  font-size: 1.5rem;
+  line-height: 1.4;
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed transparent;
+  outline: none;
+  color: hsl(var(--foreground));
+  font-family: inherit;
+  padding: 0;
+}
+.vocab-header-input:focus {
+  border-bottom-color: hsl(var(--primary) / 0.5);
+}
 .vocab-close {
   font-size: 1.25rem;
   line-height: 1;
@@ -148,6 +178,7 @@ function handleKeydown(e: KeyboardEvent) {
   cursor: pointer;
   color: hsl(var(--foreground) / 0.6);
   padding: 0.25rem;
+  flex-shrink: 0;
 }
 .vocab-body {
   flex: 1;

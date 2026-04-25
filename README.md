@@ -138,10 +138,11 @@ just stop-db     # shut down Postgres
 
 | Service    | URL                                        |
 |------------|--------------------------------------------|
-| Frontend   | http://localhost:5173                      |
-| API        | http://localhost:8085/api/v1/              |
-| Swagger UI | http://localhost:8085/api/v1/swagger-ui    |
-| Health     | http://localhost:8085/health               |
+| Frontend        | http://localhost                           |
+| API             | http://localhost/api/v1/                   |
+| Swagger UI      | http://localhost/api/v1/swagger-ui         |
+| Health          | http://localhost/health                    |
+| Traefik dashboard | http://localhost:8083                    |
 
 Full documentation lives in [`docs/`](docs/).
 

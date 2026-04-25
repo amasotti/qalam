@@ -297,7 +297,7 @@ class TextServiceTest : FreeSpec({
             coEvery { repo.list(PageRequest(1, 20), TextFilters()) } returns
                 PaginatedResponse(listOf(sampleText), 1L, 1, 20).right()
 
-            val result = service.list(null, null, null, null, null, null)
+            val result = service.list(null, null, null, null, null, null, null, null)
 
             result.isRight() shouldBe true
             result.getOrNull()!!.total shouldBe 1L
@@ -308,7 +308,7 @@ class TextServiceTest : FreeSpec({
             coEvery { repo.list(PageRequest(1, 20), TextFilters(dialect = Dialect.MSA)) } returns
                 PaginatedResponse(listOf(sampleText), 1L, 1, 20).right()
 
-            service.list(null, null, null, "MSA", null, null).isRight() shouldBe true
+            service.list(null, null, null, "MSA", null, null, null, null).isRight() shouldBe true
             coVerify { repo.list(PageRequest(1, 20), TextFilters(dialect = Dialect.MSA)) }
         }
 
@@ -317,7 +317,7 @@ class TextServiceTest : FreeSpec({
                 repo.list(PageRequest(1, 20), TextFilters(difficulty = Difficulty.INTERMEDIATE))
             } returns PaginatedResponse(listOf(sampleText), 1L, 1, 20).right()
 
-            service.list(null, null, null, null, "INTERMEDIATE", null).isRight() shouldBe true
+            service.list(null, null, null, null, "INTERMEDIATE", null, null, null).isRight() shouldBe true
             coVerify { repo.list(PageRequest(1, 20), TextFilters(difficulty = Difficulty.INTERMEDIATE)) }
         }
 
@@ -325,7 +325,7 @@ class TextServiceTest : FreeSpec({
             coEvery { repo.list(PageRequest(1, 20), TextFilters(tag = "quran")) } returns
                 PaginatedResponse(listOf(sampleText), 1L, 1, 20).right()
 
-            service.list(null, null, null, null, null, "quran").isRight() shouldBe true
+            service.list(null, null, null, null, null, "quran", null, null).isRight() shouldBe true
             coVerify { repo.list(PageRequest(1, 20), TextFilters(tag = "quran")) }
         }
 
@@ -333,12 +333,12 @@ class TextServiceTest : FreeSpec({
             coEvery { repo.list(PageRequest(1, 20), TextFilters(q = "كهف")) } returns
                 PaginatedResponse(listOf(sampleText), 1L, 1, 20).right()
 
-            service.list(null, null, "كهف", null, null, null).isRight() shouldBe true
+            service.list(null, null, "كهف", null, null, null, null, null).isRight() shouldBe true
             coVerify { repo.list(PageRequest(1, 20), TextFilters(q = "كهف")) }
         }
 
         "returns ValidationError for unknown dialect filter" {
-            val result = service.list(null, null, null, "KLINGON", null, null)
+            val result = service.list(null, null, null, "KLINGON", null, null, null, null)
             result shouldBe DomainError.ValidationError("dialect", "Unknown value: KLINGON").left()
         }
     }

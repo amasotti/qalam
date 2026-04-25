@@ -45,7 +45,7 @@ class ExposedTextRepository : TextRepository {
             row.toText(tags).right()
         }
 
-    @Suppress("CyclomaticComplexMethod")
+    @Suppress("CyclomaticComplexMethod", "LongMethod")
     override suspend fun list(page: PageRequest, filters: TextFilters): Either<DomainError, PaginatedResponse<Text>> =
         suspendTransaction {
             // When filtering by tag we join text_tags; otherwise query texts directly.

@@ -306,6 +306,62 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /api/v1/words/by-arabic:
+    get:
+      summary: Look up a word by exact Arabic text
+      operationId: getWordByArabic
+      tags: [words]
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: { type: string }
+          description: Exact Arabic text to match
+      responses:
+        "200":
+          description: Word found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordResponse"
+        "404":
+          description: No word with that exact Arabic text
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Missing required query parameter `q`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/words/analyze:
+    post:
+      summary: AI word analysis (ephemeral — does not persist)
+      operationId: analyzeWord
+      tags: [words]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyzeWordRequest"
+      responses:
+        "200":
+          description: AI analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordAnalysisResponse"
+        "503":
+          description: AI not configured (OPENROUTER_API_KEY missing)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /api/v1/words/{id}:
     get:
       summary: Get a word by ID
@@ -1854,6 +1910,35 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/AiExampleSentence"
+
+    AnalyzeWordRequest:
+      type: object
+      required: [arabicText]
+      properties:
+        arabicText:
+          type: string
+
+    WordAnalysisResponse:
+      type: object
+      required: [arabicText]
+      properties:
+        arabicText:
+          type: string
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+        partOfSpeech:
+          type: string
+          nullable: true
+        rootLetters:
+          type: string
+          nullable: true
+        exampleSentence:
+          $ref: "#/components/schemas/AiExampleSentence"
+          nullable: true
 
     # --- Texts ---
 

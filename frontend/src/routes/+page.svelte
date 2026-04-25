@@ -104,10 +104,10 @@ const learningLinks = [
 				</span>
 			{/each}
 		</div>
-		<p class="home-verse-transliteration">
+		<p class="home-verse-tr">
 			maʿrifat al-lughāt madkhal ilā al-ḥikma
 		</p>
-		<p class="home-verse-translation">
+		<p class="home-verse-en">
 			Knowledge of languages is the doorway to wisdom.
 		</p>
 	</div>
@@ -118,7 +118,6 @@ const learningLinks = [
 			<a
 				class="home-nav-card"
 				href={s.href}
-				data-section={s.id}
 				style="animation: slide-up 280ms cubic-bezier(0.16,1,0.3,1) both; animation-delay: {0.05 + i * 0.06}s;"
 			>
 				<div class="home-nav-card-header">

@@ -1,6 +1,5 @@
 <script lang="ts">
-import { Plus, Search } from 'lucide-svelte';
-import { Button } from '$lib/components/ui/button';
+import { Search } from 'lucide-svelte';
 import { useAllRoots } from '$lib/stores/roots';
 
 const roots = useAllRoots();
@@ -33,20 +32,17 @@ const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)))
 const paginated = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
 </script>
 
-<div class="page-roots page-enter">
-	<header class="roots-page-header">
-		<h1 class="roots-page-title">Roots</h1>
-		<Button href="/roots/new">
-			<Plus size={14} />
-			New root
-		</Button>
+<div class="list-page">
+	<header class="list-page-header">
+		<h1 class="list-page-title">Roots</h1>
+		<a href="/roots/new" class="btn btn-primary">+ New root</a>
 	</header>
 
-	<div class="roots-toolbar">
-		<div class="roots-search-wrap">
+	<div class="list-toolbar">
+		<div class="search-wrap">
 			<Search size={14} />
 			<input
-				class="roots-search"
+				class="search-input"
 				type="text"
 				placeholder="Search roots…"
 				value={search}
@@ -84,23 +80,23 @@ const paginated = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SI
 	</div>
 
 	{#if roots.isPending}
-		<p class="roots-results-meta">Loading…</p>
+		<p class="results-meta">Loading…</p>
 	{:else if roots.isError}
-		<p class="roots-results-meta">
+		<p class="results-meta">
 			Could not load roots — is the backend running?
 		</p>
 	{:else if filtered.length === 0}
-		<div class="roots-empty">
-			<span class="roots-empty-icon">ج-ذ-ر</span>
-			<p class="roots-empty-label">
+		<div class="list-empty">
+			<span class="list-empty-icon">ج-ذ-ر</span>
+			<p class="list-empty-label">
 				{search || letterFilter !== null ? 'No roots match your filter.' : 'No roots yet.'}
 			</p>
 			{#if !search && letterFilter === null}
-				<Button href="/roots/new" variant="outline">Add your first root</Button>
+				<a href="/roots/new" class="btn">Add your first root</a>
 			{/if}
 		</div>
 	{:else}
-		<p class="roots-results-meta">
+		<p class="results-meta">
 			{filtered.length} root{filtered.length === 1 ? '' : 's'}
 			{#if letterFilter !== null}({letterFilter}-letter){/if}
 		</p>
@@ -108,37 +104,25 @@ const paginated = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SI
 		<div class="roots-grid stagger-children">
 			{#each paginated as root (root.id)}
 				<a class="root-card" href="/roots/{root.id}">
-					<div class="root-card-arabic">{root.displayForm}</div>
+					<div class="root-card-ar">{root.displayForm}</div>
 					<div class="root-card-meta">
-						<span class="root-card-letters">{root.letterCount}ح</span>
-						<span class="root-card-normalized">{root.normalizedForm}</span>
+						<span class="root-card-letters">{root.letterCount}L</span>
+						{#if root.normalizedForm}
+							<span class="root-card-normalized">{root.normalizedForm}</span>
+						{/if}
 					</div>
 					{#if root.meaning}
-						<p class="root-card-meaning">{root.meaning}</p>
+						<div class="root-card-meaning">{root.meaning}</div>
 					{/if}
 				</a>
 			{/each}
 		</div>
 
 		{#if totalPages > 1}
-			<div class="roots-pagination">
-				<Button
-					variant="outline"
-					size="sm"
-					disabled={page === 1}
-					onclick={() => (page -= 1)}
-				>
-					Previous
-				</Button>
-				<span class="roots-pagination-info">Page {page} of {totalPages}</span>
-				<Button
-					variant="outline"
-					size="sm"
-					disabled={page === totalPages}
-					onclick={() => (page += 1)}
-				>
-					Next
-				</Button>
+			<div class="pagination">
+				<button class="btn" disabled={page === 1} onclick={() => (page -= 1)}>Previous</button>
+				<span class="pagination-info">Page {page} of {totalPages}</span>
+				<button class="btn" disabled={page === totalPages} onclick={() => (page += 1)}>Next</button>
 			</div>
 		{/if}
 	{/if}

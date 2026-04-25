@@ -13,15 +13,12 @@ async function handleSubmit(req: CreateWordRequest | UpdateWordRequest) {
 }
 </script>
 
-<div class="page-create-word page-enter">
-	<a class="word-detail-back" href="/words">
-		<ChevronLeft size={14} />
-		Words
-	</a>
+<div class="form-page">
+	<a href="/words" class="btn" style="margin-bottom:1.5rem;">← Back to Words</a>
 
-	<header class="create-word-header">
-		<h1 class="create-word-title">New word</h1>
-		<p class="create-word-subtitle">Add a word to your vocabulary</p>
+	<header class="form-page-header">
+		<h1 class="form-page-title">New word</h1>
+		<p class="form-page-subtitle">Add a word to your vocabulary</p>
 	</header>
 
 	<WordForm

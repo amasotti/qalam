@@ -1,8 +1,6 @@
 <script lang="ts">
-import { Plus, Search } from 'lucide-svelte';
+import { Search } from 'lucide-svelte';
 import type { Dialect, Difficulty, MasteryLevel, PartOfSpeech } from '$lib/api/types.gen';
-import { Badge } from '$lib/components/ui/badge';
-import { Button } from '$lib/components/ui/button';
 import { useWords } from '$lib/stores/words';
 
 const PAGE_SIZE = 30;
@@ -48,20 +46,17 @@ function formatEnum(value: string): string {
 }
 </script>
 
-<div class="page-words page-enter">
-	<header class="words-page-header">
-		<h1 class="words-page-title">Words</h1>
-		<Button href="/words/new">
-			<Plus size={14} />
-			New word
-		</Button>
+<div class="list-page">
+	<header class="list-page-header">
+		<h1 class="list-page-title">Words</h1>
+		<a href="/words/new" class="btn btn-primary">+ New word</a>
 	</header>
 
-	<div class="words-toolbar">
-		<div class="words-search-wrap">
+	<div class="list-toolbar">
+		<div class="search-wrap">
 			<Search size={14} />
 			<input
-				class="words-search"
+				class="search-input"
 				type="text"
 				placeholder="Search words…"
 				value={search}
@@ -73,7 +68,7 @@ function formatEnum(value: string): string {
 
 		<div class="words-filters">
 			<select
-				class="words-filter-select"
+				class="filter-select"
 				value={dialect}
 				onchange={(e) => {
 					dialect = e.currentTarget.value as Dialect | '';
@@ -91,7 +86,7 @@ function formatEnum(value: string): string {
 			</select>
 
 			<select
-				class="words-filter-select"
+				class="filter-select"
 				value={difficulty}
 				onchange={(e) => {
 					difficulty = e.currentTarget.value as Difficulty | '';
@@ -105,7 +100,7 @@ function formatEnum(value: string): string {
 			</select>
 
 			<select
-				class="words-filter-select"
+				class="filter-select"
 				value={partOfSpeech}
 				onchange={(e) => {
 					partOfSpeech = e.currentTarget.value as PartOfSpeech | '';
@@ -126,7 +121,7 @@ function formatEnum(value: string): string {
 			</select>
 
 			<select
-				class="words-filter-select"
+				class="filter-select"
 				value={masteryLevel}
 				onchange={(e) => {
 					masteryLevel = e.currentTarget.value as MasteryLevel | '';
@@ -143,68 +138,47 @@ function formatEnum(value: string): string {
 	</div>
 
 	{#if words.isPending}
-		<p class="words-results-meta">Loading…</p>
+		<p class="results-meta">Loading…</p>
 	{:else if words.isError}
-		<p class="words-results-meta">Could not load words — is the backend running?</p>
+		<p class="results-meta">Could not load words — is the backend running?</p>
 	{:else if (words.data?.items ?? []).length === 0}
-		<div class="words-empty">
-			<span class="words-empty-icon">ك</span>
-			<p class="words-empty-label">
+		<div class="list-empty">
+			<span class="list-empty-icon">ك</span>
+			<p class="list-empty-label">
 				{hasActiveFilters ? 'No words match your filter.' : 'Add your first word'}
 			</p>
 			{#if !hasActiveFilters}
-				<Button href="/words/new" variant="outline">Add your first word</Button>
+				<a href="/words/new" class="btn">Add your first word</a>
 			{/if}
 		</div>
 	{:else}
-		<p class="words-results-meta">
+		<p class="results-meta">
 			{total} word{total === 1 ? '' : 's'}
 		</p>
 
 		<div class="words-grid stagger-children">
 			{#each words.data?.items ?? [] as word (word.id)}
-				<a class="word-card" href="/words/{word.id}">
-					<div class="word-card-arabic arabic-display">{word.arabicText}</div>
+				<a class="word-card wcard-{word.masteryLevel.toLowerCase()}" href="/words/{word.id}">
+					<div class="word-card-ar">{word.arabicText}</div>
 					{#if word.transliteration}
-						<div class="word-card-transliteration">{word.transliteration}</div>
+						<div class="word-card-tr">{word.transliteration}</div>
 					{/if}
 					{#if word.translation}
-						<div class="word-card-translation">{word.translation}</div>
+						<div class="word-card-en">{word.translation}</div>
 					{/if}
 					<div class="word-card-badges">
-						<Badge class="mastery-{word.masteryLevel.toLowerCase()}">
-							{formatEnum(word.masteryLevel)}
-						</Badge>
-						<Badge class="difficulty-{word.difficulty.toLowerCase()}">
-							{formatEnum(word.difficulty)}
-						</Badge>
-						<Badge class="dialect-{word.dialect.toLowerCase()}">
-							{word.dialect}
-						</Badge>
+						<span class="chip c-coral" style="font-size:0.65rem;padding:0.15rem 0.6rem;">{formatEnum(word.masteryLevel)}</span>
+						<span class="chip c-muted" style="font-size:0.65rem;padding:0.15rem 0.6rem;">{word.dialect}</span>
 					</div>
 				</a>
 			{/each}
 		</div>
 
 		{#if totalPages > 1}
-			<div class="words-pagination">
-				<Button
-					variant="outline"
-					size="sm"
-					disabled={page === 1}
-					onclick={() => (page -= 1)}
-				>
-					Previous
-				</Button>
-				<span class="words-pagination-info">Page {page} of {totalPages}</span>
-				<Button
-					variant="outline"
-					size="sm"
-					disabled={page === totalPages}
-					onclick={() => (page += 1)}
-				>
-					Next
-				</Button>
+			<div class="pagination">
+				<button class="btn" disabled={page === 1} onclick={() => (page -= 1)}>Previous</button>
+				<span class="pagination-info">Page {page} of {totalPages}</span>
+				<button class="btn" disabled={page === totalPages} onclick={() => (page += 1)}>Next</button>
 			</div>
 		{/if}
 	{/if}

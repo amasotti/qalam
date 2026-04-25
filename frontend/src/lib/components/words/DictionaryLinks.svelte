@@ -1,5 +1,5 @@
 <script lang="ts">
-import { BookOpen, ExternalLink, Plus } from 'lucide-svelte';
+import { BookOpen, Plus } from 'lucide-svelte';
 import type { CreateDictionaryLinkRequest, DictionarySource } from '$lib/api/types.gen';
 import Button from '$lib/components/ui/button/button.svelte';
 import {
@@ -124,9 +124,8 @@ function handleAddOne() {
 }
 </script>
 
-<div class="dict-links">
+<div>
 	<div class="dict-links-header">
-		<h3 class="dict-links-title">Dictionaries</h3>
 		<div class="dict-links-header-actions">
 			{#if links.length > 0}
 				<Button size="sm" variant="ghost" onclick={handleOpenAll}>
@@ -144,27 +143,24 @@ function handleAddOne() {
 	</div>
 
 	{#if linksQuery.isPending}
-		<p class="dict-links-empty">Loading…</p>
+		<p class="annot-empty">Loading…</p>
 	{:else if linksQuery.isError}
-		<p class="dict-links-empty">Could not load links.</p>
+		<p class="annot-empty">Could not load links.</p>
 	{:else if links.length === 0}
-		<p class="dict-links-empty">No dictionary links yet.</p>
+		<p class="annot-empty">No dictionary links yet.</p>
 	{:else}
-		<div class="dict-badges">
+		<div class="dict-pills">
 			{#each links as link (link.id)}
-				<div class="dict-badge dict-badge-{link.source.toLowerCase()}">
+				<div style="display:inline-flex;align-items:center;gap:0;border-radius:6px;overflow:hidden;border:1px solid rgba(30,88,152,0.2);">
 					<a
 						href={link.url}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="dict-badge-link"
-						title={link.url}
-					>
-						{sourceLabels[link.source]}
-						<ExternalLink size={11} />
-					</a>
+						class="dict-pill"
+						style="border-radius:0;border:none;"
+					>{sourceLabels[link.source]} ↗</a>
 					<button
-						class="dict-badge-delete"
+						style="padding:0.28rem 0.5rem;background:var(--cerulean-pale);border:none;border-left:1px solid rgba(30,88,152,0.2);cursor:pointer;font-size:0.8rem;color:var(--cerulean);line-height:1;"
 						onclick={() => deleteMutation.mutate({ id: wordId, linkId: link.id })}
 						disabled={deleteMutation.isPending}
 						aria-label="Remove {sourceLabels[link.source]}"

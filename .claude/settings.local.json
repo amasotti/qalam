@@ -5,7 +5,6 @@
       "Bash(find *)",
       "Bash(ls *)",
       "Bash(cat *)",
-      "Read(~/toni/100_programming/190_frontend/an-na7wi/*)",
       "Bash(./gradlew test:*)",
       "Bash(pnpm lint:*)",
       "Bash(pnpm biome:*)",

@@ -738,36 +738,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /api/v1/texts/{id}/summarize:
-    post:
-      summary: Generate an AI summary of a text
-      operationId: summarizeText
-      tags: [texts]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: string, format: uuid }
-      responses:
-        "200":
-          description: Generated summary
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SummarizeResponse"
-        "404":
-          description: Text not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "503":
-          description: AI not configured (OPENROUTER_API_KEY missing)
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
   /api/v1/texts/{textId}/sentences:
     get:
       summary: List sentences for a text

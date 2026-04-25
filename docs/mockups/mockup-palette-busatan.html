@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rihla — Busatan (بُسْتَان) Palette</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/*
+  Busatan palette: warm sand + 3 distinct accent roles
+  ─────────────────────────────────────────────────────────────────────
+  Three-role accent system (explicitly multi-hue, avoids monochrome):
+    olive    → nav active, hero transliteration, section labels,
+               example left-border (structural / brand)
+    coral    → CTA button, mastery chip, mastery steps
+               (action / progress — warm but DIFFERENT from olive)
+    cerulean → pronunciation / external dict links
+               (information / external — cool, "modern pop")
+  Red danger stays for delete (universal signal).
+  Sage stays for mastery positive states.
+*/
+:root {
+  --bg:            #F9F8F1;
+  --bg-dark:       #EEE8DC;   /* warm linen for sidebar */
+  --bg-darker:     #E4DDD0;
+  --white:         #FFFFFF;
+  --ink:           #1A1810;
+  --ink-mid:       #3C3428;
+  --ink-light:     #786848;
+  --ink-ghost:     #B8A888;
+  --olive:         #4A6228;   /* structural — deep botanical olive */
+  --olive-soft:    #5A7838;
+  --olive-pale:    #E8F0D8;
+  --coral:         #C04830;   /* action — warm coral-clay */
+  --coral-soft:    #D05A40;
+  --coral-pale:    #FAE8E4;
+  --cerulean:      #1E5898;   /* external — cool cerulean */
+  --cerulean-soft: #2868B0;
+  --cerulean-pale: #E0EAF8;
+  --sage:          #2A6840;   /* mastery positive */
+  --sage-pale:     #D8EEE0;
+  --danger:        #C03030;
+  --border:        #DDD5C0;
+  --border-thin:   #EDE8DC;
+
+  --m-mastered:    #1A6038;
+  --m-mastered-bg: #D4EEE0;
+  --m-known:       #2A7850;
+  --m-known-bg:    #D0F0E4;
+  --m-familiar:    #C04830;
+  --m-familiar-bg: #FAE8E4;
+  --m-learning:    #4A6228;
+  --m-learning-bg: #E8F0D8;
+}
+
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);display:flex;min-height:100vh;font-size:15px;line-height:1.6}
+
+/* ── sidebar ── */
+.sidebar{width:220px;flex-shrink:0;position:fixed;top:0;left:0;height:100vh;background:var(--bg-dark);border-right:1px solid var(--border);display:flex;flex-direction:column}
+.sb-head{padding:1.875rem 1.5rem 1.375rem;border-bottom:1px solid var(--border)}
+.sb-ar{font-family:'Amiri',serif;font-size:2.875rem;color:var(--olive);direction:rtl;line-height:1;display:block}
+.sb-name{font-family:'Lora',serif;font-size:0.62rem;letter-spacing:0.32em;text-transform:uppercase;color:var(--ink-light);margin-top:0.125rem;display:block}
+.sb-nav{flex:1;padding:1.125rem 0.875rem;display:flex;flex-direction:column;gap:2px}
+.sb-link{display:flex;align-items:center;justify-content:space-between;padding:0.525rem 0.75rem;color:var(--ink-light);text-decoration:none;font-size:0.82rem;border-radius:6px;transition:all 150ms}
+.sb-link .ar{font-family:'Amiri',serif;font-size:0.95rem;direction:rtl;color:var(--ink-ghost)}
+.sb-link:hover{background:rgba(74,98,40,0.08);color:var(--olive)}
+.sb-link:hover .ar{color:rgba(74,98,40,0.45)}
+.sb-link.active{background:var(--olive-pale);color:var(--olive);font-weight:500}
+.sb-link.active .ar{color:var(--olive)}
+.sb-progress{padding:1rem 1.375rem 1.5rem;border-top:1px solid var(--border)}
+.sb-prog-label{font-size:0.6rem;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-ghost);margin-bottom:0.5rem}
+.sb-prog-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:0.375rem}
+.sb-prog-fill{height:100%;background:linear-gradient(to right,var(--olive),var(--coral));border-radius:2px;width:38%}
+.sb-prog-note{font-size:0.68rem;color:var(--ink-ghost)}
+
+/* ── layout ── */
+.main{margin-left:220px;flex:1}
+.breadcrumb{padding:1rem 2.5rem;border-bottom:1px solid var(--border-thin);display:flex;align-items:center;gap:0.5rem;font-size:0.775rem;color:var(--ink-ghost);background:var(--white)}
+.breadcrumb a{color:inherit;text-decoration:none}.breadcrumb a:hover{color:var(--olive)}
+.bc-sep{opacity:0.4}
+.bc-cur{color:var(--ink-mid);font-family:'Amiri',serif;font-size:1rem;direction:rtl}
+.page{display:grid;grid-template-columns:1fr 268px;min-height:calc(100vh - 46px)}
+.content{padding:2.5rem 3rem;border-right:1px solid var(--border)}
+.side{padding:2.5rem 1.75rem;display:flex;flex-direction:column;gap:1.5rem}
+
+/* ── hero ── */
+.hero{margin-bottom:3rem;padding-bottom:2.5rem;border-bottom:1px solid var(--border);position:relative}
+.hero-ghost{position:absolute;top:-1rem;right:-0.5rem;font-family:'Amiri',serif;font-size:8rem;color:var(--olive);opacity:0.05;direction:rtl;line-height:1;user-select:none;pointer-events:none}
+.hero-ar{font-family:'Amiri',serif;font-size:7rem;direction:rtl;color:var(--ink);line-height:1;margin-bottom:0.625rem}
+.hero-tr{font-family:'Lora',serif;font-style:italic;font-size:1.25rem;color:var(--olive);margin-bottom:1.25rem;font-weight:400;letter-spacing:0.03em}
+.hero-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.chips{display:flex;flex-wrap:wrap;gap:0.5rem}
+.chip{padding:0.25rem 0.875rem;border-radius:999px;font-size:0.72rem;font-weight:500;border:1px solid}
+.c-outline{background:transparent;color:var(--ink-mid);border-color:var(--border)}
+.c-olive{background:var(--olive-pale);color:var(--olive);border-color:rgba(74,98,40,0.2)}
+.c-coral{background:var(--coral-pale);color:var(--coral);border-color:rgba(192,72,48,0.2)}
+.c-cerulean{background:var(--cerulean-pale);color:var(--cerulean);border-color:rgba(30,88,152,0.2)}
+.actions{display:flex;gap:0.5rem}
+.btn{padding:0.45rem 1.1rem;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:500;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--ink-mid);transition:all 150ms}
+.btn:hover{border-color:var(--ink-mid);color:var(--ink)}
+/* primary CTA — coral */
+.btn-primary{background:var(--coral);color:white;border-color:var(--coral)}.btn-primary:hover{background:var(--coral-soft)}
+.btn-danger{color:var(--danger);border-color:rgba(192,48,48,0.2)}.btn-danger:hover{background:rgba(192,48,48,0.06);border-color:var(--danger)}
+
+/* ── sections ── */
+.sect-label{font-size:0.62rem;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-light);display:flex;align-items:center;gap:0.75rem;margin-bottom:1.125rem}
+.sect-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.translation{font-family:'Lora',serif;font-size:1.2rem;line-height:1.6;color:var(--ink);margin-bottom:0.875rem}
+
+/* pronunciation — cerulean (cool, contrasts both olive and coral) */
+.pron{display:inline-flex;align-items:center;gap:0.375rem;padding:0.375rem 0.875rem;border-radius:6px;background:var(--cerulean-pale);border:1px solid rgba(30,88,152,0.2);color:var(--cerulean);font-size:0.78rem;font-weight:500;text-decoration:none;transition:all 120ms}
+.pron:hover{background:var(--cerulean);color:white}
+
+/* examples — olive left border */
+.examples{display:flex;flex-direction:column;gap:0.875rem;margin-bottom:2.5rem}
+.ex{padding:1.125rem 1.25rem;border-left:3px solid var(--olive);background:var(--bg-dark);border-radius:0 8px 8px 0}
+.ex-ar{font-family:'Noto Naskh Arabic',serif;font-size:1.5rem;direction:rtl;text-align:right;color:var(--ink);line-height:1.75;margin-bottom:0.3rem}
+.ex-tr{font-family:'Lora',serif;font-style:italic;font-size:0.78rem;color:var(--olive-soft);margin-bottom:0.2rem}
+.ex-en{font-size:0.84rem;color:var(--ink-mid);line-height:1.5}
+
+/* dict pills — hover cerulean (information / external signal) */
+.dict-pills{display:flex;flex-wrap:wrap;gap:0.4rem}
+.dp{display:inline-flex;align-items:center;padding:0.28rem 0.875rem;border-radius:6px;border:1px solid var(--border);background:var(--white);font-size:0.72rem;color:var(--ink-mid);text-decoration:none;transition:all 120ms}
+.dp:hover{border-color:var(--cerulean);color:var(--cerulean)}
+
+/* ── side panel ── */
+.mc{padding:1.125rem;border:1px solid var(--border);border-radius:10px;background:var(--white);box-shadow:0 1px 4px rgba(26,24,16,0.04)}
+.mc-title{font-family:'Lora',serif;font-size:0.72rem;font-weight:600;color:var(--ink);margin-bottom:0.875rem}
+
+/* root card — olive-pale */
+.root-block{padding:0.875rem;border-radius:8px;background:var(--olive-pale);border:1px solid rgba(74,98,40,0.2);display:flex;align-items:center;justify-content:space-between;text-decoration:none;transition:all 150ms}
+.root-block:hover{border-color:var(--olive)}
+.rb-ar{font-family:'Amiri',serif;font-size:1.625rem;direction:rtl;color:var(--ink)}
+.rb-cta{font-size:0.72rem;color:var(--olive)}
+
+/* mastery steps — coral fill (action/progress context) */
+.mastery-steps{display:flex;gap:0.25rem;margin-bottom:0.4rem}
+.ms{flex:1;height:5px;border-radius:2px;background:var(--border)}
+.ms.on{background:var(--coral)}
+.ms-label{font-size:0.72rem;color:var(--coral);font-weight:500}
+
+.mc-row{display:flex;flex-direction:column;gap:0.125rem;margin-bottom:0.75rem}
+.mc-row:last-child{margin-bottom:0}
+.mc-key{font-size:0.58rem;font-weight:500;text-transform:uppercase;letter-spacing:0.14em;color:var(--ink-ghost)}
+.mc-val{font-size:0.82rem;color:var(--ink-mid)}
+
+.fam-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem}
+.fam-chip{display:flex;flex-direction:column;align-items:center;gap:0.25rem;padding:0.75rem 0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--white);text-decoration:none;text-align:center;position:relative;overflow:hidden;transition:all 150ms}
+.fam-chip:hover{border-color:var(--coral);transform:translateY(-1px)}
+.fam-chip::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:8px 8px 0 0}
+.fc-m::before{background:var(--m-mastered)}
+.fc-k::before{background:var(--m-known)}
+.fc-f::before{background:var(--m-familiar)}
+.fc-l::before{background:var(--m-learning)}
+.fc-ar{font-family:'Amiri',serif;font-size:1.375rem;direction:rtl;color:var(--ink)}
+.fc-en{font-size:0.62rem;color:var(--ink-light)}
+
+.annot-empty{font-size:0.82rem;color:var(--ink-ghost);font-style:italic;padding-left:0.75rem;border-left:2px solid var(--border)}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sb-head">
+    <span class="sb-ar">قلم</span>
+    <span class="sb-name">Qalam</span>
+  </div>
+  <nav class="sb-nav">
+    <a href="#" class="sb-link">Home <span class="ar">بيت</span></a>
+    <a href="#" class="sb-link active">Words <span class="ar">كلمات</span></a>
+    <a href="#" class="sb-link">Roots <span class="ar">جذور</span></a>
+    <a href="#" class="sb-link">Texts <span class="ar">نصوص</span></a>
+    <a href="#" class="sb-link">Training <span class="ar">تدريب</span></a>
+    <a href="#" class="sb-link">Analytics <span class="ar">إحصاء</span></a>
+  </nav>
+  <div class="sb-progress">
+    <div class="sb-prog-label">Vocabulary</div>
+    <div class="sb-prog-track"><div class="sb-prog-fill"></div></div>
+    <div class="sb-prog-note">142 of 380 mastered</div>
+  </div>
+</aside>
+<div class="main">
+  <div class="breadcrumb">
+    <a href="#">Words</a><span class="bc-sep">/</span><span class="bc-cur">كَتَبَ</span>
+  </div>
+  <div class="page">
+    <div class="content">
+      <div class="hero">
+        <div class="hero-ghost">ك</div>
+        <div class="hero-ar">كَتَبَ</div>
+        <div class="hero-tr">kataba</div>
+        <div class="hero-row">
+          <div class="chips">
+            <span class="chip c-outline">Verb</span>
+            <span class="chip c-olive">MSA</span>
+            <span class="chip c-outline">Intermediate</span>
+            <span class="chip c-coral">Familiar</span>
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary">Edit</button>
+            <button class="btn btn-danger">Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sect-label">Translation</div>
+      <p class="translation">to write, to compose, to correspond</p>
+      <div style="margin:0.875rem 0 2.5rem"><a href="#" class="pron">♪ Forvo ↗</a></div>
+
+      <div class="sect-label">Examples</div>
+      <div class="examples">
+        <div class="ex">
+          <p class="ex-ar">كَتَبَ الطَّالِبُ رِسَالَةً إِلَى أُسْتَاذِهِ</p>
+          <p class="ex-tr">kataba ṭ-ṭālibu risālatan ilā ustādhihi</p>
+          <p class="ex-en">The student wrote a letter to his professor</p>
+        </div>
+        <div class="ex">
+          <p class="ex-ar">تَكْتُبُ كُلَّ يَوْمٍ فِي دَفْتَرِهَا</p>
+          <p class="ex-tr">taktubu kulla yawmin fī daftarihā</p>
+          <p class="ex-en">She writes every day in her notebook</p>
+        </div>
+      </div>
+
+      <div class="sect-label">Dictionary sources</div>
+      <div class="dict-pills" style="margin-bottom:2.5rem">
+        <a href="#" class="dp">Almany ↗</a>
+        <a href="#" class="dp">Living Arabic ↗</a>
+        <a href="#" class="dp">Wiktionary ↗</a>
+      </div>
+
+      <div class="sect-label">Annotations</div>
+      <p class="annot-empty">No annotations link this word yet.</p>
+    </div>
+    <div class="side">
+      <div class="mc">
+        <div class="mc-title">Root</div>
+        <a href="#" class="root-block">
+          <span class="rb-ar">ك – ت – ب</span>
+          <span class="rb-cta">View family →</span>
+        </a>
+      </div>
+      <div class="mc">
+        <div class="mc-title">Mastery</div>
+        <div class="mastery-steps">
+          <div class="ms on"></div><div class="ms on"></div><div class="ms on"></div><div class="ms"></div><div class="ms"></div>
+        </div>
+        <span class="ms-label">Familiar</span>
+      </div>
+      <div class="mc">
+        <div class="mc-title">Details</div>
+        <div class="mc-row"><span class="mc-key">Part of speech</span><span class="mc-val">Verb (فعل)</span></div>
+        <div class="mc-row"><span class="mc-key">Dialect</span><span class="mc-val">MSA (فصحى)</span></div>
+        <div class="mc-row"><span class="mc-key">Difficulty</span><span class="mc-val">Intermediate</span></div>
+      </div>
+      <div class="mc">
+        <div class="mc-title">Word family preview</div>
+        <div class="fam-grid">
+          <a href="#" class="fam-chip fc-m"><span class="fc-ar">كَتَبَ</span><span class="fc-en">to write</span></a>
+          <a href="#" class="fam-chip fc-m"><span class="fc-ar">كِتَاب</span><span class="fc-en">book</span></a>
+          <a href="#" class="fam-chip fc-k"><span class="fc-ar">كَاتِب</span><span class="fc-en">writer</span></a>
+          <a href="#" class="fam-chip fc-f"><span class="fc-ar">مَكْتُوب</span><span class="fc-en">fate / letter</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

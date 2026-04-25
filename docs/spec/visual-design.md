@@ -1,8 +1,8 @@
-# Visual Design System — Rihla (رحلة)
+# Visual Design System — Busatan (بُسْتَان)
 
-> **Status:** Approved direction. Reference mockups in `docs/mockups/mockup-3-rihla.html`, `mockup-rihla-root.html`, `mockup-rihla-text.html`.
+> **Status:** Approved direction. Reference mockups in `docs/mockups/mockup-busatan-word.html`, `mockup-busatan-root.html`, `mockup-busatan-text.html`.
 >
-> This document is the source of truth for implementing the Rihla design system into the live SvelteKit frontend. When implementing, read the mockup HTML files for exact CSS values — this spec captures intent, rationale, and component contracts.
+> This document is the source of truth for implementing the Busatan design system into the live SvelteKit frontend. When implementing, read the mockup HTML files for exact CSS values — this spec captures intent, rationale, and component contracts.
 
 ---
 
@@ -10,7 +10,7 @@
 
 - **Warm editorial, not SaaS.** Every decision should feel like a well-typeset study journal, not a dashboard.
 - **Arabic text is primary.** Arabic script is always larger, more prominent, and given more line-height than Latin text at the same level of the hierarchy.
-- **Terracotta leads, not green.** The current app uses forest green (#16a34a) as primary. Rihla replaces this with terracotta (`--terra: #B84020`) throughout.
+- **Three accent roles, each with a job.** Busatan avoids both monochrome and random color. Every accent color has a specific semantic role — see §2. This is what makes it feel lively without being chaotic.
 - **Right panel for metadata.** Detail pages use a 2-column layout: wide left column for content, narrow right column for contextual metadata cards.
 - **Mastery communicates at a glance.** Color-coded mastery strips, dot indicators, and gauge steps must be consistent across all surfaces where words appear.
 
@@ -18,71 +18,89 @@
 
 ## 2. Color Tokens
 
-Replace the current `tokens.css` `:root` block with the following. Keep the same CSS variable names where possible so shadcn components keep working; add Rihla-specific tokens below.
+Replace the current `tokens.css` `:root` block with the following.
+
+### Semantic roles — read before implementing
+
+The palette has three accent families, each assigned to a specific UI role:
+
+| Role | Color | Used for |
+|------|-------|----------|
+| **Structural / brand** | olive `#4A6228` | Nav active, hero transliteration, example left borders, root card bg, section label underlines, word-family card hover |
+| **Action / progress** | coral `#C04830` | CTA buttons (Edit), mastery steps/gauge fill, difficulty/mastery level badges, word-family chip hover border |
+| **External / information** | cerulean `#1E5898` | Pronunciation button, dictionary pill default style, dialect badges (MSA/Tunisian), external link hover |
+
+Standard red `#C03030` stays for the Delete/destructive button — universal danger signal, intentionally different from all three accent families.
+
+### CSS custom properties
 
 ```css
 :root {
   /* ── Base ── */
-  --background:        0 0% 98%;       /* #FAF7F2 — warm sand, not pure white */
-  --foreground:        20 15% 9%;      /* #1A1510 — warm near-black ink */
+  --background:        48 22% 96%;      /* #F9F8F1 — warm parchment */
+  --foreground:        36 14% 9%;       /* #1A1810 */
   --card:              0 0% 100%;
-  --card-foreground:   20 15% 9%;
-  --border:            38 30% 80%;     /* #DDD0BA — warm sand border */
-  --input:             38 30% 80%;
-  --ring:              16 67% 42%;     /* terra — focus ring */
-  --radius:            0.625rem;       /* 10px — slightly more rounded than current */
+  --card-foreground:   36 14% 9%;
+  --border:            40 20% 80%;      /* #DDD5C0 */
+  --input:             40 20% 80%;
+  --ring:              102 40% 28%;     /* olive — focus ring */
+  --radius:            0.625rem;
 
-  /* ── Primary: Terracotta (replaces forest green) ── */
-  --primary:           16 67% 42%;    /* #B84020 */
+  /* ── Primary: Olive (structural) ── */
+  --primary:           102 40% 28%;    /* #4A6228 */
   --primary-foreground: 0 0% 98%;
 
   /* ── Secondary ── */
-  --secondary:         20 10% 27%;    /* #4A3C2C — warm dark brown */
+  --secondary:         36 14% 22%;     /* #3C3428 — warm dark brown */
   --secondary-foreground: 0 0% 98%;
 
   /* ── Muted ── */
-  --muted:             38 30% 92%;    /* #F0E8D8 — sand-dark */
-  --muted-foreground:  25 18% 48%;    /* #7A6A58 */
+  --muted:             40 22% 88%;     /* #EEE8DC — bg-dark */
+  --muted-foreground:  36 14% 40%;     /* #786848 */
 
   /* ── Accent ── */
-  --accent:            38 30% 87%;    /* #E0D0B4 — sand-darker, hover states */
-  --accent-foreground: 16 67% 42%;   /* terra */
+  --accent:            40 18% 82%;     /* #E4DDD0 — bg-darker */
+  --accent-foreground: 102 40% 28%;    /* olive */
 
   /* ── Destructive ── */
-  --destructive:       0 72% 51%;
+  --destructive:       0 72% 47%;      /* #C03030 */
   --destructive-foreground: 0 0% 98%;
 
-  /* ── Sidebar — keep light in Rihla ── */
-  --sidebar:           38 30% 92%;    /* #F0E8D8 — warm sand, NOT dark */
-  --sidebar-foreground: 20 15% 29%;  /* #4A3C2C */
-  --sidebar-primary:   16 67% 42%;
+  /* ── Sidebar — keep light ── */
+  --sidebar:           40 22% 88%;     /* #EEE8DC */
+  --sidebar-foreground: 36 14% 40%;
+  --sidebar-primary:   102 40% 28%;
   --sidebar-primary-foreground: 0 0% 98%;
-  --sidebar-accent:    38 30% 87%;
-  --sidebar-accent-foreground: 16 67% 42%;
-  --sidebar-border:    38 30% 80%;
-  --sidebar-ring:      16 67% 42%;
+  --sidebar-accent:    48 22% 96%;
+  --sidebar-accent-foreground: 102 40% 28%;
+  --sidebar-border:    40 20% 80%;
+  --sidebar-ring:      102 40% 28%;
 
-  /* ── Rihla-specific tokens (not in shadcn mapping) ── */
-  --terra:             #B84020;
-  --terra-soft:        #D05030;
-  --terra-pale:        #F5DDD6;
-  --ocean:             #2A5878;
-  --ocean-soft:        #3A6A8A;
-  --ocean-pale:        #D0E8F5;
-  --sage:              #4A7258;
-  --sage-pale:         #D8EDE0;
-  --amber:             #C07820;
-  --amber-pale:        #FBF0DC;
-  --sand:              #FAF7F2;
-  --sand-dark:         #F0E8D8;
-  --sand-darker:       #E0D0B4;
-  --ink:               #1A1510;
-  --ink-mid:           #4A3C2C;
-  --ink-light:         #7A6A58;
+  /* ── Busatan-specific tokens ── */
+  --olive:             #4A6228;   /* structural primary */
+  --olive-soft:        #5A7838;
+  --olive-pale:        #E8F0D8;
+  --coral:             #C04830;   /* action/progress */
+  --coral-soft:        #D05A40;
+  --coral-pale:        #FAE8E4;
+  --cerulean:          #1E5898;   /* external/information */
+  --cerulean-soft:     #2868B0;
+  --cerulean-pale:     #E0EAF8;
+  --sage:              #2A6840;   /* mastery positive (mastered/known) */
+  --sage-pale:         #D8EEE0;
+  --amber:             #B07820;   /* used only for mastery familiar strip */
+  --amber-pale:        #F5EDD0;
+  --bg:                #F9F8F1;   /* page background */
+  --bg-dark:           #EEE8DC;   /* sidebar / example cards */
+  --bg-darker:         #E4DDD0;
+  --ink:               #1A1810;
+  --ink-mid:           #3C3428;
+  --ink-light:         #786848;
+  --ink-ghost:         #B8A888;
 }
 ```
 
-**Remove** the `.dark` mode block — Rihla is light-only. Single-user app, no dark mode needed.
+**Remove** the `.dark` mode block — Busatan is light-only. Single-user app, no dark mode needed.
 
 ---
 
@@ -93,11 +111,7 @@ Replace the current `tokens.css` `:root` block with the following. Keep the same
 ```css
 @theme {
   --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
-
-  /* Latin display/body — replaces system serif */
   --font-display: 'Lora', Georgia, serif;
-
-  /* Arabic — unchanged from current */
   --font-arabic:         'Noto Naskh Arabic', 'Lateef', 'Amiri', serif;
   --font-arabic-display: 'Amiri', 'Noto Naskh Arabic', serif;
   --font-arabic-text:    'Noto Naskh Arabic', 'Amiri', serif;
@@ -122,7 +136,7 @@ Replace the current `tokens.css` `:root` block with the following. Keep the same
 | Sentence Arabic | Noto Naskh Arabic | 1.75rem | 500 | line-height: 2 |
 | Token Arabic | Noto Naskh Arabic | 1.1rem | 400 | |
 | Full text Arabic | Noto Naskh Arabic | 1.5rem | 400 | line-height: 2.2 |
-| Transliterations | Lora | 0.8–0.875rem | 400 italic | color: var(--terra) |
+| Transliterations | Lora | 0.8–0.875rem | 400 italic | color: var(--olive) |
 | Metadata keys | DM Sans | 0.58–0.62rem | 500 | UPPERCASE, 0.15em spacing |
 
 ---
@@ -134,30 +148,31 @@ Replace the current `tokens.css` `:root` block with the following. Keep the same
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Sidebar (220px, fixed)  │  Main content (flex: 1)  │
-│  background: sand-dark   │  margin-left: 220px       │
+│  background: --bg-dark   │  margin-left: 220px       │
 └─────────────────────────────────────────────────────┘
 ```
 
 **Sidebar** (`--sidebar-width: 220px`):
-- Background: `var(--sand-dark)` (#F0E8D8) — warm, not dark.
-- Brand: Amiri قلم at 2.75rem in `--terra`, "Qalam" in Lora SC below.
-- Nav links: justify-content: space-between; Latin label left, Arabic label right. Active state: `var(--terra-pale)` background, terra text.
-- Progress strip at bottom: vocabulary mastery bar (terra→gold gradient fill).
+- Background: `var(--bg-dark)` (#EEE8DC) — warm, not dark.
+- Brand: Amiri قلم at 2.875rem in `--olive`, "Qalam" in Lora SC below.
+- Nav section labels (Study / Practice): 0.58rem, uppercase, `--ink-ghost`.
+- Nav links: `justify-content: space-between`; Latin label left, Arabic label right. Active state: `var(--olive-pale)` background, `--olive` text.
+- Progress strip at bottom: vocabulary mastery bar with `linear-gradient(to right, var(--olive), var(--coral))`.
 
-**Breadcrumb bar**: 46px tall, white background, 1px bottom border. Arabic current-page label uses `font-family: 'Amiri'`.
+**Breadcrumb bar**: 46px tall, white background, 1px bottom border (`--border-thin`). Arabic current-page label uses `font-family: 'Amiri'`.
 
 ### Detail page grid (word, root, text)
 
 ```
 ┌──────────────────────────┬────────────────┐
 │  Content  (1fr)          │  Right panel   │
-│  padding: 2.5rem 3rem    │  260–280px     │
+│  padding: 2.5rem 3rem    │  260–288px     │
 │  border-right: 1px solid │  padding:      │
 │  var(--border)           │  2.5rem 1.75rem│
 └──────────────────────────┴────────────────┘
 ```
 
-Grid: `grid-template-columns: 1fr 260px` (word/text) or `1fr 280px` (root).
+Grid: `grid-template-columns: 1fr 272px` (word) / `1fr 260px` (text) / `1fr 288px` (root).
 
 ---
 
@@ -167,54 +182,82 @@ Grid: `grid-template-columns: 1fr 260px` (word/text) or `1fr 280px` (root).
 
 ```css
 /* Base */
-padding: 0.45–0.5rem 1.1–1.25rem;
+padding: 0.45rem 1.1rem;
 border-radius: 6px;
 font-family: 'DM Sans';
-font-size: 0.78–0.8rem;
+font-size: 0.78rem;
 font-weight: 500;
 border: 1px solid var(--border);
 background: transparent;
 color: var(--ink-mid);
 transition: all 150ms;
 
-/* Primary */
-background: var(--terra);
+/* Primary (Edit/Save) — coral */
+background: var(--coral);
 color: white;
-border-color: var(--terra);
-:hover { background: var(--terra-soft); }
+border-color: var(--coral);
+:hover { background: var(--coral-soft); }
 
-/* Destructive */
-/* Use 2-step confirm pattern — first click shows "Confirm delete" variant */
+/* Destructive (Delete) — red text, NOT coral */
+color: #C03030;
+border-color: rgba(192,48,48,0.22);
+:hover { background: rgba(192,48,48,0.06); border-color: #C03030; }
 ```
 
 ### Chips / Badges
 
 All chips: `border-radius: 999px`, `font-size: 0.7–0.72rem`, `font-weight: 500`, `border: 1px solid`.
 
-| Variant | Background | Text | Border |
-|---------|-----------|------|--------|
-| dialect-ocean (MSA) | `--ocean-pale` | `--ocean` | rgba(42,88,120,0.2) |
-| difficulty-amber | `--amber-pale` | `--amber` | rgba(192,120,32,0.25) |
-| mastery-gold | `--amber-pale` / `--sage-pale` (by level) | varies | varies |
-| tag/muted | `--sand-dark` | `--ink-light` | `--border` |
+Badge role assignments (apply consistently on all pages):
 
-**Mastery color mapping** (apply consistently everywhere):
+| Badge type | Variant | Background | Text |
+|-----------|---------|-----------|------|
+| Part of speech (Verb/Noun/Adj) | olive | `--olive-pale` | `--olive` |
+| Dialect (MSA, Tunisian) | cerulean | `--cerulean-pale` | `--cerulean` |
+| Difficulty (Intermediate…) | coral | `--coral-pale` | `--coral` |
+| Mastery level chip | coral | `--coral-pale` | `--coral` |
+| Genre tags, muted | muted | `--bg-dark` | `--ink-light` |
 
-| Level | Color token | Background |
-|-------|-------------|-----------|
-| mastered | `--sage` | `--sage-pale` |
-| known | `#8BC48A` | `#E0F0DE` |
-| familiar | `--amber` | `--amber-pale` |
-| learning | `--terra` | `--terra-pale` |
-| new | `--border` / `--sand-darker` | `--sand-dark` |
+**Mastery color mapping** (apply consistently everywhere — strips, dots, bars, chips):
+
+| Level | Strip / dot color | Chip background |
+|-------|------------------|----------------|
+| mastered | `--sage` `#2A6840` | `--sage-pale` |
+| known | `#5A9870` | `#E0F0E4` |
+| familiar | `--coral` `#C04830` | `--coral-pale` |
+| learning | `--olive` `#4A6228` | `--olive-pale` |
+| new | `--border` `#DDD5C0` | `--bg-dark` |
+
+### Dictionary pills
+
+Default state has color — not just on hover:
+```css
+.dict-pill {
+  background: var(--cerulean-pale);
+  border: 1px solid rgba(30,88,152,0.2);
+  color: var(--cerulean);
+  border-radius: 6px;
+  padding: 0.28rem 0.875rem;
+  font-size: 0.72rem;
+}
+.dict-pill:hover {
+  background: var(--cerulean);
+  color: white;
+  border-color: var(--cerulean);
+}
+```
+
+### Pronunciation / external link button
+
+Cerulean (information role):
+```css
+background: var(--cerulean-pale);
+border: 1px solid rgba(30,88,152,0.22);
+color: var(--cerulean);
+:hover { background: var(--cerulean); color: white; }
+```
 
 ### Section label pattern
-
-Used before every major content section:
-
-```html
-<div class="section-label">Examples</div>
-```
 
 ```css
 .section-label {
@@ -240,70 +283,64 @@ Used before every major content section:
 
 ```css
 .meta-card {
-  padding: 1.125–1.25rem;
+  padding: 1.125rem;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: white;
-  box-shadow: 0 1px 4px rgba(26,21,16,0.04);
+  box-shadow: 0 1px 4px rgba(26,24,16,0.04);
 }
 .meta-card-title {
   font-family: 'Lora', serif;
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--ink);
-  margin-bottom: 0.875–1rem;
+  margin-bottom: 0.875rem;
 }
 ```
 
-Meta rows inside cards: label (0.58rem, uppercase, `--ink-light`) + value (0.82rem, `--ink-mid`).
+Meta rows inside cards: label (0.58rem, uppercase, `--ink-ghost`) + value (0.82rem, `--ink-mid`).
 
 ---
 
 ## 6. Page: Word Detail (`/words/[id]`)
 
-### Hero section (left column, above the fold)
+### Hero section
 
 ```
 ┌──────────────────────────────────────────────────────┐
-│  [ghost letter watermark — first letter, 8rem, 4% opacity, right-aligned]  │
+│  [ghost letter — first letter, 8rem, olive 5% opacity, right]  │
 │                                                       │
 │  كَتَبَ    ← Amiri, 7rem, ink, direction:rtl          │
-│  kataba   ← Lora italic, 1.3rem, terra               │
+│  kataba   ← Lora italic, 1.3rem, --olive              │
 │                                                       │
-│  [Verb] [MSA] [Intermediate] [Familiar]  [Edit][Del] │
-│       chips row                    action buttons    │
+│  [Verb]olive [MSA]cerulean [Intermediate]coral [Familiar]coral  [Edit]coral [Delete]red │
 └──────────────────────────────────────────────────────┘
 border-bottom: 1px solid --border; padding-bottom: 2.5rem; margin-bottom: 3rem
 ```
 
-**Ghost letter**: `position: absolute`, `font-family: 'Amiri'`, `font-size: 8rem`, `color: var(--terra)`, `opacity: 0.04`, `right: -1rem`, `top: -1.5rem`, `user-select: none`.
+**Ghost letter**: `position: absolute`, `font-family: 'Amiri'`, `font-size: 8rem`, `color: var(--olive)`, `opacity: 0.05`, `right: -0.5rem`, `top: -1rem`, `user-select: none`.
 
 ### Content sections (left column)
 
-Sections in order: Translation → Examples → Dictionary sources → Annotations.
+Sections in order: Translation → Pronunciation → Examples → Dictionary sources → Annotations.
 
-**Examples**: left-border-accented cards.
+**Examples**: olive left-border cards.
 ```css
 .example-item {
-  padding: 1.25rem;
-  border-left: 3px solid var(--terra);
-  background: var(--sand-dark);
+  padding: 1.125rem 1.25rem;
+  border-left: 3px solid var(--olive);
+  background: var(--bg-dark);
   border-radius: 0 8px 8px 0;
-  margin-bottom: 0.75rem;
 }
 ```
-Arabic line: Noto Naskh Arabic 1.625rem, rtl. Transliteration: Lora italic 0.8rem terra. Translation: DM Sans 0.85rem ink-mid.
+Arabic line: Noto Naskh Arabic 1.5rem, rtl. Transliteration: Lora italic 0.78rem `--olive-soft`. Translation: DM Sans 0.84rem `--ink-mid`.
 
 ### Right panel cards
 
-1. **Root card** — saffron background (`--amber-pale`), root Arabic large (`Amiri` 1.75rem), "View family →" link.
-2. **Pronunciation card** — ocean palette, play icon + "Listen on Forvo".
-3. **Mastery gauge** — 5-step indicator:
-   ```html
-   <div class="mastery-steps">  <!-- 5 × step divs -->
-   ```
-   Steps: `height: 5px`, `flex: 1`, filled = `background: var(--terra)`, empty = `background: var(--border)`.
-4. **Details card** — POS, dialect, difficulty, date added.
+1. **Root card** — olive-pale background, root Arabic large (`Amiri` 1.625rem), "View family →" in `--olive`.
+2. **Mastery gauge** — 5-step indicator, filled steps in `--coral`, label in `--coral`.
+3. **Details card** — POS, pattern, dialect, difficulty, date added.
+4. **Word family preview** — 2×2 chip grid with mastery top strips.
 
 ---
 
@@ -311,45 +348,31 @@ Arabic line: Noto Naskh Arabic 1.625rem, rtl. Transliteration: Lora italic 0.8re
 
 ### Hero section
 
-Three letter tiles + metadata, separated from content by border-bottom.
-
 ```
-← ب — ت — ك →   (direction: rtl, displayed left-to-right as RTL)
+← ب — ت — ك →  (RTL direction)
   b       t       k
-[transliterations below each letter]
-
-                      [normalized: كَتَبَ]
-                      [k–t–b · 3 letters]
-                                [Edit][Delete]
+[normalized: كَتَبَ — k-t-b]  [3 letters badge]      [Edit][Delete]
 ```
 
-**Letter tile**:
+**Letter tile** (hover underline animation):
 ```css
-.root-letter-tile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0 2.5rem;
-  position: relative;
-}
-/* Underline animation on hover */
+.root-letter-tile { position: relative; }
 .root-letter-tile::after {
   content: '';
   position: absolute;
   bottom: -4px;
   left: 50%; right: 50%;
   height: 2px;
-  background: var(--terra);
+  background: var(--coral);   /* coral, not olive — action feel */
   border-radius: 1px;
   transition: left 200ms, right 200ms;
 }
 .root-letter-tile:hover::after { left: 0; right: 0; }
 ```
 
-Arabic letter: `Amiri` 4.5rem. Transliteration below: `Lora` 0.72rem italic terra.
+Arabic letter: `Amiri` 4.5rem. Transliteration below: `Lora` 0.72rem italic `--olive`.
 
-**Ghost background**: same pattern as word hero — first letter of root at ~10rem opacity 0.04.
+**Ghost background**: root letters (space-separated) at ~10rem, `color: var(--olive)`, `opacity: 0.04`.
 
 ### Word family grid
 
@@ -361,36 +384,25 @@ Arabic letter: `Amiri` 4.5rem. Transliteration below: `Lora` 0.72rem italic terr
 }
 ```
 
-Each card:
-```css
-.word-chip {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: white;
-  box-shadow: 0 1px 3px rgba(26,21,16,0.04);
-  padding: 1rem 0.75rem;
-  text-align: center;
-  /* mastery top strip */
-  position: relative;
-  overflow: hidden;
-}
-.word-chip::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  border-radius: 10px 10px 0 0;
-  background: [mastery color per table in §5];
-}
-```
+Each card: same pattern as word detail — white bg, 1px border, mastery top strip (3px), hover raises card with `border-color: var(--coral)`.
 
-Card content (top → bottom): Arabic (`Amiri` 1.75rem) → transliteration (Lora italic 0.65rem terra) → translation (DM Sans 0.68rem ink-light) → POS chip → mastery chip.
+Card content (top → bottom): Arabic (`Amiri` 1.75rem) → transliteration (Lora italic 0.65rem `--olive`) → translation (DM Sans 0.68rem `--ink-light`) → POS chip → mastery chip.
+
+### POS chip colors (word family + token cells)
+
+| POS | Background | Text |
+|-----|-----------|------|
+| verb | `--coral-pale` | `--coral` |
+| noun | `--cerulean-pale` | `--cerulean` |
+| adjective | `--olive-pale` | `--olive` |
+| particle/conjunction | `--bg-darker` | `--ink-light` |
+| prep / prep+n | `--olive-pale` | `--olive` |
 
 ### Right panel cards
 
 1. **Root info** — normalized form, letter count, word family count.
-2. **Family mastery bar chart** — one row per mastery level with colored dot, label, horizontal bar, count.
-3. **Key words** — 3 quick-access link items with Arabic + translation.
+2. **Family mastery bar chart** — one row per mastery level: colored dot + label + horizontal bar + count.
+3. **Key words** — 3 quick-access items; hover: `border-color: var(--olive)`, bg: `var(--olive-pale)`.
 4. **Actions** — "Add word to family", "Practice this root".
 
 ---
@@ -399,27 +411,27 @@ Card content (top → bottom): Arabic (`Amiri` 1.75rem) → transliteration (Lor
 
 ### Header
 
-Title in Lora 1.75rem. Chips row: difficulty, dialect, tags. Comments block: `font-style: italic`, `border-left: 2px solid var(--border)`, `padding-left: 1rem`.
+Title in Lora 1.75rem. Chips: difficulty=coral, dialect=cerulean, genre tags=olive or muted. Description block: `font-style: italic`, `border-left: 2px solid var(--border)`, `padding-left: 1rem`.
 
 ### Interlinear section — layout per sentence
 
 ```
 ┌───┬────────────────────────────────────────────────┐
 │ ١ │  Arabic text (Noto Naskh Arabic 1.75rem, rtl)  │
-│   │  Transliteration (Lora italic, terra)           │
+│   │  Transliteration (Lora italic, --olive)         │
 │   │                                                 │
-│   │  ┌ Token grid (RTL flex, sand-dark bg) ───────┐ │
-│   │  │  [ك‎ة] [مَعَ] [أ] [اللي] ...               │ │
+│   │  ┌ Token grid (RTL flex, bg-dark bg) ─────────┐ │
+│   │  │  white cards: arabic / translit / POS / gloss │
 │   │  └────────────────────────────────────────────┘ │
 │   │                                                 │
-│   │  ▏ Translation (Lora italic, terra border-left) │
-│   │  Notes (italic, ink-light)                      │
+│   │  ▏ Translation (Lora italic, olive border-left) │
+│   │  Notes (italic, --ink-light)                    │
 └───┴────────────────────────────────────────────────┘
 ```
 
 **Sentence block** grid: `grid-template-columns: 2rem 1fr`, `gap: 0 1rem`, `padding: 1.75rem 0`, `border-bottom: 1px solid var(--border)`.
 
-Sentence number: DM Sans 0.7rem, `--ink-light`, opacity 0.6.
+Sentence number: Lora italic 0.75rem, `--olive`, opacity 0.7.
 
 **Token grid**:
 ```css
@@ -429,13 +441,13 @@ Sentence number: DM Sans 0.7rem, `--ink-light`, opacity 0.6.
   gap: 2px;
   direction: rtl;
   padding: 0.875rem;
-  background: var(--sand-dark);
+  background: var(--bg-dark);
   border-radius: 8px;
   border: 1px solid var(--border);
 }
 ```
 
-**Token cell** (each word):
+**Token cell**:
 ```css
 .token-cell {
   display: flex;
@@ -448,29 +460,19 @@ Sentence number: DM Sans 0.7rem, `--ink-light`, opacity 0.6.
   border: 1px solid var(--border);
   min-width: 3.5rem;
   text-align: center;
-  cursor: default;
   transition: border-color 120ms, box-shadow 120ms;
 }
 .token-cell:hover {
-  border-color: var(--terra);
-  box-shadow: 0 2px 8px rgba(184,64,32,0.1);
+  border-color: var(--coral);
+  box-shadow: 0 2px 8px rgba(192,72,48,0.1);
 }
 ```
 
 Token cell content (top → bottom):
-1. Arabic word — Noto Naskh Arabic 1.1rem, `--ink`
-2. Transliteration — Lora 0.6rem italic, `--terra`
-3. POS chip — 0.55rem, color-coded (see §5 + table below)
+1. Arabic — Noto Naskh Arabic 1.1rem, `--ink`
+2. Transliteration — Lora 0.6rem italic, `--olive`
+3. POS chip — 0.55rem, color-coded per §7 table
 4. Gloss — DM Sans 0.62rem, `--ink-mid`, `max-width: 5rem`, ellipsis
-
-**POS color mapping**:
-| POS | Background | Text |
-|-----|-----------|------|
-| verb | `--terra-pale` | `--terra` |
-| noun | `--ocean-pale` | `--ocean` |
-| adjective | `--sage-pale` | `--sage` |
-| particle/conjunction | `--sand-dark` | `--ink-light` |
-| prep / prep+n | `--amber-pale` | `--amber` |
 
 **Translation block**:
 ```css
@@ -478,29 +480,29 @@ Token cell content (top → bottom):
   font-size: 0.875rem;
   color: var(--ink-mid);
   padding: 0.625rem 0.875rem;
-  border-left: 2px solid var(--terra);
-  background: rgba(184,64,32,0.03);
+  border-left: 2px solid var(--olive);
+  background: rgba(74,98,40,0.03);
   border-radius: 0 4px 4px 0;
   font-family: 'Lora', serif;
   font-style: italic;
 }
 ```
 
-"Trans." label inside: DM Sans, 0.6rem, UPPERCASE, 0.12em spacing, terra, font-style: normal, margin-right: 0.5rem.
+"Trans." label inside: DM Sans, 0.6rem, UPPERCASE, `--olive`, `font-style: normal`, `margin-right: 0.5rem`.
 
 ### Full text panel
 
 Below the interlinear section, separated by `section-label`:
 - Arabic body: Noto Naskh Arabic 1.5rem, rtl, line-height: 2.2
-- Transliteration: Lora italic 0.9rem terra, line-height: 1.9
-- Translation: DM Sans 0.9rem ink-mid, line-height: 1.75
+- Transliteration: Lora italic 0.9rem `--olive`, line-height: 1.9
+- Translation: DM Sans 0.9rem `--ink-mid`, line-height: 1.75
 
 ### Right panel cards
 
 1. **Text details** — dialect, difficulty, sentence count, token count, date added.
-2. **Word mastery breakdown** — horizontal bar per level with label, bar, count.
-3. **Tags** — chip pills.
-4. **Actions** — "Add sentence", "Re-tokenize all", "Practice words →" link.
+2. **Word mastery breakdown** — horizontal bar per level. Mastered/known = sage; familiar = coral; learning = olive.
+3. **Tags** — chip pills. Genre tags use olive chip; other tags use muted.
+4. **Actions** — "Add sentence", "Re-tokenize all", "Practice words →" (cerulean link button).
 
 ---
 
@@ -509,37 +511,40 @@ Below the interlinear section, separated by `section-label`:
 Current structure:
 ```
 src/styles/tokens.css      ← replace :root block (§2 above)
-src/styles/semantic.css    ← update mastery/difficulty/dialect colors to match Rihla palette
+src/styles/semantic.css    ← update mastery/difficulty/dialect colors to Busatan palette
 src/styles/layout.css      ← full rewrite per §4–8
 src/app.css                ← add Google Fonts import, touch nothing else
 ```
 
-`semantic.css` changes needed: mastery badge colors must use `--sage`/amber/terra/ocean palette instead of current green shades. Dialect badge colors can stay since they're distinct per dialect; just verify they read well on sand background.
+`semantic.css` changes needed:
+- Mastery badge colors → sage/coral/olive scale (replace current green shades)
+- Dialect badge → cerulean
+- Difficulty badge → coral
+- POS badge → olive/cerulean/coral per §7 table
 
 ---
 
 ## 10. Migration Checklist
 
-When implementing, work in this order to avoid regressions:
+Work in this order to avoid regressions:
 
 1. **Fonts** — add Google Fonts `<link>` in `app.html`, update `tokens.css` `@theme` block.
-2. **Color tokens** — replace `:root` in `tokens.css`. Verify shadcn components still render (they use HSL variables).
-3. **Sidebar** — update `layout.css` sidebar classes. Sidebar becomes light sand, not dark.
-4. **Breadcrumb** — update or add breadcrumb bar component.
-5. **Buttons/chips/badges** — update `semantic.css` + shadcn Button overrides.
-6. **Word detail** — rewrite `.page-word-detail`, `.word-hero`, `.word-info`, `.word-examples-list` CSS blocks.
+2. **Color tokens** — replace `:root` in `tokens.css`. Verify shadcn components still render (HSL variables).
+3. **Sidebar** — update `layout.css` sidebar: light bg-dark, olive brand + active states.
+4. **Breadcrumb** — update breadcrumb bar component.
+5. **Buttons/chips/badges** — update `semantic.css` + shadcn Button overrides. Dict pills get cerulean default style.
+6. **Word detail** — rewrite `.page-word-detail`, `.word-hero`, `.word-info`, `.word-examples-list` CSS. Update badge color assignments per §5.
 7. **Root detail** — rewrite `.page-root-detail`, `.root-hero`, `.word-family-grid`, `.word-chip` blocks.
-8. **Text detail** — rewrite text page CSS + `InterlinearSentence.svelte` styles + `TokenGrid.svelte` styles + `FullTextPanel.svelte` styles.
-9. **Meta sidebar cards** — add new `.meta-card` pattern to `layout.css`, update page svelte files to use 2-column grid.
-10. **Home page** — update `.home-shell` to use sand background and terra accent.
+8. **Text detail** — rewrite text page CSS + `InterlinearSentence.svelte` styles + `TokenGrid.svelte` styles + `FullTextPanel.svelte` styles. POS chips → §7 table.
+9. **Meta sidebar cards** — add `.meta-card` pattern to `layout.css`, update page svelte files to use 2-column grid.
+10. **Home page** — update `.home-shell` to use `--bg` background and olive/coral accents.
 
 ---
 
 ## 11. What NOT to Change
 
-- Arabic font family names (`--font-arabic`, `--font-arabic-display`, `--font-arabic-text`) — keep as-is, already correct.
+- Arabic font family names (`--font-arabic`, `--font-arabic-display`, `--font-arabic-text`) — keep as-is.
 - Arabic font sizes and line-heights in `tokens.css`.
-- Dialect badge colors (they're distinct by design and not related to mastery).
 - All backend, API types, store logic — purely a CSS/layout change.
 - `semantic.css` annotation-type colors.
 - The shadcn component files themselves — only override via CSS variables and wrapper classes.

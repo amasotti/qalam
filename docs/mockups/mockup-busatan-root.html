@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qalam Busatan — Root Detail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --bg:            #F9F8F1;
+  --bg-dark:       #EEE8DC;
+  --bg-darker:     #E4DDD0;
+  --white:         #FFFFFF;
+  --ink:           #1A1810;
+  --ink-mid:       #3C3428;
+  --ink-light:     #786848;
+  --ink-ghost:     #B8A888;
+  --olive:         #4A6228;
+  --olive-soft:    #5A7838;
+  --olive-pale:    #E8F0D8;
+  --coral:         #C04830;
+  --coral-soft:    #D05A40;
+  --coral-pale:    #FAE8E4;
+  --cerulean:      #1E5898;
+  --cerulean-soft: #2868B0;
+  --cerulean-pale: #E0EAF8;
+  --sage:          #2A6840;
+  --sage-pale:     #D8EEE0;
+  --amber:         #B07820;
+  --amber-pale:    #F5EDD0;
+  --danger:        #C03030;
+  --border:        #DDD5C0;
+  --border-thin:   #EDE8DC;
+
+  /* mastery scale */
+  --m-mastered:    #1A6038;
+  --m-known:       #2A7850;
+  --m-known-light: #8BC498;
+  --m-familiar:    #C04830;
+  --m-learning:    #4A6228;
+  --m-new:         #B8A888;
+}
+
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);display:flex;min-height:100vh;font-size:15px;line-height:1.6}
+
+/* ── Sidebar ── */
+.sidebar{width:220px;flex-shrink:0;position:fixed;top:0;left:0;height:100vh;background:var(--bg-dark);border-right:1px solid var(--border);display:flex;flex-direction:column}
+.sb-head{padding:1.875rem 1.5rem 1.375rem;border-bottom:1px solid var(--border)}
+.sb-ar{font-family:'Amiri',serif;font-size:2.875rem;color:var(--olive);direction:rtl;line-height:1;display:block}
+.sb-name{font-family:'Lora',serif;font-size:0.62rem;letter-spacing:0.32em;text-transform:uppercase;color:var(--ink-light);margin-top:0.125rem;display:block}
+.sb-nav{flex:1;padding:1.125rem 0.875rem;display:flex;flex-direction:column;gap:2px}
+.sb-section{font-size:0.58rem;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-ghost);padding:0.625rem 0.5rem 0.25rem}
+.sb-link{display:flex;align-items:center;justify-content:space-between;padding:0.525rem 0.75rem;color:var(--ink-light);text-decoration:none;font-size:0.82rem;border-radius:6px;transition:all 150ms}
+.sb-link .ar{font-family:'Amiri',serif;font-size:0.95rem;direction:rtl;color:var(--ink-ghost)}
+.sb-link:hover{background:rgba(74,98,40,0.08);color:var(--olive)}
+.sb-link.active{background:var(--olive-pale);color:var(--olive);font-weight:500}
+.sb-link.active .ar{color:var(--olive)}
+.sb-progress{padding:1rem 1.375rem 1.5rem;border-top:1px solid var(--border)}
+.sb-prog-label{font-size:0.6rem;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-ghost);margin-bottom:0.5rem}
+.sb-prog-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:0.375rem}
+.sb-prog-fill{height:100%;background:linear-gradient(to right,var(--olive),var(--coral));border-radius:2px;width:38%}
+.sb-prog-note{font-size:0.68rem;color:var(--ink-ghost)}
+
+/* ── Layout ── */
+.main{margin-left:220px;flex:1}
+.breadcrumb{padding:1rem 2.5rem;border-bottom:1px solid var(--border-thin);display:flex;align-items:center;gap:0.5rem;font-size:0.775rem;color:var(--ink-ghost);background:var(--white)}
+.breadcrumb a{color:inherit;text-decoration:none}.breadcrumb a:hover{color:var(--olive)}
+.bc-sep{opacity:0.4}
+.bc-cur{color:var(--ink-mid);font-family:'Amiri',serif;font-size:1rem;direction:rtl}
+.page{display:grid;grid-template-columns:1fr 288px;min-height:calc(100vh - 46px)}
+.content{padding:2.5rem 3rem;border-right:1px solid var(--border)}
+.side{padding:2.5rem 1.75rem;display:flex;flex-direction:column;gap:1.5rem}
+
+/* ── Root hero ── */
+.root-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;padding-bottom:2.5rem;margin-bottom:2.5rem;border-bottom:1px solid var(--border);position:relative}
+.root-hero::before{content:'ك ت ب';position:absolute;right:-1rem;top:-1.5rem;font-family:'Amiri',serif;font-size:10rem;color:var(--olive);opacity:0.04;direction:rtl;line-height:1;user-select:none;pointer-events:none;letter-spacing:0.5rem}
+.root-hero-left{display:flex;flex-direction:column;gap:1rem}
+.root-letters{display:flex;gap:0.75rem;direction:rtl;align-items:flex-end}
+.root-letter-tile{display:flex;flex-direction:column;align-items:center;gap:0.3rem;position:relative}
+/* hover underline animation */
+.root-letter-tile::after{content:'';position:absolute;bottom:-4px;left:50%;right:50%;height:2px;background:var(--coral);border-radius:1px;transition:left 200ms ease,right 200ms ease}
+.root-letter-tile:hover::after{left:0;right:0}
+.root-letter-ar{font-family:'Amiri',serif;font-size:4.5rem;color:var(--ink);line-height:1;direction:rtl}
+.root-letter-tr{font-family:'Lora',serif;font-size:0.72rem;font-style:italic;color:var(--olive);text-align:center}
+.root-sep{font-family:'Lora',serif;font-size:1.5rem;color:var(--bg-darker);padding-bottom:0.75rem;align-self:flex-end;line-height:1}
+.root-meta{display:flex;align-items:center;gap:0.75rem}
+.root-normalized{font-family:'Amiri',serif;font-size:1.1rem;color:var(--ink-light);direction:rtl;font-style:italic}
+.root-badge{display:inline-flex;padding:0.2rem 0.75rem;border-radius:999px;background:var(--bg-dark);color:var(--ink-light);font-size:0.7rem;border:1px solid var(--border)}
+.root-actions{display:flex;gap:0.5rem;align-self:flex-start}
+.btn{padding:0.45rem 1.1rem;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:500;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--ink-mid);transition:all 150ms}
+.btn:hover{border-color:var(--ink-mid);color:var(--ink)}
+.btn-primary{background:var(--coral);color:white;border-color:var(--coral)}.btn-primary:hover{background:var(--coral-soft)}
+.btn-danger{color:var(--danger);border-color:rgba(192,48,48,0.22)}.btn-danger:hover{background:rgba(192,48,48,0.06);border-color:var(--danger)}
+
+/* ── Sections ── */
+.sect-label{font-size:0.62rem;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-light);display:flex;align-items:center;gap:0.75rem;margin-bottom:1.125rem}
+.sect-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.meaning{font-family:'Lora',serif;font-size:1.2rem;line-height:1.7;color:var(--ink);margin-bottom:2.5rem;padding-left:1.25rem;border-left:3px solid var(--olive)}
+
+.analysis{font-size:0.9rem;line-height:1.85;color:var(--ink-mid);margin-bottom:2.5rem}
+.analysis p{margin-bottom:0.875rem}.analysis p:last-child{margin-bottom:0}
+.analysis strong{color:var(--ink);font-weight:600}
+.analysis em{font-style:italic;color:var(--coral)}
+.analysis code{font-family:'Amiri',serif;font-size:1rem;background:var(--bg-dark);padding:0.1rem 0.4rem;border-radius:3px;direction:rtl;color:var(--ink)}
+
+/* ── Word family grid ── */
+.family-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:0.75rem}
+.word-chip{display:flex;flex-direction:column;align-items:center;gap:0.375rem;padding:1rem 0.75rem;border:1px solid var(--border);border-radius:10px;background:var(--white);text-decoration:none;box-shadow:0 1px 3px rgba(26,24,16,0.04);transition:all 180ms;text-align:center;position:relative;overflow:hidden}
+.word-chip::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:10px 10px 0 0}
+.word-chip:hover{border-color:var(--coral);box-shadow:0 4px 16px rgba(192,72,48,0.1);transform:translateY(-2px)}
+.wc-mastered::before{background:var(--m-mastered)}
+.wc-known::before{background:var(--m-known)}
+.wc-familiar::before{background:var(--m-familiar)}
+.wc-learning::before{background:var(--m-learning)}
+.wc-new::before{background:var(--border)}
+.wc-ar{font-family:'Amiri',serif;font-size:1.75rem;direction:rtl;color:var(--ink);line-height:1.2}
+.wc-tr{font-family:'Lora',serif;font-size:0.65rem;font-style:italic;color:var(--olive)}
+.wc-en{font-size:0.68rem;color:var(--ink-light);line-height:1.3}
+.wc-pos{font-size:0.55rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;padding:0.1rem 0.5rem;border-radius:999px}
+.pos-verb{background:var(--coral-pale);color:var(--coral)}
+.pos-noun{background:var(--cerulean-pale);color:var(--cerulean)}
+.pos-adj{background:var(--olive-pale);color:var(--olive)}
+.pos-pattern{background:var(--amber-pale);color:var(--amber)}
+.pos-other{background:var(--bg-dark);color:var(--ink-light)}
+.wc-mastery{font-size:0.55rem;padding:0.1rem 0.5rem;border-radius:999px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
+.m-mastered{background:var(--sage-pale);color:var(--sage)}
+.m-known{background:#E0F0E4;color:#2A6040}
+.m-familiar{background:var(--coral-pale);color:var(--coral)}
+.m-learning{background:var(--olive-pale);color:var(--olive)}
+.m-new{background:var(--bg-dark);color:var(--ink-light)}
+
+/* ── Side panel ── */
+.mc{padding:1.125rem;border:1px solid var(--border);border-radius:10px;background:var(--white);box-shadow:0 1px 4px rgba(26,24,16,0.04)}
+.mc-title{font-family:'Lora',serif;font-size:0.72rem;font-weight:600;color:var(--ink);margin-bottom:0.875rem}
+.mc-row{display:flex;flex-direction:column;gap:0.125rem;margin-bottom:0.75rem}
+.mc-row:last-child{margin-bottom:0}
+.mc-key{font-size:0.58rem;font-weight:500;text-transform:uppercase;letter-spacing:0.14em;color:var(--ink-ghost)}
+.mc-val{font-size:0.82rem;color:var(--ink-mid)}
+.mc-val.ar{font-family:'Amiri',serif;font-size:1.2rem;direction:rtl;color:var(--ink)}
+/* mastery distribution */
+.fam-mastery{display:flex;flex-direction:column;gap:0.5rem}
+.fam-row{display:flex;align-items:center;gap:0.75rem;font-size:0.72rem}
+.fam-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-mastered{background:var(--m-mastered)}
+.dot-known{background:var(--m-known)}
+.dot-familiar{background:var(--m-familiar)}
+.dot-learning{background:var(--m-learning)}
+.dot-new{background:var(--border)}
+.fam-bar-outer{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.fam-bar-inner{height:100%;border-radius:2px}
+.bi-m{background:var(--m-mastered);width:40%}
+.bi-k{background:var(--m-known);width:20%}
+.bi-f{background:var(--m-familiar);width:25%}
+.bi-l{background:var(--m-learning);width:10%}
+.bi-n{background:var(--bg-darker);width:5%}
+.fam-count{width:1.5rem;text-align:right;color:var(--ink-light)}
+/* quick links */
+.quick-links{display:flex;flex-direction:column;gap:0.5rem}
+.ql{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0.625rem;border-radius:6px;background:var(--bg-dark);text-decoration:none;border:1px solid var(--border);transition:all 150ms}
+.ql:hover{border-color:var(--olive);background:var(--olive-pale)}
+.ql-ar{font-family:'Amiri',serif;font-size:1.25rem;color:var(--ink);direction:rtl}
+.ql-en{font-size:0.72rem;color:var(--ink-light)}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sb-head">
+    <span class="sb-ar">قلم</span>
+    <span class="sb-name">Qalam</span>
+  </div>
+  <nav class="sb-nav">
+    <span class="sb-section">Study</span>
+    <a href="#" class="sb-link">Words <span class="ar">كلمات</span></a>
+    <a href="#" class="sb-link active">Roots <span class="ar">جذور</span></a>
+    <a href="#" class="sb-link">Texts <span class="ar">نصوص</span></a>
+    <span class="sb-section">Practice</span>
+    <a href="#" class="sb-link">Training <span class="ar">تدريب</span></a>
+    <a href="#" class="sb-link">Analytics <span class="ar">إحصاء</span></a>
+  </nav>
+  <div class="sb-progress">
+    <div class="sb-prog-label">Vocabulary</div>
+    <div class="sb-prog-track"><div class="sb-prog-fill"></div></div>
+    <div class="sb-prog-note">142 of 380 mastered</div>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="breadcrumb">
+    <a href="#">Roots</a><span class="bc-sep">/</span><span class="bc-cur">كَتَبَ</span>
+  </div>
+  <div class="page">
+    <div class="content">
+
+      <!-- Root hero: letter tiles -->
+      <div class="root-hero">
+        <div class="root-hero-left">
+          <div class="root-letters">
+            <div class="root-letter-tile">
+              <span class="root-letter-ar">ب</span>
+              <span class="root-letter-tr">b</span>
+            </div>
+            <span class="root-sep">—</span>
+            <div class="root-letter-tile">
+              <span class="root-letter-ar">ت</span>
+              <span class="root-letter-tr">t</span>
+            </div>
+            <span class="root-sep">—</span>
+            <div class="root-letter-tile">
+              <span class="root-letter-ar">ك</span>
+              <span class="root-letter-tr">k</span>
+            </div>
+          </div>
+          <div class="root-meta">
+            <span class="root-normalized">كَتَبَ — k-t-b</span>
+            <span class="root-badge">3 letters</span>
+          </div>
+        </div>
+        <div class="root-actions">
+          <button class="btn btn-primary">Edit</button>
+          <button class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+
+      <div class="sect-label">Core meaning</div>
+      <p class="meaning">to write, to inscribe, to record — the fundamental act of putting marks on a surface to communicate meaning</p>
+
+      <div class="sect-label">Analysis</div>
+      <div class="analysis">
+        <p>The root <strong>ك-ت-ب</strong> (k-t-b) is one of the most productive roots in Arabic, covering the entire semantic field of writing and recording. The basic form <em>كَتَبَ</em> (kataba, "he wrote") follows the standard Form I triliteral verb pattern.</p>
+        <p>Notable derived forms: <em>كِتَاب</em> (kitāb, "book") follows the <code>فِعَال</code> pattern for instruments/objects; <em>كَاتِب</em> (kātib, "writer, scribe") is the active participle; <em>مَكْتُوب</em> (maktūb, "written, letter, fate") the passive participle — which acquired the extended meaning of "fate" in many dialects.</p>
+        <p>In Tunisian dialect: <em>كتب</em> preserves the core meaning. <em>مَكْتُوب</em> is widely used for both "letter" and "fate/destiny".</p>
+      </div>
+
+      <div class="sect-label">
+        Word family
+        <span style="font-size:0.72rem;color:var(--ink-light);text-transform:none;letter-spacing:0;font-family:'DM Sans',sans-serif;margin-left:-0.5rem">8 words</span>
+      </div>
+      <div class="family-grid">
+        <a href="#" class="word-chip wc-mastered">
+          <span class="wc-ar">كَتَبَ</span><span class="wc-tr">kataba</span>
+          <span class="wc-en">to write</span>
+          <span class="wc-pos pos-verb">verb</span>
+          <span class="wc-mastery m-mastered">mastered</span>
+        </a>
+        <a href="#" class="word-chip wc-mastered">
+          <span class="wc-ar">كِتَاب</span><span class="wc-tr">kitāb</span>
+          <span class="wc-en">book</span>
+          <span class="wc-pos pos-noun">noun</span>
+          <span class="wc-mastery m-mastered">mastered</span>
+        </a>
+        <a href="#" class="word-chip wc-known">
+          <span class="wc-ar">كَاتِب</span><span class="wc-tr">kātib</span>
+          <span class="wc-en">writer, scribe</span>
+          <span class="wc-pos pos-noun">noun</span>
+          <span class="wc-mastery m-known">known</span>
+        </a>
+        <a href="#" class="word-chip wc-familiar">
+          <span class="wc-ar">مَكْتُوب</span><span class="wc-tr">maktūb</span>
+          <span class="wc-en">written; fate</span>
+          <span class="wc-pos pos-pattern">pass. part.</span>
+          <span class="wc-mastery m-familiar">familiar</span>
+        </a>
+        <a href="#" class="word-chip wc-familiar">
+          <span class="wc-ar">مَكْتَب</span><span class="wc-tr">maktab</span>
+          <span class="wc-en">office, desk</span>
+          <span class="wc-pos pos-noun">noun</span>
+          <span class="wc-mastery m-familiar">familiar</span>
+        </a>
+        <a href="#" class="word-chip wc-learning">
+          <span class="wc-ar">كِتَابَة</span><span class="wc-tr">kitāba</span>
+          <span class="wc-en">writing (act)</span>
+          <span class="wc-pos pos-noun">noun</span>
+          <span class="wc-mastery m-learning">learning</span>
+        </a>
+        <a href="#" class="word-chip wc-learning">
+          <span class="wc-ar">كُتَّاب</span><span class="wc-tr">kuttāb</span>
+          <span class="wc-en">Quranic school</span>
+          <span class="wc-pos pos-noun">noun</span>
+          <span class="wc-mastery m-learning">learning</span>
+        </a>
+        <a href="#" class="word-chip wc-new">
+          <span class="wc-ar">اكْتَتَبَ</span><span class="wc-tr">iktataba</span>
+          <span class="wc-en">to subscribe</span>
+          <span class="wc-pos pos-verb">verb VIII</span>
+          <span class="wc-mastery m-new">new</span>
+        </a>
+      </div>
+
+    </div>
+
+    <div class="side">
+      <div class="mc">
+        <div class="mc-title">Root details</div>
+        <div class="mc-row"><span class="mc-key">Display form</span><span class="mc-val ar">كَتَبَ</span></div>
+        <div class="mc-row"><span class="mc-key">Normalized</span><span class="mc-val">k-t-b</span></div>
+        <div class="mc-row"><span class="mc-key">Letter count</span><span class="mc-val">3 (trilateral)</span></div>
+        <div class="mc-row"><span class="mc-key">Word family</span><span class="mc-val">8 words</span></div>
+      </div>
+      <div class="mc">
+        <div class="mc-title">Family mastery</div>
+        <div class="fam-mastery">
+          <div class="fam-row"><span class="fam-dot dot-mastered"></span><span style="flex:0 0 4.5rem;color:var(--ink-light)">Mastered</span><div class="fam-bar-outer"><div class="fam-bar-inner bi-m"></div></div><span class="fam-count">2</span></div>
+          <div class="fam-row"><span class="fam-dot dot-known"></span><span style="flex:0 0 4.5rem;color:var(--ink-light)">Known</span><div class="fam-bar-outer"><div class="fam-bar-inner bi-k"></div></div><span class="fam-count">1</span></div>
+          <div class="fam-row"><span class="fam-dot dot-familiar"></span><span style="flex:0 0 4.5rem;color:var(--ink-light)">Familiar</span><div class="fam-bar-outer"><div class="fam-bar-inner bi-f"></div></div><span class="fam-count">2</span></div>
+          <div class="fam-row"><span class="fam-dot dot-learning"></span><span style="flex:0 0 4.5rem;color:var(--ink-light)">Learning</span><div class="fam-bar-outer"><div class="fam-bar-inner bi-l"></div></div><span class="fam-count">2</span></div>
+          <div class="fam-row"><span class="fam-dot dot-new"></span><span style="flex:0 0 4.5rem;color:var(--ink-light)">New</span><div class="fam-bar-outer"><div class="fam-bar-inner bi-n"></div></div><span class="fam-count">1</span></div>
+        </div>
+      </div>
+      <div class="mc">
+        <div class="mc-title">Key words</div>
+        <div class="quick-links">
+          <a href="#" class="ql"><span class="ql-ar">كَتَبَ</span><span class="ql-en">to write →</span></a>
+          <a href="#" class="ql"><span class="ql-ar">كِتَاب</span><span class="ql-en">book →</span></a>
+          <a href="#" class="ql"><span class="ql-ar">مَكْتُوب</span><span class="ql-en">written; fate →</span></a>
+        </div>
+      </div>
+      <div class="mc">
+        <div class="mc-title">Actions</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem">
+          <button class="btn" style="text-align:left;width:100%">+ Add word to family</button>
+          <button class="btn" style="text-align:left;width:100%">Practice this root</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

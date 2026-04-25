@@ -92,6 +92,16 @@ class ExposedWordRepository : WordRepository {
             PaginatedResponse(items = items, total = total, page = page.page, size = page.size).right()
         }
 
+    override suspend fun findByArabicText(arabicText: String): Either<DomainError, Word?> =
+        suspendTransaction {
+            val word = WordsTable
+                .selectAll()
+                .where { WordsTable.arabicText eq arabicText }
+                .singleOrNull()
+                ?.toWord()
+            word.right()
+        }
+
     override suspend fun autocomplete(query: String, limit: Int): Either<DomainError, List<Word>> =
         suspendTransaction {
             WordsTable

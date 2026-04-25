@@ -1,10 +1,12 @@
 package com.tonihacks.qalam.delivery.routes
 
 import com.tonihacks.qalam.delivery.respondError
+import com.tonihacks.qalam.delivery.dto.word.AnalyzeWordRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateDictionaryLinkRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordExampleRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordRequest
 import com.tonihacks.qalam.delivery.dto.word.UpdateWordRequest
+import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.word.WordService
 import io.ktor.http.*
 import io.ktor.server.request.*
@@ -38,6 +40,21 @@ fun Route.wordRoutes(service: WordService) {
             service.autocomplete(q, limit).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.OK, it) },
+            )
+        }
+
+        get("/by-arabic") {
+            val q = call.request.queryParameters["q"]
+            if (q.isNullOrBlank()) {
+                call.respondError(DomainError.ValidationError("q", "q parameter is required"))
+                return@get
+            }
+            service.findByArabicText(q).fold(
+                { call.respondError(it) },
+                { word ->
+                    if (word != null) call.respond(HttpStatusCode.OK, word)
+                    else call.respondError(DomainError.NotFound("Word", q))
+                },
             )
         }
 
@@ -125,6 +142,15 @@ fun Route.wordRoutes(service: WordService) {
             service.deleteExample(id, exampleId).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.NoContent) },
+            )
+        }
+
+        // AI word analysis (ephemeral — does not persist)
+        post("/analyze") {
+            val req = call.receive<AnalyzeWordRequest>()
+            service.analyzeWord(req.arabicText).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.OK, it) },
             )
         }
 

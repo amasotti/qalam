@@ -235,6 +235,48 @@ class WordsIntegrationTest : BaseIntegrationTest() {
             }
         }
 
+        "GET /api/v1/words/by-arabic" - {
+            "returns 200 with word when exact match exists" {
+                testApp { client ->
+                    client.post("/api/v1/words") {
+                        contentType(ContentType.Application.Json)
+                        setBody(katabJson)
+                    }
+
+                    val response = client.get("/api/v1/words/by-arabic?q=كَتَبَ")
+                    response.status shouldBe HttpStatusCode.OK
+                    response.bodyAsText() shouldContain "كَتَبَ"
+                }
+            }
+
+            "returns 404 when no exact match" {
+                testApp { client ->
+                    val response = client.get("/api/v1/words/by-arabic?q=لَيْسَ")
+                    response.status shouldBe HttpStatusCode.NotFound
+                }
+            }
+
+            "returns 422 when q is missing" {
+                testApp { client ->
+                    val response = client.get("/api/v1/words/by-arabic")
+                    response.status shouldBe HttpStatusCode.UnprocessableEntity
+                }
+            }
+        }
+
+        "POST /api/v1/words/analyze" - {
+            "returns 503 when AI is not configured" {
+                testApp { client ->
+                    val response = client.post("/api/v1/words/analyze") {
+                        contentType(ContentType.Application.Json)
+                        setBody("""{"arabicText":"كَتَبَ"}""")
+                    }
+                    response.status shouldBe HttpStatusCode.ServiceUnavailable
+                    response.bodyAsText() shouldContain "AI_NOT_CONFIGURED"
+                }
+            }
+        }
+
         "Dictionary links /api/v1/words/{id}/dictionary-links" - {
             "POST adds a link and GET returns it" {
                 testApp { client ->

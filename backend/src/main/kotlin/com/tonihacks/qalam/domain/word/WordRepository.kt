@@ -19,6 +19,7 @@ interface WordRepository {
     suspend fun findById(id: WordId): Either<DomainError, Word>
     suspend fun list(page: PageRequest, filters: WordFilters): Either<DomainError, PaginatedResponse<Word>>
     suspend fun autocomplete(query: String, limit: Int): Either<DomainError, List<Word>>
+    suspend fun findByArabicText(arabicText: String): Either<DomainError, Word?>
     suspend fun create(word: Word): Either<DomainError, Word>
     suspend fun update(word: Word): Either<DomainError, Word>
     suspend fun delete(id: WordId): Either<DomainError, Unit>

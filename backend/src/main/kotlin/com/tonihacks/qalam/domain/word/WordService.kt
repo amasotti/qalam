@@ -8,6 +8,7 @@ import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.PageRequest
 import com.tonihacks.qalam.delivery.dto.PaginatedResponse
 import com.tonihacks.qalam.delivery.dto.word.AiExamplesResponse
+import com.tonihacks.qalam.delivery.dto.word.WordAnalysisResponse
 import com.tonihacks.qalam.delivery.dto.word.CreateDictionaryLinkRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordExampleRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordRequest
@@ -58,6 +59,9 @@ class WordService(
 
     suspend fun getById(id: String): Either<DomainError, WordResponse> =
         parseWordId(id).flatMap { repo.findById(it) }.map { it.toResponse() }
+
+    suspend fun findByArabicText(arabicText: String): Either<DomainError, WordResponse?> =
+        repo.findByArabicText(arabicText).map { it?.toResponse() }
 
     suspend fun create(req: CreateWordRequest): Either<DomainError, WordResponse> = either {
         if (req.arabicText.isBlank()) raise(DomainError.ValidationError("arabicText", "Arabic text must not be blank"))
@@ -153,6 +157,9 @@ class WordService(
         }
         repo.deleteDictionaryLink(wId, lId).bind()
     }
+
+    suspend fun analyzeWord(arabicText: String): Either<DomainError, WordAnalysisResponse> =
+        aiClient.analyzeWord(arabicText)
 
     suspend fun generateExamples(wordId: String): Either<DomainError, AiExamplesResponse> = either {
         val id = parseWordId(wordId).bind()

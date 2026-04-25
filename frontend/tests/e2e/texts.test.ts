@@ -64,7 +64,7 @@ test.describe('Texts', () => {
 		await page.locator('.new-sentence-form .sentence-edit-textarea').fill(SENTENCE);
 
 		// Submit — same button text, but now it's the form submit (toggle is hidden)
-		await page.getByRole('button', { name: 'Add sentence' }).click();
+		await page.locator('.sentence-editor').getByRole('button', { name: 'Add sentence' }).click();
 
 		// Sentence block appears in the editor
 		await expect(page.locator('.sentence-edit-block')).toBeVisible();

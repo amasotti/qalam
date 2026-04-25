@@ -74,6 +74,6 @@ test.describe('Words', () => {
 		// Filter applied: words with MSA badge shown, select reflects choice
 		await expect(page.locator('.words-filters .filter-select').first()).toHaveValue('MSA');
 		await expect(page.locator('.word-card').first()).toBeVisible();
-		await expect(page.locator('.dialect-msa').first()).toBeVisible();
+		await expect(page.locator('.word-card .chip').filter({ hasText: 'MSA' }).first()).toBeVisible();
 	});
 });

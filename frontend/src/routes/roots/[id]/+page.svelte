@@ -101,14 +101,52 @@ async function handleDelete() {
 			</div>
 
 			<div class="root-info">
-				<div class="root-info-section">
-					<span class="root-info-label">Meaning</span>
-					{#if root.data.meaning}
-						<p class="root-info-value">{root.data.meaning}</p>
-					{:else}
-						<p class="root-info-value root-info-empty">No meaning recorded</p>
-					{/if}
+				<!-- ── Left: meaning + word family ── -->
+				<div class="root-info-sidebar">
+					<div class="root-info-section">
+						<span class="root-info-label">Meaning</span>
+						{#if root.data.meaning}
+							<p class="root-info-value">{root.data.meaning}</p>
+						{:else}
+							<p class="root-info-value root-info-empty">No meaning recorded</p>
+						{/if}
+					</div>
+
+					<div class="root-word-family">
+						<div class="root-word-family-header">
+							<h2 class="root-word-family-title">Word family</h2>
+							{#if words.data !== undefined}
+								<span class="root-word-family-count">{words.data.length}</span>
+							{/if}
+						</div>
+
+						{#if words.isPending}
+							<p class="word-family-empty">Loading words…</p>
+						{:else if words.isError}
+							<p class="word-family-empty">Could not load words.</p>
+						{:else if words.data && words.data.length > 0}
+							<div class="word-family-grid stagger-children">
+								{#each words.data as word (word.id)}
+									<a class="word-chip" href="/words/{word.id}">
+										<span class="word-chip-arabic">{word.arabicText}</span>
+										{#if word.translation}
+											<span class="word-chip-translation">{word.translation}</span>
+										{/if}
+										{#if word.masteryLevel}
+											<Badge class="mastery-{word.masteryLevel.toLowerCase()}" variant="outline">
+												{word.masteryLevel.toLowerCase()}
+											</Badge>
+										{/if}
+									</a>
+								{/each}
+							</div>
+						{:else}
+							<p class="word-family-empty">No words linked to this root yet.</p>
+						{/if}
+					</div>
 				</div>
+
+				<!-- ── Right: analysis ── -->
 				<div class="root-info-section">
 					<span class="root-info-label">Analysis</span>
 					{#if root.data.analysis}
@@ -117,40 +155,6 @@ async function handleDelete() {
 						<p class="root-info-value root-info-empty">No analysis recorded</p>
 					{/if}
 				</div>
-			</div>
-
-			<!-- ── Word family ── -->
-			<div class="root-word-family">
-				<div class="root-word-family-header">
-					<h2 class="root-word-family-title">Word family</h2>
-					{#if words.data !== undefined}
-						<span class="root-word-family-count">{words.data.length}</span>
-					{/if}
-				</div>
-
-				{#if words.isPending}
-					<p class="word-family-empty">Loading words…</p>
-				{:else if words.isError}
-					<p class="word-family-empty">Could not load words.</p>
-				{:else if words.data && words.data.length > 0}
-					<div class="word-family-grid stagger-children">
-						{#each words.data as word (word.id)}
-							<a class="word-chip" href="/words/{word.id}">
-								<span class="word-chip-arabic">{word.arabicText}</span>
-								{#if word.translation}
-									<span class="word-chip-translation">{word.translation}</span>
-								{/if}
-								{#if word.masteryLevel}
-									<Badge class="mastery-{word.masteryLevel.toLowerCase()}" variant="outline">
-										{word.masteryLevel.toLowerCase()}
-									</Badge>
-								{/if}
-							</a>
-						{/each}
-					</div>
-				{:else}
-					<p class="word-family-empty">No words linked to this root yet.</p>
-				{/if}
 			</div>
 		{/if}
 	{/if}

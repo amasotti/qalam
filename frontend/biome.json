@@ -32,6 +32,9 @@
       "style": {
         "noUnusedTemplateLiteral": "warn",
         "useConst": "off"
+      },
+      "complexity": {
+        "noImportantStyles": "off"
       }
     }
   },

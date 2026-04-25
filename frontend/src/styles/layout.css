@@ -36,7 +36,7 @@
 	display: block;
 }
 .sb-name {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-size: 0.62rem;
 	letter-spacing: 0.32em;
 	text-transform: uppercase;
@@ -217,7 +217,7 @@
 	box-shadow: 0 1px 4px rgba(26, 24, 16, 0.04);
 }
 .meta-card-title {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-size: 0.72rem;
 	font-weight: 600;
 	color: var(--ink);
@@ -365,7 +365,7 @@
 	display: block;
 }
 .word-hero-tr {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-style: italic;
 	font-size: 1.25rem;
 	color: var(--olive);
@@ -400,7 +400,7 @@
 
 /* Word content sections */
 .word-translation {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-size: 1.2rem;
 	line-height: 1.6;
 	color: var(--ink);
@@ -514,7 +514,7 @@
 	margin-bottom: 0.3rem;
 }
 .example-card-tr {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-style: italic;
 	font-size: 0.78rem;
 	color: var(--olive-soft);
@@ -727,14 +727,14 @@
 	direction: rtl;
 }
 .root-letter-tr {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-size: 0.72rem;
 	font-style: italic;
 	color: var(--olive);
 	text-align: center;
 }
 .root-sep {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-size: 1.5rem;
 	color: var(--bg-darker);
 	padding-bottom: 0.75rem;
@@ -768,7 +768,7 @@
 	align-self: flex-start;
 }
 .root-meaning {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-size: 1.2rem;
 	line-height: 1.7;
 	color: var(--ink);
@@ -848,7 +848,7 @@
 	line-height: 1.2;
 }
 .wc-tr {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-size: 0.65rem;
 	font-style: italic;
 	color: var(--olive);
@@ -982,7 +982,7 @@
 	margin-bottom: 2.5rem;
 }
 .text-title {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-size: 1.75rem;
 	font-weight: 600;
 	line-height: 1.3;
@@ -1029,7 +1029,7 @@
 }
 .sentence-num {
 	color: var(--olive);
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-style: italic;
 	font-size: 0.75rem;
 	padding-top: 0.55rem;
@@ -1051,11 +1051,13 @@
 	letter-spacing: 0.02em;
 }
 .sentence-tr {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-size: 0.875rem;
 	font-style: italic;
 	color: var(--olive);
 	line-height: 1.6;
+	text-align: right;
+	direction: rtl;
 }
 
 /* Token grid */
@@ -1073,12 +1075,12 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 0.2rem;
-	padding: 0.5rem 0.625rem;
+	gap: 0.5rem;
+	padding: 0.625rem 0.875rem;
 	border-radius: 5px;
 	background: var(--white);
 	border: 1px solid var(--border);
-	min-width: 3.5rem;
+	min-width: 5rem;
 	transition:
 		border-color 120ms,
 		box-shadow 120ms;
@@ -1101,17 +1103,17 @@
 	direction: rtl;
 }
 .token-tr {
-	font-family: "Lora", serif;
-	font-size: 0.6rem;
+	font-family: "Spectral", serif;
+	font-size: .8rem;
 	font-style: italic;
 	color: var(--olive);
-	line-height: 1.2;
+	line-height: 1.3;
 	white-space: nowrap;
 }
 .token-gloss {
-	font-size: 0.62rem;
+	font-size: 0.72rem;
 	color: var(--ink-mid);
-	line-height: 1.2;
+	line-height: 1.3;
 	direction: ltr;
 }
 
@@ -1124,7 +1126,7 @@
 	border-left: 2px solid var(--olive);
 	background: rgba(74, 98, 40, 0.03);
 	border-radius: 0 4px 4px 0;
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-style: italic;
 }
 .sentence-trans-label {
@@ -1170,7 +1172,7 @@
 	margin-bottom: 1.25rem;
 }
 .full-text-tr {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-size: 0.9rem;
 	font-style: italic;
 	color: var(--olive);
@@ -1259,7 +1261,7 @@
 	margin-bottom: 1.5rem;
 }
 .list-page-title {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-size: 1.75rem;
 	font-weight: 600;
 	color: var(--ink);
@@ -1371,7 +1373,7 @@
 	font-style: italic;
 	color: var(--ink-light);
 	margin-bottom: 0.2rem;
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 }
 .word-card-en {
 	font-size: 0.8rem;
@@ -1492,7 +1494,7 @@
 	transform: translateY(-1px);
 }
 .text-card-title {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-size: 1.1rem;
 	font-weight: 600;
 	color: var(--ink);
@@ -1622,7 +1624,7 @@
 .home-verse-tr {
 	font-size: 0.875rem;
 	font-style: italic;
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	color: var(--olive);
 	letter-spacing: 0.02em;
 }
@@ -1806,7 +1808,7 @@
 	gap: 0.25rem;
 }
 .form-page-title {
-	font-family: "Lora", serif;
+	font-family: "Spectral", serif;
 	font-size: 1.5rem;
 	font-weight: 600;
 	color: var(--ink);

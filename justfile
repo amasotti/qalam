@@ -80,12 +80,25 @@ e2e:
 e2e-ui:
     pnpm --prefix frontend test:e2e:ui
 
+# Run backend static analysis and linting (does not run tests)
 check:
     ./backend/gradlew -p backend check --no-daemon
 
 # Lint the OpenAPI spec
 lint-api:
     docker run --rm -v $PWD:/spec redocly/cli lint /spec/backend/src/main/resources/openapi/documentation.yaml
+
+# Lint frontend with Biome
+lint-frontend:
+    pnpm --prefix frontend lint
+
+# Format frontend with Biome
+format-frontend:
+    pnpm --prefix frontend format
+
+# Run check svelte with Biome (requires: just up — backend + DB must be running)
+check-frontend:
+    pnpm --prefix frontend check
 
 # Generate frontend TS types from the OpenAPI spec (backend must be running)
 gtypes:

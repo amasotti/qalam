@@ -10,7 +10,8 @@
       "Bash(pnpm lint:*)",
       "Bash(pnpm biome:*)",
       "WebFetch(domain:localhost)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(jar tf *)"
     ],
     "deny": [
       "Bash(scp *)",

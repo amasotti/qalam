@@ -1,7 +1,7 @@
 package com.tonihacks.qalam.domain.training
 
 import com.tonihacks.qalam.domain.word.WordId
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import java.util.UUID
 
 @JvmInline

@@ -13,8 +13,7 @@ import com.tonihacks.qalam.domain.training.TrainingSession
 import com.tonihacks.qalam.domain.training.TrainingSessionId
 import com.tonihacks.qalam.domain.training.TrainingSessionWord
 import com.tonihacks.qalam.domain.word.WordId
-import kotlinx.datetime.toDeprecatedInstant
-import kotlinx.datetime.toStdlibInstant
+import kotlin.time.Instant
 import org.jetbrains.exposed.v1.core.JoinType
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.SortOrder
@@ -24,7 +23,6 @@ import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.update
-import kotlin.time.Instant
 import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
 
@@ -44,7 +42,7 @@ class ExposedTrainingRepository : TrainingRepository {
                     it[correctCount]   = 0
                     it[incorrectCount] = 0
                     it[skippedCount]   = 0
-                    it[createdAt]      = session.createdAt.toStdlibInstant()
+                    it[createdAt]      = session.createdAt
                     it[completedAt]    = null
                 }
                 words.forEach { w ->
@@ -187,8 +185,8 @@ private fun ResultRow.toTrainingSession() = TrainingSession(
     correctCount   = this[TrainingSessionsTable.correctCount],
     incorrectCount = this[TrainingSessionsTable.incorrectCount],
     skippedCount   = this[TrainingSessionsTable.skippedCount],
-    createdAt      = this[TrainingSessionsTable.createdAt].toDeprecatedInstant(),
-    completedAt    = this[TrainingSessionsTable.completedAt]?.toDeprecatedInstant(),
+    createdAt      = this[TrainingSessionsTable.createdAt],
+    completedAt    = this[TrainingSessionsTable.completedAt],
 )
 
 @OptIn(kotlin.uuid.ExperimentalUuidApi::class)
@@ -204,5 +202,5 @@ private fun ResultRow.toTrainingSessionWord() = TrainingSessionWord(
     masteryLevel     = this[WordsTable.masteryLevel],
     result           = this[TrainingSessionWordsTable.result]?.let { TrainingResult.valueOf(it) },
     masteryPromotedTo = this[TrainingSessionWordsTable.masteryPromotedTo],
-    answeredAt       = this[TrainingSessionWordsTable.answeredAt]?.toDeprecatedInstant(),
+    answeredAt       = this[TrainingSessionWordsTable.answeredAt],
 )

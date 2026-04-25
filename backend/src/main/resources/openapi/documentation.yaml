@@ -24,6 +24,8 @@ tags:
     description: Arabic text transliteration
   - name: annotations
     description: Annotation management (vocabulary, grammar, cultural, structure notes)
+  - name: training
+    description: Flashcard training sessions and statistics
   - name: system
     description: Health and API introspection
 
@@ -1340,6 +1342,185 @@ paths:
         "400":
           description: Bad request
 
+  /api/v1/training/sessions:
+    post:
+      summary: Create a new training session
+      operationId: createTrainingSession
+      tags: [training]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSessionRequest"
+      responses:
+        "201":
+          description: Training session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrainingSessionResponse"
+        "400":
+          description: Invalid request (missing/invalid mode or size)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: No words available for the requested size
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    get:
+      summary: List training sessions with pagination
+      operationId: listTrainingSessions
+      tags: [training]
+      parameters:
+        - name: page
+          in: query
+          description: Page number (1-based)
+          schema: { type: integer, default: 1 }
+        - name: size
+          in: query
+          description: Number of items per page
+          schema: { type: integer, default: 20, maximum: 100 }
+      responses:
+        "200":
+          description: Paginated list of training sessions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedSessionsResponse"
+        "400":
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/training/sessions/{id}:
+    get:
+      summary: Get a training session by ID
+      operationId: getTrainingSession
+      tags: [training]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Training session found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrainingSessionResponse"
+        "400":
+          description: Malformed UUID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Training session not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/training/sessions/{id}/results:
+    post:
+      summary: Record a result for a word in the current session
+      operationId: recordTrainingResult
+      tags: [training]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecordResultRequest"
+      responses:
+        "200":
+          description: Result recorded (may include mastery promotion)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecordResultResponse"
+        "400":
+          description: Malformed UUID or invalid result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Session or word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Session already completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/training/sessions/{id}/complete:
+    post:
+      summary: Mark a training session as complete
+      operationId: completeTrainingSession
+      tags: [training]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Session completed with summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionSummaryResponse"
+        "400":
+          description: Malformed UUID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Session already completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/training/stats:
+    get:
+      summary: Get training statistics
+      operationId: getTrainingStats
+      tags: [training]
+      responses:
+        "200":
+          description: Training statistics (mastery distribution, session counts)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrainingStatsResponse"
+
   /api/v1/transliterate:
     post:
       summary: Transliterate Arabic text to Latin/chat-alphabet
@@ -1999,6 +2180,212 @@ components:
         reviewFlag:
           type: boolean
           nullable: true
+
+    # --- Training ---
+
+    CreateSessionRequest:
+      type: object
+      required: [mode, size]
+      properties:
+        mode:
+          type: string
+          description: Training mode (e.g., ARABIC_TO_TRANSLITERATION, ARABIC_TO_TRANSLATION, etc.)
+          example: ARABIC_TO_TRANSLATION
+        size:
+          type: integer
+          description: Number of words to include in the session
+          default: 15
+          minimum: 1
+          maximum: 100
+
+    TrainingSessionWordResponse:
+      type: object
+      required: [wordId, arabicText, translation, frontSide, position, masteryLevel]
+      properties:
+        wordId:
+          type: string
+          format: uuid
+        arabicText:
+          type: string
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+        frontSide:
+          type: string
+          description: What is shown on the front of the card (ARABIC or TRANSLATION)
+          enum: [ARABIC, TRANSLATION]
+        position:
+          type: integer
+          description: Position within the session (0-based)
+        result:
+          type: string
+          nullable: true
+          description: Result recorded for this word (CORRECT, INCORRECT, SKIPPED)
+          enum: [CORRECT, INCORRECT, SKIPPED]
+        masteryLevel:
+          type: string
+          description: Current mastery level for this word
+          enum: [NEW, LEARNING, KNOWN, MASTERED]
+
+    TrainingSessionResponse:
+      type: object
+      required: [id, mode, status, words, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        mode:
+          type: string
+        status:
+          type: string
+          enum: [ACTIVE, COMPLETED]
+        words:
+          type: array
+          items:
+            $ref: "#/components/schemas/TrainingSessionWordResponse"
+        createdAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    RecordResultRequest:
+      type: object
+      required: [wordId, result]
+      properties:
+        wordId:
+          type: string
+          format: uuid
+        result:
+          type: string
+          enum: [CORRECT, INCORRECT, SKIPPED]
+
+    MasteryPromotionResponse:
+      type: object
+      required: [wordId, from, to]
+      properties:
+        wordId:
+          type: string
+          format: uuid
+        from:
+          type: string
+          enum: [NEW, LEARNING, KNOWN, MASTERED]
+        to:
+          type: string
+          enum: [NEW, LEARNING, KNOWN, MASTERED]
+
+    RecordResultResponse:
+      type: object
+      required: [wordId, result]
+      properties:
+        wordId:
+          type: string
+          format: uuid
+        result:
+          type: string
+          enum: [CORRECT, INCORRECT, SKIPPED]
+        masteryPromotion:
+          $ref: "#/components/schemas/MasteryPromotionResponse"
+          nullable: true
+
+    SessionSummaryResponse:
+      type: object
+      required: [sessionId, mode, totalWords, correct, incorrect, skipped, accuracy, promotions, completedAt]
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        mode:
+          type: string
+        totalWords:
+          type: integer
+        correct:
+          type: integer
+        incorrect:
+          type: integer
+        skipped:
+          type: integer
+        accuracy:
+          type: number
+          format: double
+          description: Accuracy as a percentage (0.0-100.0)
+        promotions:
+          type: array
+          items:
+            $ref: "#/components/schemas/MasteryPromotionResponse"
+        completedAt:
+          type: string
+          format: date-time
+
+    TrainingSessionListItemResponse:
+      type: object
+      required: [id, mode, status, totalWords, correctCount, incorrectCount, skippedCount, accuracy, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        mode:
+          type: string
+        status:
+          type: string
+          enum: [ACTIVE, COMPLETED]
+        totalWords:
+          type: integer
+        correctCount:
+          type: integer
+        incorrectCount:
+          type: integer
+        skippedCount:
+          type: integer
+        accuracy:
+          type: number
+          format: double
+        createdAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    PaginatedSessionsResponse:
+      type: object
+      required: [items, total, page, size]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TrainingSessionListItemResponse"
+        total:
+          type: integer
+          format: int64
+        page:
+          type: integer
+        size:
+          type: integer
+
+    TrainingStatsResponse:
+      type: object
+      required: [masteryDistribution, totalSessions, recentSessions]
+      properties:
+        masteryDistribution:
+          type: object
+          additionalProperties:
+            type: integer
+          description: "Count of words at each mastery level (e.g., {NEW: 5, LEARNING: 10, KNOWN: 8, MASTERED: 12})"
+        totalSessions:
+          type: integer
+          description: Total number of training sessions completed
+        recentSessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/TrainingSessionListItemResponse"
+          description: Recently completed sessions (up to 10)
 
     # --- Enums ---
 

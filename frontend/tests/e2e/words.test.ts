@@ -29,32 +29,37 @@ test.describe('Words', () => {
 	});
 
 	test('word linked to root appears in root word family', async ({ page, request }) => {
-		const rootRes = await request.post(`${BACKEND}/api/v1/roots`, {
-			data: { root: 'ض ظ غ', meaning: 'playwright word family test' },
-		});
-		expect(rootRes.status()).toBe(201);
-		const { id: rootId } = await rootRes.json();
+		let rootId: string | undefined;
+		let wordId: string | undefined;
 
-		const wordRes = await request.post(`${BACKEND}/api/v1/words`, {
-			data: {
-				arabicText: 'ضظغ',
-				transliteration: 'playwright',
-				translation: 'playwright test word',
-				partOfSpeech: 'NOUN',
-				dialect: 'MSA',
-				difficulty: 'BEGINNER',
-				masteryLevel: 'NEW',
-				rootId,
-			},
-		});
-		expect(wordRes.status()).toBe(201);
-		const { id: wordId } = await wordRes.json();
+		try {
+			const rootRes = await request.post(`${BACKEND}/api/v1/roots`, {
+				data: { root: 'ض ظ غ', meaning: 'playwright word family test' },
+			});
+			expect(rootRes.status()).toBe(201);
+			rootId = (await rootRes.json()).id;
 
-		await page.goto(`/roots/${rootId}`);
-		await expect(page.locator('.word-chip-arabic')).toContainText('ضظغ');
+			const wordRes = await request.post(`${BACKEND}/api/v1/words`, {
+				data: {
+					arabicText: 'ضظغ',
+					transliteration: 'playwright',
+					translation: 'playwright test word',
+					partOfSpeech: 'NOUN',
+					dialect: 'MSA',
+					difficulty: 'BEGINNER',
+					masteryLevel: 'NEW',
+					rootId,
+				},
+			});
+			expect(wordRes.status()).toBe(201);
+			wordId = (await wordRes.json()).id;
 
-		await request.delete(`${BACKEND}/api/v1/words/${wordId}`);
-		await request.delete(`${BACKEND}/api/v1/roots/${rootId}`);
+			await page.goto(`/roots/${rootId}`);
+			await expect(page.locator('.word-chip-arabic')).toContainText('ضظغ');
+		} finally {
+			if (wordId) await request.delete(`${BACKEND}/api/v1/words/${wordId}`);
+			if (rootId) await request.delete(`${BACKEND}/api/v1/roots/${rootId}`);
+		}
 	});
 
 	test('dialect filter narrows word list to selected dialect', async ({ page }) => {

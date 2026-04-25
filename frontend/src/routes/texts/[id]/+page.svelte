@@ -1,5 +1,4 @@
 <script lang="ts">
-import { ChevronLeft, Pencil, Settings, Trash2, X } from 'lucide-svelte';
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import type { UpdateTextRequest } from '$lib/api/types.gen';
@@ -8,8 +7,6 @@ import FullTextPanel from '$lib/components/texts/FullTextPanel.svelte';
 import InterlinearSentence from '$lib/components/texts/InterlinearSentence.svelte';
 import SentenceEditor from '$lib/components/texts/SentenceEditor.svelte';
 import TextForm from '$lib/components/texts/TextForm.svelte';
-import { Badge } from '$lib/components/ui/badge';
-import { Button } from '$lib/components/ui/button';
 import { useTextAnnotations } from '$lib/stores/annotations';
 import {
 	useAutoTokenize,
@@ -61,109 +58,94 @@ function formatEnum(value: string): string {
 }
 </script>
 
-<div class="page-text-detail page-enter">
-	<a class="text-detail-back" href="/texts">
-		<ChevronLeft size={14} />
-		Texts
-	</a>
+{#if text.isPending}
+	<p style="color:var(--ink-ghost);">Loading…</p>
+{:else if text.isError}
+	<p style="color:var(--coral);">Text not found.</p>
+{:else if text.data}
+	<!-- Breadcrumb -->
+	<nav class="breadcrumb">
+		<a href="/texts">Texts</a>
+		<span class="bc-sep">/</span>
+		{text.data.title}
+	</nav>
 
-	{#if text.isPending}
-		<p class="text-detail-meta">Loading…</p>
-	{:else if text.isError}
-		<p class="text-detail-meta" style="color: hsl(var(--destructive));">Text not found.</p>
-	{:else if text.data}
-		<!-- ── Header — always visible ── -->
-		<header class="text-detail-header">
-			<div class="text-detail-title-row">
-				<h1 class="text-detail-title">{text.data.title}</h1>
-				<div class="text-detail-actions">
-					<Button
-						variant={editingSentences ? 'default' : 'outline'}
-						size="sm"
-						onclick={() => { editingSentences = !editingSentences; editingInfo = false; }}
-					>
-						<Pencil size={14} />
-						{editingSentences ? 'Done' : 'Edit'}
-					</Button>
-					<Button
-						variant="ghost"
-						size="sm"
-						onclick={() => { editingInfo = !editingInfo; editingSentences = false; }}
-						title="Edit text info"
-					>
-						<Settings size={14} />
-					</Button>
-					<Button
-						variant="ghost"
-						size="sm"
-						class="btn-outline-danger"
-						disabled={deleteText.isPending}
-						onclick={handleDelete}
-					>
-						<Trash2 size={14} />
-						{deleteConfirm ? 'Sure?' : ''}
-					</Button>
+	<div class="detail-layout detail-layout-text">
+		<div class="detail-content">
+			<!-- Text header -->
+			<div class="text-header">
+				<div class="text-title-row">
+					<h1 class="text-title">{text.data.title}</h1>
+					<div class="text-actions">
+						<button
+							class="btn btn-primary"
+							onclick={() => { editingSentences = !editingSentences; editingInfo = false; }}
+						>
+							{editingSentences ? 'Done' : 'Edit'}
+						</button>
+						<button
+							class="btn"
+							onclick={() => { editingInfo = !editingInfo; editingSentences = false; }}
+						>Settings</button>
+						<button
+							class="btn btn-danger"
+							onclick={handleDelete}
+							disabled={deleteText.isPending}
+						>
+							{deleteConfirm ? 'Sure?' : 'Delete'}
+						</button>
+					</div>
 				</div>
+				<div class="text-chips">
+					<span class="chip c-coral">{formatEnum(text.data.difficulty)}</span>
+					<span class="chip c-cerulean">{text.data.dialect}</span>
+					{#each text.data.tags as tag}
+						<span class="chip c-muted">{tag}</span>
+					{/each}
+				</div>
+				{#if text.data.comments}
+					<p class="text-desc">{text.data.comments}</p>
+				{/if}
 			</div>
-			<div class="text-detail-badges">
-				<Badge class="difficulty-{text.data.difficulty.toLowerCase()}">
-					{formatEnum(text.data.difficulty)}
-				</Badge>
-				<Badge class="dialect-{text.data.dialect.toLowerCase()}">
-					{text.data.dialect}
-				</Badge>
-				{#each text.data.tags as tag}
-					<Badge variant="outline">{tag}</Badge>
-				{/each}
-			</div>
-			{#if text.data.comments}
-				<p class="text-detail-comments">{text.data.comments}</p>
+
+			<!-- Info edit panel (collapsible) -->
+			{#if editingInfo}
+				<div style="border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1.5rem;background:var(--bg-dark);">
+					<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+						<span style="font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-ghost);">Text info</span>
+						<button onclick={() => (editingInfo = false)} style="background:none;border:none;cursor:pointer;color:var(--ink-ghost);">×</button>
+					</div>
+					<TextForm
+						isEdit
+						isPending={updateText.isPending}
+						initial={{
+							title: text.data.title,
+							body: text.data.body,
+							transliteration: text.data.transliteration ?? null,
+							translation: text.data.translation ?? null,
+							dialect: text.data.dialect,
+							difficulty: text.data.difficulty,
+							comments: text.data.comments ?? null,
+							tags: text.data.tags,
+						}}
+						onSubmit={(req) => handleUpdate(req as UpdateTextRequest)}
+						onCancel={() => (editingInfo = false)}
+					/>
+				</div>
 			{/if}
-		</header>
 
-		<!-- ── Info edit panel — collapsible ── -->
-		{#if editingInfo}
-			<div class="text-info-panel">
-				<div class="text-info-panel-header">
-					<span class="text-info-panel-title">Text info</span>
-					<button class="text-info-close" onclick={() => (editingInfo = false)} aria-label="Close">
-						<X size={14} />
-					</button>
-				</div>
-				<TextForm
-					isEdit
-					isPending={updateText.isPending}
-					initial={{
-						title: text.data.title,
-						body: text.data.body,
-						transliteration: text.data.transliteration ?? null,
-						translation: text.data.translation ?? null,
-						dialect: text.data.dialect,
-						difficulty: text.data.difficulty,
-						comments: text.data.comments ?? null,
-						tags: text.data.tags,
-					}}
-					onSubmit={(req) => handleUpdate(req as UpdateTextRequest)}
-					onCancel={() => (editingInfo = false)}
-				/>
-			</div>
-		{/if}
-
-		<!-- ── Interlinear — always primary ── -->
-		<section class="interlinear-section">
+			<!-- Interlinear section -->
+			<div class="sect-label">Interlinear analysis</div>
 			{#if sentences.isPending}
-				<p class="text-detail-meta">Loading…</p>
+				<p style="color:var(--ink-ghost);">Loading…</p>
 			{:else if sentences.isError}
-				<p class="text-detail-meta" style="color: hsl(var(--destructive));">Could not load sentences.</p>
+				<p style="color:var(--coral);">Could not load sentences.</p>
 			{:else if editingSentences}
 				<SentenceEditor sentences={sentences.data ?? []} textId={id} />
 			{:else if (sentences.data ?? []).length === 0}
-				<div class="interlinear-empty">
+				<div style="display:flex;flex-direction:column;align-items:center;gap:0.75rem;padding:3rem 0;color:var(--ink-ghost);">
 					<p>No sentences yet.</p>
-					<Button variant="outline" size="sm" onclick={() => (editingSentences = true)}>
-						<Pencil size={14} />
-						Add sentences
-					</Button>
+					<button class="btn" onclick={() => (editingSentences = true)}>Add sentences</button>
 				</div>
 			{:else}
 				{#each sentences.data ?? [] as sentence (sentence.id)}
@@ -177,140 +159,59 @@ function formatEnum(value: string): string {
 					/>
 				{/each}
 			{/if}
-		</section>
 
-		<!-- ── Full text body — secondary, bottom ── -->
-		<FullTextPanel text={text.data} />
-	{/if}
+			<!-- Full text panel -->
+			<FullTextPanel text={text.data} />
+		</div>
 
-	<AnnotationDrawer
-		open={drawerOpen}
-		anchor={drawerAnchor}
-		textId={id}
-		annotations={annotations.data ?? []}
-		onclose={() => (drawerOpen = false)}
-	/>
-</div>
+		<aside class="detail-sidebar">
+			<!-- Text details card -->
+			<div class="meta-card">
+				<div class="meta-card-title">Text details</div>
+				<div class="meta-row">
+					<span class="meta-key">Dialect</span>
+					<span class="meta-val">{text.data.dialect}</span>
+				</div>
+				<div class="meta-row">
+					<span class="meta-key">Difficulty</span>
+					<span class="meta-val">{formatEnum(text.data.difficulty)}</span>
+				</div>
+				{#if sentences.data}
+					<div class="meta-row">
+						<span class="meta-key">Sentences</span>
+						<span class="meta-val">{sentences.data.length}</span>
+					</div>
+				{/if}
+			</div>
 
-<style>
-.page-text-detail {
-	max-width: 800px;
-	margin: 0 auto;
-	padding: 2rem 1.5rem;
-}
+			<!-- Tags card -->
+			{#if text.data.tags.length > 0}
+				<div class="meta-card">
+					<div class="meta-card-title">Tags</div>
+					<div style="display:flex;flex-wrap:wrap;gap:0.375rem;">
+						{#each text.data.tags as tag}
+							<span class="chip c-muted">{tag}</span>
+						{/each}
+					</div>
+				</div>
+			{/if}
 
-.text-detail-back {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.25rem;
-	font-size: 0.8125rem;
-	color: hsl(var(--muted-foreground));
-	text-decoration: none;
-	margin-bottom: 1.25rem;
-}
+			<!-- Actions card -->
+			<div class="meta-card">
+				<div class="meta-card-title">Actions</div>
+				<div style="display:flex;flex-direction:column;gap:0.5rem;">
+					<button class="btn btn-full" onclick={() => (editingSentences = true)}>+ Add sentence</button>
+					<a href="/training" class="ext-link">Practice words →</a>
+				</div>
+			</div>
+		</aside>
+	</div>
+{/if}
 
-.text-detail-back:hover {
-	color: hsl(var(--foreground));
-}
-
-.text-detail-meta {
-	font-size: 0.875rem;
-	color: hsl(var(--muted-foreground));
-}
-
-.text-detail-header {
-	margin-bottom: 1.5rem;
-}
-
-.text-detail-title-row {
-	display: flex;
-	align-items: flex-start;
-	justify-content: space-between;
-	gap: 1rem;
-	margin-bottom: 0.625rem;
-}
-
-.text-detail-title {
-	font-size: 1.5rem;
-	font-weight: 700;
-	letter-spacing: -0.02em;
-	line-height: 1.3;
-}
-
-.text-detail-actions {
-	display: flex;
-	gap: 0.25rem;
-	flex-shrink: 0;
-	align-items: center;
-}
-
-.text-detail-badges {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.25rem;
-	margin-bottom: 0.5rem;
-}
-
-.text-detail-comments {
-	font-size: 0.875rem;
-	color: hsl(var(--muted-foreground));
-	line-height: 1.6;
-}
-
-/* Collapsible info panel */
-.text-info-panel {
-	border: 1px solid hsl(var(--border));
-	border-radius: 0.5rem;
-	padding: 1rem;
-	margin-bottom: 1.5rem;
-	background: hsl(var(--muted) / 0.2);
-}
-
-.text-info-panel-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 1rem;
-}
-
-.text-info-panel-title {
-	font-size: 0.8125rem;
-	font-weight: 600;
-	text-transform: uppercase;
-	letter-spacing: 0.05em;
-	color: hsl(var(--muted-foreground));
-}
-
-.text-info-close {
-	border: none;
-	background: none;
-	cursor: pointer;
-	color: hsl(var(--muted-foreground));
-	padding: 0.125rem;
-	border-radius: 0.25rem;
-	display: flex;
-	align-items: center;
-}
-
-.text-info-close:hover {
-	color: hsl(var(--foreground));
-	background: hsl(var(--muted));
-}
-
-/* Interlinear — primary content */
-.interlinear-section {
-	display: flex;
-	flex-direction: column;
-	min-height: 4rem;
-}
-
-.interlinear-empty {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 0.75rem;
-	padding: 3rem 0;
-	color: hsl(var(--muted-foreground));
-	font-size: 0.875rem;
-}
-</style>
+<AnnotationDrawer
+	open={drawerOpen}
+	anchor={drawerAnchor}
+	textId={id}
+	annotations={annotations.data ?? []}
+	onclose={() => (drawerOpen = false)}
+/>

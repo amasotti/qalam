@@ -1,14 +1,12 @@
 <script lang="ts">
-import { ChevronLeft, ExternalLink, Pencil, Trash2 } from 'lucide-svelte';
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import type { UpdateWordRequest } from '$lib/api/types.gen';
 import AnnotationBadge from '$lib/components/annotations/AnnotationBadge.svelte';
-import { Badge } from '$lib/components/ui/badge';
-import { Button } from '$lib/components/ui/button';
 import AiExamples from '$lib/components/words/AiExamples.svelte';
 import DictionaryLinks from '$lib/components/words/DictionaryLinks.svelte';
 import WordForm from '$lib/components/words/WordForm.svelte';
+import { useRoot } from '$lib/stores/roots';
 import {
 	useDeleteWord,
 	useDeleteWordExample,
@@ -25,6 +23,7 @@ const examples = useWordExamples(() => id);
 const updateWord = useUpdateWord();
 const deleteWord = useDeleteWord();
 const deleteExample = useDeleteWordExample();
+const root = useRoot(() => word.data?.rootId ?? undefined);
 
 let isEditing = $state(false);
 let deleteConfirm = $state(false);
@@ -51,28 +50,20 @@ function formatEnum(value: string): string {
 }
 </script>
 
-<div class="page-word-detail page-enter">
-	<a class="word-detail-back" href="/words">
-		<ChevronLeft size={14} />
-		Words
-	</a>
-
-	{#if word.isPending}
-		<p style="color: hsl(var(--muted-foreground)); font-size: 0.875rem;">Loading…</p>
-	{:else if word.isError}
-		<p style="color: hsl(var(--destructive)); font-size: 0.875rem;">Word not found.</p>
-	{:else if word.data}
-		{#if isEditing}
-			<!-- ── Edit mode ── -->
-			<div class="word-hero">
-				<div>
-					<div class="word-hero-arabic">{word.data.arabicText}</div>
-					{#if word.data.transliteration}
-						<div class="word-hero-transliteration">{word.data.transliteration}</div>
-					{/if}
-				</div>
+{#if word.isPending}
+	<p style="color: var(--ink-ghost); font-size: 0.875rem; padding: 2rem 3rem;">Loading…</p>
+{:else if word.isError}
+	<p style="color: var(--coral); font-size: 0.875rem; padding: 2rem 3rem;">Word not found.</p>
+{:else if word.data}
+	{#if isEditing}
+		<!-- ── Edit mode ── -->
+		<div style="padding: 2rem 3rem;">
+			<div class="word-hero" style="margin-bottom: 1.5rem;">
+				<div class="word-hero-ar">{word.data.arabicText}</div>
+				{#if word.data.transliteration}
+					<div class="word-hero-tr">{word.data.transliteration}</div>
+				{/if}
 			</div>
-
 			<WordForm
 				isEdit
 				selfId={id}
@@ -91,181 +82,176 @@ function formatEnum(value: string): string {
 				onSubmit={handleUpdate}
 				onCancel={() => (isEditing = false)}
 			/>
-		{:else}
-			<!-- ── View mode ── -->
-			<div class="word-hero">
-				<div>
-					<div class="word-hero-arabic">{word.data.arabicText}</div>
+		</div>
+	{:else}
+		<!-- ── View mode ── -->
+		<nav class="breadcrumb">
+			<a href="/words">Words</a>
+			<span class="bc-sep">/</span>
+			<span class="bc-cur">{word.data.arabicText}</span>
+		</nav>
+
+		<div class="detail-layout detail-layout-word">
+			<div class="detail-content">
+				<!-- Hero -->
+				<div class="word-hero">
+					<div class="word-hero-ghost">{word.data.arabicText[0] ?? ''}</div>
+					<div class="word-hero-ar">{word.data.arabicText}</div>
 					{#if word.data.transliteration}
-						<div class="word-hero-transliteration">{word.data.transliteration}</div>
+						<div class="word-hero-tr">{word.data.transliteration}</div>
 					{/if}
-					<div class="word-hero-chips">
-						<Badge variant="outline">{formatEnum(word.data.partOfSpeech)}</Badge>
-						<Badge variant="outline" class="dialect-{word.data.dialect.toLowerCase()}">{word.data.dialect}</Badge>
-						<Badge variant="outline" class="difficulty-{word.data.difficulty.toLowerCase()}">{formatEnum(word.data.difficulty)}</Badge>
-						<Badge variant="outline" class="mastery-{word.data.masteryLevel.toLowerCase()}">
-							{formatEnum(word.data.masteryLevel)}
-						</Badge>
+					<div class="word-hero-row">
+						<div class="chips">
+							<span class="chip c-olive">{formatEnum(word.data.partOfSpeech)}</span>
+							<span class="chip c-cerulean">{word.data.dialect}</span>
+							<span class="chip c-coral">{formatEnum(word.data.difficulty)}</span>
+							<span class="chip c-coral">{formatEnum(word.data.masteryLevel)}</span>
+						</div>
+						<div class="word-actions">
+							<button
+								class="btn btn-primary"
+								onclick={() => { isEditing = true; deleteConfirm = false; }}
+							>Edit</button>
+							<button
+								class="btn btn-danger"
+								onclick={handleDelete}
+								disabled={deleteWord.isPending}
+							>{deleteConfirm ? 'Confirm delete' : 'Delete'}</button>
+						</div>
 					</div>
 				</div>
-				<div class="word-hero-actions">
-					<Button
-						variant="default"
-						size="sm"
-						onclick={() => {
-							isEditing = true;
-							deleteConfirm = false;
-						}}
-					>
-						<Pencil size={13} />
-						Edit
-					</Button>
-					<Button
-						variant={deleteConfirm ? 'destructive' : 'outline'}
-						class={deleteConfirm ? '' : 'btn-outline-danger'}
-						size="sm"
-						onclick={handleDelete}
-						disabled={deleteWord.isPending}
-					>
-						<Trash2 size={13} />
-						{deleteConfirm ? 'Confirm delete' : 'Delete'}
-					</Button>
-				</div>
-			</div>
 
-			<!-- ── Info sections ── -->
-			<div class="word-info">
-				<div class="word-info-section">
-					<span class="word-info-label">Translation</span>
-					{#if word.data.translation}
-						<p class="word-info-value">{word.data.translation}</p>
-					{:else}
-						<p class="word-info-value word-info-empty">No translation recorded</p>
-					{/if}
-				</div>
+				<!-- Translation -->
+				<div class="sect-label">Translation</div>
+				{#if word.data.translation}
+					<p class="word-translation">{word.data.translation}</p>
+				{:else}
+					<p class="annot-empty">No translation recorded</p>
+				{/if}
 
-				<div class="word-info-section">
-					<span class="word-info-label">Examples</span>
-					{#if examples.isPending}
-						<p class="word-info-empty" style="font-size:0.8rem">Loading…</p>
-					{:else if (examples.data ?? []).length === 0}
-						<p class="word-info-value word-info-empty">No examples saved yet</p>
-					{:else}
-						<ul class="word-examples-list">
-							{#each examples.data ?? [] as ex (ex.id)}
-								<li class="word-example-item">
-									<p class="word-example-arabic arabic">{ex.arabic}</p>
-									{#if ex.transliteration}
-										<p class="word-example-transliteration">{ex.transliteration}</p>
-									{/if}
-									{#if ex.translation}
-										<p class="word-example-translation">{ex.translation}</p>
-									{/if}
-									<button
-										class="word-example-delete"
-										onclick={() => deleteExample.mutate({ id, exampleId: ex.id })}
-										disabled={deleteExample.isPending}
-										aria-label="Delete example"
-									>×</button>
-								</li>
-							{/each}
-						</ul>
-					{/if}
-				</div>
-
+				<!-- Pronunciation -->
 				{#if word.data.pronunciationUrl}
-					<div class="word-info-section">
-						<span class="word-info-label">Pronunciation</span>
+					<div style="margin: 0.875rem 0 2.5rem">
 						<a
-							class="pronunciation-badge"
+							class="pron-link"
 							href={word.data.pronunciationUrl}
 							target="_blank"
 							rel="noopener noreferrer"
-							title={word.data.pronunciationUrl}
-						>
-							<ExternalLink size={11} />
-							Forvo
-						</a>
+						>♪ Forvo ↗</a>
 					</div>
 				{/if}
-			</div>
 
-			<!-- ── Related ── -->
-			{#if word.data.rootId || word.data.derivedFromId}
-				<div class="word-related">
-					{#if word.data.rootId}
-						<div class="word-related-item">
-							<span class="word-info-label">Root</span>
-							<a href="/roots/{word.data.rootId}" class="word-info-link">
-								View root →
-							</a>
-						</div>
-					{/if}
-					{#if word.data.derivedFromId}
-						<div class="word-related-item">
-							<span class="word-info-label">Derived from</span>
-							<a href="/words/{word.data.derivedFromId}" class="word-info-link">
-								View source word →
-							</a>
-						</div>
+				<!-- Examples -->
+				<div class="sect-label">Examples</div>
+				<div class="word-examples">
+					{#if examples.isPending}
+						<p style="color: var(--ink-ghost); font-size: 0.875rem;">Loading…</p>
+					{:else if (examples.data ?? []).length === 0}
+						<p class="annot-empty">No examples saved yet</p>
+					{:else}
+						{#each examples.data ?? [] as ex (ex.id)}
+							<div class="example-card">
+								<p class="example-card-ar">{ex.arabic}</p>
+								{#if ex.transliteration}<p class="example-card-tr">{ex.transliteration}</p>{/if}
+								{#if ex.translation}<p class="example-card-en">{ex.translation}</p>{/if}
+								<button
+									style="position:absolute;top:0.375rem;right:0.5rem;background:none;border:none;cursor:pointer;font-size:1rem;color:var(--ink-ghost);"
+									onclick={() => deleteExample.mutate({ id, exampleId: ex.id })}
+									disabled={deleteExample.isPending}
+									aria-label="Delete example"
+								>×</button>
+							</div>
+						{/each}
 					{/if}
 				</div>
-			{/if}
 
-			<!-- ── Dictionary links ── -->
-			<DictionaryLinks wordId={id} arabicText={word.data.arabicText} />
+				<!-- Dictionary sources -->
+				<div class="sect-label">Dictionary sources</div>
+				<DictionaryLinks wordId={id} arabicText={word.data.arabicText} />
 
-			<!-- ── AI examples ── -->
-			<AiExamples wordId={id} />
+				<!-- AI examples -->
+				<AiExamples wordId={id} />
 
-			<!-- ── Annotations ── -->
-			<div class="word-annotations">
-				<h2 class="word-annotations-title">Annotations</h2>
-
+				<!-- Annotations -->
+				<div class="sect-label">Annotations</div>
 				{#if annotations.isPending}
-					<p style="color: hsl(var(--muted-foreground)); font-size: 0.875rem;">
-						Loading annotations…
-					</p>
-				{:else if annotations.isError}
-					<p style="color: hsl(var(--destructive)); font-size: 0.875rem;">
-						Could not load annotations.
-					</p>
+					<p class="annot-empty">Loading annotations…</p>
 				{:else if (annotations.data ?? []).length === 0}
-					<p class="word-info-empty">No annotations link this word yet.</p>
+					<p class="annot-empty">No annotations link this word yet.</p>
 				{:else}
-					<ul class="word-annotations-list">
+					<ul style="list-style:none;display:flex;flex-direction:column;gap:0.5rem;">
 						{#each annotations.data ?? [] as annotation (annotation.id)}
-							<li class="word-annotation-item">
-								<div class="word-annotation-header">
+							<li style="display:flex;flex-direction:column;gap:0.25rem;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:8px;background:var(--white);">
+								<div style="display:flex;align-items:center;gap:0.5rem;">
 									<AnnotationBadge type={annotation.type} />
-									<span class="word-annotation-anchor arabic-text">{annotation.anchor}</span>
-									<a class="word-annotation-link" href="/texts/{annotation.textId}">
-										View text →
-									</a>
+									<span style="font-size:0.875rem;direction:rtl;font-family:'Noto Naskh Arabic',serif;">{annotation.anchor}</span>
+									<a style="margin-left:auto;font-size:0.8rem;color:var(--cerulean);text-decoration:none;" href="/texts/{annotation.textId}">View text →</a>
 								</div>
 								{#if annotation.content}
-									<p class="word-annotation-content">{annotation.content}</p>
+									<p style="font-size:0.8125rem;color:var(--ink-mid);line-height:1.5;margin:0.125rem 0 0 1.5rem;">{annotation.content}</p>
 								{/if}
 							</li>
 						{/each}
 					</ul>
 				{/if}
 			</div>
-		{/if}
+
+			<aside class="detail-sidebar">
+				<!-- Root card -->
+				{#if word.data.rootId}
+					<div class="meta-card">
+						<div class="meta-card-title">Root</div>
+						{#if root.data}
+							<a href="/roots/{word.data.rootId}" class="root-link-card">
+								<span class="root-link-ar">{root.data.normalizedForm}</span>
+								<span class="root-link-cta">View family →</span>
+							</a>
+						{:else}
+							<a href="/roots/{word.data.rootId}" class="root-link-card">
+								<span class="root-link-cta">View root family →</span>
+							</a>
+						{/if}
+					</div>
+				{/if}
+
+				<!-- Mastery gauge -->
+				{#if true}
+				{@const masterySteps = { NEW: 1, LEARNING: 2, FAMILIAR: 3, KNOWN: 4, MASTERED: 5 }}
+				{@const stepsOn = masterySteps[word.data.masteryLevel as keyof typeof masterySteps] ?? 0}
+				<div class="meta-card">
+					<div class="meta-card-title">Mastery</div>
+					<div class="mastery-steps">
+						{#each Array.from({length: 5}, (_, i) => i) as i}
+							<div class="mastery-step" class:on={i < stepsOn}></div>
+						{/each}
+					</div>
+					<span class="mastery-label">{formatEnum(word.data.masteryLevel)} — {stepsOn} of 5</span>
+				</div>
+				{/if}
+
+				<!-- Details card -->
+				<div class="meta-card">
+					<div class="meta-card-title">Details</div>
+					<div class="meta-row">
+						<span class="meta-key">Part of speech</span>
+						<span class="meta-val">{formatEnum(word.data.partOfSpeech)}</span>
+					</div>
+					{#if word.data.transliteration}
+					<div class="meta-row">
+						<span class="meta-key">Transliteration</span>
+						<span class="meta-val">{word.data.transliteration}</span>
+					</div>
+					{/if}
+					<div class="meta-row">
+						<span class="meta-key">Dialect</span>
+						<span class="meta-val">{word.data.dialect}</span>
+					</div>
+					<div class="meta-row">
+						<span class="meta-key">Difficulty</span>
+						<span class="meta-val">{formatEnum(word.data.difficulty)}</span>
+					</div>
+				</div>
+			</aside>
+		</div>
 	{/if}
-</div>
-
-<style>
-.word-annotation-header {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-}
-
-.word-annotation-content {
-	font-size: 0.8125rem;
-	color: hsl(var(--foreground) / 0.85);
-	line-height: 1.5;
-	margin: 0.25rem 0 0 1.5rem;
-}
-</style>
+{/if}

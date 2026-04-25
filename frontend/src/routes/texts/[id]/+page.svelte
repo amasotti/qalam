@@ -98,6 +98,12 @@ function formatEnum(value: string): string {
 							class="btn"
 							onclick={() => { editingInfo = !editingInfo; editingSentences = false; }}
 						>Settings</button>
+						<a
+							class="btn"
+							href="/api/v1/texts/{id}/print"
+							target="_blank"
+							rel="noopener"
+						>Print</a>
 						<button
 							class="btn btn-danger"
 							onclick={handleDelete}

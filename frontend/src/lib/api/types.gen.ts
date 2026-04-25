@@ -1287,6 +1287,33 @@ export type SyncTextFromSentencesResponses = {
 
 export type SyncTextFromSentencesResponse = SyncTextFromSentencesResponses[keyof SyncTextFromSentencesResponses];
 
+export type PrintTextData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{id}/print';
+};
+
+export type PrintTextErrors = {
+    /**
+     * Text not found
+     */
+    404: ErrorResponse;
+};
+
+export type PrintTextError = PrintTextErrors[keyof PrintTextErrors];
+
+export type PrintTextResponses = {
+    /**
+     * Printable HTML page
+     */
+    200: string;
+};
+
+export type PrintTextResponse = PrintTextResponses[keyof PrintTextResponses];
+
 export type ListSentencesData = {
     body?: never;
     path: {

@@ -11,6 +11,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.getOrFail
+import io.ktor.utils.io.charsets.Charsets
 
 @Suppress("LongMethod")
 fun Route.textRoutes(service: TextService) {
@@ -82,6 +83,14 @@ fun Route.textRoutes(service: TextService) {
             ).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.OK, it.toResponse()) },
+            )
+        }
+
+        get("/{id}/print") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            service.getPrintView(id).fold(
+                { call.respondError(it) },
+                { call.respondText(it, ContentType.Text.Html.withCharset(Charsets.UTF_8)) },
             )
         }
 

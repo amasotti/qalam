@@ -116,6 +116,13 @@ class TextService(private val repo: TextRepository, private val sentenceRepo: Se
     suspend fun delete(id: String): Either<DomainError, Unit> =
         parseTextId(id).flatMap { repo.delete(it) }
 
+    suspend fun getPrintView(id: String): Either<DomainError, String> = either {
+        val textId = parseTextId(id).bind()
+        val text = repo.findById(textId).bind()
+        val sentences = sentenceRepo.findAllByTextId(textId).bind().sortedBy { it.position }
+        renderPrintHtml(text, sentences)
+    }
+
     suspend fun syncFromSentences(id: String): Either<DomainError, Text> = either {
         val textId = parseTextId(id).bind()
         val text = repo.findById(textId).bind()

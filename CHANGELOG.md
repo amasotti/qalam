@@ -2,6 +2,66 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.2.0] - 2026-04-25
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/bc0a2050836cc4a6152636ad40e0c8acd154c402..4d8000034c8c0c8eb759db41f29739d57e2f333f)
+### 🚀 Features
+
+
+- Add GET /words/by-arabic exact-text lookup endpoint ([a02738f](https://github.com/amasotti/qalam/commit/a02738fd38871330de359abcf6c245be7bb2ff9e))
+
+- Add POST /words/analyze AI word analysis endpoint ([be3a94d](https://github.com/amasotti/qalam/commit/be3a94dd27a80f5cb6ed3f6ffc547aa43cbd9fe0))
+
+- Add useLookupWordByArabic and useAnalyzeWord store hooks ([336cc91](https://github.com/amasotti/qalam/commit/336cc9107b10540c068c299f39c078dba8ec74c5))
+
+- Add VocabLookupDrawer component and integrate with InterlinearSentence ([1b6c52c](https://github.com/amasotti/qalam/commit/1b6c52cc476924ceca00864f3bed6b7a798e9ebf))
+
+- Add word lookup and analysis functionality with updated API integration ([ca7c44f](https://github.com/amasotti/qalam/commit/ca7c44fff7e3565c8f03687ce6294df48ca6cc98))
+
+- Update annotation types in AnnotationForm component ([4d80000](https://github.com/amasotti/qalam/commit/4d8000034c8c0c8eb759db41f29739d57e2f333f))
+
+### 🐛 Bug Fixes
+
+
+- Update locator class for root hero Arabic visibility check ([a6c0b9d](https://github.com/amasotti/qalam/commit/a6c0b9d92d8c9befd6d0243fb6bc0f184861a2c8))
+
+### 🚜 Refactor
+
+
+- Widen token click callback to pass full AlignmentTokenResponse ([0362523](https://github.com/amasotti/qalam/commit/036252314080e392a7b2ff7149a1f381aa77e10b))
+
+- Update banner.svg for improved color scheme and design consistency ([f5bb497](https://github.com/amasotti/qalam/commit/f5bb497a041d2f6fa8a2281aa2722da5d9eacbcb))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Remove unused layout class ([29992df](https://github.com/amasotti/qalam/commit/29992df036e758378f5f330adb04220485331938))
+
+## [0.1.0] - 2026-04-25
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/846ad63f5153d12aa3f22c02ab7cf4488b986918..bc0a2050836cc4a6152636ad40e0c8acd154c402)
+### 🚜 Refactor
+
+
+- Redesign sidebar layout and improve styling ([df0b3aa](https://github.com/amasotti/qalam/commit/df0b3aa058820846d8fe7c610be44c281154b183))
+
+- Update layout.css for Busatan design system and remove legacy classes ([f87629e](https://github.com/amasotti/qalam/commit/f87629e8eaf2d57a19a56b3b09d9c17ad1386a1f))
+
+- Enhance layout and styling for word and text detail pages ([cf3551c](https://github.com/amasotti/qalam/commit/cf3551c0aeeb4d1426cfd172682fd29f11252fdc))
+
+- Improve layout and styling for word examples and dictionary links ([95b16ff](https://github.com/amasotti/qalam/commit/95b16ff45d45b0d411482ac41cc10d5e192f072a))
+
+- Update font families and improve CSS variables for better design consistency ([3529a14](https://github.com/amasotti/qalam/commit/3529a1496ff8871d06e435fae83c491f698f4859))
+
+- Replace font family from Lora to Spectral for improved design consistency ([2584c3b](https://github.com/amasotti/qalam/commit/2584c3b9c2d53a8e8b5a37703821856fdb2f397d))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Lint layout.css ([48c72ad](https://github.com/amasotti/qalam/commit/48c72ade5a2f2fdd67182ac35683e6a0de241601))
+
+- Remove implemented plan ([bc0a205](https://github.com/amasotti/qalam/commit/bc0a2050836cc4a6152636ad40e0c8acd154c402))
+
 ## [0.0.4] - 2026-04-25
 
 [Compare with last version](https://github.com/amasotti/qalam/compare/3a9342647ce31898ba01ae56cd0534a85062ead7..846ad63f5153d12aa3f22c02ab7cf4488b986918)

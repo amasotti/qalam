@@ -12,12 +12,11 @@ type Mode = (typeof modes)[number];
 let selectedMode = $state<Mode>('MIXED');
 let sessionSize = $state(15);
 
-async function start() {
-	const session = await createSession.mutateAsync({
-		mode: selectedMode,
-		size: sessionSize,
-	});
-	goto(`/training/${session.id}`);
+function start() {
+	createSession.mutate(
+		{ mode: selectedMode, size: sessionSize },
+		{ onSuccess: (session) => goto(`/training/${session.id}`) }
+	);
 }
 
 const modeLabels: Record<Mode, string> = {
@@ -44,13 +43,12 @@ const modeLabels: Record<Mode, string> = {
       <span class="field-label">Mode</span>
       <div class="mode-buttons" role="group" aria-label="Training mode">
         {#each modes as mode}
-          <button
-            class="mode-btn"
-            class:selected={selectedMode === mode}
+          <Button
+            variant={selectedMode === mode ? 'default' : 'outline'}
             onclick={() => (selectedMode = mode)}
           >
             {modeLabels[mode]}
-          </button>
+          </Button>
         {/each}
       </div>
     </div>
@@ -124,22 +122,6 @@ const modeLabels: Record<Mode, string> = {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-  }
-
-  .mode-btn {
-    padding: 0.4rem 0.9rem;
-    border-radius: 0.375rem;
-    border: 1px solid hsl(var(--border));
-    background: transparent;
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: background 0.1s;
-  }
-
-  .mode-btn.selected {
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
-    border-color: hsl(var(--primary));
   }
 
   input[type='range'] { width: 100%; }

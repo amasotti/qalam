@@ -1,59 +1,60 @@
 <script lang="ts">
-  import { page } from '$app/state';
-  import { onMount, onDestroy } from 'svelte';
-  import FlashCard from '$lib/components/training/FlashCard.svelte';
-  import SessionSummary from '$lib/components/training/SessionSummary.svelte';
-  import { useSession, useRecordResult, useCompleteSession } from '$lib/stores/training';
-  import type { SessionSummaryResponse, TrainingSessionWordResponse } from '$lib/api/types.gen';
+import { onDestroy, onMount } from 'svelte';
+import { page } from '$app/state';
+import type { SessionSummaryResponse, TrainingSessionWordResponse } from '$lib/api/types.gen';
+import FlashCard from '$lib/components/training/FlashCard.svelte';
+import SessionSummary from '$lib/components/training/SessionSummary.svelte';
+import { useCompleteSession, useRecordResult, useSession } from '$lib/stores/training';
 
-  const sessionId = $derived(page.params.id);
+const sessionId = $derived(page.params.id);
 
-  const session  = useSession(() => sessionId);
-  const record   = useRecordResult();
-  const complete = useCompleteSession();
+const session = useSession(() => sessionId);
+const record = useRecordResult();
+const complete = useCompleteSession();
 
-  let summary      = $state<SessionSummaryResponse | null>(null);
-  let currentIndex = $state(0);
-  let isPending    = $state(false);
+let summary = $state<SessionSummaryResponse | null>(null);
+let currentIndex = $state(0);
+let isPending = $state(false);
 
-  const words = $derived<TrainingSessionWordResponse[]>(
-    (session.data?.words ?? []).filter(w => w.result === null || w.result === undefined)
-  );
+const words = $derived<TrainingSessionWordResponse[]>(
+	(session.data?.words ?? []).filter((w) => w.result === null || w.result === undefined)
+);
 
-  const currentWord = $derived(words[currentIndex] ?? null);
-  const isFinished  = $derived(currentWord === null && session.data !== undefined);
+const currentWord = $derived(words[currentIndex] ?? null);
+const isFinished = $derived(currentWord === null && session.data !== undefined);
 
-  async function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
-    const sid = sessionId;
-    if (!currentWord || !sid) return;
-    isPending = true;
-    try {
-      await record.mutateAsync({
-        sessionId: sid,
-        body: { wordId: currentWord.wordId, result },
-      });
-      if (currentIndex + 1 >= words.length) {
-        summary = await complete.mutateAsync(sid);
-      } else {
-        currentIndex += 1;
-      }
-    } finally {
-      isPending = false;
-    }
-  }
+async function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
+	const sid = sessionId;
+	if (!currentWord || !sid) return;
+	isPending = true;
+	try {
+		await record.mutateAsync({
+			sessionId: sid,
+			body: { wordId: currentWord.wordId, result },
+		});
+		if (currentIndex + 1 >= words.length) {
+			summary = await complete.mutateAsync(sid);
+		} else {
+			currentIndex += 1;
+		}
+	} finally {
+		isPending = false;
+	}
+}
 
-  function onWindowResult(e: Event) {
-    const detail = (e as CustomEvent<{ result: 'CORRECT' | 'INCORRECT' | 'SKIPPED'; wordId: string }>).detail;
-    handleResult(detail.result);
-  }
+function onWindowResult(e: Event) {
+	const detail = (e as CustomEvent<{ result: 'CORRECT' | 'INCORRECT' | 'SKIPPED'; wordId: string }>)
+		.detail;
+	handleResult(detail.result);
+}
 
-  onMount(() => {
-    window.addEventListener('result', onWindowResult);
-  });
+onMount(() => {
+	window.addEventListener('result', onWindowResult);
+});
 
-  onDestroy(() => {
-    window.removeEventListener('result', onWindowResult);
-  });
+onDestroy(() => {
+	window.removeEventListener('result', onWindowResult);
+});
 </script>
 
 {#if session.isLoading}

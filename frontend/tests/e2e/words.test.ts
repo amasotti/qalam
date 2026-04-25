@@ -24,8 +24,8 @@ test.describe('Words', () => {
 		await page.waitForURL(UUID_RE);
 		createdId = page.url().split('/').at(-1);
 
-		await expect(page.locator('.word-hero-arabic')).toContainText('كِتَابَة');
-		await expect(page.locator('.word-hero-transliteration')).toContainText('kitāba');
+		await expect(page.locator('.word-hero-ar')).toContainText('كِتَابَة');
+		await expect(page.locator('.word-hero-tr')).toContainText('kitāba');
 	});
 
 	test('word linked to root appears in root word family', async ({ page, request }) => {
@@ -55,7 +55,7 @@ test.describe('Words', () => {
 			wordId = (await wordRes.json()).id;
 
 			await page.goto(`/roots/${rootId}`);
-			await expect(page.locator('.word-chip-arabic')).toContainText('ضظغ');
+			await expect(page.locator('.wc-ar')).toContainText('ضظغ');
 		} finally {
 			if (wordId) await request.delete(`${BACKEND}/api/v1/words/${wordId}`);
 			if (rootId) await request.delete(`${BACKEND}/api/v1/roots/${rootId}`);
@@ -69,10 +69,10 @@ test.describe('Words', () => {
 		await expect(page.locator('.word-card').first()).toBeVisible();
 
 		// Select MSA dialect
-		await page.locator('.words-filter-select').first().selectOption('MSA');
+		await page.locator('.words-filters .filter-select').first().selectOption('MSA');
 
 		// Filter applied: words with MSA badge shown, select reflects choice
-		await expect(page.locator('.words-filter-select').first()).toHaveValue('MSA');
+		await expect(page.locator('.words-filters .filter-select').first()).toHaveValue('MSA');
 		await expect(page.locator('.word-card').first()).toBeVisible();
 		await expect(page.locator('.dialect-msa').first()).toBeVisible();
 	});

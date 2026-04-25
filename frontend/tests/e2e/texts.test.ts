@@ -36,7 +36,7 @@ test.describe('Texts', () => {
 
 		await page.goto(`/texts/${createdId}`);
 
-		await page.getByTitle('Edit text info').click();
+		await page.getByRole('button', { name: 'Settings' }).click();
 
 		await page.locator('#tf-title').clear();
 		await page.locator('#tf-title').fill('Updated title');
@@ -58,7 +58,7 @@ test.describe('Texts', () => {
 		await page.getByRole('button', { name: 'Add sentences' }).click();
 
 		// SentenceEditor rendered with addingNew=false → click toggle to open the form
-		await page.getByRole('button', { name: 'Add sentence' }).click();
+		await page.locator('.sentence-editor').getByRole('button', { name: 'Add sentence' }).click();
 
 		// Form now visible — fill Arabic text
 		await page.locator('.new-sentence-form .sentence-edit-textarea').fill(SENTENCE);

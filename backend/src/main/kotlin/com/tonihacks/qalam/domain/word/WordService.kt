@@ -26,7 +26,7 @@ import kotlin.time.Clock
 
 class WordService(
     private val repo: WordRepository,
-    private val aiClient: AiClient = AiClient(System.getenv("OPENROUTER_API_KEY")),
+    private val aiClient: AiClient = AiClient(),
 ) {
 
     suspend fun list(

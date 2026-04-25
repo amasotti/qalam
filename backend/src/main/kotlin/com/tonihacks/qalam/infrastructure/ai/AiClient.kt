@@ -17,7 +17,15 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-class AiClient(private val apiKey: String?) : java.io.Closeable {
+class AiClient : java.io.Closeable {
+
+    private var apiKey: String? = System.getenv("OPENROUTER_API_KEY")
+
+    init {
+        if (apiKey.isNullOrBlank()) {
+            println("Warning: OPENROUTER_API_KEY is not set. AI features will be unavailable.")
+        }
+    }
 
     private val jsonConfig = Json { ignoreUnknownKeys = true }
 

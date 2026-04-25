@@ -70,7 +70,7 @@ dump-restore file:
 
 # Run backend tests (Testcontainers spins its own Postgres — no secrets needed)
 test:
-    ./backend/gradlew -p backend test
+    ./backend/gradlew -p backend test --no-daemon
 
 # Lint the OpenAPI spec
 lint-api:

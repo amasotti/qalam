@@ -25,7 +25,7 @@ val rootsModules = module {
 }
 
 val wordsModules = module {
-    single { AiClient(System.getenv("OPENROUTER_API_KEY")) }
+    single { AiClient() }
     single<WordRepository> { ExposedWordRepository() }
     single { WordService(get(), get()) }
 }

@@ -6,9 +6,10 @@ import Button from '$lib/components/ui/button/button.svelte';
 interface Props {
 	word: TrainingSessionWordResponse;
 	isPending?: boolean;
+	onresult: (result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') => void;
 }
 
-let { word, isPending = false }: Props = $props();
+let { word, isPending = false, onresult }: Props = $props();
 
 let revealed = $state(false);
 
@@ -26,11 +27,7 @@ function handleReveal() {
 
 function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
 	revealed = false;
-	// Dispatch event up to parent component
-	const event = new CustomEvent('result', {
-		detail: { result, wordId: word.wordId },
-	});
-	window.dispatchEvent(event);
+	onresult(result);
 }
 </script>
 

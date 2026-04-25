@@ -72,6 +72,14 @@ dump-restore file:
 test:
     ./backend/gradlew -p backend test --no-daemon
 
+# Run frontend E2E tests (requires: just up — backend + DB must be running)
+e2e:
+    pnpm --prefix frontend test:e2e
+
+# Run frontend E2E tests with Playwright UI
+e2e-ui:
+    pnpm --prefix frontend test:e2e:ui
+
 check:
     ./backend/gradlew -p backend check --no-daemon
 

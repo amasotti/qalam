@@ -12,7 +12,6 @@ import com.tonihacks.qalam.domain.annotation.AnnotationRepository
 import com.tonihacks.qalam.domain.annotation.AnnotationType
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.text.TextId
-import com.tonihacks.qalam.domain.word.MasteryLevel
 import com.tonihacks.qalam.domain.word.WordId
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.and
@@ -74,8 +73,6 @@ class ExposedAnnotationRepository : AnnotationRepository {
                     it[anchor] = annotation.anchor
                     it[type] = annotation.type.name
                     it[content] = annotation.content
-                    it[masteryLevel] = annotation.masteryLevel?.name
-                    it[reviewFlag] = annotation.reviewFlag
                     it[createdAt] = annotation.createdAt
                     it[updatedAt] = annotation.updatedAt
                 }
@@ -97,8 +94,6 @@ class ExposedAnnotationRepository : AnnotationRepository {
                     it[anchor] = annotation.anchor
                     it[type] = annotation.type.name
                     it[content] = annotation.content
-                    it[masteryLevel] = annotation.masteryLevel?.name
-                    it[reviewFlag] = annotation.reviewFlag
                     it[updatedAt] = annotation.updatedAt
                 }
                 ensure(updatedCount > 0) { DomainError.NotFound("Annotation", annotation.id.toString()) }
@@ -235,8 +230,6 @@ private fun ResultRow.toAnnotation(wordIds: List<WordId>) = Annotation(
     anchor = this[AnnotationsTable.anchor],
     type = AnnotationType.valueOf(this[AnnotationsTable.type]),
     content = this[AnnotationsTable.content],
-    masteryLevel = this[AnnotationsTable.masteryLevel]?.let { MasteryLevel.valueOf(it) },
-    reviewFlag = this[AnnotationsTable.reviewFlag],
     linkedWordIds = wordIds,
     createdAt = this[AnnotationsTable.createdAt],
     updatedAt = this[AnnotationsTable.updatedAt],

@@ -18,16 +18,13 @@ class AnnotationsIntegrationTest : BaseIntegrationTest() {
 
     private fun createAnnotationJson(
         anchor: String,
-        type: String = "VOCAB",
+        type: String = "VOCABULARY",
         content: String? = null,
-        masteryLevel: String? = null,
-        reviewFlag: Boolean = false,
         linkedWordIds: List<String> = emptyList(),
     ): String {
         val contentPart = if (content != null) ""","content":"$content"""" else ""
-        val masteryPart = if (masteryLevel != null) ""","masteryLevel":"$masteryLevel"""" else ""
         val wordIdsPart = linkedWordIds.joinToString(",") { """"$it"""" }
-        return """{"anchor":"$anchor","type":"$type","reviewFlag":$reviewFlag,"linkedWordIds":[$wordIdsPart]$contentPart$masteryPart}"""
+        return """{"anchor":"$anchor","type":"$type","linkedWordIds":[$wordIdsPart]$contentPart}"""
     }
 
     /** Extracts the first UUID from a JSON string via the "id":"…" pattern. */
@@ -48,7 +45,7 @@ class AnnotationsIntegrationTest : BaseIntegrationTest() {
     private suspend fun HttpClient.createAnnotation(
         textId: String,
         anchor: String = "بِسْمِ",
-        type: String = "VOCAB",
+        type: String = "VOCABULARY",
     ): String {
         val response = post("/api/v1/texts/$textId/annotations") {
             contentType(ContentType.Application.Json)
@@ -83,8 +80,6 @@ class AnnotationsIntegrationTest : BaseIntegrationTest() {
                             anchor = "بِسْمِ",
                             type = "GRAMMAR",
                             content = "preposition + noun",
-                            masteryLevel = "NEW",
-                            reviewFlag = true,
                         ))
                     }
                     response.status shouldBe HttpStatusCode.Created
@@ -93,8 +88,6 @@ class AnnotationsIntegrationTest : BaseIntegrationTest() {
                     body shouldContain """"anchor":"بِسْمِ""""
                     body shouldContain """"type":"GRAMMAR""""
                     body shouldContain """"content":"preposition + noun""""
-                    body shouldContain """"masteryLevel":"NEW""""
-                    body shouldContain """"reviewFlag":true"""
                     body shouldContain """"linkedWordIds":[]"""
                     body shouldContain """"textId":"$textId""""
                 }
@@ -106,7 +99,7 @@ class AnnotationsIntegrationTest : BaseIntegrationTest() {
 
                     val response = client.post("/api/v1/texts/$textId/annotations") {
                         contentType(ContentType.Application.Json)
-                        setBody("""{"anchor":"   ","type":"VOCAB"}""")
+                        setBody("""{"anchor":"   ","type":"VOCABULARY"}""")
                     }
                     response.status shouldBe HttpStatusCode.UnprocessableEntity
                 }
@@ -191,20 +184,19 @@ class AnnotationsIntegrationTest : BaseIntegrationTest() {
             "returns 200 and updates only provided fields" {
                 testApp { client ->
                     val textId = client.createText("put-annotation-update-text")
-                    val annotationId = client.createAnnotation(textId, anchor = "original", type = "VOCAB")
+                    val annotationId = client.createAnnotation(textId, anchor = "original", type = "VOCABULARY")
 
                     val response = client.put("/api/v1/texts/$textId/annotations/$annotationId") {
                         contentType(ContentType.Application.Json)
-                        setBody("""{"content":"updated content","reviewFlag":true}""")
+                        setBody("""{"content":"updated content"}""")
                     }
                     response.status shouldBe HttpStatusCode.OK
                     val body = response.bodyAsText()
                     body shouldContain """"content":"updated content""""
-                    body shouldContain """"reviewFlag":true"""
                     // anchor unchanged
                     body shouldContain """"anchor":"original""""
                     // type unchanged
-                    body shouldContain """"type":"VOCAB""""
+                    body shouldContain """"type":"VOCABULARY""""
                 }
             }
 

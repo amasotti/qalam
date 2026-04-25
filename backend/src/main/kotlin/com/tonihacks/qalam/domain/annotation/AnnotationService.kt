@@ -4,7 +4,6 @@ import arrow.core.Either
 import arrow.core.raise.either
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.text.TextId
-import com.tonihacks.qalam.domain.word.MasteryLevel
 import com.tonihacks.qalam.domain.word.WordId
 import java.util.UUID
 import kotlin.time.Clock
@@ -24,8 +23,6 @@ class AnnotationService(private val repo: AnnotationRepository) {
         anchor: String,
         type: AnnotationType,
         content: String?,
-        masteryLevel: MasteryLevel?,
-        reviewFlag: Boolean,
         linkedWordIds: List<WordId>,
     ): Either<DomainError, Annotation> = either {
         if (anchor.isBlank()) raise(DomainError.ValidationError("anchor", "anchor must not be blank"))
@@ -37,8 +34,6 @@ class AnnotationService(private val repo: AnnotationRepository) {
             anchor = anchor,
             type = type,
             content = content,
-            masteryLevel = masteryLevel,
-            reviewFlag = reviewFlag,
             linkedWordIds = linkedWordIds,
             createdAt = now,
             updatedAt = now,
@@ -51,8 +46,6 @@ class AnnotationService(private val repo: AnnotationRepository) {
         anchor: String? = null,
         type: AnnotationType? = null,
         content: String? = null,
-        masteryLevel: MasteryLevel? = null,
-        reviewFlag: Boolean? = null,
     ): Either<DomainError, Annotation> = either {
         val existing = repo.findById(id).bind()
 
@@ -62,8 +55,6 @@ class AnnotationService(private val repo: AnnotationRepository) {
             anchor = anchor ?: existing.anchor,
             type = type ?: existing.type,
             content = content ?: existing.content,
-            masteryLevel = masteryLevel ?: existing.masteryLevel,
-            reviewFlag = reviewFlag ?: existing.reviewFlag,
             updatedAt = Clock.System.now(),
         )
         repo.update(updated).bind()

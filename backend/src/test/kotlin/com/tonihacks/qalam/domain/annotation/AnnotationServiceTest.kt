@@ -4,7 +4,6 @@ import arrow.core.left
 import arrow.core.right
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.text.TextId
-import com.tonihacks.qalam.domain.word.MasteryLevel
 import com.tonihacks.qalam.domain.word.WordId
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
@@ -23,10 +22,8 @@ import kotlin.time.ExperimentalTime
 private fun anAnnotation(
     textId: TextId = TextId(UUID.randomUUID()),
     anchor: String = "كلمة",
-    type: AnnotationType = AnnotationType.VOCAB,
+    type: AnnotationType = AnnotationType.VOCABULARY,
     content: String? = null,
-    masteryLevel: MasteryLevel? = null,
-    reviewFlag: Boolean = false,
     linkedWordIds: List<WordId> = emptyList(),
 ) = Annotation(
     id = AnnotationId(UUID.randomUUID()),
@@ -34,8 +31,6 @@ private fun anAnnotation(
     anchor = anchor,
     type = type,
     content = content,
-    masteryLevel = masteryLevel,
-    reviewFlag = reviewFlag,
     linkedWordIds = linkedWordIds,
     createdAt = Clock.System.now(),
     updatedAt = Clock.System.now(),
@@ -100,10 +95,8 @@ class AnnotationServiceTest : FreeSpec({
             val result = service.create(
                 textId = sampleTextId,
                 anchor = "   ",
-                type = AnnotationType.VOCAB,
+                type = AnnotationType.VOCABULARY,
                 content = null,
-                masteryLevel = null,
-                reviewFlag = false,
                 linkedWordIds = emptyList(),
             )
 
@@ -119,8 +112,6 @@ class AnnotationServiceTest : FreeSpec({
                 anchor = "بِسْمِ",
                 type = AnnotationType.GRAMMAR,
                 content = "preposition + noun",
-                masteryLevel = MasteryLevel.NEW,
-                reviewFlag = true,
                 linkedWordIds = emptyList(),
             )
 
@@ -130,8 +121,6 @@ class AnnotationServiceTest : FreeSpec({
             saved.anchor shouldBe "بِسْمِ"
             saved.type shouldBe AnnotationType.GRAMMAR
             saved.content shouldBe "preposition + noun"
-            saved.masteryLevel shouldBe MasteryLevel.NEW
-            saved.reviewFlag shouldBe true
             coVerify(exactly = 1) { repo.save(any()) }
         }
     }
@@ -155,7 +144,7 @@ class AnnotationServiceTest : FreeSpec({
         }
 
         "partial update: only type provided — other fields unchanged" {
-            val existing = anAnnotation(anchor = "النص", type = AnnotationType.VOCAB, content = "some content")
+            val existing = anAnnotation(anchor = "النص", type = AnnotationType.VOCABULARY, content = "some content")
             coEvery { repo.findById(existing.id) } returns existing.right()
             coEvery { repo.update(any()) } answers { firstArg<Annotation>().right() }
 
@@ -166,17 +155,6 @@ class AnnotationServiceTest : FreeSpec({
             updated.type shouldBe AnnotationType.GRAMMAR
             updated.anchor shouldBe "النص"
             updated.content shouldBe "some content"
-        }
-
-        "partial update: only reviewFlag changes" {
-            val existing = anAnnotation(reviewFlag = false)
-            coEvery { repo.findById(existing.id) } returns existing.right()
-            coEvery { repo.update(any()) } answers { firstArg<Annotation>().right() }
-
-            val result = service.update(id = existing.id, reviewFlag = true)
-
-            result.isRight() shouldBe true
-            result.getOrNull()!!.reviewFlag shouldBe true
         }
     }
 

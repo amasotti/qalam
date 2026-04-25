@@ -11,8 +11,6 @@ data class AnnotationResponse(
     val anchor: String,
     val type: String,
     val content: String?,
-    val masteryLevel: String?,
-    val reviewFlag: Boolean,
     val linkedWordIds: List<String>,
     val createdAt: String,
     val updatedAt: String,
@@ -23,8 +21,6 @@ data class CreateAnnotationRequest(
     val anchor: String,
     val type: String,
     val content: String? = null,
-    val masteryLevel: String? = null,
-    val reviewFlag: Boolean = false,
     val linkedWordIds: List<String> = emptyList(),
 )
 
@@ -33,8 +29,6 @@ data class UpdateAnnotationRequest(
     val anchor: String? = null,
     val type: String? = null,
     val content: String? = null,
-    val masteryLevel: String? = null,
-    val reviewFlag: Boolean? = null,
 )
 
 @Serializable
@@ -49,8 +43,6 @@ fun Annotation.toResponse() = AnnotationResponse(
     anchor = anchor,
     type = type.name,
     content = content,
-    masteryLevel = masteryLevel?.name,
-    reviewFlag = reviewFlag,
     linkedWordIds = linkedWordIds.map { it.toString() },
     createdAt = createdAt.toString(),
     updatedAt = updatedAt.toString(),

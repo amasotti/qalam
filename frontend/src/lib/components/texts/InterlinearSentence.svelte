@@ -1,16 +1,25 @@
 <script lang="ts">
-import type { SentenceResponse } from '$lib/api/types.gen';
+import type { AnnotationResponse, SentenceResponse } from '$lib/api/types.gen';
 import StaleTokenBanner from './StaleTokenBanner.svelte';
 import TokenGrid from './TokenGrid.svelte';
 
 interface Props {
 	sentence: SentenceResponse;
+	annotations?: AnnotationResponse[];
 	onRetokenize?: (sentence: SentenceResponse) => Promise<void>;
 	onMarkValid?: (sentence: SentenceResponse) => Promise<void>;
+	onTokenClick?: (anchor: string) => void;
 	isPending?: boolean;
 }
 
-let { sentence, onRetokenize, onMarkValid, isPending = false }: Props = $props();
+let {
+	sentence,
+	annotations = [],
+	onRetokenize,
+	onMarkValid,
+	onTokenClick,
+	isPending = false,
+}: Props = $props();
 
 const showStaleBanner = $derived(!sentence.tokensValid && sentence.tokens.length > 0);
 </script>
@@ -35,7 +44,7 @@ const showStaleBanner = $derived(!sentence.tokensValid && sentence.tokens.length
 
 		{#if sentence.tokens.length > 0}
 			<div class="sentence-tokens">
-				<TokenGrid tokens={sentence.tokens} />
+				<TokenGrid tokens={sentence.tokens} {annotations} {onTokenClick} />
 			</div>
 		{/if}
 

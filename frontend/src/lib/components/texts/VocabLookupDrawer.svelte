@@ -1,6 +1,7 @@
 <script lang="ts">
-import type { AlignmentTokenResponse, WordResponse } from '$lib/api/types.gen';
+import { untrack } from 'svelte';
 import { fly } from 'svelte/transition';
+import type { AlignmentTokenResponse, WordResponse } from '$lib/api/types.gen';
 import QuickAddWordForm from '$lib/components/words/QuickAddWordForm.svelte';
 import { useLookupWordByArabic } from '$lib/stores/words';
 
@@ -21,13 +22,16 @@ let loading = $state(false);
 
 $effect(() => {
 	if (!open || !token) return;
-	found = null;
-	notFound = false;
-	loading = true;
-	lookup.mutateAsync(token.arabic).then((word) => {
-		found = word;
-		notFound = word === null;
-		loading = false;
+	const arabic = token.arabic;
+	untrack(() => {
+		found = null;
+		notFound = false;
+		loading = true;
+		lookup.mutateAsync(arabic).then((word) => {
+			found = word;
+			notFound = word === null;
+			loading = false;
+		});
 	});
 });
 
@@ -38,9 +42,10 @@ function handleAnnotate() {
 }
 
 function handleCreated(_wordId: string) {
+	if (!token) return;
 	loading = true;
 	notFound = false;
-	lookup.mutateAsync(token!.arabic).then((word) => {
+	lookup.mutateAsync(token.arabic).then((word) => {
 		found = word;
 		loading = false;
 	});
@@ -88,7 +93,7 @@ function handleKeydown(e: KeyboardEvent) {
       {:else if notFound}
         <p class="vocab-state-msg vocab-not-found-msg">Not in vocabulary yet.</p>
         <QuickAddWordForm
-          arabicText={token!.arabic}
+          arabicText={token?.arabic ?? ''}
           onCreated={handleCreated}
           onCancel={onclose}
         />

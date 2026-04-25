@@ -3,11 +3,11 @@ import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import type { AlignmentTokenResponse, UpdateTextRequest } from '$lib/api/types.gen';
 import AnnotationDrawer from '$lib/components/annotations/AnnotationDrawer.svelte';
-import VocabLookupDrawer from '$lib/components/texts/VocabLookupDrawer.svelte';
 import FullTextPanel from '$lib/components/texts/FullTextPanel.svelte';
 import InterlinearSentence from '$lib/components/texts/InterlinearSentence.svelte';
 import SentenceEditor from '$lib/components/texts/SentenceEditor.svelte';
 import TextForm from '$lib/components/texts/TextForm.svelte';
+import VocabLookupDrawer from '$lib/components/texts/VocabLookupDrawer.svelte';
 import { useTextAnnotations } from '$lib/stores/annotations';
 import {
 	useAutoTokenize,

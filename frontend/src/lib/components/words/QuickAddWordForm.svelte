@@ -1,8 +1,8 @@
 <script lang="ts">
 import type { PartOfSpeech } from '$lib/api/types.gen';
-import { useAnalyzeWord, useCreateWord } from '$lib/stores/words';
 import { Button } from '$lib/components/ui/button';
 import { Input } from '$lib/components/ui/input';
+import { useAnalyzeWord, useCreateWord } from '$lib/stores/words';
 
 interface Props {
 	arabicText: string;

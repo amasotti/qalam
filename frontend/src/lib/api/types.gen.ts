@@ -143,7 +143,7 @@ export type WordAnalysisResponse = {
     translation?: string | null;
     partOfSpeech?: string | null;
     rootLetters?: string | null;
-    exampleSentence?: AiExampleSentence | null;
+    exampleSentence?: AiExampleSentence;
 };
 
 export type TextResponse = {
@@ -267,8 +267,10 @@ export type AnnotationResponse = {
      * The anchored text fragment this annotation refers to
      */
     anchor: string;
-    type: 'VOCABULARY' | 'GRAMMAR' | 'CULTURAL' | 'OTHER';
+    type: 'VOCAB' | 'GRAMMAR' | 'CULTURAL' | 'STRUCTURE';
     content?: string | null;
+    masteryLevel?: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
+    reviewFlag: boolean;
     linkedWordIds: Array<string>;
     createdAt: string;
     updatedAt: string;
@@ -276,8 +278,10 @@ export type AnnotationResponse = {
 
 export type CreateAnnotationRequest = {
     anchor: string;
-    type: 'VOCABULARY' | 'GRAMMAR' | 'CULTURAL' | 'OTHER';
+    type: 'VOCAB' | 'GRAMMAR' | 'CULTURAL' | 'STRUCTURE';
     content?: string | null;
+    masteryLevel?: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
+    reviewFlag?: boolean;
     linkedWordIds?: Array<string>;
 };
 
@@ -286,8 +290,10 @@ export type CreateAnnotationRequest = {
  */
 export type UpdateAnnotationRequest = {
     anchor?: string | null;
-    type?: 'VOCABULARY' | 'GRAMMAR' | 'CULTURAL' | 'OTHER';
+    type?: 'VOCAB' | 'GRAMMAR' | 'CULTURAL' | 'STRUCTURE';
     content?: string | null;
+    masteryLevel?: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
+    reviewFlag?: boolean | null;
 };
 
 export type CreateSessionRequest = {
@@ -735,6 +741,65 @@ export type AutocompleteWordsResponses = {
 
 export type AutocompleteWordsResponse = AutocompleteWordsResponses[keyof AutocompleteWordsResponses];
 
+export type GetWordByArabicData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Exact Arabic text to match
+         */
+        q: string;
+    };
+    url: '/api/v1/words/by-arabic';
+};
+
+export type GetWordByArabicErrors = {
+    /**
+     * No word with that exact Arabic text
+     */
+    404: ErrorResponse;
+    /**
+     * Missing required query parameter `q`
+     */
+    422: ErrorResponse;
+};
+
+export type GetWordByArabicError = GetWordByArabicErrors[keyof GetWordByArabicErrors];
+
+export type GetWordByArabicResponses = {
+    /**
+     * Word found
+     */
+    200: WordResponse;
+};
+
+export type GetWordByArabicResponse = GetWordByArabicResponses[keyof GetWordByArabicResponses];
+
+export type AnalyzeWordData = {
+    body: AnalyzeWordRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/words/analyze';
+};
+
+export type AnalyzeWordErrors = {
+    /**
+     * AI not configured (OPENROUTER_API_KEY missing)
+     */
+    503: ErrorResponse;
+};
+
+export type AnalyzeWordError = AnalyzeWordErrors[keyof AnalyzeWordErrors];
+
+export type AnalyzeWordResponses = {
+    /**
+     * AI analysis result
+     */
+    200: WordAnalysisResponse;
+};
+
+export type AnalyzeWordResponse = AnalyzeWordResponses[keyof AnalyzeWordResponses];
+
 export type DeleteWordData = {
     body?: never;
     path: {
@@ -1026,65 +1091,6 @@ export type GenerateWordExamplesResponses = {
 };
 
 export type GenerateWordExamplesResponse = GenerateWordExamplesResponses[keyof GenerateWordExamplesResponses];
-
-export type GetWordByArabicData = {
-    body?: never;
-    path?: never;
-    query: {
-        /**
-         * Arabic text to look up (exact match after normalization)
-         */
-        q: string;
-    };
-    url: '/api/v1/words/by-arabic';
-};
-
-export type GetWordByArabicErrors = {
-    /**
-     * Missing required query parameter `q`
-     */
-    400: ErrorResponse;
-    /**
-     * Word not found
-     */
-    404: ErrorResponse;
-};
-
-export type GetWordByArabicError = GetWordByArabicErrors[keyof GetWordByArabicErrors];
-
-export type GetWordByArabicResponses = {
-    /**
-     * Word found
-     */
-    200: WordResponse;
-};
-
-export type GetWordByArabicResponse = GetWordByArabicResponses[keyof GetWordByArabicResponses];
-
-export type AnalyzeWordData = {
-    body: AnalyzeWordRequest;
-    path?: never;
-    query?: never;
-    url: '/api/v1/words/analyze';
-};
-
-export type AnalyzeWordErrors = {
-    /**
-     * AI not configured (OPENROUTER_API_KEY missing)
-     */
-    503: ErrorResponse;
-};
-
-export type AnalyzeWordError = AnalyzeWordErrors[keyof AnalyzeWordErrors];
-
-export type AnalyzeWordResponses = {
-    /**
-     * AI analysis result
-     */
-    200: WordAnalysisResponse;
-};
-
-export type AnalyzeWordResponse = AnalyzeWordResponses[keyof AnalyzeWordResponses];
 
 export type ListTextsData = {
     body?: never;

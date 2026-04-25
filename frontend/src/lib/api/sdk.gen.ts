@@ -92,6 +92,23 @@ export const createWord = <ThrowOnError extends boolean = false>(options: Option
 export const autocompleteWords = <ThrowOnError extends boolean = false>(options: Options<AutocompleteWordsData, ThrowOnError>) => (options.client ?? client).get<AutocompleteWordsResponses, AutocompleteWordsErrors, ThrowOnError>({ url: '/api/v1/words/autocomplete', ...options });
 
 /**
+ * Look up a word by exact Arabic text
+ */
+export const getWordByArabic = <ThrowOnError extends boolean = false>(options: Options<GetWordByArabicData, ThrowOnError>) => (options.client ?? client).get<GetWordByArabicResponses, GetWordByArabicErrors, ThrowOnError>({ url: '/api/v1/words/by-arabic', ...options });
+
+/**
+ * AI word analysis (ephemeral — does not persist)
+ */
+export const analyzeWord = <ThrowOnError extends boolean = false>(options: Options<AnalyzeWordData, ThrowOnError>) => (options.client ?? client).post<AnalyzeWordResponses, AnalyzeWordErrors, ThrowOnError>({
+    url: '/api/v1/words/analyze',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Delete a word
  */
 export const deleteWord = <ThrowOnError extends boolean = false>(options: Options<DeleteWordData, ThrowOnError>) => (options.client ?? client).delete<DeleteWordResponses, DeleteWordErrors, ThrowOnError>({ url: '/api/v1/words/{id}', ...options });
@@ -161,23 +178,6 @@ export const deleteWordExample = <ThrowOnError extends boolean = false>(options:
  * Generate AI example sentences (ephemeral — does not persist)
  */
 export const generateWordExamples = <ThrowOnError extends boolean = false>(options: Options<GenerateWordExamplesData, ThrowOnError>) => (options.client ?? client).post<GenerateWordExamplesResponses, GenerateWordExamplesErrors, ThrowOnError>({ url: '/api/v1/words/{id}/examples/generate', ...options });
-
-/**
- * Look up a word by its Arabic text (exact match)
- */
-export const getWordByArabic = <ThrowOnError extends boolean = false>(options: Options<GetWordByArabicData, ThrowOnError>) => (options.client ?? client).get<GetWordByArabicResponses, GetWordByArabicErrors, ThrowOnError>({ url: '/api/v1/words/by-arabic', ...options });
-
-/**
- * Analyze an Arabic word with AI (ephemeral — does not persist)
- */
-export const analyzeWord = <ThrowOnError extends boolean = false>(options: Options<AnalyzeWordData, ThrowOnError>) => (options.client ?? client).post<AnalyzeWordResponses, AnalyzeWordErrors, ThrowOnError>({
-    url: '/api/v1/words/analyze',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
 
 /**
  * List texts with optional filters

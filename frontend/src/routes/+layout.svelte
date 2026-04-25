@@ -20,8 +20,9 @@ function isActive(href: string): boolean {
 	<div class="app-shell">
 		<aside class="sidebar">
 			<div class="sb-head">
-				<span class="sb-ar">قلم</span>
-				<span class="sb-name">Qalam</span>
+				<a href="/" class="sb-name">
+					Qalam <span class="sb-ar">قلم</span>
+				</a>
 			</div>
 			<nav class="sb-nav">
 				<span class="sb-section">Study</span>

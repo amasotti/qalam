@@ -10,6 +10,7 @@ import { useRoot } from '$lib/stores/roots';
 import {
 	useDeleteWord,
 	useDeleteWordExample,
+	useSaveWordExample,
 	useUpdateWord,
 	useWord,
 	useWordAnnotations,
@@ -23,10 +24,16 @@ const examples = useWordExamples(() => id);
 const updateWord = useUpdateWord();
 const deleteWord = useDeleteWord();
 const deleteExample = useDeleteWordExample();
+const saveExample = useSaveWordExample();
 const root = useRoot(() => word.data?.rootId ?? undefined);
 
 let isEditing = $state(false);
 let deleteConfirm = $state(false);
+
+let addingExample = $state(false);
+let newExAr = $state('');
+let newExTr = $state('');
+let newExEn = $state('');
 
 async function handleUpdate(req: UpdateWordRequest) {
 	await updateWord.mutateAsync({ id, body: req });
@@ -45,9 +52,40 @@ async function handleDelete() {
 	goto('/words');
 }
 
+async function handleSaveExample() {
+	if (!newExAr.trim()) return;
+	await saveExample.mutateAsync({
+		id,
+		body: {
+			arabic: newExAr.trim(),
+			transliteration: newExTr.trim() || null,
+			translation: newExEn.trim() || null,
+		},
+	});
+	newExAr = '';
+	newExTr = '';
+	newExEn = '';
+	addingExample = false;
+}
+
+function cancelAddExample() {
+	newExAr = '';
+	newExTr = '';
+	newExEn = '';
+	addingExample = false;
+}
+
 function formatEnum(value: string): string {
 	return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 }
+
+const masterySteps: Record<string, number> = {
+	NEW: 1,
+	LEARNING: 2,
+	FAMILIAR: 3,
+	KNOWN: 4,
+	MASTERED: 5,
+};
 </script>
 
 {#if word.isPending}
@@ -121,32 +159,72 @@ function formatEnum(value: string): string {
 					</div>
 				</div>
 
-				<!-- Translation -->
-				<div class="sect-label">Translation</div>
-				{#if word.data.translation}
-					<p class="word-translation">{word.data.translation}</p>
-				{:else}
-					<p class="annot-empty">No translation recorded</p>
-				{/if}
-
-				<!-- Pronunciation -->
-				{#if word.data.pronunciationUrl}
-					<div style="margin: 0.875rem 0 2.5rem">
-						<a
-							class="pron-link"
-							href={word.data.pronunciationUrl}
-							target="_blank"
-							rel="noopener noreferrer"
-						>♪ Forvo ↗</a>
-					</div>
-				{/if}
+				<!-- Translation + Pronunciation -->
+				<div style="margin-bottom: 2.5rem;">
+					<div class="sect-label">Translation</div>
+					{#if word.data.translation}
+						<p class="word-translation">{word.data.translation}</p>
+					{:else}
+						<p class="annot-empty">No translation recorded</p>
+					{/if}
+					{#if word.data.pronunciationUrl}
+						<div style="margin-top: 0.875rem;">
+							<a
+								class="pron-link"
+								href={word.data.pronunciationUrl}
+								target="_blank"
+								rel="noopener noreferrer"
+							>♪ Forvo ↗</a>
+						</div>
+					{/if}
+				</div>
 
 				<!-- Examples -->
-				<div class="sect-label">Examples</div>
+				<div class="sect-label">
+					<span>Examples</span>
+					{#if !addingExample}
+						<button
+							class="btn"
+							style="font-size:0.75rem;padding:0.25rem 0.625rem;"
+							onclick={() => (addingExample = true)}
+						>+ Add</button>
+					{/if}
+				</div>
 				<div class="word-examples">
+					{#if addingExample}
+						<div class="example-add-form">
+							<textarea
+								class="example-input-ar"
+								rows="2"
+								placeholder="العربية…"
+								bind:value={newExAr}
+							></textarea>
+							<input
+								class="example-input-latin"
+								type="text"
+								placeholder="Transliteration (optional)"
+								bind:value={newExTr}
+							/>
+							<input
+								class="example-input-latin"
+								type="text"
+								placeholder="Translation (optional)"
+								bind:value={newExEn}
+							/>
+							<div class="example-form-actions">
+								<button class="btn" onclick={cancelAddExample}>Cancel</button>
+								<button
+									class="btn btn-primary"
+									onclick={handleSaveExample}
+									disabled={saveExample.isPending || !newExAr.trim()}
+								>Save</button>
+							</div>
+						</div>
+					{/if}
+
 					{#if examples.isPending}
 						<p style="color: var(--ink-ghost); font-size: 0.875rem;">Loading…</p>
-					{:else if (examples.data ?? []).length === 0}
+					{:else if (examples.data ?? []).length === 0 && !addingExample}
 						<p class="annot-empty">No examples saved yet</p>
 					{:else}
 						{#each examples.data ?? [] as ex (ex.id)}
@@ -155,7 +233,7 @@ function formatEnum(value: string): string {
 								{#if ex.transliteration}<p class="example-card-tr">{ex.transliteration}</p>{/if}
 								{#if ex.translation}<p class="example-card-en">{ex.translation}</p>{/if}
 								<button
-									style="position:absolute;top:0.375rem;right:0.5rem;background:none;border:none;cursor:pointer;font-size:1rem;color:var(--ink-ghost);"
+									class="example-delete"
 									onclick={() => deleteExample.mutate({ id, exampleId: ex.id })}
 									disabled={deleteExample.isPending}
 									aria-label="Delete example"
@@ -163,14 +241,16 @@ function formatEnum(value: string): string {
 							</div>
 						{/each}
 					{/if}
+
+					<!-- AI examples -->
+					<AiExamples wordId={id} />
 				</div>
 
 				<!-- Dictionary sources -->
 				<div class="sect-label">Dictionary sources</div>
-				<DictionaryLinks wordId={id} arabicText={word.data.arabicText} />
-
-				<!-- AI examples -->
-				<AiExamples wordId={id} />
+				<div style="margin-bottom: 2.5rem;">
+					<DictionaryLinks wordId={id} arabicText={word.data.arabicText} />
+				</div>
 
 				<!-- Annotations -->
 				<div class="sect-label">Annotations</div>
@@ -216,8 +296,7 @@ function formatEnum(value: string): string {
 
 				<!-- Mastery gauge -->
 				{#if true}
-				{@const masterySteps = { NEW: 1, LEARNING: 2, FAMILIAR: 3, KNOWN: 4, MASTERED: 5 }}
-				{@const stepsOn = masterySteps[word.data.masteryLevel as keyof typeof masterySteps] ?? 0}
+				{@const stepsOn = masterySteps[word.data.masteryLevel] ?? 0}
 				<div class="meta-card">
 					<div class="meta-card-title">Mastery</div>
 					<div class="mastery-steps">

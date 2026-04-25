@@ -7,8 +7,8 @@
 
 @theme {
 	/* ·· Latin UI fonts ·· */
-	--font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
-	--font-display: 'Lora', Georgia, serif;
+	--font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+	--font-display: "Lora", Georgia, serif;
 
 	/* ·· Arabic font families ··
      body    → Noto Naskh Arabic + Lateef    (UI labels, word cards, short strings)
@@ -66,85 +66,85 @@
 
 :root {
 	/* ── Busatan direct palette (hex) ── */
-	--bg:           #F9F8F1; /* warm sand */
-	--bg-dark:      #EEE8DC; /* dark sand */
-	--bg-darker:    #E4DDD0; /* darker sand */
-	--white:        #FFFFFF;
+	--bg: #f9f8f1; /* warm sand */
+	--bg-dark: #eee8dc; /* dark sand */
+	--bg-darker: #e4ddd0; /* darker sand */
+	--white: #ffffff;
 
 	/* Ink scale */
-	--ink:          #1A1810;
-	--ink-mid:      #3C3428;
-	--ink-light:    #786848;
-	--ink-ghost:    #B8A888;
+	--ink: #1a1810;
+	--ink-mid: #3c3428;
+	--ink-light: #786848;
+	--ink-ghost: #b8a888;
 
 	/* Olive — structural / brand */
-	--olive:        #4A6228;
-	--olive-soft:   #5A7838;
-	--olive-pale:   #E8F0D8;
+	--olive: #4a6228;
+	--olive-soft: #5a7838;
+	--olive-pale: #e8f0d8;
 
 	/* Coral — action / progress */
-	--coral:        #C04830;
-	--coral-soft:   #D05A40;
-	--coral-pale:   #FAE8E4;
+	--coral: #c04830;
+	--coral-soft: #d05a40;
+	--coral-pale: #fae8e4;
 
 	/* Cerulean — info / external */
-	--cerulean:     #1E5898;
-	--cerulean-soft:#2868B0;
-	--cerulean-pale:#E0EAF8;
+	--cerulean: #1e5898;
+	--cerulean-soft: #2868b0;
+	--cerulean-pale: #e0eaf8;
 
 	/* Sage — mastered */
-	--sage:         #2A6840;
-	--sage-pale:    #D8EEE0;
+	--sage: #2a6840;
+	--sage-pale: #d8eee0;
 
 	/* Amber */
-	--amber:        #B07820;
-	--amber-pale:   #F5EDD0;
+	--amber: #b07820;
+	--amber-pale: #f5edd0;
 
 	/* Danger */
-	--danger:       #C03030;
+	--danger: #c03030;
 
 	/* Borders */
-	--border-color: #DDD5C0;
-	--border-thin:  #EDE8DC;
+	--border-color: #ddd5c0;
+	--border-thin: #ede8dc;
 
 	/* Mastery scale */
-	--m-mastered:    #1A6038;
-	--m-mastered-bg: #D4EEE0;
-	--m-known:       #2A7850;
-	--m-known-bg:    #D0F0E4;
-	--m-familiar:    #C04830;
-	--m-familiar-bg: #FAE8E4;
-	--m-learning:    #4A6228;
-	--m-learning-bg: #E8F0D8;
+	--m-mastered: #1a6038;
+	--m-mastered-bg: #d4eee0;
+	--m-known: #2a7850;
+	--m-known-bg: #d0f0e4;
+	--m-familiar: #c04830;
+	--m-familiar-bg: #fae8e4;
+	--m-learning: #4a6228;
+	--m-learning-bg: #e8f0d8;
 
 	/* ── shadcn / Tailwind HSL vars (used by components) ── */
-	--background: 50 38% 96%;          /* ≈ #F9F8F1 warm sand */
-	--foreground: 46 22% 9%;           /* ≈ #1A1810 ink */
+	--background: 50 38% 96%; /* ≈ #F9F8F1 warm sand */
+	--foreground: 46 22% 9%; /* ≈ #1A1810 ink */
 	--card: 0 0% 100%;
 	--card-foreground: 46 22% 9%;
 	--popover: 0 0% 100%;
 	--popover-foreground: 46 22% 9%;
-	--primary: 10 61% 47%;             /* ≈ #C04830 coral */
+	--primary: 10 61% 47%; /* ≈ #C04830 coral */
 	--primary-foreground: 0 0% 100%;
-	--secondary: 89 42% 27%;           /* ≈ #4A6228 olive */
+	--secondary: 89 42% 27%; /* ≈ #4A6228 olive */
 	--secondary-foreground: 0 0% 100%;
-	--muted: 42 32% 90%;               /* ≈ #EEE8DC bg-dark */
-	--muted-foreground: 30 22% 45%;    /* ≈ #786848 ink-light */
-	--accent: 88 30% 86%;              /* ≈ #E8F0D8 olive-pale */
-	--accent-foreground: 89 42% 27%;   /* ≈ olive */
-	--destructive: 0 62% 47%;          /* ≈ #C03030 */
+	--muted: 42 32% 90%; /* ≈ #EEE8DC bg-dark */
+	--muted-foreground: 30 22% 45%; /* ≈ #786848 ink-light */
+	--accent: 88 30% 86%; /* ≈ #E8F0D8 olive-pale */
+	--accent-foreground: 89 42% 27%; /* ≈ olive */
+	--destructive: 0 62% 47%; /* ≈ #C03030 */
 	--destructive-foreground: 0 0% 100%;
-	--border: 40 24% 80%;              /* ≈ #DDD5C0 */
+	--border: 40 24% 80%; /* ≈ #DDD5C0 */
 	--input: 40 24% 80%;
-	--ring: 89 42% 27%;                /* ≈ olive */
+	--ring: 89 42% 27%; /* ≈ olive */
 	--radius: 0.5rem;
 
 	/* Sidebar — light warm (Busatan: no dark sidebar) */
-	--sidebar: 42 32% 90%;             /* ≈ #EEE8DC bg-dark */
-	--sidebar-foreground: 30 22% 45%;  /* ≈ ink-light */
-	--sidebar-primary: 89 42% 27%;     /* olive */
+	--sidebar: 42 32% 90%; /* ≈ #EEE8DC bg-dark */
+	--sidebar-foreground: 30 22% 45%; /* ≈ ink-light */
+	--sidebar-primary: 89 42% 27%; /* olive */
 	--sidebar-primary-foreground: 0 0% 100%;
-	--sidebar-accent: 88 30% 86%;      /* olive-pale */
+	--sidebar-accent: 88 30% 86%; /* olive-pale */
 	--sidebar-accent-foreground: 89 42% 27%;
 	--sidebar-border: 40 24% 80%;
 	--sidebar-ring: 89 42% 27%;
@@ -152,16 +152,16 @@
 	/* Arabic typography tokens
      Used by semantic classes in arabic.css — never used directly in markup. */
 	--arabic-font-size-body: 1.125rem; /* 18px — Arabic reads better a touch larger */
-	--arabic-font-size-ui: 1rem;       /* 16px — labels, badges, compact contexts   */
+	--arabic-font-size-ui: 1rem; /* 16px — labels, badges, compact contexts   */
 	--arabic-font-size-display: 2.25rem; /* 36px */
-	--arabic-font-size-xl: 3rem;       /* 48px */
+	--arabic-font-size-xl: 3rem; /* 48px */
 
-	--arabic-line-height-body: 1.9;    /* Arabic needs generous leading              */
+	--arabic-line-height-body: 1.9; /* Arabic needs generous leading              */
 	--arabic-line-height-display: 1.5;
-	--arabic-line-height-text: 1.8;    /* for Markazi Text reading passages          */
+	--arabic-line-height-text: 1.8; /* for Markazi Text reading passages          */
 
 	/* Spacing tokens for the content grid */
-	--content-max-width: 72rem;        /* 1152px */
+	--content-max-width: 72rem; /* 1152px */
 	--content-padding-x: 1.5rem;
 	--sidebar-width: 220px;
 }

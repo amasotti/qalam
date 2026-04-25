@@ -352,9 +352,16 @@
 
 .root-info {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr 2fr;
+	gap: 2rem;
+	align-items: start;
+	margin-bottom: 2rem;
+}
+
+.root-info-sidebar {
+	display: flex;
+	flex-direction: column;
 	gap: 1.5rem;
-	margin-bottom: 3rem;
 }
 
 .root-info-section {
@@ -411,7 +418,7 @@
 
 .word-family-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
 	gap: 0.75rem;
 }
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-import { onDestroy, onMount } from 'svelte';
 import { page } from '$app/state';
 import type { SessionSummaryResponse, TrainingSessionWordResponse } from '$lib/api/types.gen';
 import FlashCard from '$lib/components/training/FlashCard.svelte';
@@ -42,19 +41,6 @@ async function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
 	}
 }
 
-function onWindowResult(e: Event) {
-	const detail = (e as CustomEvent<{ result: 'CORRECT' | 'INCORRECT' | 'SKIPPED'; wordId: string }>)
-		.detail;
-	handleResult(detail.result);
-}
-
-onMount(() => {
-	window.addEventListener('result', onWindowResult);
-});
-
-onDestroy(() => {
-	window.removeEventListener('result', onWindowResult);
-});
 </script>
 
 {#if session.isLoading}

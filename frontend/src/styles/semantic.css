@@ -7,57 +7,33 @@
 /* ── Mastery levels ── */
 
 .mastery-new {
-	background-color: hsl(var(--muted));
-	color: hsl(var(--muted-foreground));
-	border-color: hsl(var(--border));
+	background-color: var(--bg-dark);
+	color: var(--ink-ghost);
+	border-color: var(--border);
 }
 
 .mastery-learning {
-	background-color: hsl(38 92% 92%);
-	color: hsl(38 80% 28%);
-	border-color: hsl(38 80% 80%);
-}
-
-.dark .mastery-learning {
-	background-color: hsl(38 60% 18%);
-	color: hsl(38 80% 70%);
-	border-color: hsl(38 60% 28%);
+	background-color: var(--m-learning-bg);
+	color: var(--m-learning);
+	border-color: rgba(74, 98, 40, 0.3);
 }
 
 .mastery-familiar {
-	background-color: hsl(214 80% 93%);
-	color: hsl(214 70% 35%);
-	border-color: hsl(214 70% 80%);
-}
-
-.dark .mastery-familiar {
-	background-color: hsl(214 50% 18%);
-	color: hsl(214 80% 70%);
-	border-color: hsl(214 50% 28%);
+	background-color: var(--m-familiar-bg);
+	color: var(--m-familiar);
+	border-color: rgba(192, 72, 48, 0.3);
 }
 
 .mastery-known {
-	background-color: hsl(142 60% 90%);
-	color: hsl(142 76% 25%);
-	border-color: hsl(142 50% 75%);
-}
-
-.dark .mastery-known {
-	background-color: hsl(142 40% 18%);
-	color: hsl(142 60% 60%);
-	border-color: hsl(142 40% 28%);
+	background-color: var(--m-known-bg);
+	color: var(--m-known);
+	border-color: rgba(42, 120, 80, 0.3);
 }
 
 .mastery-mastered {
-	background-color: hsl(158 60% 88%);
-	color: hsl(158 76% 22%);
-	border-color: hsl(158 50% 70%);
-}
-
-.dark .mastery-mastered {
-	background-color: hsl(158 40% 15%);
-	color: hsl(158 60% 55%);
-	border-color: hsl(158 40% 25%);
+	background-color: var(--m-mastered-bg);
+	color: var(--m-mastered);
+	border-color: rgba(26, 96, 56, 0.3);
 }
 
 /* ── Buttons ── */
@@ -75,123 +51,63 @@
 /* ── Difficulty ── */
 
 .difficulty-beginner {
-	background-color: hsl(217 91% 93%);
-	color: hsl(217 80% 32%);
-	border-color: hsl(217 70% 80%);
-}
-
-.dark .difficulty-beginner {
-	background-color: hsl(217 55% 18%);
-	color: hsl(217 80% 72%);
-	border-color: hsl(217 50% 30%);
+	background-color: var(--coral-pale);
+	color: var(--coral);
+	border-color: rgba(192, 72, 48, 0.22);
 }
 
 .difficulty-intermediate {
-	background-color: hsl(38 92% 92%);
-	color: hsl(38 80% 28%);
-	border-color: hsl(38 80% 78%);
-}
-
-.dark .difficulty-intermediate {
-	background-color: hsl(38 60% 18%);
-	color: hsl(38 80% 70%);
-	border-color: hsl(38 60% 30%);
+	background-color: var(--coral-pale);
+	color: var(--coral);
+	border-color: rgba(192, 72, 48, 0.22);
 }
 
 .difficulty-advanced {
-	background-color: hsl(0 86% 93%);
-	color: hsl(0 70% 32%);
-	border-color: hsl(0 70% 82%);
-}
-
-.dark .difficulty-advanced {
-	background-color: hsl(0 50% 18%);
-	color: hsl(0 70% 70%);
-	border-color: hsl(0 50% 30%);
+	background-color: var(--coral-pale);
+	color: var(--coral);
+	border-color: rgba(192, 72, 48, 0.22);
 }
 
 /* ── Dialect ── */
 
 .dialect-msa {
-	background-color: hsl(246 80% 93%);
-	color: hsl(246 60% 38%);
-	border-color: hsl(246 60% 80%);
-}
-
-.dark .dialect-msa {
-	background-color: hsl(246 40% 18%);
-	color: hsl(246 70% 72%);
-	border-color: hsl(246 40% 30%);
+	background-color: var(--cerulean-pale);
+	color: var(--cerulean);
+	border-color: rgba(30, 88, 152, 0.22);
 }
 
 .dialect-tunisian {
-	background-color: hsl(180 58% 90%);
-	color: hsl(180 70% 24%);
-	border-color: hsl(180 50% 75%);
-}
-
-.dark .dialect-tunisian {
-	background-color: hsl(180 40% 15%);
-	color: hsl(180 60% 60%);
-	border-color: hsl(180 40% 26%);
+	background-color: var(--cerulean-pale);
+	color: var(--cerulean);
+	border-color: rgba(30, 88, 152, 0.22);
 }
 
 .dialect-moroccan {
-	background-color: hsl(24 90% 92%);
-	color: hsl(24 75% 28%);
-	border-color: hsl(24 75% 78%);
-}
-
-.dark .dialect-moroccan {
-	background-color: hsl(24 55% 18%);
-	color: hsl(24 80% 68%);
-	border-color: hsl(24 55% 30%);
+	background-color: var(--cerulean-pale);
+	color: var(--cerulean);
+	border-color: rgba(30, 88, 152, 0.22);
 }
 
 .dialect-egyptian {
-	background-color: hsl(48 95% 90%);
-	color: hsl(48 80% 26%);
-	border-color: hsl(48 75% 72%);
-}
-
-.dark .dialect-egyptian {
-	background-color: hsl(48 55% 16%);
-	color: hsl(48 80% 68%);
-	border-color: hsl(48 55% 28%);
+	background-color: var(--cerulean-pale);
+	color: var(--cerulean);
+	border-color: rgba(30, 88, 152, 0.22);
 }
 
 .dialect-gulf {
-	background-color: hsl(271 80% 93%);
-	color: hsl(271 60% 38%);
-	border-color: hsl(271 55% 80%);
-}
-
-.dark .dialect-gulf {
-	background-color: hsl(271 40% 18%);
-	color: hsl(271 70% 72%);
-	border-color: hsl(271 40% 30%);
+	background-color: var(--cerulean-pale);
+	color: var(--cerulean);
+	border-color: rgba(30, 88, 152, 0.22);
 }
 
 .dialect-levantine {
-	background-color: hsl(198 80% 90%);
-	color: hsl(198 70% 26%);
-	border-color: hsl(198 65% 75%);
-}
-
-.dark .dialect-levantine {
-	background-color: hsl(198 45% 16%);
-	color: hsl(198 70% 66%);
-	border-color: hsl(198 45% 28%);
+	background-color: var(--cerulean-pale);
+	color: var(--cerulean);
+	border-color: rgba(30, 88, 152, 0.22);
 }
 
 .dialect-iraqi {
-	background-color: hsl(340 70% 92%);
-	color: hsl(340 65% 32%);
-	border-color: hsl(340 60% 80%);
-}
-
-.dark .dialect-iraqi {
-	background-color: hsl(340 42% 17%);
-	color: hsl(340 65% 70%);
-	border-color: hsl(340 42% 28%);
+	background-color: var(--cerulean-pale);
+	color: var(--cerulean);
+	border-color: rgba(30, 88, 152, 0.22);
 }

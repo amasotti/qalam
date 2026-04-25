@@ -1,5 +1,9 @@
 <script lang="ts">
-import type { AlignmentTokenResponse, AnnotationResponse, SentenceResponse } from '$lib/api/types.gen';
+import type {
+	AlignmentTokenResponse,
+	AnnotationResponse,
+	SentenceResponse,
+} from '$lib/api/types.gen';
 import StaleTokenBanner from './StaleTokenBanner.svelte';
 import TokenGrid from './TokenGrid.svelte';
 

@@ -5,10 +5,10 @@ import QuickAddWordForm from '$lib/components/words/QuickAddWordForm.svelte';
 import { useLookupWordByArabic } from '$lib/stores/words';
 
 interface Props {
-  open: boolean;
-  token: AlignmentTokenResponse | null;
-  onclose: () => void;
-  onannotate: (anchor: string) => void;
+	open: boolean;
+	token: AlignmentTokenResponse | null;
+	onclose: () => void;
+	onannotate: (anchor: string) => void;
 }
 
 let { open, token, onclose, onannotate }: Props = $props();
@@ -20,34 +20,34 @@ let notFound = $state(false);
 let loading = $state(false);
 
 $effect(() => {
-  if (!open || !token) return;
-  found = null;
-  notFound = false;
-  loading = true;
-  lookup.mutateAsync(token.arabic).then((word) => {
-    found = word;
-    notFound = word === null;
-    loading = false;
-  });
+	if (!open || !token) return;
+	found = null;
+	notFound = false;
+	loading = true;
+	lookup.mutateAsync(token.arabic).then((word) => {
+		found = word;
+		notFound = word === null;
+		loading = false;
+	});
 });
 
 function handleAnnotate() {
-  if (!token) return;
-  onannotate(token.arabic);
-  onclose();
+	if (!token) return;
+	onannotate(token.arabic);
+	onclose();
 }
 
 function handleCreated(_wordId: string) {
-  loading = true;
-  notFound = false;
-  lookup.mutateAsync(token!.arabic).then((word) => {
-    found = word;
-    loading = false;
-  });
+	loading = true;
+	notFound = false;
+	lookup.mutateAsync(token!.arabic).then((word) => {
+		found = word;
+		loading = false;
+	});
 }
 
 function handleKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape') onclose();
+	if (e.key === 'Escape') onclose();
 }
 </script>
 

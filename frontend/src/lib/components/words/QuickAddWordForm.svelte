@@ -5,9 +5,9 @@ import { Button } from '$lib/components/ui/button';
 import { Input } from '$lib/components/ui/input';
 
 interface Props {
-  arabicText: string;
-  onCreated: (wordId: string) => void;
-  onCancel: () => void;
+	arabicText: string;
+	onCreated: (wordId: string) => void;
+	onCancel: () => void;
 }
 
 let { arabicText, onCreated, onCancel }: Props = $props();
@@ -20,26 +20,34 @@ let translation = $state('');
 let partOfSpeech = $state<PartOfSpeech>('UNKNOWN');
 
 const posOptions: PartOfSpeech[] = [
-  'UNKNOWN', 'NOUN', 'VERB', 'ADJECTIVE', 'ADVERB',
-  'PREPOSITION', 'PARTICLE', 'INTERJECTION', 'CONJUNCTION', 'PRONOUN',
+	'UNKNOWN',
+	'NOUN',
+	'VERB',
+	'ADJECTIVE',
+	'ADVERB',
+	'PREPOSITION',
+	'PARTICLE',
+	'INTERJECTION',
+	'CONJUNCTION',
+	'PRONOUN',
 ];
 
 async function handleAnalyze() {
-  const result = await analyzeWord.mutateAsync(arabicText);
-  transliteration = result.transliteration ?? '';
-  translation = result.translation ?? '';
-  partOfSpeech = (result.partOfSpeech as PartOfSpeech | null) ?? 'UNKNOWN';
+	const result = await analyzeWord.mutateAsync(arabicText);
+	transliteration = result.transliteration ?? '';
+	translation = result.translation ?? '';
+	partOfSpeech = (result.partOfSpeech as PartOfSpeech | null) ?? 'UNKNOWN';
 }
 
 async function handleSubmit(e: SubmitEvent) {
-  e.preventDefault();
-  const result = await createWord.mutateAsync({
-    arabicText,
-    transliteration: transliteration.trim() || null,
-    translation: translation.trim() || null,
-    partOfSpeech,
-  });
-  onCreated(result.id);
+	e.preventDefault();
+	const result = await createWord.mutateAsync({
+		arabicText,
+		transliteration: transliteration.trim() || null,
+		translation: translation.trim() || null,
+		partOfSpeech,
+	});
+	onCreated(result.id);
 }
 </script>
 

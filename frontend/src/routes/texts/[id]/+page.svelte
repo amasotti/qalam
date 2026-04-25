@@ -1,8 +1,9 @@
 <script lang="ts">
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
-import type { UpdateTextRequest } from '$lib/api/types.gen';
+import type { AlignmentTokenResponse, UpdateTextRequest } from '$lib/api/types.gen';
 import AnnotationDrawer from '$lib/components/annotations/AnnotationDrawer.svelte';
+import VocabLookupDrawer from '$lib/components/texts/VocabLookupDrawer.svelte';
 import FullTextPanel from '$lib/components/texts/FullTextPanel.svelte';
 import InterlinearSentence from '$lib/components/texts/InterlinearSentence.svelte';
 import SentenceEditor from '$lib/components/texts/SentenceEditor.svelte';
@@ -25,7 +26,17 @@ const annotations = useTextAnnotations(() => id);
 let drawerOpen = $state(false);
 let drawerAnchor = $state('');
 
-function openDrawer(anchor: string) {
+let vocabOpen = $state(false);
+let vocabToken = $state<AlignmentTokenResponse | null>(null);
+
+function openVocabLookup(token: AlignmentTokenResponse) {
+	drawerOpen = false;
+	vocabToken = token;
+	vocabOpen = true;
+}
+
+function openAnnotationDrawer(anchor: string) {
+	vocabOpen = false;
 	drawerAnchor = anchor;
 	drawerOpen = true;
 }
@@ -152,7 +163,7 @@ function formatEnum(value: string): string {
 					<InterlinearSentence
 						{sentence}
 						annotations={annotations.data ?? []}
-						onTokenClick={openDrawer}
+						onTokenClick={openVocabLookup}
 						isPending={autoTokenize.isPending || markValid.isPending}
 						onRetokenize={async (s) => { await autoTokenize.mutateAsync({ textId: id, id: s.id }); }}
 						onMarkValid={async (s) => { await markValid.mutateAsync({ textId: id, id: s.id, currentTokens: s.tokens }); }}
@@ -214,4 +225,11 @@ function formatEnum(value: string): string {
 	textId={id}
 	annotations={annotations.data ?? []}
 	onclose={() => (drawerOpen = false)}
+/>
+
+<VocabLookupDrawer
+	open={vocabOpen}
+	token={vocabToken}
+	onclose={() => (vocabOpen = false)}
+	onannotate={openAnnotationDrawer}
 />

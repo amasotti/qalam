@@ -8,6 +8,8 @@ import com.tonihacks.qalam.domain.sentence.SentenceRepository
 import com.tonihacks.qalam.domain.sentence.SentenceService
 import com.tonihacks.qalam.domain.text.TextRepository
 import com.tonihacks.qalam.domain.text.TextService
+import com.tonihacks.qalam.domain.training.TrainingRepository
+import com.tonihacks.qalam.domain.training.TrainingService
 import com.tonihacks.qalam.domain.transliteration.TransliterationService
 import com.tonihacks.qalam.domain.word.WordRepository
 import com.tonihacks.qalam.domain.word.WordService
@@ -16,6 +18,7 @@ import com.tonihacks.qalam.infrastructure.exposed.ExposedAnnotationRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedRootRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedSentenceRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedTextRepository
+import com.tonihacks.qalam.infrastructure.exposed.ExposedTrainingRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedWordRepository
 import org.koin.dsl.module
 
@@ -49,6 +52,11 @@ val annotationsModule = module {
     single { AnnotationService(get()) }
 }
 
+val trainingModule = module {
+    single<TrainingRepository> { ExposedTrainingRepository() }
+    single { TrainingService(get(), get()) }
+}
+
 val appModule = module {
-    includes(rootsModules, wordsModules, textsModule, sentencesModule, transliterationModule, annotationsModule)
+    includes(rootsModules, wordsModules, textsModule, sentencesModule, transliterationModule, annotationsModule, trainingModule)
 }

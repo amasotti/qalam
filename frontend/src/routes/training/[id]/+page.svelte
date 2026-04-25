@@ -59,6 +59,7 @@ async function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
   <FlashCard
     word={currentWord}
     isPending={isPending || record.isPending || complete.isPending}
+    onresult={handleResult}
   />
 {:else if isFinished}
   <p>All words answered. Completing session…</p>

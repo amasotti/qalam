@@ -305,7 +305,6 @@ class ExposedWordRepository : WordRepository {
         }
 }
 
-@OptIn(kotlin.uuid.ExperimentalUuidApi::class)
 private fun ResultRow.toWord() = Word(
     id = WordId(this[WordsTable.id].toJavaUuid()),
     arabicText = this[WordsTable.arabicText],
@@ -322,7 +321,6 @@ private fun ResultRow.toWord() = Word(
     updatedAt = this[WordsTable.updatedAt],
 )
 
-@OptIn(kotlin.uuid.ExperimentalUuidApi::class)
 private fun ResultRow.toWordExample() = WordExample(
     id = WordExampleId(this[WordExamplesTable.id].toJavaUuid()),
     wordId = WordId(this[WordExamplesTable.wordId].toJavaUuid()),
@@ -332,7 +330,6 @@ private fun ResultRow.toWordExample() = WordExample(
     createdAt = this[WordExamplesTable.createdAt],
 )
 
-@OptIn(kotlin.uuid.ExperimentalUuidApi::class)
 private fun ResultRow.toDictionaryLink() = DictionaryLink(
     id = DictionaryLinkId(this[WordDictionaryLinksTable.id].toJavaUuid()),
     wordId = WordId(this[WordDictionaryLinksTable.wordId].toJavaUuid()),
@@ -340,7 +337,6 @@ private fun ResultRow.toDictionaryLink() = DictionaryLink(
     url = this[WordDictionaryLinksTable.url],
 )
 
-@OptIn(kotlin.uuid.ExperimentalUuidApi::class)
 private fun ResultRow.toWordProgress() = WordProgress(
     wordId = WordId(this[WordProgressTable.wordId].toJavaUuid()),
     consecutiveCorrect = this[WordProgressTable.consecutiveCorrect],

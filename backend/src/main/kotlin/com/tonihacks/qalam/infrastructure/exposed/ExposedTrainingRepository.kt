@@ -188,7 +188,6 @@ private fun ResultRow.toTrainingSession() = TrainingSession(
     completedAt    = this[TrainingSessionsTable.completedAt],
 )
 
-@OptIn(kotlin.uuid.ExperimentalUuidApi::class)
 private fun ResultRow.toTrainingSessionWord() = TrainingSessionWord(
     id               = this[TrainingSessionWordsTable.id].toJavaUuid(),
     sessionId        = TrainingSessionId(this[TrainingSessionWordsTable.sessionId].toJavaUuid()),

@@ -71,14 +71,15 @@ never justified in practice — it was never used to roll back.
 Annotations mark a selected span of text with a note. They are the bridge between texts and
 vocabulary.
 
-- Anchor: the selected text string (used to highlight the span in the UI)
-- Type: GRAMMAR, VOCABULARY, CULTURAL, OTHER
-- Content: freetext explanation
-- Per-annotation mastery level (NEW / LEARNING / KNOWN / MASTERED) for SRS use
-- Per-annotation review flag for items to revisit
+- Anchor: the selected token's Arabic text (single-token only; use sentence `notes` for multi-token)
+- Type: VOCABULARY, GRAMMAR, CULTURAL, OTHER
+- Content: freetext explanation (nullable)
 - **Vocabulary links**: an annotation is linked to zero or more vocabulary words. This is the
   primary cross-reference mechanism — from a word entry, you can find all texts where it is
   annotated, and vice versa.
+
+UI: inline type-coded badges (V/G/C/O) on token cells in the interlinear view; clicking a token
+opens a slide-in drawer for create / edit / delete.
 
 #### Interlinear / Gloss View
 

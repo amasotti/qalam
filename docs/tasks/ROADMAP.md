@@ -39,7 +39,7 @@ These are real features — not cancelled, just deferred until the app is live w
 
 | Milestone | Why deferred |
 |-----------|-------------|
-| M7 frontend (annotations UI) | Backend needed first; UI follows naturally after M16 |
+| M7 frontend (annotations UI) | **Done 2026-04-25** — inline badges + slide-in drawer, schema fixed (dropped mastery_level/review_flag, enum corrected) |
 | M8 Audio attachments | Zero existing audio data; purely additive |
 | M9 Training / SRS backend | Can study from texts without flashcards; needs real data first |
 | M11 Global search + analytics | Vocabulary search (M4) covers immediate needs |

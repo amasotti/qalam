@@ -190,7 +190,6 @@ class ExposedTextRepository : TextRepository {
     }
 }
 
-@OptIn(kotlin.uuid.ExperimentalUuidApi::class)
 private fun ResultRow.toText(tags: List<String>) = Text(
     id = TextId(this[TextsTable.id].toJavaUuid()),
     title = this[TextsTable.title],

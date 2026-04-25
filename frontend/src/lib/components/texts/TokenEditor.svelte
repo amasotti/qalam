@@ -56,21 +56,6 @@ const isEmpty = $derived(drafts.length === 0);
 
 async function handleAutoTokenize() {
 	error = null;
-
-	// Client-side zip when transliteration is available — instant, no AI call
-	if (sentence.transliteration?.trim()) {
-		const arabicWords = sentence.arabicText.trim().split(/\s+/);
-		const translitWords = sentence.transliteration.trim().split(/\s+/);
-		drafts = arabicWords.map((arabic, i) => ({
-			id: crypto.randomUUID(),
-			arabic,
-			transliteration: translitWords[i] ?? '',
-			translation: '',
-		}));
-		return;
-	}
-
-	// Fallback: AI auto-tokenize when no transliteration exists
 	try {
 		const updated = await autoTokenize.mutateAsync({ textId, id: sentence.id });
 		drafts = updated.tokens.map((t) => ({
@@ -142,11 +127,7 @@ async function handleClear() {
 	{#if isEmpty}
 		<div class="token-editor-empty">
 			<p class="token-editor-empty-hint">
-				{#if sentence.transliteration}
-					Arabic and transliteration will be split word-by-word. Fill the translation column manually.
-				{:else}
-					AI will split and transliterate the sentence. Add translations manually.
-				{/if}
+				AI will split, transliterate, and translate each token.
 			</p>
 			<div class="token-editor-empty-actions">
 				<Button disabled={autoTokenize.isPending} onclick={handleAutoTokenize}>

@@ -28,4 +28,13 @@ interface WordRepository {
     suspend fun findExamples(wordId: WordId): Either<DomainError, List<WordExample>>
     suspend fun addExample(example: WordExample): Either<DomainError, WordExample>
     suspend fun deleteExample(wordId: WordId, exampleId: WordExampleId): Either<DomainError, Unit>
+
+    /** Random sample of words for training, optionally filtered by mastery level. */
+    suspend fun findForTraining(masteryLevel: MasteryLevel?, limit: Int): Either<DomainError, List<Word>>
+
+    suspend fun getProgress(wordId: WordId): Either<DomainError, WordProgress>
+
+    suspend fun updateProgress(progress: WordProgress): Either<DomainError, Unit>
+
+    suspend fun updateMasteryLevel(wordId: WordId, level: MasteryLevel): Either<DomainError, Unit>
 }

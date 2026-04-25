@@ -24,6 +24,16 @@ fun DomainError.toHttpResponse(): Pair<HttpStatusCode, ErrorResponse> = when (th
         HttpStatusCode.ServiceUnavailable to ErrorResponse("AI service not configured", "AI_NOT_CONFIGURED")
     is DomainError.DatabaseError ->
         HttpStatusCode.InternalServerError to ErrorResponse("A database error occurred", "DATABASE_ERROR")
+    is DomainError.NotEnoughWords ->
+        HttpStatusCode.UnprocessableEntity to ErrorResponse(
+            "Not enough words for training: requested $requested, available $available",
+            "NOT_ENOUGH_WORDS"
+        )
+    is DomainError.SessionAlreadyCompleted ->
+        HttpStatusCode.Conflict to ErrorResponse(
+            "Session '$sessionId' is already completed",
+            "SESSION_ALREADY_COMPLETED"
+        )
 }
 
 /** Convenience extension for route handlers using Either.fold { error -> call.respondError(it) }. */

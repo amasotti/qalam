@@ -24,4 +24,10 @@ sealed class DomainError {
 
     /** Unexpected database-layer failure. */
     data object DatabaseError : DomainError()
+
+    /** Not enough words match the requested training mode/size. */
+    data class NotEnoughWords(val requested: Int, val available: Int) : DomainError()
+
+    /** Training session is already completed and cannot accept more results. */
+    data class SessionAlreadyCompleted(val sessionId: String) : DomainError()
 }

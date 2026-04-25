@@ -11,6 +11,7 @@ import type {
 	CreateSessionRequest,
 	PaginatedSessionsResponse,
 	RecordResultRequest,
+	RecordResultResponse,
 	SessionSummaryResponse,
 	TrainingSessionResponse,
 	TrainingStatsResponse,
@@ -58,7 +59,7 @@ export function useRecordResult() {
 				body,
 			});
 			if (error) throw error;
-			return requireData(data, 'recordTrainingResult') as TrainingSessionResponse;
+			return requireData(data, 'recordTrainingResult') as RecordResultResponse;
 		},
 		onSuccess: (_data, variables) => {
 			qc.invalidateQueries({ queryKey: ['training', 'session', variables.sessionId] });
@@ -101,7 +102,7 @@ export function useListSessions() {
 			if (error) throw error;
 			const result = requireData(data, 'listTrainingSessions') as PaginatedSessionsResponse;
 			return {
-				items: (result.items ?? []) as TrainingSessionResponse[],
+				items: result.items ?? [],
 				total: result.total,
 				page: result.page,
 				size: result.size,

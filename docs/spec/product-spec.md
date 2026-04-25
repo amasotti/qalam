@@ -3,10 +3,6 @@
 > Technology-agnostic description of what the app is and does.
 > This is the source of truth for story decomposition. If a feature isn't here, it doesn't exist.
 >
-> **Reference**: The previous implementation lives at `an-na7wi` (path:
-> `/Users/antoniomasotti/toni/100_programming/190_frontend/an-na7wi`). Consult it for
-> implementation details, data migrations, or UX patterns worth preserving.
-
 ---
 
 ## Vision

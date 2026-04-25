@@ -254,10 +254,8 @@ export type AnnotationResponse = {
      * The anchored text fragment this annotation refers to
      */
     anchor: string;
-    type: 'VOCAB' | 'GRAMMAR' | 'CULTURAL' | 'STRUCTURE';
+    type: 'VOCABULARY' | 'GRAMMAR' | 'CULTURAL' | 'OTHER';
     content?: string | null;
-    masteryLevel?: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
-    reviewFlag: boolean;
     linkedWordIds: Array<string>;
     createdAt: string;
     updatedAt: string;
@@ -265,10 +263,8 @@ export type AnnotationResponse = {
 
 export type CreateAnnotationRequest = {
     anchor: string;
-    type: 'VOCAB' | 'GRAMMAR' | 'CULTURAL' | 'STRUCTURE';
+    type: 'VOCABULARY' | 'GRAMMAR' | 'CULTURAL' | 'OTHER';
     content?: string | null;
-    masteryLevel?: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
-    reviewFlag?: boolean;
     linkedWordIds?: Array<string>;
 };
 
@@ -277,10 +273,8 @@ export type CreateAnnotationRequest = {
  */
 export type UpdateAnnotationRequest = {
     anchor?: string | null;
-    type?: 'VOCAB' | 'GRAMMAR' | 'CULTURAL' | 'STRUCTURE';
+    type?: 'VOCABULARY' | 'GRAMMAR' | 'CULTURAL' | 'OTHER';
     content?: string | null;
-    masteryLevel?: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
-    reviewFlag?: boolean | null;
 };
 
 export type CreateSessionRequest = {

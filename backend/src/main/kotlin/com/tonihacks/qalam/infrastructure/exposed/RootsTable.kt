@@ -3,10 +3,8 @@ package com.tonihacks.qalam.infrastructure.exposed
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.datetime.timestamp
 import kotlin.time.Instant
-import kotlin.uuid.ExperimentalUuidApi
 
 object RootsTable : Table("arabic_roots") {
-    @OptIn(ExperimentalUuidApi::class)
     val id = uuid("id")
     val letters = array<String>("letters")
     val normalizedForm = varchar("normalized_form", 12)
@@ -17,6 +15,5 @@ object RootsTable : Table("arabic_roots") {
     val createdAt = timestamp("created_at")
     val updatedAt = timestamp("updated_at")
 
-    @OptIn(ExperimentalUuidApi::class)
     override val primaryKey = PrimaryKey(id)
 }

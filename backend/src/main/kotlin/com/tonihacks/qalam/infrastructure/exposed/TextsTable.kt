@@ -2,10 +2,8 @@ package com.tonihacks.qalam.infrastructure.exposed
 
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.datetime.timestamp
-import kotlin.uuid.ExperimentalUuidApi
 
 object TextsTable : Table("texts") {
-    @OptIn(ExperimentalUuidApi::class)
     val id = uuid("id")
     val title = text("title")
     val body = text("body")
@@ -17,12 +15,10 @@ object TextsTable : Table("texts") {
     val createdAt = timestamp("created_at")
     val updatedAt = timestamp("updated_at")
 
-    @OptIn(ExperimentalUuidApi::class)
     override val primaryKey = PrimaryKey(id)
 }
 
 object TextTagsTable : Table("text_tags") {
-    @OptIn(ExperimentalUuidApi::class)
     val textId = uuid("text_id")
     val tag = varchar("tag", 100)
 }

@@ -182,6 +182,14 @@ function formatEnum(value: string): string {
 		<!-- ── Full text body — secondary, bottom ── -->
 		<FullTextPanel text={text.data} />
 	{/if}
+
+	<AnnotationDrawer
+		open={drawerOpen}
+		anchor={drawerAnchor}
+		textId={id}
+		annotations={annotations.data ?? []}
+		onclose={() => (drawerOpen = false)}
+	/>
 </div>
 
 <style>

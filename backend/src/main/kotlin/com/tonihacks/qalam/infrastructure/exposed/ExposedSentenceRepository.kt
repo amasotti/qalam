@@ -23,12 +23,10 @@ import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.update
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid as KotlinUUID
 import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
 
-@OptIn(ExperimentalUuidApi::class)
 class ExposedSentenceRepository : SentenceRepository {
 
     override suspend fun findAllByTextId(textId: TextId): Either<DomainError, List<Sentence>> =
@@ -231,7 +229,6 @@ class ExposedSentenceRepository : SentenceRepository {
     }
 }
 
-@OptIn(ExperimentalUuidApi::class)
 private fun ResultRow.toSentence(tokens: List<AlignmentToken>) = Sentence(
     id = SentenceId(this[SentencesTable.id].toJavaUuid()),
     textId = TextId(this[SentencesTable.textId].toJavaUuid()),
@@ -246,7 +243,6 @@ private fun ResultRow.toSentence(tokens: List<AlignmentToken>) = Sentence(
     updatedAt = this[SentencesTable.updatedAt],
 )
 
-@OptIn(ExperimentalUuidApi::class)
 private fun ResultRow.toAlignmentToken() = AlignmentToken(
     id = AlignmentTokenId(this[AlignmentTokensTable.id].toJavaUuid()),
     sentenceId = SentenceId(this[AlignmentTokensTable.sentenceId].toJavaUuid()),

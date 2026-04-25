@@ -8,6 +8,7 @@ import { Button } from '$lib/components/ui/button';
 import AiExamples from '$lib/components/words/AiExamples.svelte';
 import DictionaryLinks from '$lib/components/words/DictionaryLinks.svelte';
 import WordForm from '$lib/components/words/WordForm.svelte';
+import AnnotationBadge from '$lib/components/annotations/AnnotationBadge.svelte';
 import {
 	useDeleteWord,
 	useDeleteWordExample,
@@ -235,14 +236,16 @@ function formatEnum(value: string): string {
 					<ul class="word-annotations-list">
 						{#each annotations.data ?? [] as annotation (annotation.id)}
 							<li class="word-annotation-item">
-								<span class="word-annotation-anchor">{annotation.anchor}</span>
-								<span class="word-annotation-type">{annotation.type}</span>
-								<a
-									class="word-annotation-link"
-									href="/texts/{annotation.textId}"
-								>
-									View text →
-								</a>
+								<div class="word-annotation-header">
+									<AnnotationBadge type={annotation.type} />
+									<span class="word-annotation-anchor arabic-text">{annotation.anchor}</span>
+									<a class="word-annotation-link" href="/texts/{annotation.textId}">
+										View text →
+									</a>
+								</div>
+								{#if annotation.content}
+									<p class="word-annotation-content">{annotation.content}</p>
+								{/if}
 							</li>
 						{/each}
 					</ul>
@@ -251,3 +254,18 @@ function formatEnum(value: string): string {
 		{/if}
 	{/if}
 </div>
+
+<style>
+.word-annotation-header {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.word-annotation-content {
+	font-size: 0.8125rem;
+	color: hsl(var(--foreground) / 0.85);
+	line-height: 1.5;
+	margin: 0.25rem 0 0 1.5rem;
+}
+</style>

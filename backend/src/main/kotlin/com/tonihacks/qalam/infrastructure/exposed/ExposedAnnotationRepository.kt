@@ -25,12 +25,11 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.update
 import kotlin.time.ExperimentalTime
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid as KotlinUUID
 import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
 
-@OptIn(ExperimentalUuidApi::class, ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class ExposedAnnotationRepository : AnnotationRepository {
 
     override suspend fun findAllByTextId(textId: TextId): Either<DomainError, List<Annotation>> =
@@ -223,7 +222,7 @@ class ExposedAnnotationRepository : AnnotationRepository {
     }
 }
 
-@OptIn(ExperimentalUuidApi::class, ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 private fun ResultRow.toAnnotation(wordIds: List<WordId>) = Annotation(
     id = AnnotationId(this[AnnotationsTable.id].toJavaUuid()),
     textId = TextId(this[AnnotationsTable.textId].toJavaUuid()),

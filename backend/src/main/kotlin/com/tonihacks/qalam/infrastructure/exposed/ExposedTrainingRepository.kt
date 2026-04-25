@@ -176,7 +176,6 @@ class ExposedTrainingRepository : TrainingRepository {
 
 // ── ResultRow mappers ───────────────────────────────────────────────────────
 
-@OptIn(kotlin.uuid.ExperimentalUuidApi::class)
 private fun ResultRow.toTrainingSession() = TrainingSession(
     id             = TrainingSessionId(this[TrainingSessionsTable.id].toJavaUuid()),
     mode           = TrainingMode.valueOf(this[TrainingSessionsTable.mode]),

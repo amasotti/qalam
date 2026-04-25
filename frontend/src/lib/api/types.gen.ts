@@ -1075,37 +1075,6 @@ export type UpdateTextResponses = {
 
 export type UpdateTextResponse = UpdateTextResponses[keyof UpdateTextResponses];
 
-export type SummarizeTextData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/api/v1/texts/{id}/summarize';
-};
-
-export type SummarizeTextErrors = {
-    /**
-     * Text not found
-     */
-    404: ErrorResponse;
-    /**
-     * AI not configured (OPENROUTER_API_KEY missing)
-     */
-    503: ErrorResponse;
-};
-
-export type SummarizeTextError = SummarizeTextErrors[keyof SummarizeTextErrors];
-
-export type SummarizeTextResponses = {
-    /**
-     * Generated summary
-     */
-    200: SummarizeResponse;
-};
-
-export type SummarizeTextResponse = SummarizeTextResponses[keyof SummarizeTextResponses];
-
 export type ListSentencesData = {
     body?: never;
     path: {

@@ -19,6 +19,7 @@ import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.exceptions.ExposedSQLException
+import org.postgresql.util.PSQLState
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -82,10 +83,10 @@ class ExposedAnnotationRepository : AnnotationRepository {
                 annotation.right()
             }
         } catch (e: ExposedSQLException) {
-            if (e.message?.contains("annotations_text_id_fkey") == true) {
-                DomainError.NotFound("Text", annotation.textId.toString()).left()
-            } else {
-                throw e
+            when (e.sqlState) {
+                PSQLState.FOREIGN_KEY_VIOLATION.state -> DomainError.NotFound("Text", annotation.textId.toString()).left()
+                PSQLState.UNIQUE_VIOLATION.state -> DomainError.Conflict("Annotation", annotation.id.toString()).left()
+                else -> throw e
             }
         }
 
@@ -155,7 +156,7 @@ class ExposedAnnotationRepository : AnnotationRepository {
                 }
             }
         } catch (e: ExposedSQLException) {
-            if (e.message?.contains("annotation_words_word_id_fkey") == true) {
+            if (e.sqlState == PSQLState.FOREIGN_KEY_VIOLATION.state) {
                 DomainError.NotFound("Word", wordId.toString()).left()
             } else {
                 throw e

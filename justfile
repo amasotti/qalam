@@ -72,6 +72,9 @@ dump-restore file:
 test:
     ./backend/gradlew -p backend test --no-daemon
 
+check:
+    ./backend/gradlew -p backend check --no-daemon
+
 # Lint the OpenAPI spec
 lint-api:
     docker run --rm -v $PWD:/spec redocly/cli lint /spec/backend/src/main/resources/openapi/documentation.yaml

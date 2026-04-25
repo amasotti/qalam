@@ -12,6 +12,8 @@ import io.ktor.server.response.*
 fun DomainError.toHttpResponse(): Pair<HttpStatusCode, ErrorResponse> = when (this) {
     is DomainError.NotFound ->
         HttpStatusCode.NotFound to ErrorResponse("$resourceType with id '$id' not found", "NOT_FOUND")
+    is DomainError.Conflict ->
+        HttpStatusCode.Conflict to ErrorResponse("$resourceType with id '$id' is available multiple times", "CONFLICT")
     is DomainError.AlreadyExists ->
         HttpStatusCode.Conflict to ErrorResponse(detail, "ALREADY_EXISTS")
     is DomainError.ValidationError ->

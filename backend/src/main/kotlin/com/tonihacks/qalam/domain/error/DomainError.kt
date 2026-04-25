@@ -7,6 +7,9 @@ sealed class DomainError {
     /** Resource not found by ID. */
     data class NotFound(val resourceType: String, val id: String) : DomainError()
 
+    /** Attempt to create/update a resource that violates a uniqueness constraint. */
+    data class Conflict(val resourceType: String, val id: String) : DomainError()
+
     /** Attempt to create a resource that already exists. */
     data class AlreadyExists(val resourceType: String, val detail: String) : DomainError()
 

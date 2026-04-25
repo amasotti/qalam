@@ -28,6 +28,7 @@ import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.or
+import org.postgresql.util.PSQLState
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -129,8 +130,7 @@ class ExposedWordRepository : WordRepository {
                 }
                 word.right()
             } catch (e: java.sql.SQLException) {
-                // SQLState 23xxx = integrity constraint violation (FK, unique, not-null, check)
-                if (e.sqlState?.startsWith("23") == true) {
+                if (e.sqlState == PSQLState.FOREIGN_KEY_VIOLATION.state) {
                     DomainError.NotFound("ArabicRoot", word.rootId?.toString() ?: "unknown").left()
                 } else {
                     DomainError.DatabaseError.left()

@@ -5,7 +5,7 @@ import AnnotationBadge from '$lib/components/annotations/AnnotationBadge.svelte'
 interface Props {
 	tokens: AlignmentTokenResponse[];
 	annotations?: AnnotationResponse[];
-	onTokenClick?: (anchor: string) => void;
+	onTokenClick?: (token: AlignmentTokenResponse) => void;
 }
 
 let { tokens, annotations = [], onTokenClick }: Props = $props();
@@ -24,8 +24,8 @@ function badgesFor(arabicText: string): AnnotationResponse[] {
 				class:token-cell-clickable={!!onTokenClick}
 				role={onTokenClick ? 'button' : undefined}
 				tabindex={onTokenClick ? 0 : undefined}
-				onclick={() => onTokenClick?.(token.arabic)}
-				onkeydown={(e) => e.key === 'Enter' && onTokenClick?.(token.arabic)}
+				onclick={() => onTokenClick?.(token)}
+				onkeydown={(e) => e.key === 'Enter' && onTokenClick?.(token)}
 			>
 				<span class="token-ar">{token.arabic}</span>
 				{#if token.transliteration}

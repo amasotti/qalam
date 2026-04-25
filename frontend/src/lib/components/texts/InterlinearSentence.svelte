@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { AnnotationResponse, SentenceResponse } from '$lib/api/types.gen';
+import type { AlignmentTokenResponse, AnnotationResponse, SentenceResponse } from '$lib/api/types.gen';
 import StaleTokenBanner from './StaleTokenBanner.svelte';
 import TokenGrid from './TokenGrid.svelte';
 
@@ -8,7 +8,7 @@ interface Props {
 	annotations?: AnnotationResponse[];
 	onRetokenize?: (sentence: SentenceResponse) => Promise<void>;
 	onMarkValid?: (sentence: SentenceResponse) => Promise<void>;
-	onTokenClick?: (anchor: string) => void;
+	onTokenClick?: (token: AlignmentTokenResponse) => void;
 	isPending?: boolean;
 }
 

@@ -2,6 +2,61 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.0.1] - 2026-04-25
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/19fe633fd2d01cf1df88f0f99c03f676fffafa4d..4df60e3968dd80b8be2cf9df44c0515ea4306326)
+### 🚀 Features
+
+
+- Add auto-tokenizer skill for claude ([2428728](https://github.com/amasotti/qalam/commit/2428728469df51d2540e1a4550aa5d1dbfca435c))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Improve prompt ([36ffd17](https://github.com/amasotti/qalam/commit/36ffd177cff03d1b734cc7dbf93b42953ed8c37c))
+
+- Claude permissions ([49c6d1b](https://github.com/amasotti/qalam/commit/49c6d1b50033ce7225fe735066f9397587c21f6b))
+
+## [0.0.1-alpha.2] - 2026-04-19
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/0646e7cbf525a08e8fc2672b044b5095d6bf89a4..19fe633fd2d01cf1df88f0f99c03f676fffafa4d)
+### 🚀 Features
+
+
+- Add CI and release workflows for automated testing and versioning ([ce18a3c](https://github.com/amasotti/qalam/commit/ce18a3cac46971c478ad00311adfd42bf9ad4331))
+
+- Implement reorder sentences feature with API integration and UI updates ([b426bfd](https://github.com/amasotti/qalam/commit/b426bfd0ece60f46c5024329d6ba0c296d21bd59))
+
+- Add Docker configuration with Traefik and Caddy for frontend and backend services ([756493a](https://github.com/amasotti/qalam/commit/756493a2a5b8c17edb78530537c87c086c9f0260))
+
+- M12 - backups ([683addc](https://github.com/amasotti/qalam/commit/683addc4fe9ca65434db8c360a93cf46d24ea77a))
+
+- Migrate from an-na7wi ([4ac5faa](https://github.com/amasotti/qalam/commit/4ac5faaeaea0e649d5e6a652dbfd07b4235665c5))
+
+- Backup sync script ([6d6b1bc](https://github.com/amasotti/qalam/commit/6d6b1bc4afe9d2894903863308e6113855252b09))
+
+- Add rootId filter to word queries and enhance word chip UI ([4c86f85](https://github.com/amasotti/qalam/commit/4c86f85649a95fd46ce658d8312cb6c463b90f22))
+
+### 🐛 Bug Fixes
+
+
+- Fix cors problem ([a32a08a](https://github.com/amasotti/qalam/commit/a32a08a3e5e17e4f800b554c53b79625a4bfdbb0))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Add Redocly configuration file with custom rules ([90ac58b](https://github.com/amasotti/qalam/commit/90ac58b6cf0d0c07e7e028e0683c12992851c281))
+
+- Fix api documenation ([9f84037](https://github.com/amasotti/qalam/commit/9f84037a3cf8d165b201c6d4db2e201054d8b2cc))
+
+- Update justfile ([16b0738](https://github.com/amasotti/qalam/commit/16b0738bf86b40d70fedf57dc20cab98f0e8c1d6))
+
+- Prepare migration from an-na7wi ([1524f66](https://github.com/amasotti/qalam/commit/1524f66be14ff05f53edb59b4cd42c34e962fb3c))
+
+- Prepare migration ([76c8c3b](https://github.com/amasotti/qalam/commit/76c8c3b9a99e5df0026c06e383c2c1ba590a53d5))
+
+- Re-run type generation ([19fe633](https://github.com/amasotti/qalam/commit/19fe633fd2d01cf1df88f0f99c03f676fffafa4d))
+
 ## [0.0.1-alpha.1] - 2026-04-19
 
 ### 🚀 Features

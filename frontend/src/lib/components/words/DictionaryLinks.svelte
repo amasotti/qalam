@@ -1,7 +1,5 @@
 <script lang="ts">
-import { BookOpen, Plus } from 'lucide-svelte';
 import type { CreateDictionaryLinkRequest, DictionarySource } from '$lib/api/types.gen';
-import Button from '$lib/components/ui/button/button.svelte';
 import {
 	useAddDictionaryLink,
 	useDeleteDictionaryLink,
@@ -99,9 +97,13 @@ async function handleAddAll() {
 }
 
 function handleOpenAll() {
-	links.forEach((link, i) => {
-		setTimeout(() => window.open(link.url, '_blank', 'noopener,noreferrer'), i * 120);
-	});
+	for (const link of links) {
+		const a = document.createElement('a');
+		a.href = link.url;
+		a.target = '_blank';
+		a.rel = 'noopener noreferrer';
+		a.click();
+	}
 }
 
 function handleAddOne() {
@@ -125,22 +127,20 @@ function handleAddOne() {
 </script>
 
 <div>
-	<div class="dict-links-header">
-		<div class="dict-links-header-actions">
+	{#if links.length > 0 || missingTemplated.length > 0}
+		<div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
 			{#if links.length > 0}
-				<Button size="sm" variant="ghost" onclick={handleOpenAll}>
-					<BookOpen size={14} />
-					Open all
-				</Button>
+				<button class="btn" style="font-size:0.75rem;padding:0.25rem 0.625rem;" onclick={handleOpenAll}>
+					Open all ↗
+				</button>
 			{/if}
 			{#if missingTemplated.length > 0}
-				<Button size="sm" variant="ghost" onclick={handleAddAll} disabled={isAddingAll}>
-					<Plus size={14} />
-					{isAddingAll ? 'Adding…' : 'Add all'}
-				</Button>
+				<button class="btn" style="font-size:0.75rem;padding:0.25rem 0.625rem;" onclick={handleAddAll} disabled={isAddingAll}>
+					{isAddingAll ? 'Adding…' : '+ Add all dictionaries'}
+				</button>
 			{/if}
 		</div>
-	</div>
+	{/if}
 
 	{#if linksQuery.isPending}
 		<p class="annot-empty">Loading…</p>
@@ -170,12 +170,12 @@ function handleAddOne() {
 		</div>
 	{/if}
 
-	<div class="dict-links-manual">
+	<div style="margin-top:0.75rem;">
 		<button
-			class="dict-links-manual-toggle"
+			class="dict-link-add-toggle"
 			onclick={() => (showManual = !showManual)}
 		>
-			{showManual ? '− Hide manual add' : '+ Custom / single'}
+			{showManual ? '− Hide' : '+ Custom link'}
 		</button>
 
 		{#if showManual}
@@ -202,14 +202,12 @@ function handleAddOne() {
 				{#if addError}
 					<p class="dict-links-add-error">{addError}</p>
 				{/if}
-				<Button
+				<button
+					class="btn btn-primary"
+					style="font-size:0.75rem;padding:0.25rem 0.75rem;align-self:flex-start;"
 					onclick={handleAddOne}
 					disabled={addMutation.isPending || !urlInput.trim()}
-					size="sm"
-				>
-					<Plus size={14} />
-					Add
-				</Button>
+				>Add</button>
 			</div>
 		{/if}
 	</div>

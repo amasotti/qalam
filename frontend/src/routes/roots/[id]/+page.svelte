@@ -41,7 +41,7 @@ const famColors: Record<string, { bg: string; color: string }> = {
 	KNOWN: { bg: 'var(--m-known-bg)', color: 'var(--m-known)' },
 	FAMILIAR: { bg: 'var(--m-familiar-bg)', color: 'var(--m-familiar)' },
 	LEARNING: { bg: 'var(--m-learning-bg)', color: 'var(--m-learning)' },
-	NEW: { bg: 'var(--bg-dark)', color: 'var(--ink-ghost)' }
+	NEW: { bg: 'var(--bg-dark)', color: 'var(--ink-ghost)' },
 };
 
 const famBarColors: Record<string, string> = {
@@ -49,7 +49,7 @@ const famBarColors: Record<string, string> = {
 	KNOWN: 'var(--m-known)',
 	FAMILIAR: 'var(--m-familiar)',
 	LEARNING: 'var(--m-learning)',
-	NEW: 'var(--border)'
+	NEW: 'var(--border)',
 };
 </script>
 

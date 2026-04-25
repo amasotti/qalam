@@ -1,10 +1,12 @@
 package com.tonihacks.qalam.domain.text
 
+import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.PageRequest
 import com.tonihacks.qalam.delivery.dto.PaginatedResponse
 import com.tonihacks.qalam.domain.error.DomainError
+import com.tonihacks.qalam.domain.sentence.SentenceRepository
 import com.tonihacks.qalam.domain.word.Dialect
 import com.tonihacks.qalam.domain.word.Difficulty
 import io.kotest.core.spec.style.FreeSpec
@@ -50,7 +52,9 @@ private fun aText(
 class TextServiceTest : FreeSpec({
 
     val repo = mockk<TextRepository>()
-    val service = TextService(repo)
+    val sentenceRepo = mockk<SentenceRepository>()
+
+    val service = TextService(repo, sentenceRepo)
 
     beforeTest { clearMocks(repo) }
 
@@ -77,7 +81,7 @@ class TextServiceTest : FreeSpec({
 
         "returns InvalidInput for malformed UUID" {
             val result = service.getById("not-a-uuid")
-            result.shouldBeInstanceOf<arrow.core.Either.Left<*>>()
+            result.shouldBeInstanceOf<Either.Left<*>>()
         }
     }
 
@@ -287,7 +291,7 @@ class TextServiceTest : FreeSpec({
 
         "returns InvalidInput for malformed UUID" {
             val result = service.delete("not-a-uuid")
-            result.shouldBeInstanceOf<arrow.core.Either.Left<*>>()
+            result.shouldBeInstanceOf<Either.Left<*>>()
         }
     }
 

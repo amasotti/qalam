@@ -2,9 +2,153 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.0.4] - 2026-04-25
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/3a9342647ce31898ba01ae56cd0534a85062ead7..846ad63f5153d12aa3f22c02ab7cf4488b986918)
+### 🚀 Features
+
+
+- Annotation feature ([a863ef5](https://github.com/amasotti/qalam/commit/a863ef5ab0754a9f9911ddeb15a2d733e8178cc1))
+
+- Integrate annotation drawer functionality ([ac26b97](https://github.com/amasotti/qalam/commit/ac26b97d9f199e9fba2d8b7d04b175030d5a88f2))
+
+- 2 additional commands for claude ([48f6e1d](https://github.com/amasotti/qalam/commit/48f6e1dc936ae7281b4da87fa81624bea33bfc6d))
+
+### 🐛 Bug Fixes
+
+
+- Release workflow ([db864b6](https://github.com/amasotti/qalam/commit/db864b68508e603aa11475dcf085d600ce790e0e))
+
+### 🚜 Refactor
+
+
+- Remove inline opt-in annotation (add at compiler level) ([0734e4b](https://github.com/amasotti/qalam/commit/0734e4b837d01242bab90610952b730904c5b7bc))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Update design mockups ([96e6696](https://github.com/amasotti/qalam/commit/96e669601204347663b5a75f1101233e7281ff82))
+
+- Cleanup after implementation ([0a6dca2](https://github.com/amasotti/qalam/commit/0a6dca20ffe564a3512a9ae838da165a93cf2650))
+
+- Improve tokenize command ([117f550](https://github.com/amasotti/qalam/commit/117f550198c7ba058a934d0bbd93486eadd302ba))
+
+- Format fe files ([e126fdb](https://github.com/amasotti/qalam/commit/e126fdb9546ea478249e44227bee77e0eba688ff))
+
+## [0.0.3] - 2026-04-25
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/9944d59c1031623ad02979188efbcb7d694d8c83..3a9342647ce31898ba01ae56cd0534a85062ead7)
+### 🚀 Features
+
+
+- Add training_sessions and training_session_words tables ([304a392](https://github.com/amasotti/qalam/commit/304a3925ae7ee45e19fe615324b8315ccd9a3132))
+
+- Add training domain types and error variants ([0fb4b39](https://github.com/amasotti/qalam/commit/0fb4b396dd9f8d65c162b6daa28e69e0acdcff8e))
+
+- Add training DTOs ([3797d11](https://github.com/amasotti/qalam/commit/3797d1174dd0703640125a913a1a67c9f54c2f61))
+
+- Add TrainingRepository interface and extend WordRepository ([f02da08](https://github.com/amasotti/qalam/commit/f02da08d59fe15b339fe480a6e97d872739be0b1))
+
+- Add Exposed table objects for training ([d3a1f9d](https://github.com/amasotti/qalam/commit/d3a1f9dd5c85f86827251e883daeae35ecb1e92d))
+
+- Implement training queries in ExposedWordRepository ([1cbe7a7](https://github.com/amasotti/qalam/commit/1cbe7a7955dc0abfe3fb04e3071903fd6d1a46ca))
+
+- Update README with project description, features, and setup instructions ([7c55983](https://github.com/amasotti/qalam/commit/7c5598337ffc8dfde27c03ab6e03c81b1526e22e))
+
+- Enhance layout for root info and word family sections ([c761eac](https://github.com/amasotti/qalam/commit/c761eacdf3120c38b1896619feb4cf1c13a8753b))
+
+- Implement ExposedTrainingRepository ([cfb8d9e](https://github.com/amasotti/qalam/commit/cfb8d9e61fecac7aeb7a9874c3bb8774ff0bed75))
+
+- Implement TrainingService with mastery promotion logic ([84b2354](https://github.com/amasotti/qalam/commit/84b235437ef93d28d90187269dfe2dda3ad8141f))
+
+- Add TrainingRoutes, wire DI and routing ([7c20756](https://github.com/amasotti/qalam/commit/7c207568f7cfe19eaee4819fb0e3d2a9919f295e))
+
+- Add training API endpoints and data models for session management and statistics ([c5ab291](https://github.com/amasotti/qalam/commit/c5ab291e5f98771b67cd6dede9578dceb2cb8576))
+
+- Add training store with session and result mutations ([9b0987f](https://github.com/amasotti/qalam/commit/9b0987fd1f2956887bd28c346adb95fdb82f1dd2))
+
+- Add SessionSummary component ([338666b](https://github.com/amasotti/qalam/commit/338666baf12e2687a3c6c8df07f93cf8f5050758))
+
+- Add FlashCard component for training flashcard view ([2343b94](https://github.com/amasotti/qalam/commit/2343b94233dee020e7af7b8298b2fec57b081307))
+
+- Add training setup page ([cff4128](https://github.com/amasotti/qalam/commit/cff41288e5c8e7304dda63889e7a6586ba7ac89d))
+
+- Add training session page with flashcard flow ([83bf25e](https://github.com/amasotti/qalam/commit/83bf25eb8623f8dd2337891dd037eade4047c009))
+
+- Enhance FlashCard component to handle result callbacks ([0adcddc](https://github.com/amasotti/qalam/commit/0adcddcf529e59329cbe1cc47a8d5c02093bc03b))
+
+- Add claude commands ([3a93426](https://github.com/amasotti/qalam/commit/3a9342647ce31898ba01ae56cd0534a85062ead7))
+
+### 🐛 Bug Fixes
+
+
+- Release workflow dispatching ([3cace04](https://github.com/amasotti/qalam/commit/3cace042079d6e2bd69260b1d3ac4d564316cfe5))
+
+- FindForTraining mastery filter and updateProgress guard ([5f9f169](https://github.com/amasotti/qalam/commit/5f9f1690405642b0ffb0384cb4d8133382837a2a))
+
+- Align Instant type to kotlin.time across training domain ([0086931](https://github.com/amasotti/qalam/commit/00869315b718179ef1c79740c5921557dd63ecc5))
+
+- Suppress detekt TooGenericExceptionCaught and SwallowedException in training repositories ([02ed890](https://github.com/amasotti/qalam/commit/02ed8907ac3a2bb4dffec512a0343dc78fcd6fde))
+
+- Ci pipeline ([8bf47b4](https://github.com/amasotti/qalam/commit/8bf47b4a0be85dfaa645b95c4fdb5f5df3fb5137))
+
+- Use mutate + Button component in training setup page ([b0ae01e](https://github.com/amasotti/qalam/commit/b0ae01e4c689db6dd147ad28cbd151a20aed35c6))
+
+- Update FlashCard component to use local state for unanswered words ([13623a6](https://github.com/amasotti/qalam/commit/13623a6d9352df2acf90a45c8b49fb0b860d6e26))
+
+- Handle missing URL templates in DictionaryLinks component ([11b0b92](https://github.com/amasotti/qalam/commit/11b0b926a4f101a6217860a03b02b1ecba81253c))
+
+- Add .superpowers to .gitignore ([bd6ea5d](https://github.com/amasotti/qalam/commit/bd6ea5d5bd7856aed7ab0edca844019c16479321))
+
+### 🚜 Refactor
+
+
+- Remove summarizeText API and related types from SDK ([996f303](https://github.com/amasotti/qalam/commit/996f3039dfd1b53d7928a199e8c6c0ab7083493a))
+
+### 🧪 Testing
+
+
+- Improve error handling in word family test ([c100f16](https://github.com/amasotti/qalam/commit/c100f162f297ccc6988675b70035b188da8194ef))
+
+- Mastery promotion unit tests ([317ff49](https://github.com/amasotti/qalam/commit/317ff49c24d8fe78088de30e604396f3a1905fe4))
+
+- Training API integration tests ([c2daf27](https://github.com/amasotti/qalam/commit/c2daf274fb9a38cd8d38fab8dff716e0af77afeb))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Remove migration scripts (all done) ([5864f09](https://github.com/amasotti/qalam/commit/5864f096afa70dd513aae34f0d90a6f220435c5e))
+
+- Remove migration scripts (all done) ([11b1034](https://github.com/amasotti/qalam/commit/11b103491be3c14e4afd4415582788eeee2e05a6))
+
+- Cleanup openapi and regenerate types ([164d162](https://github.com/amasotti/qalam/commit/164d16244d5f9681ae33fa52705d231ccd0489c3))
+
+- Cformat flashcard page ([f0a1fd2](https://github.com/amasotti/qalam/commit/f0a1fd2dc801d45253743b8931f12c0adb5cc4b4))
+
+- Cleanup fe page ([2297c81](https://github.com/amasotti/qalam/commit/2297c8120d7c206fbf077a6dda42c7b54696fe65))
+
+- Cleanup fe page ([6d53eba](https://github.com/amasotti/qalam/commit/6d53ebad9e123120fc5ac25dfe2dfe62ee1530a2))
+
+- Remove unnecessary whitespace in +page.svelte ([51b88b6](https://github.com/amasotti/qalam/commit/51b88b638589df958a2661c7dfda61650061d6f0))
+
+- Add mockups - FE refresh ([5172370](https://github.com/amasotti/qalam/commit/5172370de210784701120a6966c4ffbf12337375))
+
+- Update claude rules ([d4e0f75](https://github.com/amasotti/qalam/commit/d4e0f759c79344891efbd75fe897b83f1c2ac436))
+
+- Update specs ([529d99d](https://github.com/amasotti/qalam/commit/529d99df98c239cea8d7a260f6f8a159cfa8d72d))
+
+- Update specs ([51dbd41](https://github.com/amasotti/qalam/commit/51dbd410fceb216e5e9b3983eb94e64466cc174e))
+
+- Add future plans ([80e8679](https://github.com/amasotti/qalam/commit/80e8679780fc96c450d254fa4e3e0a557c3b08f9))
+
+### E2e
+
+
+- Add new tests ([217330d](https://github.com/amasotti/qalam/commit/217330d916d8e33a043eee04d5b8c16c57d9c256))
+
 ## [0.0.2] - 2026-04-25
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/4df60e3968dd80b8be2cf9df44c0515ea4306326..d9b595c23ce829178e995a377730782e1a221ba4)
+[Compare with last version](https://github.com/amasotti/qalam/compare/4df60e3968dd80b8be2cf9df44c0515ea4306326..9944d59c1031623ad02979188efbcb7d694d8c83)
 ### 🚀 Features
 
 
@@ -16,12 +160,22 @@ All notable changes to this project will be documented in this file (created wit
 
 - Add Playwright E2E tests for navigation, roots, texts, and words ([b75125a](https://github.com/amasotti/qalam/commit/b75125a223050392e6eb710c3841ebd37b24eacb))
 
+### 🐛 Bug Fixes
+
+
+- Release workflow dispatching ([9944d59](https://github.com/amasotti/qalam/commit/9944d59c1031623ad02979188efbcb7d694d8c83))
+
 ### 🚜 Refactor
 
 
 - Replace parameter extraction with getOrFail for improved error handling ([0e619eb](https://github.com/amasotti/qalam/commit/0e619eb0cab14d6641d558b9e24238bcb06324b2))
 
 - Remove default AiClient instantiation in WordService constructor ([9689718](https://github.com/amasotti/qalam/commit/9689718c4e2eaf7b17eed2bcb978a2a094309a1f))
+
+### 🧪 Testing
+
+
+- Improve error handling in word family test ([93b19aa](https://github.com/amasotti/qalam/commit/93b19aa346ee2d28dfcfb92b33a79696bce36598))
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -33,6 +187,11 @@ All notable changes to this project will be documented in this file (created wit
 - Drop duplicate TRGM indexes for Arabic words and translations ([c765718](https://github.com/amasotti/qalam/commit/c765718ee077472cb7fc05fc351a187797fe64f7))
 
 - Fix tests and run formatter ([d9b595c](https://github.com/amasotti/qalam/commit/d9b595c23ce829178e995a377730782e1a221ba4))
+
+### E2e
+
+
+- Add new tests ([61465a7](https://github.com/amasotti/qalam/commit/61465a7eadcbb05426142f7a2cef323aaaab8230))
 
 ## [0.0.1] - 2026-04-25
 

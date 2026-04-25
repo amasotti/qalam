@@ -3,12 +3,12 @@ import { ChevronLeft, ExternalLink, Pencil, Trash2 } from 'lucide-svelte';
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import type { UpdateWordRequest } from '$lib/api/types.gen';
+import AnnotationBadge from '$lib/components/annotations/AnnotationBadge.svelte';
 import { Badge } from '$lib/components/ui/badge';
 import { Button } from '$lib/components/ui/button';
 import AiExamples from '$lib/components/words/AiExamples.svelte';
 import DictionaryLinks from '$lib/components/words/DictionaryLinks.svelte';
 import WordForm from '$lib/components/words/WordForm.svelte';
-import AnnotationBadge from '$lib/components/annotations/AnnotationBadge.svelte';
 import {
 	useDeleteWord,
 	useDeleteWordExample,

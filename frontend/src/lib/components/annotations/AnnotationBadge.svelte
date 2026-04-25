@@ -12,7 +12,7 @@ interface Props {
 
 let { type }: Props = $props();
 
-const cfg = $derived(BADGE_CONFIG[type] ?? BADGE_CONFIG['OTHER']);
+const cfg = $derived(BADGE_CONFIG[type] ?? BADGE_CONFIG.OTHER);
 </script>
 
 <span class="annotation-badge {cfg.cls}" title={type.toLowerCase()}>{cfg.label}</span>

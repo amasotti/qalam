@@ -3,12 +3,14 @@ import { ChevronLeft, Pencil, Settings, Trash2, X } from 'lucide-svelte';
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import type { UpdateTextRequest } from '$lib/api/types.gen';
+import AnnotationDrawer from '$lib/components/annotations/AnnotationDrawer.svelte';
 import FullTextPanel from '$lib/components/texts/FullTextPanel.svelte';
 import InterlinearSentence from '$lib/components/texts/InterlinearSentence.svelte';
 import SentenceEditor from '$lib/components/texts/SentenceEditor.svelte';
 import TextForm from '$lib/components/texts/TextForm.svelte';
 import { Badge } from '$lib/components/ui/badge';
 import { Button } from '$lib/components/ui/button';
+import { useTextAnnotations } from '$lib/stores/annotations';
 import {
 	useAutoTokenize,
 	useDeleteText,
@@ -17,8 +19,6 @@ import {
 	useText,
 	useUpdateText,
 } from '$lib/stores/texts';
-import AnnotationDrawer from '$lib/components/annotations/AnnotationDrawer.svelte';
-import { useTextAnnotations } from '$lib/stores/annotations';
 
 const id = $derived(page.params.id ?? '');
 const text = useText(() => id);

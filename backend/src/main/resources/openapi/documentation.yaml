@@ -1520,6 +1520,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TrainingStatsResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+            description: Internal server error
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/ErrorResponse"
 
   /api/v1/transliterate:
     post:
@@ -1945,14 +1957,6 @@ components:
           type: array
           items: { type: string }
           nullable: true
-
-    SummarizeResponse:
-      type: object
-      required: [summary]
-      properties:
-        summary:
-          type: string
-          description: AI-generated summary of the text
 
     # --- Sentences ---
 

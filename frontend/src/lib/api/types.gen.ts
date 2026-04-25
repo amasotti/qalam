@@ -181,13 +181,6 @@ export type UpdateTextRequest = {
     tags?: Array<string> | null;
 };
 
-export type SummarizeResponse = {
-    /**
-     * AI-generated summary of the text
-     */
-    summary: string;
-};
-
 export type AlignmentTokenResponse = {
     id: string;
     sentenceId: string;
@@ -1943,6 +1936,19 @@ export type GetTrainingStatsData = {
     query?: never;
     url: '/api/v1/training/stats';
 };
+
+export type GetTrainingStatsErrors = {
+    /**
+     * Bad request
+     */
+    400: ErrorResponse;
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse;
+};
+
+export type GetTrainingStatsError = GetTrainingStatsErrors[keyof GetTrainingStatsErrors];
 
 export type GetTrainingStatsResponses = {
     /**

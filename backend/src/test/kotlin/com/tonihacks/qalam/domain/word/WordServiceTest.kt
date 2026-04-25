@@ -8,6 +8,7 @@ import com.tonihacks.qalam.delivery.dto.word.CreateDictionaryLinkRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordRequest
 import com.tonihacks.qalam.delivery.dto.word.UpdateWordRequest
 import com.tonihacks.qalam.domain.error.DomainError
+import com.tonihacks.qalam.infrastructure.ai.AiClient
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -21,7 +22,8 @@ import kotlin.time.Instant
 class WordServiceTest : FunSpec({
 
     val repo = mockk<WordRepository>()
-    val service = WordService(repo)
+    val aiClient = mockk<AiClient>()
+    val service = WordService(repo, aiClient)
 
     beforeTest { clearMocks(repo) }
 

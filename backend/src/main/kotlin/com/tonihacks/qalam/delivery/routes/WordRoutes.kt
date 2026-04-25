@@ -10,6 +10,7 @@ import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.util.getOrFail
 
 @Suppress("LongMethod")
 fun Route.wordRoutes(service: WordService) {
@@ -41,7 +42,7 @@ fun Route.wordRoutes(service: WordService) {
         }
 
         get("/{id}") {
-            val id = call.parameters["id"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
             service.getById(id).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.OK, it) },
@@ -57,7 +58,7 @@ fun Route.wordRoutes(service: WordService) {
         }
 
         put("/{id}") {
-            val id = call.parameters["id"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
             val req = call.receive<UpdateWordRequest>()
             service.update(id, req).fold(
                 { call.respondError(it) },
@@ -66,7 +67,7 @@ fun Route.wordRoutes(service: WordService) {
         }
 
         delete("/{id}") {
-            val id = call.parameters["id"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
             service.delete(id).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.NoContent) },
@@ -75,7 +76,7 @@ fun Route.wordRoutes(service: WordService) {
 
         // Dictionary links sub-resource
         get("/{id}/dictionary-links") {
-            val id = call.parameters["id"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
             service.getDictionaryLinks(id).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.OK, it) },
@@ -83,7 +84,7 @@ fun Route.wordRoutes(service: WordService) {
         }
 
         post("/{id}/dictionary-links") {
-            val id = call.parameters["id"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
             val req = call.receive<CreateDictionaryLinkRequest>()
             service.addDictionaryLink(id, req).fold(
                 { call.respondError(it) },
@@ -92,8 +93,8 @@ fun Route.wordRoutes(service: WordService) {
         }
 
         delete("/{id}/dictionary-links/{linkId}") {
-            val id = call.parameters["id"]!!
-            val linkId = call.parameters["linkId"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
+            val linkId = call.pathParameters.getOrFail<String>("linkId")
             service.deleteDictionaryLink(id, linkId).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.NoContent) },
@@ -102,7 +103,7 @@ fun Route.wordRoutes(service: WordService) {
 
         // Saved examples sub-resource
         get("/{id}/examples") {
-            val id = call.parameters["id"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
             service.getExamples(id).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.OK, it) },
@@ -110,7 +111,7 @@ fun Route.wordRoutes(service: WordService) {
         }
 
         post("/{id}/examples") {
-            val id = call.parameters["id"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
             val req = call.receive<CreateWordExampleRequest>()
             service.saveExample(id, req).fold(
                 { call.respondError(it) },
@@ -119,8 +120,8 @@ fun Route.wordRoutes(service: WordService) {
         }
 
         delete("/{id}/examples/{exampleId}") {
-            val id = call.parameters["id"]!!
-            val exampleId = call.parameters["exampleId"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
+            val exampleId = call.pathParameters.getOrFail<String>("exampleId")
             service.deleteExample(id, exampleId).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.NoContent) },
@@ -129,7 +130,7 @@ fun Route.wordRoutes(service: WordService) {
 
         // AI generation (ephemeral — does not persist)
         post("/{id}/examples/generate") {
-            val id = call.parameters["id"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
             service.generateExamples(id).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.OK, it) },

@@ -9,6 +9,7 @@ import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.util.getOrFail
 
 fun Route.rootRoutes(service: RootService) {
     route("/roots") {
@@ -25,8 +26,7 @@ fun Route.rootRoutes(service: RootService) {
         }
 
         get("/{id}") {
-            val id = call.parameters["id"]!!
-
+            val id = call.pathParameters.getOrFail<String>("id")
             service.getById(id).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.OK, it) },
@@ -42,7 +42,7 @@ fun Route.rootRoutes(service: RootService) {
         }
 
         put("/{id}") {
-            val id = call.parameters["id"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
             val req = call.receive<UpdateRootRequest>()
             service.update(id, req).fold(
                 { call.respondError(it) },
@@ -51,7 +51,7 @@ fun Route.rootRoutes(service: RootService) {
         }
 
         delete("/{id}") {
-            val id = call.parameters["id"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
             service.delete(id).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.NoContent) },

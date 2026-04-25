@@ -10,6 +10,7 @@ import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.util.getOrFail
 
 @Suppress("LongMethod")
 fun Route.textRoutes(service: TextService) {
@@ -39,7 +40,7 @@ fun Route.textRoutes(service: TextService) {
         }
 
         get("/{id}") {
-            val id = call.parameters["id"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
             service.getById(id).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.OK, it.toResponse()) },
@@ -64,7 +65,7 @@ fun Route.textRoutes(service: TextService) {
         }
 
         put("/{id}") {
-            val id = call.parameters["id"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
             val req = call.receive<UpdateTextRequest>()
             service.update(
                 id = id,
@@ -83,7 +84,7 @@ fun Route.textRoutes(service: TextService) {
         }
 
         delete("/{id}") {
-            val id = call.parameters["id"]!!
+            val id = call.pathParameters.getOrFail<String>("id")
             service.delete(id).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.NoContent) },

@@ -48,7 +48,6 @@ async function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
 		isPending = false;
 	}
 }
-
 </script>
 
 {#if session.isLoading}

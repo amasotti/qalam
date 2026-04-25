@@ -133,6 +133,19 @@ export type AiExamplesResponse = {
     examples: Array<AiExampleSentence>;
 };
 
+export type AnalyzeWordRequest = {
+    arabicText: string;
+};
+
+export type WordAnalysisResponse = {
+    arabicText: string;
+    transliteration?: string | null;
+    translation?: string | null;
+    partOfSpeech?: string | null;
+    rootLetters?: string | null;
+    exampleSentence?: AiExampleSentence | null;
+};
+
 export type TextResponse = {
     id: string;
     title: string;
@@ -1013,6 +1026,65 @@ export type GenerateWordExamplesResponses = {
 };
 
 export type GenerateWordExamplesResponse = GenerateWordExamplesResponses[keyof GenerateWordExamplesResponses];
+
+export type GetWordByArabicData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Arabic text to look up (exact match after normalization)
+         */
+        q: string;
+    };
+    url: '/api/v1/words/by-arabic';
+};
+
+export type GetWordByArabicErrors = {
+    /**
+     * Missing required query parameter `q`
+     */
+    400: ErrorResponse;
+    /**
+     * Word not found
+     */
+    404: ErrorResponse;
+};
+
+export type GetWordByArabicError = GetWordByArabicErrors[keyof GetWordByArabicErrors];
+
+export type GetWordByArabicResponses = {
+    /**
+     * Word found
+     */
+    200: WordResponse;
+};
+
+export type GetWordByArabicResponse = GetWordByArabicResponses[keyof GetWordByArabicResponses];
+
+export type AnalyzeWordData = {
+    body: AnalyzeWordRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/words/analyze';
+};
+
+export type AnalyzeWordErrors = {
+    /**
+     * AI not configured (OPENROUTER_API_KEY missing)
+     */
+    503: ErrorResponse;
+};
+
+export type AnalyzeWordError = AnalyzeWordErrors[keyof AnalyzeWordErrors];
+
+export type AnalyzeWordResponses = {
+    /**
+     * AI analysis result
+     */
+    200: WordAnalysisResponse;
+};
+
+export type AnalyzeWordResponse = AnalyzeWordResponses[keyof AnalyzeWordResponses];
 
 export type ListTextsData = {
     body?: never;

@@ -1,6 +1,7 @@
 import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query';
 import {
 	addDictionaryLink,
+	analyzeWord,
 	autocompleteWords,
 	createWord,
 	deleteDictionaryLink,
@@ -8,6 +9,7 @@ import {
 	deleteWordExample,
 	generateWordExamples,
 	getAnnotationsForWord,
+	getWordByArabic,
 	getWordById,
 	listDictionaryLinks,
 	listWordExamples,
@@ -27,6 +29,7 @@ import type {
 	MasteryLevel,
 	PartOfSpeech,
 	UpdateWordRequest,
+	WordAnalysisResponse,
 	WordAutocompleteResponse,
 	WordExampleResponse,
 	WordResponse,
@@ -235,6 +238,27 @@ export function useGenerateExamples() {
 			const { data, error } = await generateWordExamples({ path: { id } });
 			if (error) throw error;
 			return requireData(data, 'generateWordExamples') as AiExamplesResponse;
+		},
+	}));
+}
+
+export function useLookupWordByArabic() {
+	return createMutation(() => ({
+		mutationFn: async (arabicText: string): Promise<WordResponse | null> => {
+			const { data, error, response } = await getWordByArabic({ query: { q: arabicText } });
+			if (response.status === 404) return null;
+			if (error) throw error;
+			return requireData(data, 'getWordByArabic') as WordResponse;
+		},
+	}));
+}
+
+export function useAnalyzeWord() {
+	return createMutation(() => ({
+		mutationFn: async (arabicText: string): Promise<WordAnalysisResponse> => {
+			const { data, error } = await analyzeWord({ body: { arabicText } });
+			if (error) throw error;
+			return requireData(data, 'analyzeWord') as WordAnalysisResponse;
 		},
 	}));
 }

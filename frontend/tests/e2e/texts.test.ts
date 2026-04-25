@@ -27,6 +27,24 @@ test.describe('Texts', () => {
 		await expect(page.getByRole('heading', { name: 'Playwright test text' })).toBeVisible();
 	});
 
+	test('edit text title → updated title shown on detail page', async ({ page, request }) => {
+		const res = await request.post(`${BACKEND}/api/v1/texts`, {
+			data: { title: 'Original title', dialect: 'MSA', difficulty: 'BEGINNER', tags: [] },
+		});
+		expect(res.status()).toBe(201);
+		createdId = (await res.json()).id;
+
+		await page.goto(`/texts/${createdId}`);
+
+		await page.getByTitle('Edit text info').click();
+
+		await page.locator('#tf-title').clear();
+		await page.locator('#tf-title').fill('Updated title');
+		await page.getByRole('button', { name: 'Save changes' }).click();
+
+		await expect(page.getByRole('heading', { name: 'Updated title' })).toBeVisible();
+	});
+
 	test('add sentence → sentence appears in editor', async ({ page, request }) => {
 		const res = await request.post(`${BACKEND}/api/v1/texts`, {
 			data: { title: 'Playwright sentence test', dialect: 'MSA', difficulty: 'BEGINNER', tags: [] },

@@ -85,6 +85,14 @@ fun Route.textRoutes(service: TextService) {
             )
         }
 
+        post("/{id}/sync") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            service.syncFromSentences(id).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.OK, it.toResponse()) },
+            )
+        }
+
         delete("/{id}") {
             val id = call.pathParameters.getOrFail<String>("id")
             service.delete(id).fold(

@@ -1260,6 +1260,33 @@ export type UpdateTextResponses = {
 
 export type UpdateTextResponse = UpdateTextResponses[keyof UpdateTextResponses];
 
+export type SyncTextFromSentencesData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/texts/{id}/sync';
+};
+
+export type SyncTextFromSentencesErrors = {
+    /**
+     * Text not found
+     */
+    404: ErrorResponse;
+};
+
+export type SyncTextFromSentencesError = SyncTextFromSentencesErrors[keyof SyncTextFromSentencesErrors];
+
+export type SyncTextFromSentencesResponses = {
+    /**
+     * Updated text
+     */
+    200: TextResponse;
+};
+
+export type SyncTextFromSentencesResponse = SyncTextFromSentencesResponses[keyof SyncTextFromSentencesResponses];
+
 export type ListSentencesData = {
     body?: never;
     path: {

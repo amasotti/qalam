@@ -11,6 +11,7 @@ import {
 	listTexts,
 	reorderSentences,
 	replaceTokens,
+	syncTextFromSentences,
 	transliterateSentence,
 	updateSentence,
 	updateText,
@@ -135,6 +136,21 @@ export function useDeleteText() {
 	}));
 }
 
+export function useSyncText() {
+	const qc = useQueryClient();
+	return createMutation(() => ({
+		mutationFn: async (textId: string) => {
+			const { data, error } = await syncTextFromSentences({ path: { id: textId } });
+			if (error) throw error;
+			return requireData(data, 'syncTextFromSentences') as TextResponse;
+		},
+		onSuccess: (data) => {
+			qc.setQueryData(['texts', data.id], data);
+			qc.invalidateQueries({ queryKey: ['texts', 'all'] });
+		},
+	}));
+}
+
 export function useCreateSentence() {
 	const qc = useQueryClient();
 	return createMutation(() => ({
@@ -143,8 +159,10 @@ export function useCreateSentence() {
 			if (error) throw error;
 			return requireData(data, 'createSentence') as SentenceResponse;
 		},
-		onSuccess: (_data, variables) => {
+		onSuccess: async (_data, variables) => {
 			qc.invalidateQueries({ queryKey: ['texts', variables.textId, 'sentences'] });
+			await syncTextFromSentences({ path: { id: variables.textId } });
+			qc.invalidateQueries({ queryKey: ['texts', variables.textId], exact: true });
 		},
 	}));
 }
@@ -165,8 +183,10 @@ export function useUpdateSentence() {
 			if (error) throw error;
 			return requireData(data, 'updateSentence') as SentenceResponse;
 		},
-		onSuccess: (_data, variables) => {
+		onSuccess: async (_data, variables) => {
 			qc.invalidateQueries({ queryKey: ['texts', variables.textId, 'sentences'] });
+			await syncTextFromSentences({ path: { id: variables.textId } });
+			qc.invalidateQueries({ queryKey: ['texts', variables.textId], exact: true });
 		},
 	}));
 }
@@ -178,8 +198,10 @@ export function useDeleteSentence() {
 			const { error } = await deleteSentence({ path: { textId, id } });
 			if (error) throw error;
 		},
-		onSuccess: (_data, variables) => {
+		onSuccess: async (_data, variables) => {
 			qc.invalidateQueries({ queryKey: ['texts', variables.textId, 'sentences'] });
+			await syncTextFromSentences({ path: { id: variables.textId } });
+			qc.invalidateQueries({ queryKey: ['texts', variables.textId], exact: true });
 		},
 	}));
 }
@@ -260,8 +282,10 @@ export function useReorderSentences() {
 			if (error) throw error;
 			return requireData(data, 'reorderSentences') as SentenceResponse[];
 		},
-		onSuccess: (_data, variables) => {
+		onSuccess: async (_data, variables) => {
 			qc.invalidateQueries({ queryKey: ['texts', variables.textId, 'sentences'] });
+			await syncTextFromSentences({ path: { id: variables.textId } });
+			qc.invalidateQueries({ queryKey: ['texts', variables.textId], exact: true });
 		},
 	}));
 }

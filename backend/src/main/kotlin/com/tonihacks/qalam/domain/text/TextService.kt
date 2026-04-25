@@ -8,12 +8,13 @@ import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.PageRequest
 import com.tonihacks.qalam.delivery.dto.PaginatedResponse
 import com.tonihacks.qalam.domain.error.DomainError
+import com.tonihacks.qalam.domain.sentence.SentenceRepository
 import com.tonihacks.qalam.domain.word.Dialect
 import com.tonihacks.qalam.domain.word.Difficulty
 import java.util.UUID
 import kotlin.time.Clock
 
-class TextService(private val repo: TextRepository) {
+class TextService(private val repo: TextRepository, private val sentenceRepo: SentenceRepository) {
 
     suspend fun list(
         page: Int?,
@@ -114,6 +115,31 @@ class TextService(private val repo: TextRepository) {
 
     suspend fun delete(id: String): Either<DomainError, Unit> =
         parseTextId(id).flatMap { repo.delete(it) }
+
+    suspend fun syncFromSentences(id: String): Either<DomainError, Text> = either {
+        val textId = parseTextId(id).bind()
+        val text = repo.findById(textId).bind()
+        val sentences = sentenceRepo.findAllByTextId(textId).bind().sortedBy { it.position }
+
+        if (sentences.isEmpty()) return@either text
+
+        val body = sentences.joinToString("\n") { it.arabicText }
+
+        val hasTranslit = sentences.any { it.transliteration != null }
+        val transliteration = if (!hasTranslit) null
+            else sentences.joinToString("\n") { it.transliteration ?: "[…]" }
+
+        val hasTranslation = sentences.any { it.freeTranslation != null }
+        val translation = if (!hasTranslation) null
+            else sentences.joinToString("\n") { it.freeTranslation ?: "[…]" }
+
+        repo.update(text.copy(
+            body = body,
+            transliteration = transliteration,
+            translation = translation,
+            updatedAt = Clock.System.now(),
+        )).bind()
+    }
 }
 
 /** null = keep existing, blank = clear to null, non-blank = use new value */

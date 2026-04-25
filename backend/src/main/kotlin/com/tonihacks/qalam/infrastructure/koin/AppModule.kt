@@ -35,7 +35,7 @@ val wordsModules = module {
 
 val textsModule = module {
     single<TextRepository> { ExposedTextRepository() }
-    single { TextService(get()) }
+    single { TextService(get(), get()) }
 }
 
 val sentencesModule = module {

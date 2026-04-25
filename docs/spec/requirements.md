@@ -1,10 +1,6 @@
-# Engineering Requirements — na7wi Rewrite
+# Engineering Requirements — Qalam
 
-> The rules. Every architectural decision during the rewrite defers to this document.
->
-> **Reference**: The previous implementation lives at `an-na7wi` (path:
-> `/Users/antoniomasotti/toni/100_programming/190_frontend/an-na7wi`). The data model there is
-> sound but has known issues documented in the "What to improve" section below.
+> The rules. Every architectural decision defers to this document.
 
 ---
 
@@ -138,7 +134,7 @@ commit, shared task recipes.
 - One logical change per file. Schema and data migrations never in the same file.
 - Never edit a committed migration. Corrections are new migrations.
 - `flyway.cleanDisabled=true` in all non-development environments.
-- Fresh start from V001 — no backward compatibility with `an-na7wi` migrations.
+- Fresh start from V001 — no backward compatibility with legacy migrations.
 
 ### Schema Rules
 
@@ -173,67 +169,6 @@ Full schema + data via `pg_dump --format=custom`.
 - pnpm with committed lockfile, exact versions for direct dependencies
 - shadcn-svelte: copy-paste into `src/lib/components/ui/` — not a runtime dep
 - `openapi-typescript` output committed to the repo so API changes are code-reviewable
-
----
-
-## What to Preserve from `an-na7wi`
-
-These decisions were correct and carry forward:
-
-- **Domain entities and relationships** — structurally sound after 22 migrations of iteration.
-  See improvements section for known issues.
-- **Enum values** — the exact dialect, difficulty, mastery level, POS, annotation type sets are
-  correct and carry over unchanged.
-- **Transliteration character map** — 90+ Arabic→Latin mappings, hand-tuned for accuracy.
-  File: `an-na7wi/backend/.../TransliterationService.kt`. Copy the map, not the Quarkus wrapper.
-- **RTL CSS approach** — `.arabic { direction: rtl }` + Tailwind `rtl:` variants. Keep exactly.
-- **Arabic font stack** — chosen with care, not changed.
-- **Service layer decomposition** — one service per domain. Proven to be the right granularity.
-- **Testcontainers + RestAssured** patterns for backend integration tests.
-- **MSW** for frontend API mocking.
-- **Flyway discipline** — sequential numbered SQL files.
-
-## What to Improve from `an-na7wi`
-
-These are known issues in the old codebase worth addressing in the rewrite:
-
-- **Naming confusion in interlinear sentences**: in `an-na7wi`, `InterlinearSentence.translation`
-  is the free gloss (full sentence translation) and `InterlinearSentence.annotations` is freetext
-  notes — the field names are misleading. In the new model: use `freeTranslation` and `notes`.
-- **`derivedFrom` self-referential FK**: introduces a directed graph in the `words` table.
-  Queries over this structure need explicit depth limits to avoid cycles. Document and test this.
-- **Annotation–word connection was incomplete**: the old `annotation_words` join table had `text_id`
-  denormalized for integrity, but the UI and API never fully leveraged the word→texts reverse
-  lookup. Make this a first-class feature in the new design.
-- **`InterlinearText` as a separate container**: the old design had `InterlinearText` as a
-  separate entity from `Text`, making it impossible to have both plain annotations and an
-  interlinear gloss on the same content. Merged into `Text` in the new design.
-- **Word alignment as a 3-level hierarchy**: the old `InterlinearText → InterlinearSentence →
-  WordAlignment` made alignment tokens first-class API entities with independent CRUD, which
-  led to stale tokens when sentences were edited. In the new design, alignment tokens are a
-  property of a sentence — they are updated or cleared when the sentence changes.
-
-## What to Discard from `an-na7wi`
-
-- **Quarkus** — CDI, annotation scanning, native image build pipeline, Panache, JAX-RS. Gone.
-- **Version history** (`text_versions` table, circular FK) — never used in practice, removed.
-- **Separate `InterlinearText` entity** — merged into `Text`.
-- **3-level alignment hierarchy** as independent API CRUD — tokens are a sentence property.
-- **`LazyInitializationException` workarounds** — Exposed has no lazy loading; the problem
-  disappears.
-- **Modal/UI state in Pinia stores** — stores hold data; UI state lives in components.
-- **Manual request deduplication** — replaced by `@tanstack/svelte-query`.
-- **Hand-written frontend types** — replaced by `openapi-typescript` generation.
-- **Shell scripts for backup/restore** — replaced by Ofelia + justfile recipes.
-- **`.env` files** — replaced by Doppler.
-- **`size`/`pageSize` parameter duplication** — one parameter name (`size`) everywhere.
-- **Deprecated tokenization endpoint** — removed.
-- **In-memory filtering in SearchService** (`findAll(0, Int.MAX_VALUE)` then filter) — all
-  filtering pushed to SQL.
-- **Dual `root` string + `root_id` FK on Word** — one FK only, legacy string column dropped.
-- **Anthropic SDK dependency** — replaced by raw HTTP to OpenRouter.
-- **5-second Prometheus scrape interval** — deferred; monitoring comes later.
-- **Copy-paste `docker-compose.monitoring.yml`** — replaced by Docker Compose profiles.
 
 ---
 

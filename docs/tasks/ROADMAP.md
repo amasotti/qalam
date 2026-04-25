@@ -1,7 +1,7 @@
 # Qalam — Roadmap
 
-> Goal: reach daily usability and deprecate an-na7wi as fast as possible.
-> Post-MVP features are built iteratively after real data is in the system.
+> Goal: reach daily usability with real data in the system.
+> Post-MVP features are built iteratively after the core is stable.
 
 ## Status Legend
 - ✅ Done
@@ -40,7 +40,7 @@ These are real features — not cancelled, just deferred until the app is live w
 | Milestone | Why deferred |
 |-----------|-------------|
 | M7 frontend (annotations UI) | Backend needed first; UI follows naturally after M16 |
-| M8 Audio attachments | No audio in an-na7wi; zero existing data; purely additive |
+| M8 Audio attachments | Zero existing audio data; purely additive |
 | M9 Training / SRS backend | Can study from texts without flashcards; needs real data first |
 | M11 Global search + analytics | Vocabulary search (M4) covers immediate needs |
 | M12 Backend hardening (rest) | Cycle guard, request validation, CI release pipeline — not MVP blockers |
@@ -57,7 +57,7 @@ These are real features — not cancelled, just deferred until the app is live w
 
 **Phase 2 (post-MVP):** sentences → alignment_tokens → annotations → annotation_words → training_sessions → training_session_words
 
-**Key schema changes from an-na7wi:**
+**Key schema changes (migration reference):**
 - `words.arabic` → `arabic_text`; `words.example` → `example_sentence`; `words.pronunciation_link` → `pronunciation_url`
 - `texts.arabic_content` → `body`; `texts.tags` (JSONB) → `text_tags` table rows
 - `interlinear_texts` + `texts` → unified `texts` table (merge by title where possible)

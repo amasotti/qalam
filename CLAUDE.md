@@ -2,9 +2,7 @@
 
 ## What this project is
 
-Personal Arabic learning tool — texts, vocabulary, roots, SRS training, annotations, interlinear glosses. Single user (Toni), no auth ever. 
-Full rewrite of `an-na7wi` (`/Users/antoniomasotti/toni/100_programming/190_frontend/an-na7wi`). 
-Consult it for data model details, migration history (22 SQL files), transliteration character map, and CSS patterns.
+Personal Arabic learning tool — texts, vocabulary, roots, SRS training, annotations, interlinear glosses. Single user (Toni), no auth ever.
 
 ## Repo layout
 
@@ -64,15 +62,7 @@ docker-compose.yml  full dev stack (postgres, backend, frontend)
 - Alignment tokens are a property of the sentence, not independent API entities — they're invalidated when sentence text changes
 - No version history (TextVersion removed — was never used)
 - `derivedFrom` on Word is a self-referential FK creating a directed graph — depth-limit all queries over it
-- `an-na7wi` field name bugs fixed: `freeTranslation` (not `translation`) and `notes` (not `annotations`) on Sentence
-- `derivedFrom` naming confusion and stale token problem are known improvements in the rewrite
-
-## What to preserve from an-na7wi
-
-- Transliteration character map (`TransliterationService.kt`) — copy the map, not the Quarkus wrapper
-- Exact enum values (dialect, difficulty, mastery, POS, annotation type)
-- Arabic font stack: Noto Naskh Arabic + Lateef (body), Lateef + Noto Naskh (display), Markazi Text + Noto Naskh (text)
-- `.arabic { direction: rtl }` + Tailwind `rtl:` variants pattern
+- Field name conventions on Sentence: `freeTranslation` (not `translation`) and `notes` (not `annotations`)
 
 ## Non-negotiables
 

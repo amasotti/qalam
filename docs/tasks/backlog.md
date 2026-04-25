@@ -1,11 +1,11 @@
 # Backlog — Post-MVP
 
-Features deferred until qalam is in daily use with real data migrated from an-na7wi.
+Features deferred until qalam is in daily use with real data.
 See `ROADMAP.md` for the full picture and ordering rationale.
 
 ## Deferred milestones
 
-- **M8 Audio attachments** — no audio in an-na7wi, zero existing data, purely additive
+- **M8 Audio attachments** — zero existing audio data, purely additive
 - ~~**M9 Training / SRS backend**~~ — **DONE** (backend: sessions, mastery promotion, SRS logic)
 - **M11 Global search + analytics** — vocabulary search (M4) covers immediate needs
 - **M12 Backend hardening** (all except M12.4 backup which is MVP) — cycle guard, request validation, CI release

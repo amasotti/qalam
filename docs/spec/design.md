@@ -1,14 +1,8 @@
-# Technical Design — na7wi Rewrite
+# Technical Design — Qalam
 
-> The target architecture for the rewritten application.
+> The target architecture for the application.
 > Concrete technology choices, architectural principles, and ops setup.
 > Folder structure and implementation details are decided while coding, not here.
->
-> **Reference**: The previous implementation lives at `an-na7wi` (path:
-> `/Users/antoniomasotti/toni/100_programming/190_frontend/an-na7wi`). Consult it for
-> data model details, migration history (22 SQL files), API contracts, and CSS patterns.
-
-The new name for this project will be `Qalam` (successor of an-na7wi).
 ---
 
 ## Stack
@@ -116,7 +110,7 @@ everywhere. No one-off inline styles for things that have a component equivalent
 
 ### Arabic / RTL
 
-The Arabic font stack from `an-na7wi` is kept exactly:
+Arabic font stack:
 - **Body Arabic**: Noto Naskh Arabic, Lateef (serif fallback)
 - **Display Arabic**: Lateef, Noto Naskh Arabic
 - **Text Arabic**: Markazi Text, Noto Naskh Arabic
@@ -148,14 +142,14 @@ Tailwind `rtl:` variants handle directional layout adjustments per component.
 ### Key Decisions
 
 - **Enums as VARCHAR** with CHECK constraints. Never PostgreSQL ENUM types (ALTER TYPE requires
-  table lock and is painful to manage). Inherited from `an-na7wi` V15 migration.
+  table lock and is painful to manage).
 - **UUID primary keys** generated in application code, not in the database.
 - **No auto-DDL**. Schema is defined entirely in Flyway SQL migrations.
 - **No lazy loading**. Exposed's SQL DSL has no session/proxy concept — all joins are explicit.
   The entire class of `LazyInitializationException` from the old Panache/Hibernate stack does
   not exist here.
-- **Circular FK removed**. The `Text ↔ TextVersion` circular foreign key from `an-na7wi` is
-  eliminated by removing version history entirely (see product-spec).
+- **Circular FK removed**. The `Text ↔ TextVersion` circular foreign key is eliminated by
+  removing version history entirely (see product-spec).
 - **`Text` is unified**. The old split between `Text` and `InterlinearText` is merged into a
   single `Text` entity with optional sentence/alignment data.
 
@@ -177,8 +171,7 @@ No native image. No 30-minute builds. Ktor on JVM starts in under 5 seconds.
 
 ### Secret Management (Doppler)
 
-Secrets are managed with **Doppler**, not `.env` files. The `.env` pattern from `an-na7wi` is
-replaced. Doppler injects environment variables into the process at runtime.
+Secrets are managed with **Doppler**, not `.env` files. Doppler injects environment variables into the process at runtime.
 
 ```
 just run          # runs: doppler run -- docker compose up

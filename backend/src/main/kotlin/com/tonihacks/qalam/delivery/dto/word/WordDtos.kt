@@ -130,3 +130,16 @@ fun DictionaryLink.toResponse() = DictionaryLinkResponse(
     source = source.name,
     url = url,
 )
+
+@Serializable
+data class AnalyzeWordRequest(val arabicText: String)
+
+@Serializable
+data class WordAnalysisResponse(
+    val arabicText: String,
+    val transliteration: String? = null,
+    val translation: String? = null,
+    val partOfSpeech: String? = null,
+    val rootLetters: String? = null,
+    val exampleSentence: AiExampleSentence? = null,
+)

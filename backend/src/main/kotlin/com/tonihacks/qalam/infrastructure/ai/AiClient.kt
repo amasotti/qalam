@@ -5,6 +5,7 @@ import arrow.core.left
 import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.sentence.TokenInputDto
 import com.tonihacks.qalam.delivery.dto.word.AiExampleSentence
+import com.tonihacks.qalam.delivery.dto.word.WordAnalysisResponse
 import com.tonihacks.qalam.domain.error.DomainError
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -146,6 +147,49 @@ Sentence: "$arabicText""""
         }
     }
 
+    suspend fun analyzeWord(arabicText: String): Either<DomainError, WordAnalysisResponse> {
+        if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
+
+        val model = System.getenv("OPENROUTER_MODEL") ?: "openai/gpt-4o-mini"
+        val prompt = """Analyze the Arabic word "$arabicText" and return a JSON object with:
+- "transliteration": Latin transliteration using practical chat-alphabet style
+- "translation": English translation or meaning
+- "partOfSpeech": one of NOUN, VERB, ADJECTIVE, ADVERB, PREPOSITION, PARTICLE, INTERJECTION, CONJUNCTION, PRONOUN, UNKNOWN
+- "rootLetters": Arabic trilateral/quadrilateral root consonants separated by dashes (e.g. "ك-ت-ب"), or null if not applicable
+- "exampleSentence": object with "arabic", "transliteration", "translation" keys showing the word in a short sentence, or null"""
+
+        return try {
+            val response = httpClient.post("https://openrouter.ai/api/v1/chat/completions") {
+                header(HttpHeaders.Authorization, "Bearer $apiKey")
+                contentType(ContentType.Application.Json)
+                setBody(OpenRouterRequest(
+                    model = model,
+                    messages = listOf(
+                        Message("system", SYSTEM_PROMPT),
+                        Message("user", prompt),
+                    ),
+                    responseFormat = ResponseFormat("json_object"),
+                ))
+            }
+
+            val body = response.body<OpenRouterResponse>()
+            val content = body.choices.firstOrNull()?.message?.content
+                ?: return DomainError.InvalidInput("Empty AI response").left()
+
+            val payload = jsonConfig.decodeFromString<WordAnalysisPayload>(content)
+            WordAnalysisResponse(
+                arabicText = arabicText,
+                transliteration = payload.transliteration,
+                translation = payload.translation,
+                partOfSpeech = payload.partOfSpeech,
+                rootLetters = payload.rootLetters,
+                exampleSentence = payload.exampleSentence,
+            ).right()
+        } catch (_: Exception) {
+            DomainError.InvalidInput("AI request failed").left()
+        }
+    }
+
     private fun buildPrompt(arabicText: String, translation: String?): String {
         val translationHint = if (!translation.isNullOrBlank()) " (meaning: \"$translation\")" else ""
         return """Given the Arabic word "$arabicText"$translationHint, provide exactly 2 example sentences.
@@ -177,6 +221,15 @@ Return a JSON object with an "examples" array. Each element must have:
 
     @Serializable
     private data class ExamplesPayload(val examples: List<AiExampleSentence>)
+
+    @Serializable
+    private data class WordAnalysisPayload(
+        val transliteration: String? = null,
+        val translation: String? = null,
+        val partOfSpeech: String? = null,
+        val rootLetters: String? = null,
+        val exampleSentence: AiExampleSentence? = null,
+    )
 
     @Serializable
     private data class TokensPayload(val tokens: List<TokenInputDto>)

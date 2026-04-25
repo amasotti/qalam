@@ -1114,6 +1114,14 @@ export type ListTextsData = {
          * Filter by tag (exact match)
          */
         tag?: string;
+        /**
+         * Field to sort by
+         */
+        sortBy?: 'CREATED_AT' | 'UPDATED_AT' | 'TITLE';
+        /**
+         * Sort descending (true = newest/Z first)
+         */
+        sortDesc?: boolean;
     };
     url: '/api/v1/texts';
 };

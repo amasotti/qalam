@@ -94,6 +94,7 @@ lint-frontend:
 
 # Format frontend with Biome
 format-frontend:
+    pnpm --prefix frontend lint:fix
     pnpm --prefix frontend format
 
 # Run check svelte with Biome (requires: just up — backend + DB must be running)

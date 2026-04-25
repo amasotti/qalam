@@ -1,7 +1,7 @@
 <script lang="ts">
 import { BookOpen, Search } from 'lucide-svelte';
 import type { Dialect, Difficulty } from '$lib/api/types.gen';
-import { useTexts, type TextSortField } from '$lib/stores/texts';
+import { type TextSortField, useTexts } from '$lib/stores/texts';
 
 const PAGE_SIZE = 20;
 

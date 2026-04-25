@@ -8,7 +8,7 @@
 @theme {
 	/* ·· Latin UI fonts ·· */
 	--font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-	--font-display: "Lora", Georgia, serif;
+	--font-display: "Spectral", Georgia, serif;
 
 	/* ·· Arabic font families ··
      body    → Noto Naskh Arabic + Lateef    (UI labels, word cards, short strings)
@@ -78,7 +78,7 @@
 	--ink-ghost: #b8a888;
 
 	/* Olive — structural / brand */
-	--olive: #4a6228;
+	--olive: #3c501f;
 	--olive-soft: #5a7838;
 	--olive-pale: #e8f0d8;
 

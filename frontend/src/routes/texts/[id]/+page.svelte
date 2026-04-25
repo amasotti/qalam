@@ -17,10 +17,21 @@ import {
 	useText,
 	useUpdateText,
 } from '$lib/stores/texts';
+import AnnotationDrawer from '$lib/components/annotations/AnnotationDrawer.svelte';
+import { useTextAnnotations } from '$lib/stores/annotations';
 
 const id = $derived(page.params.id ?? '');
 const text = useText(() => id);
 const sentences = useSentences(() => id);
+const annotations = useTextAnnotations(() => id);
+
+let drawerOpen = $state(false);
+let drawerAnchor = $state('');
+
+function openDrawer(anchor: string) {
+	drawerAnchor = anchor;
+	drawerOpen = true;
+}
 const updateText = useUpdateText();
 const deleteText = useDeleteText();
 const autoTokenize = useAutoTokenize();
@@ -158,6 +169,8 @@ function formatEnum(value: string): string {
 				{#each sentences.data ?? [] as sentence (sentence.id)}
 					<InterlinearSentence
 						{sentence}
+						annotations={annotations.data ?? []}
+						onTokenClick={openDrawer}
 						isPending={autoTokenize.isPending || markValid.isPending}
 						onRetokenize={async (s) => { await autoTokenize.mutateAsync({ textId: id, id: s.id }); }}
 						onMarkValid={async (s) => { await markValid.mutateAsync({ textId: id, id: s.id, currentTokens: s.tokens }); }}

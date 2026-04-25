@@ -253,7 +253,7 @@ class ExposedWordRepository : WordRepository {
                     query
                 }
                 filtered.toList().shuffled().take(limit).map { it.toWord() }.right()
-            } catch (e: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
                 DomainError.DatabaseError.left()
             }
         }
@@ -268,7 +268,7 @@ class ExposedWordRepository : WordRepository {
                     ?.toWordProgress()
                     ?.right()
                     ?: DomainError.NotFound("WordProgress", wordId.value.toString()).left()
-            } catch (e: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
                 DomainError.DatabaseError.left()
             }
         }
@@ -299,7 +299,7 @@ class ExposedWordRepository : WordRepository {
                     it[updatedAt]    = Clock.System.now()
                 }
                 Unit.right()
-            } catch (e: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
                 DomainError.DatabaseError.left()
             }
         }

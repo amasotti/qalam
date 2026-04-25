@@ -58,7 +58,7 @@ class ExposedTrainingRepository : TrainingRepository {
                     }
                 }
                 session.right()
-            } catch (e: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
                 DomainError.DatabaseError.left()
             }
         }
@@ -84,7 +84,7 @@ class ExposedTrainingRepository : TrainingRepository {
                     .map { it.toTrainingSessionWord() }
 
                 (session to wordRows).right()
-            } catch (e: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
                 DomainError.DatabaseError.left()
             }
         }
@@ -107,7 +107,7 @@ class ExposedTrainingRepository : TrainingRepository {
                     it[TrainingSessionWordsTable.masteryPromotedTo] = masteryPromotedTo
                 }
                 Unit.right()
-            } catch (e: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
                 DomainError.DatabaseError.left()
             }
         }
@@ -136,7 +136,7 @@ class ExposedTrainingRepository : TrainingRepository {
                     .single()
                     .toTrainingSession()
                     .right()
-            } catch (e: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
                 DomainError.DatabaseError.left()
             }
         }
@@ -155,7 +155,7 @@ class ExposedTrainingRepository : TrainingRepository {
                     .offset(((page - 1) * size).toLong())
                     .map { it.toTrainingSession() }
                 (items to total).right()
-            } catch (e: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
                 DomainError.DatabaseError.left()
             }
         }
@@ -168,7 +168,7 @@ class ExposedTrainingRepository : TrainingRepository {
                     .groupBy { it[WordsTable.masteryLevel] }
                     .mapValues { (_, rows) -> rows.size }
                     .right()
-            } catch (e: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
                 DomainError.DatabaseError.left()
             }
         }

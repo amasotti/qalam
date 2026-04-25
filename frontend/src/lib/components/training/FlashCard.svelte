@@ -1,43 +1,37 @@
 <script lang="ts">
-	import { ChevronDown } from 'lucide-svelte';
-	import type { TrainingSessionWordResponse } from '$lib/api/types.gen';
-	import Button from '$lib/components/ui/button/button.svelte';
+import { ChevronDown } from 'lucide-svelte';
+import type { TrainingSessionWordResponse } from '$lib/api/types.gen';
+import Button from '$lib/components/ui/button/button.svelte';
 
-	interface Props {
-		word: TrainingSessionWordResponse;
-		isPending?: boolean;
-	}
+interface Props {
+	word: TrainingSessionWordResponse;
+	isPending?: boolean;
+}
 
-	let { word, isPending = false }: Props = $props();
+let { word, isPending = false }: Props = $props();
 
-	let revealed = $state(false);
+let revealed = $state(false);
 
-	const front = $derived(
-		word.frontSide === 'ARABIC'
-			? word.arabicText
-			: word.translation || word.arabicText
-	);
+const front = $derived(
+	word.frontSide === 'ARABIC' ? word.arabicText : word.translation || word.arabicText
+);
 
-	const back = $derived(
-		word.frontSide === 'ARABIC'
-			? word.translation || ''
-			: word.arabicText
-	);
+const back = $derived(word.frontSide === 'ARABIC' ? word.translation || '' : word.arabicText);
 
-	const backIsArabic = $derived(word.frontSide === 'TRANSLATION');
+const backIsArabic = $derived(word.frontSide === 'TRANSLATION');
 
-	function handleReveal() {
-		revealed = true;
-	}
+function handleReveal() {
+	revealed = true;
+}
 
-	function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
-		revealed = false;
-		// Dispatch event up to parent component
-		const event = new CustomEvent('result', {
-			detail: { result, wordId: word.wordId }
-		});
-		window.dispatchEvent(event);
-	}
+function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
+	revealed = false;
+	// Dispatch event up to parent component
+	const event = new CustomEvent('result', {
+		detail: { result, wordId: word.wordId },
+	});
+	window.dispatchEvent(event);
+}
 </script>
 
 <div class="flashcard-container">

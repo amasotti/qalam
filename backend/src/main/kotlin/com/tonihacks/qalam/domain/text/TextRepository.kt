@@ -7,11 +7,15 @@ import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.word.Dialect
 import com.tonihacks.qalam.domain.word.Difficulty
 
+enum class TextSortField { CREATED_AT, UPDATED_AT, TITLE }
+
 data class TextFilters(
     val q: String? = null,
     val dialect: Dialect? = null,
     val difficulty: Difficulty? = null,
     val tag: String? = null,
+    val sortBy: TextSortField = TextSortField.CREATED_AT,
+    val sortDesc: Boolean = true,
 )
 
 interface TextRepository {

@@ -670,6 +670,17 @@ paths:
           in: query
           description: Filter by tag (exact match)
           schema: { type: string }
+        - name: sortBy
+          in: query
+          description: Field to sort by
+          schema:
+            type: string
+            enum: [CREATED_AT, UPDATED_AT, TITLE]
+            default: CREATED_AT
+        - name: sortDesc
+          in: query
+          description: Sort descending (true = newest/Z first)
+          schema: { type: boolean, default: true }
       responses:
         "200":
           description: Paginated list of texts

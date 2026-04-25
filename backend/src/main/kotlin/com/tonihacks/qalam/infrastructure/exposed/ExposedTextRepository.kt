@@ -11,6 +11,7 @@ import com.tonihacks.qalam.delivery.dto.PaginatedResponse
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.text.Text
 import com.tonihacks.qalam.domain.text.TextFilters
+import com.tonihacks.qalam.domain.text.TextSortField
 import com.tonihacks.qalam.domain.text.TextId
 import com.tonihacks.qalam.domain.text.TextRepository
 import com.tonihacks.qalam.domain.word.Dialect
@@ -20,7 +21,7 @@ import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
-import org.jetbrains.exposed.v1.core.like
+import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.or
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
@@ -76,7 +77,7 @@ class ExposedTextRepository : TextRepository {
                     condition = condition?.and(TextsTable.difficulty eq d.name) ?: (TextsTable.difficulty eq d.name)
                 }
                 filters.q?.let { queryStr ->
-                    val qCond = (TextsTable.title like "%$queryStr%") or (TextsTable.body like "%$queryStr%")
+                    val qCond = (TextsTable.title ilike "%$queryStr%") or (TextsTable.body ilike "%$queryStr%")
                     condition = condition?.and(qCond) ?: qCond
                 }
                 tagFilteredIds?.let { ids ->
@@ -85,6 +86,14 @@ class ExposedTextRepository : TextRepository {
                 }
 
                 condition?.let { q.where { it } } ?: q
+            }.let { q ->
+                val col = when (filters.sortBy) {
+                    TextSortField.CREATED_AT -> TextsTable.createdAt
+                    TextSortField.UPDATED_AT -> TextsTable.updatedAt
+                    TextSortField.TITLE -> TextsTable.title
+                }
+                val order = if (filters.sortDesc) SortOrder.DESC else SortOrder.ASC
+                q.orderBy(col to order)
             }
 
             val total = query.count()

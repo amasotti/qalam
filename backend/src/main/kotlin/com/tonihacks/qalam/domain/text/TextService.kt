@@ -22,12 +22,21 @@ class TextService(private val repo: TextRepository) {
         dialect: String?,
         difficulty: String?,
         tag: String?,
+        sortBy: String?,
+        sortDesc: Boolean?,
     ): Either<DomainError, PaginatedResponse<Text>> = either {
+        val parsedSortBy = when (sortBy?.uppercase()) {
+            "UPDATED_AT" -> TextSortField.UPDATED_AT
+            "TITLE" -> TextSortField.TITLE
+            else -> TextSortField.CREATED_AT
+        }
         val filters = TextFilters(
             q = q,
             dialect = dialect?.let { parseTextEnum("dialect", it) { s -> Dialect.fromString(s) }.bind() },
             difficulty = difficulty?.let { parseTextEnum("difficulty", it) { s -> Difficulty.fromString(s) }.bind() },
             tag = tag,
+            sortBy = parsedSortBy,
+            sortDesc = sortDesc ?: true,
         )
         repo.list(PageRequest.from(page, size), filters).bind()
     }

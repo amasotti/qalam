@@ -82,6 +82,7 @@ docker-compose.yml  full dev stack (postgres, backend, frontend)
 - Pause at design forks: present options briefly, let Tony choose
 - Tick tasks in the relevant `docs/tasks/0NN_*.md` file when done
 - Update `docs/` when behaviour/API/data model changes — proactively, not when asked
+- **Any change to a backend endpoint (new param, changed response, new route) MUST update `backend/src/main/resources/openapi/documentation.yaml` in the same step — it is the source of truth for frontend types**
 - Tony is an experienced developer — don't over-explain, don't pad responses
 
 ## Context Budget

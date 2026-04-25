@@ -1,7 +1,7 @@
 <script lang="ts">
 import { BookOpen, Search } from 'lucide-svelte';
 import type { Dialect, Difficulty } from '$lib/api/types.gen';
-import { useTexts } from '$lib/stores/texts';
+import { useTexts, type TextSortField } from '$lib/stores/texts';
 
 const PAGE_SIZE = 20;
 
@@ -10,6 +10,8 @@ let debouncedSearch = $state('');
 let dialect = $state<Dialect | ''>('');
 let difficulty = $state<Difficulty | ''>('');
 let tag = $state('');
+let sortBy = $state<TextSortField>('CREATED_AT');
+let sortDesc = $state(true);
 let page = $state(1);
 
 $effect(() => {
@@ -26,6 +28,8 @@ const filters = $derived({
 	dialect: dialect || undefined,
 	difficulty: difficulty || undefined,
 	tag: tag.trim() || undefined,
+	sortBy,
+	sortDesc,
 	page,
 	size: PAGE_SIZE,
 });
@@ -65,6 +69,22 @@ function formatEnum(value: string): string {
 		</div>
 
 		<div class="texts-filters">
+			<select
+				class="filter-select"
+				value={`${sortBy}:${sortDesc}`}
+				onchange={(e) => {
+					const [field, desc] = e.currentTarget.value.split(':');
+					sortBy = field as TextSortField;
+					sortDesc = desc === 'true';
+					page = 1;
+				}}
+			>
+				<option value="CREATED_AT:true">Newest first</option>
+				<option value="CREATED_AT:false">Oldest first</option>
+				<option value="UPDATED_AT:true">Recently updated</option>
+				<option value="TITLE:false">Title A→Z</option>
+			</select>
+
 			<select
 				class="filter-select"
 				value={dialect}

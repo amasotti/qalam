@@ -22,8 +22,10 @@ fun Route.textRoutes(service: TextService) {
             val dialect = call.request.queryParameters["dialect"]
             val difficulty = call.request.queryParameters["difficulty"]
             val tag = call.request.queryParameters["tag"]
+            val sortBy = call.request.queryParameters["sortBy"]
+            val sortDesc = call.request.queryParameters["sortDesc"]?.toBooleanStrictOrNull()
 
-            service.list(page, size, q, dialect, difficulty, tag).fold(
+            service.list(page, size, q, dialect, difficulty, tag, sortBy, sortDesc).fold(
                 { call.respondError(it) },
                 { result ->
                     call.respond(

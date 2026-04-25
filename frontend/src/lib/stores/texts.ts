@@ -34,6 +34,8 @@ function requireData<T>(data: T | undefined, label: string): T {
 	return data;
 }
 
+export type TextSortField = 'CREATED_AT' | 'UPDATED_AT' | 'TITLE';
+
 export type TextFilters = {
 	q?: string;
 	dialect?: Dialect;
@@ -41,6 +43,8 @@ export type TextFilters = {
 	tag?: string;
 	page?: number;
 	size?: number;
+	sortBy?: TextSortField;
+	sortDesc?: boolean;
 };
 
 export function useTexts(filters: () => TextFilters) {

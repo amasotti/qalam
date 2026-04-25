@@ -26,7 +26,7 @@ test.describe('Roots', () => {
 		await page.waitForURL(UUID_RE);
 		createdId = page.url().split('/').at(-1);
 
-		await expect(page.locator('.root-hero-arabic')).toBeVisible();
+		await expect(page.locator('.root-hero-ar')).toBeVisible();
 	});
 
 	test('create root button disabled when letters field empty', async ({ page }) => {

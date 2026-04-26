@@ -41,7 +41,7 @@ jobs:
         with:
           name: kover-report
           path: backend/build/reports/kover/report.xml
-          retention-days: 7
+          retention-days: 2
 
   # ── Frontend: lint + type-check + build ─────────────────────────────────────
   frontend:

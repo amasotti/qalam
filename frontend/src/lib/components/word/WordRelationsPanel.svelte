@@ -1,5 +1,6 @@
 <script lang="ts">
-import type { WordRelationResponse } from '$lib/api/types.gen';
+import type { WordAutocompleteResponse, WordRelationResponse } from '$lib/api/types.gen';
+import WordSearchCombobox from '$lib/components/annotations/WordSearchCombobox.svelte';
 import { useAddWordRelation, useDeleteWordRelation, useWordRelations } from '$lib/stores/words';
 
 interface Props {
@@ -13,7 +14,7 @@ const addRelation = useAddWordRelation();
 const deleteRelation = useDeleteWordRelation();
 
 let showForm = $state(false);
-let newRelatedId = $state('');
+let selectedRelated = $state<WordAutocompleteResponse[]>([]);
 let newType = $state<'SYNONYM' | 'ANTONYM' | 'RELATED'>('RELATED');
 let addError = $state('');
 
@@ -28,14 +29,15 @@ function handleDelete(relatedWordId: string, type: 'SYNONYM' | 'ANTONYM' | 'RELA
 }
 
 async function handleAdd() {
-	if (!newRelatedId.trim()) return;
+	const target = selectedRelated[0];
+	if (!target) return;
 	addError = '';
 
 	addRelation.mutate(
-		{ id: wordId, body: { relatedWordId: newRelatedId.trim(), relationType: newType } },
+		{ id: wordId, body: { relatedWordId: target.id, relationType: newType } },
 		{
 			onSuccess: () => {
-				newRelatedId = '';
+				selectedRelated = [];
 				newType = 'RELATED';
 				showForm = false;
 			},
@@ -64,13 +66,12 @@ async function handleAdd() {
 
 {#snippet addForm()}
 	<div class="relation-add-form">
-		<input
-			class="relation-id-input"
-			type="text"
-			placeholder="Related word UUID…"
-			bind:value={newRelatedId}
-			disabled={addRelation.isPending}
-		/>
+		<div class="relation-search-wrap">
+			<WordSearchCombobox
+				selectedWords={selectedRelated}
+				onchange={(words) => { selectedRelated = words.slice(-1); }}
+			/>
+		</div>
 		<select
 			class="morph-select"
 			bind:value={newType}
@@ -84,12 +85,12 @@ async function handleAdd() {
 			class="btn btn-primary"
 			style="font-size:0.75rem;padding:0.25rem 0.75rem;"
 			onclick={handleAdd}
-			disabled={addRelation.isPending || !newRelatedId.trim()}
+			disabled={addRelation.isPending || selectedRelated.length === 0}
 		>{addRelation.isPending ? 'Adding…' : 'Add'}</button>
 		<button
 			class="btn"
 			style="font-size:0.75rem;padding:0.25rem 0.625rem;"
-			onclick={() => { showForm = false; newRelatedId = ''; addError = ''; }}
+			onclick={() => { showForm = false; selectedRelated = []; addError = ''; }}
 			disabled={addRelation.isPending}
 		>Cancel</button>
 		{#if addError}
@@ -238,14 +239,9 @@ async function handleAdd() {
 	flex-wrap: wrap;
 }
 
-.relation-id-input {
-	font-size: 0.8rem;
-	padding: 0.25rem 0.5rem;
-	border: 1px solid var(--border, #e2e8f0);
-	border-radius: 6px;
-	background: var(--white, #fff);
-	width: 18rem;
-	font-family: monospace;
+.relation-search-wrap {
+	flex: 1;
+	min-width: 14rem;
 }
 
 .morph-select {

@@ -11,9 +11,10 @@ interface Props {
 	wordId: string;
 	open: boolean;
 	onClose: () => void;
+	onAiUnavailable?: () => void;
 }
 
-const { wordId, open, onClose }: Props = $props();
+const { wordId, open, onClose, onAiUnavailable }: Props = $props();
 
 const enrichMutation = useEnrichWord();
 const upsertMorphology = useUpsertMorphology();
@@ -36,6 +37,28 @@ let saving = $state(false);
 let saveError = $state('');
 let saved = $state(false);
 
+function runEnrichment() {
+	enrichMutation.mutate(wordId, {
+		onSuccess: (data) => {
+			suggestion = data;
+			editedNotes = data.notes ?? '';
+			acceptNotes = !!data.notes;
+			acceptGender = !!data.gender;
+			acceptVerbPattern = !!data.verbPattern;
+			acceptedPlurals = data.plurals.map(() => true);
+		},
+		onError: (e) => {
+			const errorObj = e as unknown as { status?: number; message?: string };
+			if (errorObj.status === 503) {
+				isAiNotConfigured = true;
+				onAiUnavailable?.();
+			} else {
+				errorMessage = errorObj.message ?? 'Failed to fetch suggestions.';
+			}
+		},
+	});
+}
+
 // Fire enrichment automatically when drawer opens
 $effect(() => {
 	if (open) {
@@ -45,25 +68,7 @@ $effect(() => {
 		saving = false;
 		saveError = '';
 		saved = false;
-
-		enrichMutation.mutate(wordId, {
-			onSuccess: (data) => {
-				suggestion = data;
-				editedNotes = data.notes ?? '';
-				acceptNotes = !!data.notes;
-				acceptGender = !!data.gender;
-				acceptVerbPattern = !!data.verbPattern;
-				acceptedPlurals = data.plurals.map(() => true);
-			},
-			onError: (e) => {
-				const errorObj = e as unknown as { status?: number; message?: string };
-				if (errorObj.status === 503) {
-					isAiNotConfigured = true;
-				} else {
-					errorMessage = errorObj.message ?? 'Failed to fetch suggestions.';
-				}
-			},
-		});
+		runEnrichment();
 	}
 });
 
@@ -155,7 +160,7 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 					<button
 						class="btn"
 						style="margin-top:0.75rem;font-size:0.8rem;"
-						onclick={() => enrichMutation.mutate(wordId)}
+						onclick={runEnrichment}
 					>Try again</button>
 				</div>
 			{:else if saved}

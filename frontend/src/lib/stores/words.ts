@@ -352,7 +352,7 @@ export function useDeleteWordPlural() {
 			const { error } = await deleteWordPlural({ path: { id, pluralId } });
 			if (error) throw error;
 		},
-		onSuccess: (_data: undefined, variables: { id: string; pluralId: string }) => {
+		onSuccess: (_data, variables: { id: string; pluralId: string }) => {
 			qc.invalidateQueries({ queryKey: ['words', variables.id, 'plurals'] });
 		},
 	}));
@@ -407,7 +407,7 @@ export function useDeleteWordRelation() {
 			if (error) throw error;
 		},
 		onSuccess: (
-			_data: undefined,
+			_data,
 			variables: { id: string; relatedWordId: string; type: 'SYNONYM' | 'ANTONYM' | 'RELATED' }
 		) => {
 			qc.invalidateQueries({ queryKey: ['words', variables.id, 'relations'] });

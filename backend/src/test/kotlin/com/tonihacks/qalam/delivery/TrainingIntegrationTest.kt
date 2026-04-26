@@ -20,7 +20,7 @@ class TrainingIntegrationTest : BaseIntegrationTest() {
         beforeEach {
             postgres.createConnection("").use { conn ->
                 conn.createStatement()
-                    .execute("TRUNCATE TABLE training_sessions CASCADE; TRUNCATE TABLE words CASCADE")
+                    .execute("TRUNCATE TABLE training_sessions CASCADE; TRUNCATE TABLE words CASCADE; TRUNCATE TABLE arabic_roots CASCADE")
             }
         }
 

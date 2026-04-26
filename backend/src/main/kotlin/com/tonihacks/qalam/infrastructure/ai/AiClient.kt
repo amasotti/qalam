@@ -196,10 +196,52 @@ Sentence: "$arabicText""""
         }
     }
 
-    // TODO Task 9: implement full prompt + JSON parsing
     suspend fun enrichWord(word: Word): Either<DomainError, WordEnrichmentSuggestion> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
-        return DomainError.AiNotConfigured.left() // TODO Task 9: replace with real prompt + JSON parsing
+
+        val model = System.getenv("OPENROUTER_MODEL") ?: "openai/gpt-4o-mini"
+        val dialectClause = ", dialect: ${word.dialect}"
+        val transliterationClause = word.transliteration?.let { " [$it]" } ?: ""
+        val prompt = """Analyse the Arabic word: ${word.arabicText}$transliterationClause (${word.translation ?: "no translation"}, partOfSpeech: ${word.partOfSpeech}$dialectClause)
+
+Provide:
+- gender (MASCULINE/FEMININE, nouns only, null for others)
+- verbPattern (Roman numeral I-X, verbs only, null for others)
+- plurals: list of plural forms with types (SOUND_MASC/SOUND_FEM/BROKEN/PAUCAL/COLLECTIVE/OTHER)
+- relations: synonyms, antonyms, related words as {arabicText, relationType} (SYNONYM/ANTONYM/RELATED)
+- notes: brief mnemonic or usage note in English (null if nothing useful)
+
+Respond ONLY with this JSON structure:
+{
+  "gender": "MASCULINE" | "FEMININE" | null,
+  "verbPattern": "I" | "II" | "III" | "IV" | "V" | "VI" | "VII" | "VIII" | "IX" | "X" | null,
+  "plurals": [{"pluralForm": "...", "pluralType": "BROKEN"}],
+  "relations": [{"arabicText": "...", "relationType": "SYNONYM"}],
+  "notes": "..." | null
+}"""
+
+        return try {
+            val response = httpClient.post("https://openrouter.ai/api/v1/chat/completions") {
+                header(HttpHeaders.Authorization, "Bearer $apiKey")
+                contentType(ContentType.Application.Json)
+                setBody(OpenRouterRequest(
+                    model = model,
+                    messages = listOf(
+                        Message("system", ENRICH_SYSTEM_PROMPT),
+                        Message("user", prompt),
+                    ),
+                    responseFormat = ResponseFormat("json_object"),
+                ))
+            }
+
+            val body = response.body<OpenRouterResponse>()
+            val content = body.choices.firstOrNull()?.message?.content
+                ?: return DomainError.InvalidInput("Empty AI response").left()
+
+            jsonConfig.decodeFromString<WordEnrichmentSuggestion>(content).right()
+        } catch (_: Exception) {
+            DomainError.InvalidInput("AI enrichment request failed").left()
+        }
     }
 
     suspend fun generateInsight(context: InsightContext): Either<DomainError, String> {
@@ -343,6 +385,8 @@ Return a JSON object with an "examples" array. Each element must have:
     private companion object {
         const val SYSTEM_PROMPT = "You are a structured assistant as companion for an Arabic language teacher. " +
                 "Return only valid JSON."
+
+        const val ENRICH_SYSTEM_PROMPT = "You are an expert Arabic linguist. Given an Arabic word, provide structured linguistic enrichment in JSON format. Always respond with valid JSON."
 
         const val INSIGHT_SYSTEM_PROMPT = """You are an experienced Arabic language teacher and tandem partner, specialising in Tunisian Arabic and MSA.
 

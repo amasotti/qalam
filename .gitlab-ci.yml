@@ -21,9 +21,20 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "web"'            # manual trigger from UI
 
 # ── Backend: Detekt + tests + coverage ───────────────────────────────────────
+# Tests use Testcontainers (PostgreSQL) — Docker daemon required.
+# DinD (non-TLS) provides it; Testcontainers connects via DOCKER_HOST.
 backend:
   stage: test
   image: eclipse-temurin:25-jdk
+  services:
+    - name: docker:27-dind
+      alias: docker
+      command: ["--tls=false"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+    # Ryuk needs to reach back to Docker; disable it to avoid socket race in CI
+    TESTCONTAINERS_RYUK_DISABLED: "true"
   cache:
     key: "gradle-$CI_COMMIT_REF_SLUG"
     paths:

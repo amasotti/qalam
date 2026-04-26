@@ -2338,6 +2338,7 @@ components:
 
     WordEnrichmentSuggestion:
       type: object
+      required: [plurals, relations]
       properties:
         notes:
           type: string

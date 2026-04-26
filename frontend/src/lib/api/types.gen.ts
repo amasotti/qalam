@@ -174,8 +174,8 @@ export type WordEnrichmentSuggestion = {
     notes?: string | null;
     gender?: 'MASCULINE' | 'FEMININE';
     verbPattern?: 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X';
-    plurals?: Array<AiPluralSuggestion>;
-    relations?: Array<AiRelationSuggestion>;
+    plurals: Array<AiPluralSuggestion>;
+    relations: Array<AiRelationSuggestion>;
 };
 
 export type AiPluralSuggestion = {

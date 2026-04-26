@@ -25,7 +25,7 @@ data class PageRequest(
 
     companion object {
         private const val DEFAULT_SIZE = 20
-        private const val MAX_SIZE = 100
+        private const val MAX_SIZE = 500
 
         fun from(page: Int?, size: Int?): PageRequest = PageRequest(
             page = (page ?: 1).coerceAtLeast(1),

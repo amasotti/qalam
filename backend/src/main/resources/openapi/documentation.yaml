@@ -45,7 +45,7 @@ paths:
         - name: size
           in: query
           description: Number of items per page
-          schema: { type: integer, default: 20, maximum: 100 }
+          schema: { type: integer, default: 20, maximum: 500 }
         - name: letterCount
           in: query
           description: Filter by number of root letters (2–6)
@@ -214,7 +214,7 @@ paths:
         - name: size
           in: query
           description: Number of items per page
-          schema: { type: integer, default: 20, maximum: 100 }
+          schema: { type: integer, default: 20, maximum: 500 }
         - name: q
           in: query
           description: Arabic text substring search
@@ -895,7 +895,7 @@ paths:
         - name: size
           in: query
           description: Number of items per page
-          schema: { type: integer, default: 20, maximum: 100 }
+          schema: { type: integer, default: 20, maximum: 500 }
         - name: q
           in: query
           description: Free-text search across title and body
@@ -1740,7 +1740,7 @@ paths:
         - name: size
           in: query
           description: Number of items per page
-          schema: { type: integer, default: 20, maximum: 100 }
+          schema: { type: integer, default: 20, maximum: 500 }
       responses:
         "200":
           description: Paginated list of training sessions

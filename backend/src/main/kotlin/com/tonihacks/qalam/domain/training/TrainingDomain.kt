@@ -24,6 +24,19 @@ data class TrainingSession(
     val completedAt: Instant?,
 )
 
+data class TrainingWordExample(
+    val arabic: String,
+    val transliteration: String?,
+    val translation: String?,
+)
+
+data class TrainingWordRelation(
+    val relatedWordId: String,
+    val relatedWordArabic: String,
+    val relatedWordTranslation: String?,
+    val relationType: String,
+)
+
 data class TrainingSessionWord(
     val id: UUID,
     val sessionId: TrainingSessionId,
@@ -37,6 +50,10 @@ data class TrainingSessionWord(
     val result: TrainingResult?,
     val masteryPromotedTo: String?,
     val answeredAt: Instant?,
+    val root: String? = null,
+    val notes: String? = null,
+    val examples: List<TrainingWordExample> = emptyList(),
+    val relations: List<TrainingWordRelation> = emptyList(),
 )
 
 data class MasteryPromotion(

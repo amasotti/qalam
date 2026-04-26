@@ -22,3 +22,4 @@ backups/*.sql
 backups/*.gz
 .superpowers/
 .worktrees/
+scripts/**/*.json

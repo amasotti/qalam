@@ -11,7 +11,8 @@
       "WebFetch(domain:localhost)",
       "Bash(curl:*)",
       "Bash(jar tf *)",
-      "Bash(jar xf *)"
+      "Bash(jar xf *)",
+      "Bash(just lint-frontend *)"
     ],
     "deny": [
       "Bash(scp *)",

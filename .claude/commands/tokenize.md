@@ -1,5 +1,5 @@
 ---
-description: Full tokenization pipeline for a qalam text — splits into sentences, POSTs each, auto-tokenizes or splits manually, then adds word-level glosses to every token
+description: Sentence-split pipeline for a qalam text — splits body into sentences, POSTs each with transliteration and free translation
 argument-hint: "<text-id>"
 ---
 
@@ -48,78 +48,15 @@ Content-Type: application/json
 }
 ```
 
-Record the returned `id` for each sentence. Process in order. Stop on any error — do not continue to the next sentence.
+Process in order. Stop on any error — do not continue to the next sentence.
 
-## Step 4 — Split into tokens
-
-**Try auto-tokenize first:**
-
-```
-POST /api/v1/texts/$ARGUMENTS/sentences/<sentenceId>/auto-tokenize
-```
-
-- `200`: tokens created (arabic text only, no glosses yet) — continue to Step 5.
-- `503` (AI not configured): fall back to manual split below.
-
-**Manual split fallback:**
-
-Split the sentence into individual word tokens and PUT them with arabic text only (glosses come in Step 5):
-
-```
-PUT /api/v1/texts/$ARGUMENTS/sentences/<sentenceId>/tokens
-Content-Type: application/json
-
-{
-  "tokens": [
-    { "position": 0, "arabic": "كَانَتْ", "transliteration": null, "translation": null },
-    ...
-  ]
-}
-```
-
-PUT replaces ALL tokens atomically. Positions must be contiguous from 0.
-
-## Step 5 — Word-level glosses (always required)
-
-**This step is mandatory regardless of whether Step 4 used auto-tokenize or manual split.**
-Auto-tokenize only splits words — it never fills in transliteration or translation. You must gloss every token.
-
-Fetch the current tokens for the sentence:
-
-```bash
-curl -s http://localhost:8085/api/v1/texts/$ARGUMENTS/sentences/<sentenceId>
-```
-
-Then PUT the full token list with transliteration and translation filled in for every token:
-
-| Field | Content |
-|---|---|
-| `position` | 0-based, left-to-right |
-| `arabic` | Keep as returned (do not change) |
-| `transliteration` | Arabi chat alphabet, dialect-adjusted (see conventions below) |
-| `translation` | Minimal word-level gloss. Include grammatical hint in parens when useful: `"was (f.)"` |
-
-```
-PUT /api/v1/texts/$ARGUMENTS/sentences/<sentenceId>/tokens
-Content-Type: application/json
-
-{
-  "tokens": [
-    { "position": 0, "arabic": "كَانَتْ", "transliteration": "kānat", "translation": "was (f.)" },
-    ...
-  ]
-}
-```
-
-Process all sentences before moving to verification. For efficiency, batch all 13 (or however many) sentences in a single Python/shell script rather than one curl per token.
-
-## Step 6 — Verify
+## Step 4 — Verify
 
 ```bash
 curl -s http://localhost:8085/api/v1/texts/$ARGUMENTS/sentences
 ```
 
-Confirm array length matches your split. Spot-check one sentence's tokens — verify `transliteration` and `translation` are non-null.
+Confirm array length matches your split count.
 
 ---
 
@@ -131,6 +68,7 @@ Use Arabi chat alphabet, close to dialect pronunciation. Default dialect: **Tuni
 - `5` for خاء
 - `3` for عين
 - `7` for حاء
+- Emphatic (dark) consonants use **capital** Latin letters: `ط = T`, `ص = S`, `ض = D`, `ظ = D`
 - Use the rule-based endpoint as a starting point, then correct for vowels and dialect:
 
 ```bash
@@ -152,5 +90,3 @@ If the conjunction `و` is attached orthographically, keep it attached in the tr
 | `GET /sentences` → non-empty array | Stop. Ask user before proceeding. |
 | `POST /sentences` → 500 | Check `arabicText` does not contain trailing punctuation (`.` `؟` `!`). Strip and retry. |
 | `POST /sentences` → other error | Stop. Report error. Do not continue. |
-| `auto-tokenize` → 503 | Fall back to manual split. Do not report as error. |
-| `PUT /tokens` → 422 | Check positions are contiguous from 0. Fix and retry. |

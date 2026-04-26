@@ -71,12 +71,6 @@ async function handleMarkValid() {
 	flex-wrap: wrap;
 }
 
-:global(.dark) .stale-banner {
-	background: hsl(38 60% 12%);
-	border-color: hsl(38 60% 28%);
-	color: hsl(38 80% 70%);
-}
-
 .stale-banner-text {
 	flex: 1;
 	min-width: 0;

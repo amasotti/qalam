@@ -3,8 +3,6 @@
    @theme (Tailwind), :root (CSS custom properties)
    ============================================================ */
 
-@custom-variant dark (&:is(.dark *));
-
 @theme {
 	/* ·· Latin UI fonts ·· */
 	--font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;

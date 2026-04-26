@@ -35,6 +35,7 @@ const root = useRoot(() => word.data?.rootId ?? undefined);
 let isEditing = $state(false);
 let deleteConfirm = $state(false);
 let enrichOpen = $state(false);
+let aiUnavailable = $state(false);
 
 let addingExample = $state(false);
 let newExAr = $state('');
@@ -170,10 +171,12 @@ const masterySteps: Record<string, number> = {
 								class="btn btn-primary"
 								onclick={() => { isEditing = true; deleteConfirm = false; }}
 							>Edit</button>
-							<button
-								class="btn"
-								onclick={() => (enrichOpen = true)}
-							>✦ AI Enrich</button>
+							{#if !aiUnavailable}
+								<button
+									class="btn"
+									onclick={() => (enrichOpen = true)}
+								>✦ AI Enrich</button>
+							{/if}
 							<button
 								class="btn btn-danger"
 								onclick={handleDelete}
@@ -417,7 +420,12 @@ const masterySteps: Record<string, number> = {
 		</div>
 
 		<!-- AI Enrich drawer -->
-		<WordEnrichDrawer wordId={id} open={enrichOpen} onClose={() => (enrichOpen = false)} />
+		<WordEnrichDrawer
+			wordId={id}
+			open={enrichOpen}
+			onClose={() => (enrichOpen = false)}
+			onAiUnavailable={() => { aiUnavailable = true; enrichOpen = false; }}
+		/>
 	{/if}
 {/if}
 

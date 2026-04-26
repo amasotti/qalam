@@ -4,8 +4,9 @@
 
 <div align="center">
 
-[![CI - Backend](https://github.com/amasotti/qalam/actions/workflows/ci-backend.yml/badge.svg?branch=main)](https://github.com/amasotti/qalam/actions/workflows/ci-backend.yml)
-[![CI - Frontend](https://github.com/amasotti/qalam/actions/workflows/ci-frontend.yml/badge.svg?branch=main)](https://github.com/amasotti/qalam/actions/workflows/ci-frontend.yml)
+[![CI](https://github.com/amasotti/qalam/actions/workflows/ci.yml/badge.svg)](https://github.com/amasotti/qalam/actions/workflows/ci.yml)
+[![E2E — Frontend](https://github.com/amasotti/qalam/actions/workflows/e2e-frontend.yml/badge.svg)](https://github.com/amasotti/qalam/actions/workflows/e2e-frontend.yml)
+[![Release](https://github.com/amasotti/qalam/actions/workflows/release.yml/badge.svg)](https://github.com/amasotti/qalam/actions/workflows/release.yml)
 
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.3-7F52FF?logo=kotlin&logoColor=white)
 ![Ktor](https://img.shields.io/badge/Ktor-3.x-087CFA?logo=ktor&logoColor=white)

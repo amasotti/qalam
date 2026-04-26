@@ -10,11 +10,9 @@ interface Props {
 
 const { wordId }: Props = $props();
 
-// Mutations
 const generateMutation = useGenerateExamples();
 const saveMutation = useSaveWordExample();
 
-// State
 let isExpanded = $state(false);
 let examples = $state<AiExampleSentence[]>([]);
 let errorMessage = $state('');
@@ -54,9 +52,11 @@ function handleUseExample(example: AiExampleSentence) {
 		},
 		{
 			onSuccess: () => {
-				isExpanded = false;
-				examples = [];
-				errorMessage = '';
+				examples = examples.filter((e) => e !== example);
+				if (examples.length === 0) {
+					isExpanded = false;
+					errorMessage = '';
+				}
 			},
 			onError: (error) => {
 				errorMessage = error instanceof Error ? error.message : 'Failed to save example';
@@ -65,15 +65,20 @@ function handleUseExample(example: AiExampleSentence) {
 	);
 }
 
-function handleDiscard() {
+function handleDiscardExample(example: AiExampleSentence) {
+	examples = examples.filter((e) => e !== example);
+	if (examples.length === 0) {
+		isExpanded = false;
+		errorMessage = '';
+		isAiNotConfigured = false;
+	}
+}
+
+function handleDismissAll() {
 	isExpanded = false;
 	examples = [];
 	errorMessage = '';
 	isAiNotConfigured = false;
-}
-
-function handleGenerateAgain() {
-	handleGenerateClick();
 }
 
 const isGenerateLoading = $derived(generateMutation.isPending);
@@ -83,7 +88,7 @@ const isAnyLoading = $derived(isGenerateLoading || isSaveLoading);
 
 <div class="ai-examples">
 	{#if !isExpanded}
-		<div class="ai-examples-trigger">
+		<div class="ai-trigger">
 			<Button
 				onclick={handleGenerateClick}
 				disabled={isGenerateLoading}
@@ -95,61 +100,65 @@ const isAnyLoading = $derived(isGenerateLoading || isSaveLoading);
 			</Button>
 		</div>
 	{:else if isGenerateLoading}
-		<div class="ai-examples-loading">
+		<div class="ai-loading">
 			<p>Generating examples…</p>
 		</div>
 	{:else if isAiNotConfigured}
-		<div class="ai-examples-notice">
-			<p>
-				AI not configured — set <code>OPENROUTER_API_KEY</code> to enable this feature.
-			</p>
+		<div class="ai-notice">
+			<p>AI not configured — set <code>OPENROUTER_API_KEY</code> to enable this feature.</p>
 		</div>
-		<div class="ai-examples-footer">
-			<Button onclick={handleDiscard} size="sm" variant="outline">Close</Button>
+		<div class="ai-footer">
+			<Button onclick={handleDismissAll} size="sm" variant="outline">Close</Button>
 		</div>
 	{:else if errorMessage}
-		<div class="ai-examples-error">
+		<div class="ai-error">
 			<p>{errorMessage}</p>
 		</div>
-		<div class="ai-examples-footer">
-			<Button onclick={handleDiscard} size="sm" variant="outline">Close</Button>
-			<Button onclick={handleGenerateAgain} size="sm" variant="outline">
+		<div class="ai-footer">
+			<Button onclick={handleDismissAll} size="sm" variant="outline">Close</Button>
+			<Button onclick={handleGenerateClick} size="sm" variant="outline">
 				<RefreshCw size={16} />
 				Try again
 			</Button>
 		</div>
 	{:else if examples.length > 0}
-		<div class="ai-examples-results">
+		<div class="ai-results">
 			{#each examples as example (example.arabic)}
-				<div class="ai-example-card">
-					<div class="ai-example-arabic">{example.arabic}</div>
-					<div class="ai-example-transliteration">{example.transliteration}</div>
-					<div class="ai-example-translation">{example.translation}</div>
-					<div class="ai-example-actions">
+				<div class="ai-card">
+					<div class="ai-card-body">
+						<p class="example-card-ar">{example.arabic}</p>
+						{#if example.transliteration}
+							<p class="example-card-tr">{example.transliteration}</p>
+						{/if}
+						{#if example.translation}
+							<p class="example-card-en">{example.translation}</p>
+						{/if}
+					</div>
+					<div class="ai-card-actions">
 						<Button
 							onclick={() => handleUseExample(example)}
 							disabled={isAnyLoading}
 							size="sm"
 						>
-							<Check size={16} />
-							Use this example
+							<Check size={14} />
+							Use
 						</Button>
 						<Button
-							onclick={handleDiscard}
+							onclick={() => handleDiscardExample(example)}
 							disabled={isAnyLoading}
 							size="sm"
 							variant="outline"
 						>
-							<X size={16} />
+							<X size={14} />
 							Discard
 						</Button>
 					</div>
 				</div>
 			{/each}
 		</div>
-		<div class="ai-examples-footer">
+		<div class="ai-footer">
 			<Button
-				onclick={handleGenerateAgain}
+				onclick={handleGenerateClick}
 				disabled={isGenerateLoading}
 				size="sm"
 				variant="outline"
@@ -160,3 +169,73 @@ const isAnyLoading = $derived(isGenerateLoading || isSaveLoading);
 		</div>
 	{/if}
 </div>
+
+<style>
+.ai-examples {
+	margin-top: 0.5rem;
+}
+
+.ai-trigger {
+	display: flex;
+	justify-content: flex-start;
+}
+
+.ai-loading,
+.ai-notice,
+.ai-error {
+	padding: 0.875rem 1.125rem;
+	border-radius: 0 8px 8px 0;
+	border-left: 3px solid var(--cerulean);
+	background: var(--cerulean-pale);
+	font-size: 0.875rem;
+	color: var(--cerulean);
+}
+
+.ai-error {
+	border-left-color: var(--coral);
+	background: var(--coral-pale);
+	color: var(--coral);
+}
+
+.ai-loading {
+	color: var(--ink-ghost);
+	border-left-color: var(--border);
+	background: var(--bg-dark);
+}
+
+.ai-results {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+/* AI example card — same shape as example-card but cerulean accent */
+.ai-card {
+	position: relative;
+	padding: 1rem 1.125rem;
+	border-left: 3px solid var(--cerulean);
+	background: var(--cerulean-pale);
+	border-radius: 0 8px 8px 0;
+	display: flex;
+	gap: 1rem;
+	align-items: flex-start;
+}
+
+.ai-card-body {
+	flex: 1;
+	min-width: 0;
+}
+
+.ai-card-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 0.375rem;
+	flex-shrink: 0;
+}
+
+.ai-footer {
+	display: flex;
+	gap: 0.5rem;
+	margin-top: 0.625rem;
+}
+</style>

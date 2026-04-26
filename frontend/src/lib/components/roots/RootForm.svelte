@@ -73,11 +73,11 @@ async function handleSubmit(e: SubmitEvent) {
 
 <form class="root-form" onsubmit={handleSubmit} novalidate>
 	{#if !isEdit}
-		<div class="root-form-field">
-			<label class="root-form-label" for="root-letters">Root letters</label>
+		<div class="form-field">
+			<label class="form-label" for="root-letters">Root letters</label>
 			<input
 				id="root-letters"
-				class="root-form-input arabic-input"
+				class="form-input ar-input"
 				type="text"
 				placeholder="مثل: ك ت ب أو كتب"
 				bind:value={rootInput}
@@ -86,30 +86,30 @@ async function handleSubmit(e: SubmitEvent) {
 				disabled={isPending}
 				required
 			/>
-			<p class="root-form-hint">
+			<p class="form-hint">
 				Space, dash, comma-separated — or concatenated Arabic consonants
 			</p>
 			{#if normalizeError}
-				<p class="root-form-error">{normalizeError}</p>
+				<p class="form-error">{normalizeError}</p>
 			{/if}
 		</div>
 
 		{#if preview}
-			<div class="root-form-preview">
-				<span class="root-form-preview-arabic">{preview.displayForm}</span>
-				<div class="root-form-preview-meta">
-					<span class="root-form-preview-normalized">{preview.normalizedForm}</span>
-					<span class="root-form-preview-count">{preview.letterCount} letters</span>
+			<div class="root-preview">
+				<span class="root-preview-ar">{preview.displayForm}</span>
+				<div class="root-preview-meta">
+					<span class="root-preview-normalized">{preview.normalizedForm}</span>
+					<span class="root-badge">{preview.letterCount} letters</span>
 				</div>
 			</div>
 		{/if}
 	{/if}
 
-	<div class="root-form-field">
-		<label class="root-form-label" for="root-meaning">Meaning</label>
+	<div class="form-field">
+		<label class="form-label" for="root-meaning">Meaning</label>
 		<input
 			id="root-meaning"
-			class="root-form-input"
+			class="form-input"
 			type="text"
 			placeholder="e.g. to write, writing"
 			bind:value={meaning}
@@ -117,24 +117,24 @@ async function handleSubmit(e: SubmitEvent) {
 		/>
 	</div>
 
-	<div class="root-form-field">
-		<label class="root-form-label" for="root-analysis">Analysis</label>
+	<div class="form-field">
+		<label class="form-label" for="root-analysis">Analysis</label>
 		<textarea
 			id="root-analysis"
-			class="root-form-textarea"
+			class="form-textarea"
 			placeholder="Morphological notes, semantic range… (Markdown supported)"
 			rows={20}
 			bind:value={analysis}
 			disabled={isPending}
 		></textarea>
-		<p class="root-form-hint">Markdown is rendered on the detail page.</p>
+		<p class="form-hint">Markdown is rendered on the detail page.</p>
 	</div>
 
 	{#if submitError}
-		<p class="root-form-error">{submitError}</p>
+		<p class="form-error">{submitError}</p>
 	{/if}
 
-	<div class="root-form-actions">
+	<div class="form-actions">
 		<Button variant="ghost" type="button" onclick={onCancel} disabled={isPending}>
 			Cancel
 		</Button>
@@ -146,3 +146,41 @@ async function handleSubmit(e: SubmitEvent) {
 		</Button>
 	</div>
 </form>
+
+<style>
+.root-form {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+/* Normalize preview block */
+.root-preview {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	padding: 0.875rem 1.125rem;
+	background: var(--bg-dark);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+}
+.root-preview-ar {
+	font-family: "Amiri", serif;
+	font-size: 2.5rem;
+	direction: rtl;
+	color: var(--ink);
+	line-height: 1;
+}
+.root-preview-meta {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+.root-preview-normalized {
+	font-family: "Amiri", serif;
+	font-size: 1rem;
+	color: var(--ink-light);
+	direction: rtl;
+	font-style: italic;
+}
+</style>

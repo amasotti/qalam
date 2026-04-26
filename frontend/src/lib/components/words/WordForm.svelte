@@ -150,16 +150,16 @@ async function handleSubmit(e: SubmitEvent) {
 <form class="word-form" onsubmit={handleSubmit} novalidate>
 	<!-- Arabic text -->
 	{#if isEdit}
-		<div class="word-form-field">
-			<p class="word-form-label">Arabic</p>
-			<p class="word-form-arabic-display arabic-input">{arabicText}</p>
+		<div class="form-field">
+			<p class="form-label">Arabic</p>
+			<p class="arabic-display">{arabicText}</p>
 		</div>
 	{:else}
-		<div class="word-form-field">
-			<label class="word-form-label" for="word-arabic">Arabic *</label>
+		<div class="form-field">
+			<label class="form-label" for="word-arabic">Arabic *</label>
 			<input
 				id="word-arabic"
-				class="word-form-input arabic-input"
+				class="form-input ar-input"
 				type="text"
 				placeholder="أدخل الكلمة بالعربية"
 				bind:value={arabicText}
@@ -173,11 +173,11 @@ async function handleSubmit(e: SubmitEvent) {
 	{/if}
 
 	<!-- Transliteration -->
-	<div class="word-form-field">
-		<label class="word-form-label" for="word-transliteration">Transliteration</label>
+	<div class="form-field">
+		<label class="form-label" for="word-transliteration">Transliteration</label>
 		<input
 			id="word-transliteration"
-			class="word-form-input"
+			class="form-input"
 			type="text"
 			placeholder="e.g. kataba"
 			bind:value={transliteration}
@@ -186,11 +186,11 @@ async function handleSubmit(e: SubmitEvent) {
 	</div>
 
 	<!-- Translation -->
-	<div class="word-form-field">
-		<label class="word-form-label" for="word-translation">Translation</label>
+	<div class="form-field">
+		<label class="form-label" for="word-translation">Translation</label>
 		<input
 			id="word-translation"
-			class="word-form-input"
+			class="form-input"
 			type="text"
 			placeholder="e.g. to write"
 			bind:value={translation}
@@ -200,9 +200,9 @@ async function handleSubmit(e: SubmitEvent) {
 
 	<!-- POS / Dialect / Difficulty — 3-col grid -->
 	<div class="word-form-section">
-		<div class="word-form-field">
-			<label class="word-form-label" for="word-pos">Part of speech</label>
-			<select id="word-pos" class="word-form-select" bind:value={partOfSpeech} disabled={isPending}>
+		<div class="form-field">
+			<label class="form-label" for="word-pos">Part of speech</label>
+			<select id="word-pos" class="form-select" bind:value={partOfSpeech} disabled={isPending}>
 				<option value="UNKNOWN">Unknown</option>
 				<option value="NOUN">Noun</option>
 				<option value="VERB">Verb</option>
@@ -216,9 +216,9 @@ async function handleSubmit(e: SubmitEvent) {
 			</select>
 		</div>
 
-		<div class="word-form-field">
-			<label class="word-form-label" for="word-dialect">Dialect</label>
-			<select id="word-dialect" class="word-form-select" bind:value={dialect} disabled={isPending}>
+		<div class="form-field">
+			<label class="form-label" for="word-dialect">Dialect</label>
+			<select id="word-dialect" class="form-select" bind:value={dialect} disabled={isPending}>
 				<option value="MSA">MSA</option>
 				<option value="TUNISIAN">Tunisian</option>
 				<option value="MOROCCAN">Moroccan</option>
@@ -229,11 +229,11 @@ async function handleSubmit(e: SubmitEvent) {
 			</select>
 		</div>
 
-		<div class="word-form-field">
-			<label class="word-form-label" for="word-difficulty">Difficulty</label>
+		<div class="form-field">
+			<label class="form-label" for="word-difficulty">Difficulty</label>
 			<select
 				id="word-difficulty"
-				class="word-form-select"
+				class="form-select"
 				bind:value={difficulty}
 				disabled={isPending}
 			>
@@ -245,12 +245,12 @@ async function handleSubmit(e: SubmitEvent) {
 	</div>
 
 	<!-- Pronunciation URL -->
-	<div class="word-form-field">
-		<label class="word-form-label" for="word-pronunciation">Pronunciation URL</label>
-		<div class="word-form-input-row">
+	<div class="form-field">
+		<label class="form-label" for="word-pronunciation">Pronunciation URL</label>
+		<div class="input-row">
 			<input
 				id="word-pronunciation"
-				class="word-form-input"
+				class="form-input"
 				type="url"
 				placeholder="https://forvo.com/search/…"
 				bind:value={pronunciationUrl}
@@ -259,7 +259,7 @@ async function handleSubmit(e: SubmitEvent) {
 			{#if arabicText.trim() && !pronunciationUrl}
 				<button
 					type="button"
-					class="word-form-forvo-btn"
+					class="forvo-btn"
 					onclick={() => { pronunciationUrl = `https://forvo.com/search/${encodeURIComponent(arabicText.trim())}`; }}
 					disabled={isPending}
 				>Forvo</button>
@@ -268,11 +268,11 @@ async function handleSubmit(e: SubmitEvent) {
 	</div>
 
 	<!-- Root selector -->
-	<div class="word-form-field">
-		<label class="word-form-label" for="word-root-filter">Root</label>
+	<div class="form-field">
+		<label class="form-label" for="word-root-filter">Root</label>
 		<input
 			id="word-root-filter"
-			class="word-form-root-filter"
+			class="form-input"
 			type="text"
 			placeholder="Filter by form or meaning…"
 			bind:value={rootFilter}
@@ -280,7 +280,7 @@ async function handleSubmit(e: SubmitEvent) {
 			autocomplete="off"
 		/>
 		<select
-			class="word-form-select"
+			class="form-select"
 			bind:value={rootId}
 			disabled={isPending || allRoots.isPending}
 		>
@@ -292,17 +292,17 @@ async function handleSubmit(e: SubmitEvent) {
 			{/each}
 		</select>
 		{#if allRoots.isError}
-			<p class="word-form-hint">Could not load roots.</p>
+			<p class="form-hint">Could not load roots.</p>
 		{/if}
 	</div>
 
 	<!-- Derived from — autocomplete -->
-	<div class="word-form-field">
-		<label class="word-form-label" for="word-derived-from">Derived from</label>
+	<div class="form-field">
+		<label class="form-label" for="word-derived-from">Derived from</label>
 
 		{#if derivedFromSelected && derivedFromSelected.arabicText}
-			<div class="word-form-autocomplete-selected">
-				<span class="arabic-input">{derivedFromSelected.arabicText}</span>
+			<div class="autocomplete-selected">
+				<span class="arabic">{derivedFromSelected.arabicText}</span>
 				{#if derivedFromSelected.translation}
 					<span>— {derivedFromSelected.translation}</span>
 				{/if}
@@ -311,10 +311,10 @@ async function handleSubmit(e: SubmitEvent) {
 				</Button>
 			</div>
 		{:else}
-			<div class="word-form-autocomplete-wrap">
+			<div class="autocomplete-wrap">
 				<input
 					id="word-derived-from"
-					class="word-form-input arabic-input"
+					class="form-input ar-input"
 					type="text"
 					placeholder="ابحث عن كلمة…"
 					bind:value={derivedFromQuery}
@@ -330,15 +330,15 @@ async function handleSubmit(e: SubmitEvent) {
 					dir="rtl"
 				/>
 				{#if showAutocompleteDropdown && visibleAutocompleteResults.length > 0}
-					<ul class="word-form-autocomplete-results">
+					<ul class="autocomplete-results">
 						{#each visibleAutocompleteResults as word (word.id)}
 							<li>
 								<button
-									class="word-form-autocomplete-item"
+									class="autocomplete-item"
 									type="button"
 									onclick={() => selectDerivedFrom(word)}
 								>
-									<span class="arabic-input">{word.arabicText}</span>
+									<span class="arabic">{word.arabicText}</span>
 									{#if word.translation}
 										<span>— {word.translation}</span>
 									{/if}
@@ -349,17 +349,119 @@ async function handleSubmit(e: SubmitEvent) {
 				{/if}
 			</div>
 		{/if}
-		<p class="word-form-hint">The word this was derived from (creates a graph edge).</p>
+		<p class="form-hint">The word this was derived from (creates a graph edge).</p>
 	</div>
 
 	{#if submitError}
-		<p class="word-form-error">{submitError}</p>
+		<p class="form-error">{submitError}</p>
 	{/if}
 
-	<div class="word-form-actions">
+	<div class="form-actions">
 		<Button variant="outline" type="button" onclick={onCancel} disabled={isPending}>Cancel</Button>
 		<Button type="submit" disabled={isPending || (!isEdit && !arabicText.trim())}>
 			{isPending ? 'Saving…' : isEdit ? 'Update word' : 'Create word'}
 		</Button>
 	</div>
 </form>
+
+<style>
+.word-form {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+/* Edit mode — non-editable Arabic display */
+.arabic-display {
+	font-family: "Amiri", serif;
+	font-size: 2rem;
+	direction: rtl;
+	text-align: right;
+	color: var(--ink);
+	line-height: 1.4;
+}
+
+/* 3-col grid for POS / dialect / difficulty */
+.word-form-section {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1rem;
+}
+
+/* Pronunciation URL row */
+.input-row {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+}
+.input-row .form-input {
+	flex: 1;
+}
+.forvo-btn {
+	padding: 0.45rem 0.875rem;
+	border-radius: 6px;
+	border: 1px solid var(--border);
+	background: transparent;
+	color: var(--ink-mid);
+	font-size: 0.78rem;
+	font-weight: 500;
+	cursor: pointer;
+	white-space: nowrap;
+	font-family: inherit;
+	transition: all 150ms;
+}
+.forvo-btn:hover {
+	border-color: var(--ink-mid);
+	color: var(--ink);
+}
+
+/* Autocomplete */
+.autocomplete-wrap {
+	position: relative;
+}
+.autocomplete-results {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	background: var(--white);
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	box-shadow: 0 4px 16px rgba(26, 24, 16, 0.08);
+	z-index: 20;
+	list-style: none;
+	padding: 0.25rem 0;
+	margin: 0;
+	max-height: 14rem;
+	overflow-y: auto;
+}
+.autocomplete-item {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	width: 100%;
+	padding: 0.5rem 0.875rem;
+	background: none;
+	border: none;
+	cursor: pointer;
+	text-align: right;
+	font-size: 0.875rem;
+	color: var(--ink);
+	font-family: inherit;
+	transition: background 120ms;
+}
+.autocomplete-item:hover {
+	background: var(--bg-dark);
+}
+.autocomplete-selected {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.5rem 0.75rem;
+	background: var(--bg-dark);
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	font-size: 0.875rem;
+	color: var(--ink-mid);
+}
+</style>

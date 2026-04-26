@@ -15,6 +15,21 @@ data class RecordResultRequest(
 )
 
 @Serializable
+data class TrainingWordExampleResponse(
+    val arabic: String,
+    val transliteration: String?,
+    val translation: String?,
+)
+
+@Serializable
+data class TrainingWordRelationResponse(
+    val relatedWordId: String,
+    val relatedWordArabic: String,
+    val relatedWordTranslation: String?,
+    val relationType: String,
+)
+
+@Serializable
 data class TrainingSessionWordResponse(
     val wordId: String,
     val arabicText: String,
@@ -24,6 +39,10 @@ data class TrainingSessionWordResponse(
     val position: Int,
     val result: String?,
     val masteryLevel: String,
+    val root: String? = null,
+    val notes: String? = null,
+    val examples: List<TrainingWordExampleResponse> = emptyList(),
+    val relations: List<TrainingWordRelationResponse> = emptyList(),
 )
 
 @Serializable

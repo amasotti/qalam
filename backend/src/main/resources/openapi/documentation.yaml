@@ -2783,8 +2783,8 @@ components:
           nullable: true
         relationType:
           type: string
+          description: Relation type (SYNONYM, ANTONYM, RELATED, etc.)
           enum: [SYNONYM, ANTONYM, RELATED]
-
     TrainingSessionWordResponse:
       type: object
       required: [wordId, arabicText, translation, frontSide, position, masteryLevel]
@@ -2819,22 +2819,21 @@ components:
         root:
           type: string
           nullable: true
-          description: Root display form (e.g. "ك-ت-ب"), null if word has no root
+          description: Display form of the Arabic root (e.g. "ك ل م"), if available
         notes:
           type: string
           nullable: true
-          description: Free-text notes on the word
+          description: Learner notes attached to the word
         examples:
           type: array
+          description: Up to 2 usage examples
           items:
             $ref: "#/components/schemas/TrainingWordExampleResponse"
-          description: Up to 2 example sentences
         relations:
           type: array
+          description: Related words (synonyms, antonyms, etc.)
           items:
             $ref: "#/components/schemas/TrainingWordRelationResponse"
-          description: Related words (synonyms, antonyms, related)
-
     TrainingSessionResponse:
       type: object
       required: [id, mode, status, words, createdAt]

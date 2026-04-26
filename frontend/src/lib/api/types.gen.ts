@@ -362,6 +362,22 @@ export type CreateSessionRequest = {
     size: number;
 };
 
+export type TrainingWordExampleResponse = {
+    arabic: string;
+    transliteration?: string | null;
+    translation?: string | null;
+};
+
+export type TrainingWordRelationResponse = {
+    relatedWordId: string;
+    relatedWordArabic: string;
+    relatedWordTranslation?: string | null;
+    /**
+     * Relation type (SYNONYM, ANTONYM, RELATED, etc.)
+     */
+    relationType: string;
+};
+
 export type TrainingSessionWordResponse = {
     wordId: string;
     arabicText: string;
@@ -383,6 +399,22 @@ export type TrainingSessionWordResponse = {
      * Current mastery level for this word
      */
     masteryLevel: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
+    /**
+     * Display form of the Arabic root (e.g. "ك ل م"), if available
+     */
+    root?: string | null;
+    /**
+     * Learner notes attached to the word
+     */
+    notes?: string | null;
+    /**
+     * Up to 2 usage examples
+     */
+    examples?: Array<TrainingWordExampleResponse>;
+    /**
+     * Related words (synonyms, antonyms, etc.)
+     */
+    relations?: Array<TrainingWordRelationResponse>;
 };
 
 export type TrainingSessionResponse = {

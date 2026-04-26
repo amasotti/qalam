@@ -8,6 +8,8 @@ import com.tonihacks.qalam.domain.training.TrainingSession
 import com.tonihacks.qalam.domain.training.TrainingSessionResponse
 import com.tonihacks.qalam.domain.training.TrainingSessionWord
 import com.tonihacks.qalam.domain.training.TrainingSessionWordResponse
+import com.tonihacks.qalam.domain.training.TrainingWordExampleResponse
+import com.tonihacks.qalam.domain.training.TrainingWordRelationResponse
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -84,6 +86,23 @@ private fun toSessionResponse(
             position        = w.position,
             result          = w.result?.name,
             masteryLevel    = w.masteryLevel,
+            root            = w.root,
+            notes           = w.notes,
+            examples        = w.examples.map { ex ->
+                TrainingWordExampleResponse(
+                    arabic          = ex.arabic,
+                    transliteration = ex.transliteration,
+                    translation     = ex.translation,
+                )
+            },
+            relations       = w.relations.map { rel ->
+                TrainingWordRelationResponse(
+                    relatedWordId          = rel.relatedWordId,
+                    relatedWordArabic      = rel.relatedWordArabic,
+                    relatedWordTranslation = rel.relatedWordTranslation,
+                    relationType           = rel.relationType,
+                )
+            },
         )
     },
     createdAt   = session.createdAt.toString(),

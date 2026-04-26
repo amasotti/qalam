@@ -300,7 +300,6 @@ class WordService(
     suspend fun enrichWord(wordId: String): Either<DomainError, WordEnrichmentSuggestion> = either {
         val id = parseWordId(wordId).bind()
         val word = repo.findById(id).bind()
-        // aiClient.enrichWord(word) will be implemented in Task 9
         aiClient.enrichWord(word).bind()
     }
 }

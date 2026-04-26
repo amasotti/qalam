@@ -427,7 +427,16 @@ Remove everything from `<style>` through `</style>` at the end of the file.
 
 Navigate to a text detail page that has body/transliteration/translation. The full-text panel should render correctly with Arabic text right-aligned in Noto Naskh and transliteration in Spectral italic.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Run checks**
+
+```bash
+just lint-frontend
+just check-frontend
+```
+
+Expected: zero errors, zero warnings.
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add frontend/src/lib/components/texts/FullTextPanel.svelte frontend/src/styles/layout.css
@@ -689,7 +698,16 @@ Keep: `.form-textarea { ... }`, `.form-actions { ... }`, `.btn-submit { ... }` (
 
 Open a text detail page, click on a word annotation area. Open the annotation drawer/form. Confirm: type selector buttons highlight correctly on click, form labels render, ghost cancel button renders, submit button renders.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Run checks**
+
+```bash
+just lint-frontend
+just check-frontend
+```
+
+Expected: zero errors, zero warnings.
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add frontend/src/lib/components/annotations/AnnotationForm.svelte
@@ -752,7 +770,16 @@ Or simpler: just add a `style="width:340px"` attribute to the drawer div. Use wh
 
 Open annotation drawer (click annotate on a word). Open vocab lookup (click a token). Both should slide in from the right correctly.
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 4: Run checks**
+
+```bash
+just lint-frontend
+just check-frontend
+```
+
+Expected: zero errors, zero warnings.
+
+- [ ] **Step 5: Commit**
 
 ```bash
 git add frontend/src/lib/components/annotations/AnnotationDrawer.svelte \
@@ -795,7 +822,16 @@ Keep `.vocab-mastery-badge { ... }` (the base pill styling — display, padding,
 
 Open vocab lookup on a word with a known mastery level. The badge should still render with the correct color.
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 4: Run checks**
+
+```bash
+just lint-frontend
+just check-frontend
+```
+
+Expected: zero errors, zero warnings.
+
+- [ ] **Step 5: Commit**
 
 ```bash
 git add frontend/src/lib/components/texts/VocabLookupDrawer.svelte
@@ -846,7 +882,16 @@ The `<style>` block after cleanup:
 
 Open a text detail that has stale tokens (or temporarily trigger the condition). The amber warning banner should display correctly.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Run checks**
+
+```bash
+just lint-frontend
+just check-frontend
+```
+
+Expected: zero errors, zero warnings.
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add frontend/src/lib/components/texts/StaleTokenBanner.svelte
@@ -895,7 +940,16 @@ Keep: `.training-setup { ... }`, `.distribution { ... }`, `.setup-form { ... }`,
 
 Navigate to `/training`. Check: mastery distribution badges render (muted pills), form fields have labels, mode toggle buttons highlight when selected, error message (if any) appears in destructive color.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Run checks**
+
+```bash
+just lint-frontend
+just check-frontend
+```
+
+Expected: zero errors, zero warnings.
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add frontend/src/routes/training/+page.svelte

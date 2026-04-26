@@ -26,6 +26,8 @@ tags:
     description: Annotation management (vocabulary, grammar, cultural, structure notes)
   - name: training
     description: Flashcard training sessions and statistics
+  - name: ai
+    description: AI-powered linguistic analysis
   - name: system
     description: Health and API introspection
 
@@ -1669,6 +1671,43 @@ paths:
         '422':
           description: Validation error
 
+  /api/v1/ai/insight:
+    post:
+      summary: Generate AI linguistic insight for a word or sentence
+      operationId: generateInsight
+      tags: [ai]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InsightRequest"
+      responses:
+        "200":
+          description: Linguistic insight as plain text
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsightResponse"
+        "400":
+          description: Invalid input (unknown entityType or malformed UUID)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Entity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: AI service not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 security: []
 
 components:
@@ -2602,4 +2641,29 @@ components:
       properties:
         transliteration:
           type: string
-          description: Chat-alphabet transliteration of the input
+
+    InsightRequest:
+      type: object
+      required: [entityType, entityId]
+      properties:
+        entityType:
+          type: string
+          enum: [WORD, SENTENCE]
+          description: The type of entity to analyse
+        entityId:
+          type: string
+          format: uuid
+          description: UUID of the word or sentence
+        mode:
+          type: string
+          enum: [HOMEWORK, READING]
+          nullable: true
+          description: Insight mode — HOMEWORK prioritises corrections, READING focuses on nuance (defaults to HOMEWORK for sentences)
+
+    InsightResponse:
+      type: object
+      required: [insight]
+      properties:
+        insight:
+          type: string
+          description: Plain-text linguistic analysis from the AI teacher

@@ -3265,3 +3265,66 @@
 	font-size: 0.875rem;
 	color: hsl(var(--muted-foreground));
 }
+
+/* ── AI Insight Panel ── */
+
+.ai-insight-btn {
+	font-size: 0.75rem;
+	padding: 0.25rem 0.625rem;
+	color: var(--ink-light);
+	margin-top: 0.75rem;
+}
+
+.ai-insight-loading {
+	display: inline-block;
+	color: var(--ink-ghost);
+	font-size: 0.875rem;
+	margin-top: 0.75rem;
+}
+
+.ai-insight-panel {
+	margin-top: 0.75rem;
+	background: var(--bg-dark);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	padding: 1rem 1.125rem;
+}
+
+.ai-insight-content {
+	font-size: 0.875rem;
+	line-height: 1.7;
+	color: var(--ink-mid);
+}
+
+.ai-insight-content p {
+	margin: 0 0 0.75rem;
+}
+
+.ai-insight-content p:last-child {
+	margin-bottom: 0;
+}
+
+.ai-insight-content strong {
+	color: var(--ink);
+}
+
+.ai-insight-content ul,
+.ai-insight-content ol {
+	padding-left: 1.25rem;
+	margin: 0 0 0.75rem;
+}
+
+.ai-insight-content li {
+	margin-bottom: 0.25rem;
+}
+
+.ai-insight-actions {
+	display: flex;
+	gap: 0.5rem;
+	margin-top: 0.875rem;
+}
+
+.ai-insight-actions .btn {
+	font-size: 0.75rem;
+	padding: 0.25rem 0.625rem;
+}

@@ -4,6 +4,7 @@ import type {
 	AnnotationResponse,
 	SentenceResponse,
 } from '$lib/api/types.gen';
+import AiInsightPanel from '$lib/components/ai/AiInsightPanel.svelte';
 import StaleTokenBanner from './StaleTokenBanner.svelte';
 import TokenGrid from './TokenGrid.svelte';
 
@@ -62,5 +63,7 @@ const showStaleBanner = $derived(!sentence.tokensValid && sentence.tokens.length
 				{sentence.notes}
 			</div>
 		{/if}
+
+		<AiInsightPanel entityType="SENTENCE" entityId={sentence.id} />
 	</div>
 </div>

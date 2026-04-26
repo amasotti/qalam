@@ -11,11 +11,18 @@ import com.tonihacks.qalam.delivery.dto.word.AiExamplesResponse
 import com.tonihacks.qalam.delivery.dto.word.WordAnalysisResponse
 import com.tonihacks.qalam.delivery.dto.word.CreateDictionaryLinkRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordExampleRequest
+import com.tonihacks.qalam.delivery.dto.word.CreateWordPluralRequest
+import com.tonihacks.qalam.delivery.dto.word.CreateWordRelationRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordRequest
 import com.tonihacks.qalam.delivery.dto.word.DictionaryLinkResponse
 import com.tonihacks.qalam.delivery.dto.word.UpdateWordRequest
+import com.tonihacks.qalam.delivery.dto.word.UpsertWordMorphologyRequest
 import com.tonihacks.qalam.delivery.dto.word.WordAutocompleteResponse
+import com.tonihacks.qalam.delivery.dto.word.WordEnrichmentSuggestion
 import com.tonihacks.qalam.delivery.dto.word.WordExampleResponse
+import com.tonihacks.qalam.delivery.dto.word.WordMorphologyResponse
+import com.tonihacks.qalam.delivery.dto.word.WordPluralResponse
+import com.tonihacks.qalam.delivery.dto.word.WordRelationResponse
 import com.tonihacks.qalam.delivery.dto.word.WordResponse
 import com.tonihacks.qalam.delivery.dto.word.toAutocompleteResponse
 import com.tonihacks.qalam.delivery.dto.word.toResponse
@@ -85,7 +92,7 @@ class WordService(
             pronunciationUrl = req.pronunciationUrl,
             rootId = rootId,
             derivedFromId = derivedFromId,
-            notes = null,
+            notes = req.notes?.trim()?.takeIf { it.isNotEmpty() },
             createdAt = now,
             updatedAt = now,
         )
@@ -121,6 +128,7 @@ class WordService(
             pronunciationUrl = req.pronunciationUrl ?: existing.pronunciationUrl,
             rootId = rootId,
             derivedFromId = derivedFromId,
+            notes = req.notes?.trim()?.takeIf { it.isNotEmpty() } ?: existing.notes,
         )).bind().toResponse()
     }
 
@@ -199,6 +207,100 @@ class WordService(
             raise(DomainError.InvalidInput("'$exampleId' is not a valid UUID"))
         }
         repo.deleteExample(wId, eId).bind()
+    }
+
+    // --- Morphology ---
+
+    suspend fun getMorphology(wordId: String): Either<DomainError, WordMorphologyResponse> = either {
+        val id = parseWordId(wordId).bind()
+        repo.findById(id).bind()
+        val morphology = repo.findMorphology(id).bind()
+        val plurals = repo.findPlurals(id).bind()
+        morphology?.toResponse(plurals) ?: WordMorphologyResponse(gender = null, verbPattern = null, plurals = plurals.map { it.toResponse() })
+    }
+
+    suspend fun upsertMorphology(wordId: String, req: UpsertWordMorphologyRequest): Either<DomainError, WordMorphologyResponse> = either {
+        val id = parseWordId(wordId).bind()
+        repo.findById(id).bind()
+        val gender = req.gender?.let { parseWordEnum("gender", it) { s -> Gender.fromString(s) }.bind() }
+        val verbPattern = req.verbPattern?.let { parseWordEnum("verbPattern", it) { s -> VerbPattern.fromString(s) }.bind() }
+        val morphology = WordMorphology(wordId = id, gender = gender, verbPattern = verbPattern)
+        repo.upsertMorphology(morphology).bind()
+        val plurals = repo.findPlurals(id).bind()
+        morphology.toResponse(plurals)
+    }
+
+    // --- Plurals ---
+
+    suspend fun getPlurals(wordId: String): Either<DomainError, List<WordPluralResponse>> = either {
+        val id = parseWordId(wordId).bind()
+        repo.findById(id).bind()
+        repo.findPlurals(id).bind().map { it.toResponse() }
+    }
+
+    suspend fun addPlural(wordId: String, req: CreateWordPluralRequest): Either<DomainError, WordPluralResponse> = either {
+        if (req.pluralForm.isBlank()) raise(DomainError.ValidationError("pluralForm", "must not be blank"))
+        val id = parseWordId(wordId).bind()
+        repo.findById(id).bind()
+        val pluralType = parseWordEnum("pluralType", req.pluralType) { PluralType.fromString(it) }.bind()
+        val plural = WordPlural(
+            id = WordPluralId(UUID.randomUUID()),
+            wordId = id,
+            pluralForm = req.pluralForm.trim(),
+            pluralType = pluralType,
+        )
+        repo.addPlural(plural).bind().toResponse()
+    }
+
+    suspend fun deletePlural(wordId: String, pluralId: String): Either<DomainError, Unit> = either {
+        val wId = parseWordId(wordId).bind()
+        repo.findById(wId).bind()
+        val pId = try {
+            WordPluralId(UUID.fromString(pluralId))
+        } catch (_: IllegalArgumentException) {
+            raise(DomainError.InvalidInput("'$pluralId' is not a valid UUID"))
+        }
+        repo.deletePlural(wId, pId).bind()
+    }
+
+    // --- Relations ---
+
+    suspend fun getRelations(wordId: String): Either<DomainError, List<WordRelationResponse>> = either {
+        val id = parseWordId(wordId).bind()
+        repo.findById(id).bind()
+        val relations = repo.findRelations(id).bind()
+        relations.map { relation ->
+            val relatedWord = repo.findById(relation.relatedWordId).bind()
+            relation.toResponse(relatedWord)
+        }
+    }
+
+    suspend fun addRelation(wordId: String, req: CreateWordRelationRequest): Either<DomainError, WordRelationResponse> = either {
+        val id = parseWordId(wordId).bind()
+        repo.findById(id).bind()
+        val relatedId = parseWordId(req.relatedWordId).bind()
+        if (id == relatedId) raise(DomainError.ValidationError("relatedWordId", "cannot relate a word to itself"))
+        val relatedWord = repo.findById(relatedId).bind()
+        val type = parseWordEnum("relationType", req.relationType) { RelationType.fromString(it) }.bind()
+        val relation = WordRelation(wordId = id, relatedWordId = relatedId, relationType = type)
+        repo.addRelation(relation).bind()
+        relation.toResponse(relatedWord)
+    }
+
+    suspend fun deleteRelation(wordId: String, relatedWordId: String, type: String): Either<DomainError, Unit> = either {
+        val wId = parseWordId(wordId).bind()
+        val rId = parseWordId(relatedWordId).bind()
+        val relationType = parseWordEnum("relationType", type) { RelationType.fromString(it) }.bind()
+        repo.deleteRelation(wId, rId, relationType).bind()
+    }
+
+    // --- AI Enrichment (preview only — never auto-saved) ---
+
+    suspend fun enrichWord(wordId: String): Either<DomainError, WordEnrichmentSuggestion> = either {
+        val id = parseWordId(wordId).bind()
+        val word = repo.findById(id).bind()
+        // aiClient.enrichWord(word) will be implemented in Task 9
+        aiClient.enrichWord(word).bind()
     }
 }
 

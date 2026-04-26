@@ -15,3 +15,42 @@
 	background-color: hsl(var(--destructive) / 0.06) !important;
 	border-color: hsl(var(--destructive) / 0.7) !important;
 }
+
+/* ── Mastery levels ──
+   Apply to any badge/pill alongside a border-radius class.
+   Requires a 1px border so border-color is visible. */
+
+.mastery-new {
+	background: hsl(var(--muted));
+	color: hsl(var(--muted-foreground));
+	border-color: hsl(var(--border));
+}
+.mastery-learning {
+	background: hsl(40 90% 60% / 0.2);
+	color: hsl(40 70% 40%);
+	border-color: hsl(40 70% 60% / 0.4);
+}
+.mastery-known {
+	background: hsl(210 80% 60% / 0.2);
+	color: hsl(210 60% 40%);
+	border-color: hsl(210 60% 55% / 0.4);
+}
+.mastery-mastered {
+	background: hsl(140 60% 40% / 0.15);
+	color: hsl(140 50% 32%);
+	border-color: hsl(140 50% 45% / 0.4);
+}
+
+/* ── Warning banner ── */
+.banner-warning {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem 0.75rem;
+	background: hsl(38 92% 95%);
+	border: 1px solid hsl(38 80% 80%);
+	border-radius: 0.375rem;
+	font-size: 0.8125rem;
+	color: hsl(38 80% 28%);
+	flex-wrap: wrap;
+}

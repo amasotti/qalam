@@ -644,6 +644,244 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /api/v1/words/{id}/morphology:
+    get:
+      summary: Get morphology data for a word (gender, verb pattern, plurals)
+      operationId: getWordMorphology
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Morphology data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordMorphologyResponse"
+        "404":
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      summary: Upsert morphology fields (gender, verb pattern) for a word
+      operationId: upsertWordMorphology
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpsertWordMorphologyRequest"
+      responses:
+        "200":
+          description: Updated morphology data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordMorphologyResponse"
+        "404":
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/words/{id}/plurals:
+    get:
+      summary: List plural forms for a word
+      operationId: getWordPlurals
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: List of plural forms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WordPluralResponse"
+    post:
+      summary: Add a plural form to a word
+      operationId: addWordPlural
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWordPluralRequest"
+      responses:
+        "201":
+          description: Plural form added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordPluralResponse"
+        "422":
+          description: Validation error (blank pluralForm)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/words/{id}/plurals/{pluralId}:
+    delete:
+      summary: Delete a plural form from a word
+      operationId: deleteWordPlural
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: pluralId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "204":
+          description: Plural form deleted
+        "404":
+          description: Word or plural not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/words/{id}/relations:
+    get:
+      summary: List semantic relations for a word (synonyms, antonyms, related)
+      operationId: getWordRelations
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: List of word relations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WordRelationResponse"
+    post:
+      summary: Add a semantic relation to a word
+      operationId: addWordRelation
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWordRelationRequest"
+      responses:
+        "201":
+          description: Relation added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordRelationResponse"
+        "409":
+          description: Relation already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/words/{id}/relations/{relatedWordId}/{type}:
+    delete:
+      summary: Delete a semantic relation from a word
+      operationId: deleteWordRelation
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: relatedWordId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [SYNONYM, ANTONYM, RELATED]
+      responses:
+        "204":
+          description: Relation deleted
+        "404":
+          description: Word or relation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/words/{id}/enrich:
+    post:
+      summary: AI-powered word enrichment suggestions (ephemeral — does not persist)
+      operationId: enrichWord
+      tags: [words]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: AI enrichment suggestions (gender, verb pattern, plurals, relations)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordEnrichmentSuggestion"
+        "404":
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: AI not configured (OPENROUTER_API_KEY missing)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /api/v1/texts:
     get:
       summary: List texts with optional filters
@@ -1833,6 +2071,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        notes:
+          type: string
+          nullable: true
         createdAt:
           type: string
           format: date-time
@@ -1874,6 +2115,9 @@ components:
         derivedFromId:
           type: string
           format: uuid
+          nullable: true
+        notes:
+          type: string
           nullable: true
 
     UpdateWordRequest:
@@ -1919,6 +2163,9 @@ components:
         derivedFromId:
           type: string
           format: uuid
+          nullable: true
+        notes:
+          type: string
           nullable: true
 
     WordAutocompleteResponse:
@@ -2008,6 +2255,129 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/AiExampleSentence"
+
+    WordMorphologyResponse:
+      type: object
+      required: [plurals]
+      properties:
+        gender:
+          type: string
+          nullable: true
+          enum: [MASCULINE, FEMININE]
+        verbPattern:
+          type: string
+          nullable: true
+          enum: [I, II, III, IV, V, VI, VII, VIII, IX, X]
+        plurals:
+          type: array
+          items:
+            $ref: "#/components/schemas/WordPluralResponse"
+
+    WordPluralResponse:
+      type: object
+      required: [id, pluralForm, pluralType]
+      properties:
+        id:
+          type: string
+          format: uuid
+        pluralForm:
+          type: string
+        pluralType:
+          type: string
+          enum: [SOUND_MASC, SOUND_FEM, BROKEN, PAUCAL, COLLECTIVE, OTHER]
+
+    CreateWordPluralRequest:
+      type: object
+      required: [pluralForm]
+      properties:
+        pluralForm:
+          type: string
+        pluralType:
+          type: string
+          enum: [SOUND_MASC, SOUND_FEM, BROKEN, PAUCAL, COLLECTIVE, OTHER]
+          default: BROKEN
+
+    UpsertWordMorphologyRequest:
+      type: object
+      properties:
+        gender:
+          type: string
+          nullable: true
+          enum: [MASCULINE, FEMININE]
+        verbPattern:
+          type: string
+          nullable: true
+          enum: [I, II, III, IV, V, VI, VII, VIII, IX, X]
+
+    WordRelationResponse:
+      type: object
+      required: [relatedWordId, relatedWordArabic, relationType]
+      properties:
+        relatedWordId:
+          type: string
+          format: uuid
+        relatedWordArabic:
+          type: string
+        relatedWordTranslation:
+          type: string
+          nullable: true
+        relationType:
+          type: string
+          enum: [SYNONYM, ANTONYM, RELATED]
+
+    CreateWordRelationRequest:
+      type: object
+      required: [relatedWordId, relationType]
+      properties:
+        relatedWordId:
+          type: string
+          format: uuid
+        relationType:
+          type: string
+          enum: [SYNONYM, ANTONYM, RELATED]
+
+    WordEnrichmentSuggestion:
+      type: object
+      properties:
+        notes:
+          type: string
+          nullable: true
+        gender:
+          type: string
+          nullable: true
+          enum: [MASCULINE, FEMININE]
+        verbPattern:
+          type: string
+          nullable: true
+          enum: [I, II, III, IV, V, VI, VII, VIII, IX, X]
+        plurals:
+          type: array
+          items:
+            $ref: "#/components/schemas/AiPluralSuggestion"
+        relations:
+          type: array
+          items:
+            $ref: "#/components/schemas/AiRelationSuggestion"
+
+    AiPluralSuggestion:
+      type: object
+      required: [pluralForm, pluralType]
+      properties:
+        pluralForm:
+          type: string
+        pluralType:
+          type: string
+          enum: [SOUND_MASC, SOUND_FEM, BROKEN, PAUCAL, COLLECTIVE, OTHER]
+
+    AiRelationSuggestion:
+      type: object
+      required: [arabicText, relationType]
+      properties:
+        arabicText:
+          type: string
+        relationType:
+          type: string
+          enum: [SYNONYM, ANTONYM, RELATED]
 
     AnalyzeWordRequest:
       type: object

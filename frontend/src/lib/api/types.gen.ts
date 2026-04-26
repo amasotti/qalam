@@ -60,6 +60,7 @@ export type WordResponse = {
     pronunciationUrl?: string | null;
     rootId?: string | null;
     derivedFromId?: string | null;
+    notes?: string | null;
     createdAt: string;
     updatedAt: string;
 };
@@ -74,6 +75,7 @@ export type CreateWordRequest = {
     pronunciationUrl?: string | null;
     rootId?: string | null;
     derivedFromId?: string | null;
+    notes?: string | null;
 };
 
 /**
@@ -90,6 +92,7 @@ export type UpdateWordRequest = {
     pronunciationUrl?: string | null;
     rootId?: string | null;
     derivedFromId?: string | null;
+    notes?: string | null;
 };
 
 export type WordAutocompleteResponse = {
@@ -131,6 +134,58 @@ export type AiExampleSentence = {
 
 export type AiExamplesResponse = {
     examples: Array<AiExampleSentence>;
+};
+
+export type WordMorphologyResponse = {
+    gender?: 'MASCULINE' | 'FEMININE';
+    verbPattern?: 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X';
+    plurals: Array<WordPluralResponse>;
+};
+
+export type WordPluralResponse = {
+    id: string;
+    pluralForm: string;
+    pluralType: 'SOUND_MASC' | 'SOUND_FEM' | 'BROKEN' | 'PAUCAL' | 'COLLECTIVE' | 'OTHER';
+};
+
+export type CreateWordPluralRequest = {
+    pluralForm: string;
+    pluralType?: 'SOUND_MASC' | 'SOUND_FEM' | 'BROKEN' | 'PAUCAL' | 'COLLECTIVE' | 'OTHER';
+};
+
+export type UpsertWordMorphologyRequest = {
+    gender?: 'MASCULINE' | 'FEMININE';
+    verbPattern?: 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X';
+};
+
+export type WordRelationResponse = {
+    relatedWordId: string;
+    relatedWordArabic: string;
+    relatedWordTranslation?: string | null;
+    relationType: 'SYNONYM' | 'ANTONYM' | 'RELATED';
+};
+
+export type CreateWordRelationRequest = {
+    relatedWordId: string;
+    relationType: 'SYNONYM' | 'ANTONYM' | 'RELATED';
+};
+
+export type WordEnrichmentSuggestion = {
+    notes?: string | null;
+    gender?: 'MASCULINE' | 'FEMININE';
+    verbPattern?: 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X';
+    plurals?: Array<AiPluralSuggestion>;
+    relations?: Array<AiRelationSuggestion>;
+};
+
+export type AiPluralSuggestion = {
+    pluralForm: string;
+    pluralType: 'SOUND_MASC' | 'SOUND_FEM' | 'BROKEN' | 'PAUCAL' | 'COLLECTIVE' | 'OTHER';
+};
+
+export type AiRelationSuggestion = {
+    arabicText: string;
+    relationType: 'SYNONYM' | 'ANTONYM' | 'RELATED';
 };
 
 export type AnalyzeWordRequest = {
@@ -1110,6 +1165,242 @@ export type GenerateWordExamplesResponses = {
 };
 
 export type GenerateWordExamplesResponse = GenerateWordExamplesResponses[keyof GenerateWordExamplesResponses];
+
+export type GetWordMorphologyData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/morphology';
+};
+
+export type GetWordMorphologyErrors = {
+    /**
+     * Word not found
+     */
+    404: ErrorResponse;
+};
+
+export type GetWordMorphologyError = GetWordMorphologyErrors[keyof GetWordMorphologyErrors];
+
+export type GetWordMorphologyResponses = {
+    /**
+     * Morphology data
+     */
+    200: WordMorphologyResponse;
+};
+
+export type GetWordMorphologyResponse = GetWordMorphologyResponses[keyof GetWordMorphologyResponses];
+
+export type UpsertWordMorphologyData = {
+    body: UpsertWordMorphologyRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/morphology';
+};
+
+export type UpsertWordMorphologyErrors = {
+    /**
+     * Word not found
+     */
+    404: ErrorResponse;
+};
+
+export type UpsertWordMorphologyError = UpsertWordMorphologyErrors[keyof UpsertWordMorphologyErrors];
+
+export type UpsertWordMorphologyResponses = {
+    /**
+     * Updated morphology data
+     */
+    200: WordMorphologyResponse;
+};
+
+export type UpsertWordMorphologyResponse = UpsertWordMorphologyResponses[keyof UpsertWordMorphologyResponses];
+
+export type GetWordPluralsData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/plurals';
+};
+
+export type GetWordPluralsResponses = {
+    /**
+     * List of plural forms
+     */
+    200: Array<WordPluralResponse>;
+};
+
+export type GetWordPluralsResponse = GetWordPluralsResponses[keyof GetWordPluralsResponses];
+
+export type AddWordPluralData = {
+    body: CreateWordPluralRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/plurals';
+};
+
+export type AddWordPluralErrors = {
+    /**
+     * Validation error (blank pluralForm)
+     */
+    422: ErrorResponse;
+};
+
+export type AddWordPluralError = AddWordPluralErrors[keyof AddWordPluralErrors];
+
+export type AddWordPluralResponses = {
+    /**
+     * Plural form added
+     */
+    201: WordPluralResponse;
+};
+
+export type AddWordPluralResponse = AddWordPluralResponses[keyof AddWordPluralResponses];
+
+export type DeleteWordPluralData = {
+    body?: never;
+    path: {
+        id: string;
+        pluralId: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/plurals/{pluralId}';
+};
+
+export type DeleteWordPluralErrors = {
+    /**
+     * Word or plural not found
+     */
+    404: ErrorResponse;
+};
+
+export type DeleteWordPluralError = DeleteWordPluralErrors[keyof DeleteWordPluralErrors];
+
+export type DeleteWordPluralResponses = {
+    /**
+     * Plural form deleted
+     */
+    204: void;
+};
+
+export type DeleteWordPluralResponse = DeleteWordPluralResponses[keyof DeleteWordPluralResponses];
+
+export type GetWordRelationsData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/relations';
+};
+
+export type GetWordRelationsResponses = {
+    /**
+     * List of word relations
+     */
+    200: Array<WordRelationResponse>;
+};
+
+export type GetWordRelationsResponse = GetWordRelationsResponses[keyof GetWordRelationsResponses];
+
+export type AddWordRelationData = {
+    body: CreateWordRelationRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/relations';
+};
+
+export type AddWordRelationErrors = {
+    /**
+     * Relation already exists
+     */
+    409: ErrorResponse;
+    /**
+     * Validation error
+     */
+    422: ErrorResponse;
+};
+
+export type AddWordRelationError = AddWordRelationErrors[keyof AddWordRelationErrors];
+
+export type AddWordRelationResponses = {
+    /**
+     * Relation added
+     */
+    201: WordRelationResponse;
+};
+
+export type AddWordRelationResponse = AddWordRelationResponses[keyof AddWordRelationResponses];
+
+export type DeleteWordRelationData = {
+    body?: never;
+    path: {
+        id: string;
+        relatedWordId: string;
+        type: 'SYNONYM' | 'ANTONYM' | 'RELATED';
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/relations/{relatedWordId}/{type}';
+};
+
+export type DeleteWordRelationErrors = {
+    /**
+     * Word or relation not found
+     */
+    404: ErrorResponse;
+};
+
+export type DeleteWordRelationError = DeleteWordRelationErrors[keyof DeleteWordRelationErrors];
+
+export type DeleteWordRelationResponses = {
+    /**
+     * Relation deleted
+     */
+    204: void;
+};
+
+export type DeleteWordRelationResponse = DeleteWordRelationResponses[keyof DeleteWordRelationResponses];
+
+export type EnrichWordData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/enrich';
+};
+
+export type EnrichWordErrors = {
+    /**
+     * Word not found
+     */
+    404: ErrorResponse;
+    /**
+     * AI not configured (OPENROUTER_API_KEY missing)
+     */
+    503: ErrorResponse;
+};
+
+export type EnrichWordError = EnrichWordErrors[keyof EnrichWordErrors];
+
+export type EnrichWordResponses = {
+    /**
+     * AI enrichment suggestions (gender, verb pattern, plurals, relations)
+     */
+    200: WordEnrichmentSuggestion;
+};
+
+export type EnrichWordResponse = EnrichWordResponses[keyof EnrichWordResponses];
 
 export type ListTextsData = {
     body?: never;

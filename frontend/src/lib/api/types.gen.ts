@@ -375,7 +375,7 @@ export type TrainingWordRelationResponse = {
     /**
      * Relation type (SYNONYM, ANTONYM, RELATED, etc.)
      */
-    relationType: string;
+    relationType: 'SYNONYM' | 'ANTONYM' | 'RELATED';
 };
 
 export type TrainingSessionWordResponse = {
@@ -565,6 +565,57 @@ export type InsightResponse = {
      * Plain-text linguistic analysis from the AI teacher
      */
     insight: string;
+};
+
+export type AnalyticsOverviewResponse = {
+    words: WordStats;
+    texts: TextStats;
+    roots: RootStats;
+    training: TrainingAnalytics;
+};
+
+export type WordStats = {
+    total: number;
+    byDialect: {
+        [key: string]: number;
+    };
+    byDifficulty: {
+        [key: string]: number;
+    };
+    byMastery: {
+        [key: string]: number;
+    };
+    byPartOfSpeech: {
+        [key: string]: number;
+    };
+};
+
+export type TextStats = {
+    total: number;
+    byDialect: {
+        [key: string]: number;
+    };
+    byDifficulty: {
+        [key: string]: number;
+    };
+};
+
+export type RootStats = {
+    total: number;
+};
+
+export type TrainingAnalytics = {
+    totalSessions: number;
+    completedSessions: number;
+    averageAccuracy: number;
+    totalPromotions: number;
+    recentSessions: Array<SessionAccuracyPoint>;
+};
+
+export type SessionAccuracyPoint = {
+    date: string;
+    accuracy: number;
+    mode: string;
 };
 
 export type ListRootsData = {
@@ -2490,3 +2541,19 @@ export type GenerateInsightResponses = {
 };
 
 export type GenerateInsightResponse = GenerateInsightResponses[keyof GenerateInsightResponses];
+
+export type GetAnalyticsOverviewData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/analytics/overview';
+};
+
+export type GetAnalyticsOverviewResponses = {
+    /**
+     * Analytics overview
+     */
+    200: AnalyticsOverviewResponse;
+};
+
+export type GetAnalyticsOverviewResponse = GetAnalyticsOverviewResponses[keyof GetAnalyticsOverviewResponses];

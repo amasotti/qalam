@@ -34,6 +34,8 @@ fun DomainError.toHttpResponse(): Pair<HttpStatusCode, ErrorResponse> = when (th
             "Session '$sessionId' is already completed",
             "SESSION_ALREADY_COMPLETED"
         )
+    is DomainError.NotImplemented ->
+        HttpStatusCode.NotImplemented to ErrorResponse("This feature is not yet implemented", "NOT_IMPLEMENTED")
 }
 
 /** Convenience extension for route handlers using Either.fold { error -> call.respondError(it) }. */

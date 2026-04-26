@@ -22,7 +22,15 @@ import com.tonihacks.qalam.domain.word.WordExample
 import com.tonihacks.qalam.domain.word.WordExampleId
 import com.tonihacks.qalam.domain.word.WordFilters
 import com.tonihacks.qalam.domain.word.WordId
+import com.tonihacks.qalam.domain.word.Gender
+import com.tonihacks.qalam.domain.word.PluralType
+import com.tonihacks.qalam.domain.word.RelationType
+import com.tonihacks.qalam.domain.word.VerbPattern
+import com.tonihacks.qalam.domain.word.WordMorphology
+import com.tonihacks.qalam.domain.word.WordPlural
+import com.tonihacks.qalam.domain.word.WordPluralId
 import com.tonihacks.qalam.domain.word.WordProgress
+import com.tonihacks.qalam.domain.word.WordRelation
 import com.tonihacks.qalam.domain.word.WordRepository
 import org.jetbrains.exposed.v1.core.Op
 import org.jetbrains.exposed.v1.core.ResultRow
@@ -313,6 +321,37 @@ class ExposedWordRepository : WordRepository {
                 DomainError.DatabaseError.left()
             }
         }
+
+    // Morphology — implemented in Task 4
+    override suspend fun findMorphology(wordId: WordId): Either<DomainError, WordMorphology?> =
+        DomainError.NotImplemented.left()
+
+    override suspend fun upsertMorphology(morphology: WordMorphology): Either<DomainError, WordMorphology> =
+        DomainError.NotImplemented.left()
+
+    // Plurals — implemented in Task 4
+    override suspend fun findPlurals(wordId: WordId): Either<DomainError, List<WordPlural>> =
+        DomainError.NotImplemented.left()
+
+    override suspend fun addPlural(plural: WordPlural): Either<DomainError, WordPlural> =
+        DomainError.NotImplemented.left()
+
+    override suspend fun deletePlural(wordId: WordId, pluralId: WordPluralId): Either<DomainError, Unit> =
+        DomainError.NotImplemented.left()
+
+    // Relations — implemented in Task 4
+    override suspend fun findRelations(wordId: WordId): Either<DomainError, List<WordRelation>> =
+        DomainError.NotImplemented.left()
+
+    override suspend fun addRelation(relation: WordRelation): Either<DomainError, WordRelation> =
+        DomainError.NotImplemented.left()
+
+    override suspend fun deleteRelation(
+        wordId: WordId,
+        relatedWordId: WordId,
+        type: RelationType,
+    ): Either<DomainError, Unit> =
+        DomainError.NotImplemented.left()
 }
 
 private fun ResultRow.toWord() = Word(
@@ -327,6 +366,7 @@ private fun ResultRow.toWord() = Word(
     pronunciationUrl = this[WordsTable.pronunciationUrl],
     rootId = this[WordsTable.rootId]?.toJavaUuid()?.let { RootId(it) },
     derivedFromId = this[WordsTable.derivedFromId]?.toJavaUuid()?.let { WordId(it) },
+    notes = null,
     createdAt = this[WordsTable.createdAt],
     updatedAt = this[WordsTable.updatedAt],
 )

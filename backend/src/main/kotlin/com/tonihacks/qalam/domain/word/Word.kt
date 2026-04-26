@@ -40,8 +40,33 @@ data class Word(
     val pronunciationUrl: String?,
     val rootId: RootId?,
     val derivedFromId: WordId?,
+    val notes: String?,
     val createdAt: Instant,
     val updatedAt: Instant,
+)
+
+@JvmInline
+value class WordPluralId(val value: UUID) {
+    override fun toString(): String = value.toString()
+}
+
+data class WordMorphology(
+    val wordId: WordId,
+    val gender: Gender?,
+    val verbPattern: VerbPattern?,
+)
+
+data class WordPlural(
+    val id: WordPluralId,
+    val wordId: WordId,
+    val pluralForm: String,
+    val pluralType: PluralType,
+)
+
+data class WordRelation(
+    val wordId: WordId,
+    val relatedWordId: WordId,
+    val relationType: RelationType,
 )
 
 data class DictionaryLink(

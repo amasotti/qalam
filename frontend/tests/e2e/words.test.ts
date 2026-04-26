@@ -62,18 +62,30 @@ test.describe('Words', () => {
 		}
 	});
 
-	test('dialect filter narrows word list to selected dialect', async ({ page }) => {
-		await page.goto('/words');
+	test('dialect filter narrows word list to selected dialect', async ({ page, request }) => {
+		const res = await request.post(`${BACKEND}/api/v1/words`, {
+			data: {
+				arabicText: 'تَصْفِيَة',
+				transliteration: 'taṣfiya',
+				translation: 'playwright dialect filter test',
+				partOfSpeech: 'NOUN',
+				dialect: 'MSA',
+				difficulty: 'BEGINNER',
+				masteryLevel: 'NEW',
+			},
+		});
+		expect(res.status()).toBe(201);
+		const { id } = await res.json();
 
-		// Baseline: some word cards visible (real DB has data)
-		await expect(page.locator('.word-card').first()).toBeVisible();
+		try {
+			await page.goto('/words');
+			await page.locator('.words-filters .filter-select').first().selectOption('MSA');
 
-		// Select MSA dialect
-		await page.locator('.words-filters .filter-select').first().selectOption('MSA');
-
-		// Filter applied: words with MSA badge shown, select reflects choice
-		await expect(page.locator('.words-filters .filter-select').first()).toHaveValue('MSA');
-		await expect(page.locator('.word-card').first()).toBeVisible();
-		await expect(page.locator('.word-card .chip').filter({ hasText: 'MSA' }).first()).toBeVisible();
+			await expect(page.locator('.words-filters .filter-select').first()).toHaveValue('MSA');
+			await expect(page.locator('.word-card').first()).toBeVisible();
+			await expect(page.locator('.word-card .chip').filter({ hasText: 'MSA' }).first()).toBeVisible();
+		} finally {
+			await request.delete(`${BACKEND}/api/v1/words/${id}`);
+		}
 	});
 });

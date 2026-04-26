@@ -60,9 +60,19 @@ test.describe('Roots', () => {
 		expect(check.status()).toBe(404);
 	});
 
-	test('created root is searchable in list', async ({ page }) => {
-		await page.goto('/roots');
-		await page.getByPlaceholder(/search/i).fill('خ-ي-م');
-		await expect(page.locator('.root-card').filter({ hasText: 'خ-ي-م' })).toBeVisible();
+	test('created root is searchable in list', async ({ page, request }) => {
+		const res = await request.post(`${BACKEND}/api/v1/roots`, {
+			data: { root: 'خ ي م', meaning: 'playwright search test' },
+		});
+		expect(res.status()).toBe(201);
+		const { id } = await res.json();
+
+		try {
+			await page.goto('/roots');
+			await page.getByPlaceholder(/search/i).fill('خ-ي-م');
+			await expect(page.locator('.root-card').filter({ hasText: 'خ-ي-م' })).toBeVisible();
+		} finally {
+			await request.delete(`${BACKEND}/api/v1/roots/${id}`);
+		}
 	});
 });

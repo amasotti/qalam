@@ -7,6 +7,10 @@ import AnnotationBadge from '$lib/components/annotations/AnnotationBadge.svelte'
 import AiExamples from '$lib/components/words/AiExamples.svelte';
 import DictionaryLinks from '$lib/components/words/DictionaryLinks.svelte';
 import WordForm from '$lib/components/words/WordForm.svelte';
+import WordEnrichDrawer from '$lib/components/word/WordEnrichDrawer.svelte';
+import WordMorphologyStrip from '$lib/components/word/WordMorphologyStrip.svelte';
+import WordPluralChips from '$lib/components/word/WordPluralChips.svelte';
+import WordRelationsPanel from '$lib/components/word/WordRelationsPanel.svelte';
 import { useRoot } from '$lib/stores/roots';
 import {
 	useDeleteWord,
@@ -30,11 +34,26 @@ const root = useRoot(() => word.data?.rootId ?? undefined);
 
 let isEditing = $state(false);
 let deleteConfirm = $state(false);
+let enrichOpen = $state(false);
 
 let addingExample = $state(false);
 let newExAr = $state('');
 let newExTr = $state('');
 let newExEn = $state('');
+
+// Notes inline edit
+let editingNotes = $state(false);
+let editedNotes = $state('');
+
+function startEditNotes() {
+	editedNotes = word.data?.notes ?? '';
+	editingNotes = true;
+}
+
+async function saveNotes() {
+	await updateWord.mutateAsync({ id, body: { notes: editedNotes.trim() || null } });
+	editingNotes = false;
+}
 
 async function handleUpdate(req: UpdateWordRequest) {
 	await updateWord.mutateAsync({ id, body: req });
@@ -152,6 +171,10 @@ const masterySteps: Record<string, number> = {
 								onclick={() => { isEditing = true; deleteConfirm = false; }}
 							>Edit</button>
 							<button
+								class="btn"
+								onclick={() => (enrichOpen = true)}
+							>✦ AI Enrich</button>
+							<button
 								class="btn btn-danger"
 								onclick={handleDelete}
 								disabled={deleteWord.isPending}
@@ -161,7 +184,7 @@ const masterySteps: Record<string, number> = {
 				</div>
 
 				<!-- Translation + Pronunciation -->
-				<div style="margin-bottom: 2.5rem;">
+				<div style="margin-bottom: 1.5rem;">
 					<div class="sect-label">Translation</div>
 					{#if word.data.translation}
 						<p class="word-translation">{word.data.translation}</p>
@@ -179,6 +202,12 @@ const masterySteps: Record<string, number> = {
 						</div>
 					{/if}
 				</div>
+
+				<!-- Morphology + Plurals -->
+				<WordMorphologyStrip wordId={id} />
+				<WordPluralChips wordId={id} />
+
+				<hr class="sect-divider" />
 
 				<!-- Examples -->
 				<div class="sect-label">
@@ -249,6 +278,56 @@ const masterySteps: Record<string, number> = {
 
 				<!-- AI insight -->
 				<AiInsightPanel entityType="WORD" entityId={id} />
+
+				<hr class="sect-divider" />
+
+				<!-- Relations -->
+				<div class="sect-label">Relations</div>
+				<WordRelationsPanel wordId={id} />
+
+				<hr class="sect-divider" />
+
+				<!-- Notes -->
+				<div class="sect-label">
+					<span>Notes</span>
+					{#if !editingNotes}
+						<button
+							class="btn"
+							style="font-size:0.75rem;padding:0.2rem 0.5rem;"
+							onclick={startEditNotes}
+						>✏ Edit</button>
+					{/if}
+				</div>
+				{#if editingNotes}
+					<div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.5rem;">
+						<textarea
+							class="notes-textarea"
+							rows="5"
+							bind:value={editedNotes}
+							disabled={updateWord.isPending}
+						></textarea>
+						<div style="display:flex;gap:0.5rem;">
+							<button
+								class="btn btn-primary"
+								style="font-size:0.75rem;padding:0.25rem 0.75rem;"
+								onclick={saveNotes}
+								disabled={updateWord.isPending}
+							>{updateWord.isPending ? 'Saving…' : 'Save'}</button>
+							<button
+								class="btn"
+								style="font-size:0.75rem;padding:0.25rem 0.625rem;"
+								onclick={() => (editingNotes = false)}
+								disabled={updateWord.isPending}
+							>Cancel</button>
+						</div>
+					</div>
+				{:else if word.data.notes}
+					<p class="notes-text">{word.data.notes}</p>
+				{:else}
+					<p class="annot-empty" style="margin-bottom:1.5rem;">No notes yet.</p>
+				{/if}
+
+				<hr class="sect-divider" />
 
 				<!-- Dictionary sources -->
 				<div class="sect-label">Dictionary sources</div>
@@ -336,5 +415,37 @@ const masterySteps: Record<string, number> = {
 				</div>
 			</aside>
 		</div>
+
+		<!-- AI Enrich drawer -->
+		<WordEnrichDrawer wordId={id} open={enrichOpen} onClose={() => (enrichOpen = false)} />
 	{/if}
 {/if}
+
+<style>
+.sect-divider {
+	border: none;
+	border-top: 1px solid var(--border, #e2e8f0);
+	margin: 1.5rem 0;
+}
+
+.notes-textarea {
+	font-size: 0.875rem;
+	padding: 0.5rem;
+	border: 1px solid var(--border, #e2e8f0);
+	border-radius: 6px;
+	resize: vertical;
+	background: var(--white, #fff);
+	line-height: 1.6;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.notes-text {
+	font-size: 0.9rem;
+	font-style: italic;
+	color: var(--ink-mid, #4a5568);
+	line-height: 1.7;
+	margin-bottom: 1.5rem;
+	white-space: pre-wrap;
+}
+</style>

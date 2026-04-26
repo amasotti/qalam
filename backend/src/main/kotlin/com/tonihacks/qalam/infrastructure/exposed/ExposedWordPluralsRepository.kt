@@ -52,12 +52,16 @@ class ExposedWordPluralsRepository {
 
     suspend fun deletePlural(wordId: WordId, pluralId: WordPluralId): Either<DomainError, Unit> =
         suspendTransaction {
-            either {
-                val deletedCount = WordPluralsTable.deleteWhere {
-                    (WordPluralsTable.id eq pluralId.value.toKotlinUuid()) and
-                    (WordPluralsTable.wordId eq wordId.value.toKotlinUuid())
+            try {
+                either {
+                    val deletedCount = WordPluralsTable.deleteWhere {
+                        (WordPluralsTable.id eq pluralId.value.toKotlinUuid()) and
+                        (WordPluralsTable.wordId eq wordId.value.toKotlinUuid())
+                    }
+                    ensure(deletedCount > 0) { DomainError.NotFound("WordPlural", pluralId.toString()) }
                 }
-                ensure(deletedCount > 0) { DomainError.NotFound("WordPlural", pluralId.toString()) }
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                DomainError.DatabaseError.left()
             }
         }
 }

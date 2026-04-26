@@ -2,6 +2,151 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.5.1] - 2026-04-26
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/6636aaa287d4062cbf9edc5858a114060f6698be..cbfec3d16c98cf620d875dd8174bc07eb19c0705)
+### 🐛 Bug Fixes
+
+
+- Prevent unnecessary reactivity in enrichment effect using untrack ([1c20aa6](https://github.com/amasotti/qalam/commit/1c20aa69011b0a4cc93ab64562dc43f9fc2f419d))
+
+- Increase maximum page size limit from 100 to 500 in documentation and Pagination.kt ([afe623a](https://github.com/amasotti/qalam/commit/afe623a0a8636b6ff3e27c06d3611744315a99d8))
+
+- Replace undefined CSS vars in SessionSummary with valid shadcn tokens ([ae67faa](https://github.com/amasotti/qalam/commit/ae67faa289472854c9da0df1e8a63820c2027c3a))
+
+- Align FullTextPanel to global CSS classes, remove scoped style override ([fe26daa](https://github.com/amasotti/qalam/commit/fe26daa6bb921973f2c90f5a01b10110a61a6c3a))
+
+### 🚜 Refactor
+
+
+- AnnotationForm uses global toggle-group, form-field, btn-ghost classes ([2547d10](https://github.com/amasotti/qalam/commit/2547d10c9f648986060e71f97ce8d566ce766c01))
+
+- Use global drawer shell in AnnotationDrawer and VocabLookupDrawer ([7de4420](https://github.com/amasotti/qalam/commit/7de4420cc89ace0576e516b5094d1e7c282198bc))
+
+- Word/* components use global drawer shell, select-compact, chip-delete, arabic-text classes ([dcb6e75](https://github.com/amasotti/qalam/commit/dcb6e7546caa6ba5d009a571089adfe823cea64b))
+
+- StaleTokenBanner uses global banner-warning class ([3d1e01c](https://github.com/amasotti/qalam/commit/3d1e01cdc50f998eca76153ca724dc0ab8e2c959))
+
+- Training setup page uses global form-field, form-label, form-error-msg classes ([15f1594](https://github.com/amasotti/qalam/commit/15f1594699a9474dd5ac6946de0ad97a2da18255))
+
+### 🎨 Styling
+
+
+- Remove dark mode variant and dark overrides (app is light-mode only) ([e1c1fd8](https://github.com/amasotti/qalam/commit/e1c1fd8874a39081eee531f7ccc2e27a6ec74381))
+
+- Remove dead animation keyframes and utility classes ([80cf9c9](https://github.com/amasotti/qalam/commit/80cf9c94667ab21bcc0cf264c727b7d139977de3))
+
+- Remove dead mastery/difficulty/dialect classes from semantic.css ([e2971af](https://github.com/amasotti/qalam/commit/e2971af49ecd040f047e93a6e3291d448cbe2fe2))
+
+- Remove legacy layout CSS block (all classes unused since Busatan redesign) ([57edcba](https://github.com/amasotti/qalam/commit/57edcba35afd95619e536f032aed0a9cb5f99262))
+
+- Add select-compact, chip-delete, input-ar, spinner to global design system ([8c74969](https://github.com/amasotti/qalam/commit/8c7496991f083bf9122bbb775cb8bc699c409ca1))
+
+- Add mastery level classes and banner-warning to semantic.css ([db18655](https://github.com/amasotti/qalam/commit/db1865515063f43736b6264cd17333d7f12368ba))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Remove outdated comment ([2bd8403](https://github.com/amasotti/qalam/commit/2bd84037dda0571647818ccea37234e798b6240e))
+
+- Let claude lint frontend ([bd51f82](https://github.com/amasotti/qalam/commit/bd51f826fc6ee5a48816de82e2be70ad3813cbd1))
+
+- Let claude lint frontend ([309993a](https://github.com/amasotti/qalam/commit/309993ac340414a890455f5e5fdc0613b240d30e))
+
+## [0.5.0] - 2026-04-26
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/fc55a4ef0461adfcdc366d5179c6334c22ff24e1..6636aaa287d4062cbf9edc5858a114060f6698be)
+### 🚀 Features
+
+
+- Add word enrichment migrations (notes, morphology, plurals, relations) ([2f78ffd](https://github.com/amasotti/qalam/commit/2f78ffd430316cb25e2f74ef288813e84cbcca52))
+
+- Add domain model and repository interface for word enrichment ([0525e94](https://github.com/amasotti/qalam/commit/0525e94b4d545d4dce1c25a8be250bbfe8de75b9))
+
+- Add Exposed table objects and repository impls for morphology, plurals, relations ([418e464](https://github.com/amasotti/qalam/commit/418e464ac8ef6734c093b440d6aa6f39d5b26c6f))
+
+- Add codeowners file ([b19cf94](https://github.com/amasotti/qalam/commit/b19cf94afffa224c0417512128f43ebe0d34b882))
+
+- Add word enrichment DTOs, service methods, and routes (Tasks 5–7) ([22b6c0a](https://github.com/amasotti/qalam/commit/22b6c0a963b1ed78946c6eff9bd29840c5a534e9))
+
+- Implement enrichWord() in AiClient with full prompt and JSON parsing ([da5f9f8](https://github.com/amasotti/qalam/commit/da5f9f8e79087aa8ba444c003f82196cee12c6fb))
+
+- Add word enrichment queries and mutations to words store ([2f42ae5](https://github.com/amasotti/qalam/commit/2f42ae50bf9a911e8c7bcd30d26c778f06e1cafd))
+
+- Add word enrichment UI components and integrate into word detail page ([d6ffe23](https://github.com/amasotti/qalam/commit/d6ffe238200fc0a06c90713502731c0378d4a920))
+
+- Add integration tests for word enrichment endpoints ([2cab883](https://github.com/amasotti/qalam/commit/2cab8831751bd9bc6d15d9700ea1220f612dc7e7))
+
+### 🐛 Bug Fixes
+
+
+- Add missing comment headers to word enrichment migrations ([d224fa8](https://github.com/amasotti/qalam/commit/d224fa869d330ee86d27a0467aab27a17ee1fa59))
+
+- Restore accidentally deleted CI workflow files ([5cc6e6f](https://github.com/amasotti/qalam/commit/5cc6e6f5f2328ba9bc8a36cc51dbb057abbf54ac))
+
+- Atomic upsert, single-query findRelations, consistent error handling in word enrichment repos ([5ea9016](https://github.com/amasotti/qalam/commit/5ea901648b14d52c38f45ca21525cdd993ffbadd))
+
+- Add notes field to WordServiceTest initialization ([207a073](https://github.com/amasotti/qalam/commit/207a0736d36fa6da26c8cadb953db76975f75b39))
+
+- Add word existence check to deleteRelation, clean up enrichWord stub ([6fe8da2](https://github.com/amasotti/qalam/commit/6fe8da26a7cf90a1c5731016d8b1641c9a9c52da))
+
+- Require plurals+relations in WordEnrichmentSuggestion schema, remove stale comment, regenerate types ([d112b58](https://github.com/amasotti/qalam/commit/d112b58d162ed294fdd24fdf941876cc7b222b30))
+
+- Update type from void to undefined in onSuccess callbacks for delete operations ([2738fe8](https://github.com/amasotti/qalam/commit/2738fe8abc338655f1524db01587fc3bd0bf75ba))
+
+- Address code review issues in word enrichment frontend ([d6b5cab](https://github.com/amasotti/qalam/commit/d6b5cab112eee2cad4d402382f0850b65f7a349d))
+
+- Correct delete mutation onSuccess _data type annotations ([77b36c4](https://github.com/amasotti/qalam/commit/77b36c4a91f52b972f2404047bd36ddc6ab8f0b5))
+
+- Fix all svelte check warnings and errors ([30f237e](https://github.com/amasotti/qalam/commit/30f237ea76f83f1ec6755f64d725e9d2e85821c1))
+
+- Resolve all svelte-check warnings ([12a57f6](https://github.com/amasotti/qalam/commit/12a57f636531687fa8a35c87dbc3841a78aa46bd))
+
+- Update commit steps to include frontend checks before committing ([3f08d05](https://github.com/amasotti/qalam/commit/3f08d0565971ed94fb78374b6e6b48cbc1a7cdac))
+
+### 🚜 Refactor
+
+
+- Replace NotImplemented domain error stubs with TODO() in ExposedWordRepository ([d7f7662](https://github.com/amasotti/qalam/commit/d7f76627b3c7f80ca73e80a1c272f9eee085ceca))
+
+### 🧪 Testing
+
+
+- Improve test setup with e2e playwright tests in pipeline ([597a87a](https://github.com/amasotti/qalam/commit/597a87a68f49cf1ea5bdbd0c8375a19d99916265))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Remove duplicate checks (handled in ci.yml already) ([919bf6d](https://github.com/amasotti/qalam/commit/919bf6dfd3412b94d34158dcb19d4fd7d0cc820f))
+
+- Remove completed plan ([393a90c](https://github.com/amasotti/qalam/commit/393a90c54f5115476365b2851361474598656c61))
+
+- Update cleanup plan ([d8c8adf](https://github.com/amasotti/qalam/commit/d8c8adfe9247c13efaa5731639a19632ce22c50d))
+
+- Fix codeowners ([b251b2d](https://github.com/amasotti/qalam/commit/b251b2de46873a992668e94eb428703055234dbd))
+
+- Format fe files ([db112be](https://github.com/amasotti/qalam/commit/db112be1b14b82c58e41a055ae764774cfa3973f))
+
+- Reduce retention days for this project artifacts ([bede82a](https://github.com/amasotti/qalam/commit/bede82ab9be059a9e122b095090aa902c962402f))
+
+- Update cleanup plan ([9e9f620](https://github.com/amasotti/qalam/commit/9e9f6200dabd2e16b1f1cb4535db149c43ff7b99))
+
+- Update cleanup plan ([27442cb](https://github.com/amasotti/qalam/commit/27442cb8132156f6ebad104de357788762d8a487))
+
+- Update cleanup plan ([71c46fc](https://github.com/amasotti/qalam/commit/71c46fcc3d8a7e8ec834253f0b8c933a2fcaa792))
+
+- Fmt frontend ([6636aaa](https://github.com/amasotti/qalam/commit/6636aaa287d4062cbf9edc5858a114060f6698be))
+
+## [0.4.0] - 2026-04-26
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/b71756355d810ae5dcbc536732ca0180aa5fdfc5..fc55a4ef0461adfcdc366d5179c6334c22ff24e1)
+### 🚀 Features
+
+
+- Add print endpoint to render printable HTML view of text with sentence breakdown ([52ea6bf](https://github.com/amasotti/qalam/commit/52ea6bfe9848086c64af4a9aa092ab6519e104af))
+
+- Ai insights for words and sentences (#18) ([fc55a4e](https://github.com/amasotti/qalam/commit/fc55a4ef0461adfcdc366d5179c6334c22ff24e1))
+
 ## [0.3.0] - 2026-04-25
 
 [Compare with last version](https://github.com/amasotti/qalam/compare/4d8000034c8c0c8eb759db41f29739d57e2f333f..b71756355d810ae5dcbc536732ca0180aa5fdfc5)

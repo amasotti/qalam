@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [unreleased]
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/cbfec3d16c98cf620d875dd8174bc07eb19c0705..358b48810c6077318bc16e0371371b47d1f752f4)
+### 🚀 Features
+
+
+- Training ux redesign (#21) ([4426c8e](https://github.com/amasotti/qalam/commit/4426c8ea8777ed2a971d5ecd87a223608f0a8255))
+
+- Add Docker bake configuration and optimize Dockerfile for caching ([d0e5d3f](https://github.com/amasotti/qalam/commit/d0e5d3f097e9c7a4aa11066a1d4749a408a677fc))
+
+- Add analytics DTOs ([4f27972](https://github.com/amasotti/qalam/commit/4f27972d80a42d8a523ff0ad029a34e6cb391db2))
+
+- Add AnalyticsRepository interface ([ffc63eb](https://github.com/amasotti/qalam/commit/ffc63eb1ee7161e97a08801b3709499dbde98cd5))
+
+- Implement ExposedAnalyticsRepository ([9652026](https://github.com/amasotti/qalam/commit/96520267ca1071d8c99e03b04ee7b44bdee86bde))
+
+- Implement AnalyticsService ([5e7e9fe](https://github.com/amasotti/qalam/commit/5e7e9fea88751f31699811eda8613582c14eb15c))
+
+- Add analytics routes, DI, and routing wire-up ([6557e98](https://github.com/amasotti/qalam/commit/6557e98d73543143dad8a99c45e72a3068a8fe9f))
+
+- Add analytics store and dashboard page ([a8c420a](https://github.com/amasotti/qalam/commit/a8c420abeb238995d39d141cfb9e480626572879))
+
+### 🎨 Styling
+
+
+- Refactor form classes and improve layout for consistency ([7008150](https://github.com/amasotti/qalam/commit/70081503540a0d4cf4c28cdf79f257d197621843))
+
+- Refactor AiExamples component for improved structure and clarity ([839c7be](https://github.com/amasotti/qalam/commit/839c7be1fe8b5ca72cd452dd36d03e23db2504e5))
+
+### 🧪 Testing
+
+
+- Analytics overview integration tests ([3ec40e7](https://github.com/amasotti/qalam/commit/3ec40e747a906268f6a8eba9be93af651d1e248e))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Ignore .worktrees directory ([1a81b97](https://github.com/amasotti/qalam/commit/1a81b979a2839f5f190511d46ceb0a8b4e7c557d))
+
+- Remove my second profile form codeowners ([17ff2a9](https://github.com/amasotti/qalam/commit/17ff2a98037c35e385dfa7106a3513b848755305))
+
+- Regenerate API types with analytics endpoint ([4cdd7c6](https://github.com/amasotti/qalam/commit/4cdd7c688d2624cafb34001db1861699dd71a0ce))
+
+- Update lib index.ts ([358b488](https://github.com/amasotti/qalam/commit/358b48810c6077318bc16e0371371b47d1f752f4))
+
 ## [0.5.1] - 2026-04-26
 
 [Compare with last version](https://github.com/amasotti/qalam/compare/6636aaa287d4062cbf9edc5858a114060f6698be..cbfec3d16c98cf620d875dd8174bc07eb19c0705)

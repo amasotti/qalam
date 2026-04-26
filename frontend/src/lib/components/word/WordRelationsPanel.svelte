@@ -17,15 +17,9 @@ let newRelatedId = $state('');
 let newType = $state<'SYNONYM' | 'ANTONYM' | 'RELATED'>('RELATED');
 let addError = $state('');
 
-const synonyms = $derived(
-	(relations.data ?? []).filter((r) => r.relationType === 'SYNONYM')
-);
-const antonyms = $derived(
-	(relations.data ?? []).filter((r) => r.relationType === 'ANTONYM')
-);
-const related = $derived(
-	(relations.data ?? []).filter((r) => r.relationType === 'RELATED')
-);
+const synonyms = $derived((relations.data ?? []).filter((r) => r.relationType === 'SYNONYM'));
+const antonyms = $derived((relations.data ?? []).filter((r) => r.relationType === 'ANTONYM'));
+const related = $derived((relations.data ?? []).filter((r) => r.relationType === 'RELATED'));
 
 const hasAny = $derived(synonyms.length > 0 || antonyms.length > 0 || related.length > 0);
 

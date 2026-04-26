@@ -13,12 +13,12 @@ const upsert = useUpsertMorphology();
 
 let editing = $state(false);
 let editGender = $state<'MASCULINE' | 'FEMININE' | ''>('');
-let editPattern = $state<'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X' | ''>('');
+let editPattern = $state<'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X' | ''>(
+	''
+);
 let saveError = $state('');
 
-const hasData = $derived(
-	!!morphology.data?.gender || !!morphology.data?.verbPattern
-);
+const hasData = $derived(!!morphology.data?.gender || !!morphology.data?.verbPattern);
 
 function startEdit() {
 	editGender = morphology.data?.gender ?? '';

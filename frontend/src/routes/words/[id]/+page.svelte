@@ -4,13 +4,13 @@ import { page } from '$app/state';
 import type { UpdateWordRequest } from '$lib/api/types.gen';
 import AiInsightPanel from '$lib/components/ai/AiInsightPanel.svelte';
 import AnnotationBadge from '$lib/components/annotations/AnnotationBadge.svelte';
-import AiExamples from '$lib/components/words/AiExamples.svelte';
-import DictionaryLinks from '$lib/components/words/DictionaryLinks.svelte';
-import WordForm from '$lib/components/words/WordForm.svelte';
 import WordEnrichDrawer from '$lib/components/word/WordEnrichDrawer.svelte';
 import WordMorphologyStrip from '$lib/components/word/WordMorphologyStrip.svelte';
 import WordPluralChips from '$lib/components/word/WordPluralChips.svelte';
 import WordRelationsPanel from '$lib/components/word/WordRelationsPanel.svelte';
+import AiExamples from '$lib/components/words/AiExamples.svelte';
+import DictionaryLinks from '$lib/components/words/DictionaryLinks.svelte';
+import WordForm from '$lib/components/words/WordForm.svelte';
 import { useRoot } from '$lib/stores/roots';
 import {
 	useDeleteWord,

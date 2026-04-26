@@ -303,7 +303,10 @@ export function useUpsertMorphology() {
 			if (error) throw error;
 			return requireData(data, 'upsertWordMorphology') as WordMorphologyResponse;
 		},
-		onSuccess: (_data: WordMorphologyResponse, variables: { id: string; body: UpsertWordMorphologyRequest }) => {
+		onSuccess: (
+			_data: WordMorphologyResponse,
+			variables: { id: string; body: UpsertWordMorphologyRequest }
+		) => {
 			qc.invalidateQueries({ queryKey: ['words', variables.id, 'morphology'] });
 		},
 	}));
@@ -333,7 +336,10 @@ export function useAddWordPlural() {
 			if (error) throw error;
 			return requireData(data, 'addWordPlural') as WordPluralResponse;
 		},
-		onSuccess: (_data: WordPluralResponse, variables: { id: string; body: CreateWordPluralRequest }) => {
+		onSuccess: (
+			_data: WordPluralResponse,
+			variables: { id: string; body: CreateWordPluralRequest }
+		) => {
 			qc.invalidateQueries({ queryKey: ['words', variables.id, 'plurals'] });
 		},
 	}));
@@ -376,7 +382,10 @@ export function useAddWordRelation() {
 			if (error) throw error;
 			return requireData(data, 'addWordRelation') as WordRelationResponse;
 		},
-		onSuccess: (_data: WordRelationResponse, variables: { id: string; body: CreateWordRelationRequest }) => {
+		onSuccess: (
+			_data: WordRelationResponse,
+			variables: { id: string; body: CreateWordRelationRequest }
+		) => {
 			qc.invalidateQueries({ queryKey: ['words', variables.id, 'relations'] });
 		},
 	}));
@@ -385,11 +394,22 @@ export function useAddWordRelation() {
 export function useDeleteWordRelation() {
 	const qc = useQueryClient();
 	return createMutation(() => ({
-		mutationFn: async ({ id, relatedWordId, type }: { id: string; relatedWordId: string; type: 'SYNONYM' | 'ANTONYM' | 'RELATED' }) => {
+		mutationFn: async ({
+			id,
+			relatedWordId,
+			type,
+		}: {
+			id: string;
+			relatedWordId: string;
+			type: 'SYNONYM' | 'ANTONYM' | 'RELATED';
+		}) => {
 			const { error } = await deleteWordRelation({ path: { id, relatedWordId, type } });
 			if (error) throw error;
 		},
-		onSuccess: (_data: void, variables: { id: string; relatedWordId: string; type: 'SYNONYM' | 'ANTONYM' | 'RELATED' }) => {
+		onSuccess: (
+			_data: void,
+			variables: { id: string; relatedWordId: string; type: 'SYNONYM' | 'ANTONYM' | 'RELATED' }
+		) => {
 			qc.invalidateQueries({ queryKey: ['words', variables.id, 'relations'] });
 		},
 	}));

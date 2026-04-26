@@ -59,7 +59,7 @@ const VERB_PATTERNS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', '
 {:else if editing}
 	<div class="morph-strip morph-strip-edit">
 		<select
-			class="morph-select"
+			class="select-compact"
 			bind:value={editGender}
 			disabled={upsert.isPending}
 		>
@@ -69,7 +69,7 @@ const VERB_PATTERNS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', '
 		</select>
 
 		<select
-			class="morph-select"
+			class="select-compact"
 			bind:value={editPattern}
 			disabled={upsert.isPending}
 		>
@@ -94,7 +94,7 @@ const VERB_PATTERNS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', '
 		>Cancel</button>
 
 		{#if saveError}
-			<span style="font-size:0.75rem;color:var(--coral);">{saveError}</span>
+			<span class="form-error-msg">{saveError}</span>
 		{/if}
 	</div>
 {:else if hasData}
@@ -137,16 +137,6 @@ const VERB_PATTERNS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', '
 
 .morph-strip-empty {
 	min-height: 0;
-}
-
-.morph-select {
-	font-size: 0.8rem;
-	padding: 0.25rem 0.5rem;
-	border: 1px solid var(--border, #e2e8f0);
-	border-radius: 6px;
-	background: var(--white, #fff);
-	color: var(--ink, #1a1a1a);
-	height: 2rem;
 }
 
 .morph-edit-btn {

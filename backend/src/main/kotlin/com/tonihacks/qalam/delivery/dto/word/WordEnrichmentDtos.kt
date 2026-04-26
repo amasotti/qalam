@@ -28,8 +28,8 @@ data class CreateWordPluralRequest(
 
 @Serializable
 data class UpsertWordMorphologyRequest(
-    val gender: String?,
-    val verbPattern: String?,
+    val gender: String? = null,
+    val verbPattern: String? = null,
 )
 
 @Serializable

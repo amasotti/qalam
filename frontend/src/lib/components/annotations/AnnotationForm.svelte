@@ -1,8 +1,8 @@
 <script lang="ts">
+import { untrack } from 'svelte';
 import type { AnnotationResponse, WordAutocompleteResponse } from '$lib/api/types.gen';
 import { useCreateAnnotation, useUpdateAnnotation } from '$lib/stores/annotations';
 import WordSearchCombobox from './WordSearchCombobox.svelte';
-import { untrack } from 'svelte';
 
 const TYPES = ['VOCAB', 'GRAMMAR', 'CULTURAL', 'STRUCTURE'] as const;
 type AnnotationType = (typeof TYPES)[number];

@@ -70,7 +70,7 @@ services:
     environment:
       - DOPPLER_TOKEN=${DOPPLER_TOKEN:?Set DOPPLER_TOKEN}
       - DOPPLER_CONFIG=dev
-      - DOPPLER_PROJECT=qalam
+      - DOPPLER_PROJECT=toni-exploration
       - DATABASE_URL=jdbc:postgresql://db:5432/qalam
       - TZ=Europe/Berlin
     labels:

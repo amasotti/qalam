@@ -322,36 +322,36 @@ class ExposedWordRepository : WordRepository {
             }
         }
 
-    // Morphology — implemented in Task 4
+    // Morphology — delegated to ExposedWordMorphologyRepository in Task 4
     override suspend fun findMorphology(wordId: WordId): Either<DomainError, WordMorphology?> =
-        DomainError.NotImplemented.left()
+        TODO("Implement in Task 4")
 
     override suspend fun upsertMorphology(morphology: WordMorphology): Either<DomainError, WordMorphology> =
-        DomainError.NotImplemented.left()
+        TODO("Implement in Task 4")
 
-    // Plurals — implemented in Task 4
+    // Plurals — delegated to ExposedWordPluralsRepository in Task 4
     override suspend fun findPlurals(wordId: WordId): Either<DomainError, List<WordPlural>> =
-        DomainError.NotImplemented.left()
+        TODO("Implement in Task 4")
 
     override suspend fun addPlural(plural: WordPlural): Either<DomainError, WordPlural> =
-        DomainError.NotImplemented.left()
+        TODO("Implement in Task 4")
 
     override suspend fun deletePlural(wordId: WordId, pluralId: WordPluralId): Either<DomainError, Unit> =
-        DomainError.NotImplemented.left()
+        TODO("Implement in Task 4")
 
-    // Relations — implemented in Task 4
+    // Relations — delegated to ExposedWordRelationsRepository in Task 4
     override suspend fun findRelations(wordId: WordId): Either<DomainError, List<WordRelation>> =
-        DomainError.NotImplemented.left()
+        TODO("Implement in Task 4")
 
     override suspend fun addRelation(relation: WordRelation): Either<DomainError, WordRelation> =
-        DomainError.NotImplemented.left()
+        TODO("Implement in Task 4")
 
     override suspend fun deleteRelation(
         wordId: WordId,
         relatedWordId: WordId,
         type: RelationType,
     ): Either<DomainError, Unit> =
-        DomainError.NotImplemented.left()
+        TODO("Implement in Task 4")
 }
 
 private fun ResultRow.toWord() = Word(
@@ -366,7 +366,7 @@ private fun ResultRow.toWord() = Word(
     pronunciationUrl = this[WordsTable.pronunciationUrl],
     rootId = this[WordsTable.rootId]?.toJavaUuid()?.let { RootId(it) },
     derivedFromId = this[WordsTable.derivedFromId]?.toJavaUuid()?.let { WordId(it) },
-    notes = null,
+    notes = null, // TODO Task 4: read from WordsTable.notes
     createdAt = this[WordsTable.createdAt],
     updatedAt = this[WordsTable.updatedAt],
 )

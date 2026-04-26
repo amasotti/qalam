@@ -455,10 +455,29 @@ export type TransliterateRequest = {
 };
 
 export type TransliterateResponse = {
-    /**
-     * Chat-alphabet transliteration of the input
-     */
     transliteration?: string;
+};
+
+export type InsightRequest = {
+    /**
+     * The type of entity to analyse
+     */
+    entityType: 'WORD' | 'SENTENCE';
+    /**
+     * UUID of the word or sentence
+     */
+    entityId: string;
+    /**
+     * Insight mode — HOMEWORK prioritises corrections, READING focuses on nuance (defaults to HOMEWORK for sentences)
+     */
+    mode?: 'HOMEWORK' | 'READING';
+};
+
+export type InsightResponse = {
+    /**
+     * Plain-text linguistic analysis from the AI teacher
+     */
+    insight: string;
 };
 
 export type ListRootsData = {
@@ -2115,3 +2134,36 @@ export type TransliterateTextResponses = {
 };
 
 export type TransliterateTextResponse = TransliterateTextResponses[keyof TransliterateTextResponses];
+
+export type GenerateInsightData = {
+    body: InsightRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/ai/insight';
+};
+
+export type GenerateInsightErrors = {
+    /**
+     * Invalid input (unknown entityType or malformed UUID)
+     */
+    400: ErrorResponse;
+    /**
+     * Entity not found
+     */
+    404: ErrorResponse;
+    /**
+     * AI service not configured
+     */
+    503: ErrorResponse;
+};
+
+export type GenerateInsightError = GenerateInsightErrors[keyof GenerateInsightErrors];
+
+export type GenerateInsightResponses = {
+    /**
+     * Linguistic insight as plain text
+     */
+    200: InsightResponse;
+};
+
+export type GenerateInsightResponse = GenerateInsightResponses[keyof GenerateInsightResponses];

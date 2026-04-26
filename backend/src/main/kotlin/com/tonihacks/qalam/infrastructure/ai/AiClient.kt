@@ -6,6 +6,8 @@ import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.sentence.TokenInputDto
 import com.tonihacks.qalam.delivery.dto.word.AiExampleSentence
 import com.tonihacks.qalam.delivery.dto.word.WordAnalysisResponse
+import com.tonihacks.qalam.domain.ai.InsightContext
+import com.tonihacks.qalam.domain.ai.InsightMode
 import com.tonihacks.qalam.domain.error.DomainError
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -192,6 +194,91 @@ Sentence: "$arabicText""""
         }
     }
 
+    suspend fun generateInsight(context: InsightContext): Either<DomainError, String> {
+        if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
+
+        val model = System.getenv("OPENROUTER_MODEL") ?: "openai/gpt-4o-mini"
+        val userPrompt = buildInsightPrompt(context)
+
+        return try {
+            val response = httpClient.post("https://openrouter.ai/api/v1/chat/completions") {
+                header(HttpHeaders.Authorization, "Bearer $apiKey")
+                contentType(ContentType.Application.Json)
+                setBody(OpenRouterInsightRequest(
+                    model = model,
+                    messages = listOf(
+                        Message("system", INSIGHT_SYSTEM_PROMPT),
+                        Message("user", userPrompt),
+                    ),
+                ))
+            }
+
+            val body = response.body<OpenRouterResponse>()
+            val content = body.choices.firstOrNull()?.message?.content
+                ?: return DomainError.InvalidInput("Empty AI response").left()
+
+            content.right()
+        } catch (_: Exception) {
+            DomainError.InvalidInput("AI request failed").left()
+        }
+    }
+
+    private fun buildInsightPrompt(context: InsightContext): String = when (context) {
+        is InsightContext.WordInsight -> buildWordInsightPrompt(context)
+        is InsightContext.SentenceInsight -> buildSentenceInsightPrompt(context)
+    }
+
+    private fun buildWordInsightPrompt(ctx: InsightContext.WordInsight): String {
+        val translationClause = if (ctx.translation != null) " (\"${ctx.translation}\")" else ""
+        val rootClause = if (ctx.rootLetters != null) {
+            "\nRoot: ${ctx.rootLetters}" + if (ctx.rootMeaning != null) " — meaning: \"${ctx.rootMeaning}\"." else "."
+        } else ""
+        val examplesClause = if (ctx.examples.isNotEmpty()) {
+            "\nExample usage: " + ctx.examples.joinToString(" / ") { "\"$it\"" }
+        } else ""
+        return """Analyse the Arabic word: ${ctx.arabicText}$translationClause.
+Part of speech: ${ctx.partOfSpeech}. Dialect: ${ctx.dialect}.$rootClause$examplesClause
+
+Give concise linguistic insights. Lead with semantic disambiguation if this word is commonly confused with a near-synonym (different nuance, register, or dialect). Then cover relevant synonyms/antonyms, common learner mistakes, or register notes — only what is genuinely interesting for this specific word. Skip empty sections."""
+    }
+
+    @Suppress("LongMethod")
+    private fun buildSentenceInsightPrompt(ctx: InsightContext.SentenceInsight): String {
+        // allSentences is already the (possibly truncated) window built by AiInsightService.
+        // If it has ≤ 10 items (truncation window), add a note.
+        val truncationNote = if (ctx.allSentences.size <= 10) {
+            "\nNote: context truncated to ±5 sentences around the target.\n"
+        } else ""
+
+        val targetListIdx = ctx.allSentences.indexOfFirst { (arabic, _) -> arabic == ctx.targetArabic }
+
+        val lines = ctx.allSentences.mapIndexed { i, (arabic, translation) ->
+            val translationPart = if (translation != null) " — $translation" else ""
+            if (i == targetListIdx) {
+                "→ ${ctx.targetIndex}. $arabic$translationPart    ← target"
+            } else {
+                "  ${i + 1}. $arabic$translationPart"
+            }
+        }.joinToString("\n")
+
+        val modeInstruction = when (ctx.mode) {
+            InsightMode.HOMEWORK ->
+                "This is a student-authored sentence. Prioritise corrections and natural alternatives over analysis."
+            InsightMode.READING ->
+                "This is a native-authored sentence. Focus on nuance, notable constructions, and vocabulary choices."
+        }
+
+        val titleClause = ctx.textTitle ?: "untitled"
+        return """Analyse sentence ${ctx.targetIndex} from the text "$titleClause" (${ctx.dialect}):
+$truncationNote
+Full text:
+$lines
+
+$modeInstruction
+
+Be concise."""
+    }
+
     private fun buildPrompt(arabicText: String, translation: String?): String {
         val translationHint = if (!translation.isNullOrBlank()) " (meaning: \"$translation\")" else ""
         return """Given the Arabic word "$arabicText"$translationHint, provide exactly 2 example sentences.
@@ -207,6 +294,12 @@ Return a JSON object with an "examples" array. Each element must have:
         val model: String,
         val messages: List<Message>,
         @SerialName("response_format") val responseFormat: ResponseFormat,
+    )
+
+    @Serializable
+    private data class OpenRouterInsightRequest(
+        val model: String,
+        val messages: List<Message>,
     )
 
     @Serializable
@@ -242,5 +335,15 @@ Return a JSON object with an "examples" array. Each element must have:
     private companion object {
         const val SYSTEM_PROMPT = "You are a structured assistant as companion for an Arabic language teacher. " +
                 "Return only valid JSON."
+
+        const val INSIGHT_SYSTEM_PROMPT = """You are an experienced Arabic language teacher and tandem partner, specialising in Tunisian Arabic and MSA.
+
+Rules:
+- Respond in English unless Arabic script is needed for examples
+- Never add vocalization (tashkeel) to Arabic script
+- Be concise and academic in tone — no motivational filler
+- The user is between beginner and B1 level
+- Do not break down every word unless it is the focus of the insight
+- Return plain text with minimal markdown — bold for key terms, no headers"""
     }
 }

@@ -4,6 +4,7 @@ import { page } from '$app/state';
 import type { UpdateWordRequest } from '$lib/api/types.gen';
 import AnnotationBadge from '$lib/components/annotations/AnnotationBadge.svelte';
 import AiExamples from '$lib/components/words/AiExamples.svelte';
+import AiInsightPanel from '$lib/components/ai/AiInsightPanel.svelte';
 import DictionaryLinks from '$lib/components/words/DictionaryLinks.svelte';
 import WordForm from '$lib/components/words/WordForm.svelte';
 import { useRoot } from '$lib/stores/roots';
@@ -245,6 +246,9 @@ const masterySteps: Record<string, number> = {
 					<!-- AI examples -->
 					<AiExamples wordId={id} />
 				</div>
+
+				<!-- AI insight -->
+				<AiInsightPanel entityType="WORD" entityId={id} />
 
 				<!-- Dictionary sources -->
 				<div class="sect-label">Dictionary sources</div>

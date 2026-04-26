@@ -1,5 +1,6 @@
 package com.tonihacks.qalam.infrastructure.koin
 
+import com.tonihacks.qalam.domain.ai.AiInsightService
 import com.tonihacks.qalam.domain.annotation.AnnotationRepository
 import com.tonihacks.qalam.domain.annotation.AnnotationService
 import com.tonihacks.qalam.domain.root.RootRepository
@@ -57,6 +58,10 @@ val trainingModule = module {
     single { TrainingService(get(), get()) }
 }
 
+val aiInsightModule = module {
+    single { AiInsightService(get(), get(), get(), get(), get()) }
+}
+
 val appModule = module {
-    includes(rootsModules, wordsModules, textsModule, sentencesModule, transliterationModule, annotationsModule, trainingModule)
+    includes(rootsModules, wordsModules, textsModule, sentencesModule, transliterationModule, annotationsModule, trainingModule, aiInsightModule)
 }

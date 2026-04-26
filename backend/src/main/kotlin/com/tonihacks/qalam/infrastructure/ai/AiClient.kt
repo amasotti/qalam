@@ -6,9 +6,11 @@ import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.sentence.TokenInputDto
 import com.tonihacks.qalam.delivery.dto.word.AiExampleSentence
 import com.tonihacks.qalam.delivery.dto.word.WordAnalysisResponse
+import com.tonihacks.qalam.delivery.dto.word.WordEnrichmentSuggestion
 import com.tonihacks.qalam.domain.ai.InsightContext
 import com.tonihacks.qalam.domain.ai.InsightMode
 import com.tonihacks.qalam.domain.error.DomainError
+import com.tonihacks.qalam.domain.word.Word
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -192,6 +194,12 @@ Sentence: "$arabicText""""
         } catch (_: Exception) {
             DomainError.InvalidInput("AI request failed").left()
         }
+    }
+
+    // TODO Task 9: implement full prompt + JSON parsing
+    suspend fun enrichWord(word: Word): Either<DomainError, WordEnrichmentSuggestion> {
+        if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
+        return DomainError.InvalidInput("enrichWord not yet implemented — coming in Task 9").left()
     }
 
     suspend fun generateInsight(context: InsightContext): Either<DomainError, String> {

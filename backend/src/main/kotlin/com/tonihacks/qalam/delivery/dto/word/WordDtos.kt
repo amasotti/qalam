@@ -16,6 +16,7 @@ data class CreateWordRequest(
     val pronunciationUrl: String? = null,
     val rootId: String? = null,
     val derivedFromId: String? = null,
+    val notes: String? = null,
 )
 
 @Serializable
@@ -30,6 +31,7 @@ data class UpdateWordRequest(
     val pronunciationUrl: String? = null,
     val rootId: String? = null,
     val derivedFromId: String? = null,
+    val notes: String? = null,
 )
 
 @Serializable
@@ -45,6 +47,7 @@ data class WordResponse(
     val pronunciationUrl: String?,
     val rootId: String?,
     val derivedFromId: String?,
+    val notes: String?,
     val createdAt: String,
     val updatedAt: String,
 )
@@ -107,6 +110,7 @@ fun Word.toResponse() = WordResponse(
     pronunciationUrl = pronunciationUrl,
     rootId = rootId?.toString(),
     derivedFromId = derivedFromId?.toString(),
+    notes = notes,
     createdAt = createdAt.toString(),
     updatedAt = updatedAt.toString(),
 )

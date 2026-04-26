@@ -4,8 +4,11 @@ import com.tonihacks.qalam.delivery.respondError
 import com.tonihacks.qalam.delivery.dto.word.AnalyzeWordRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateDictionaryLinkRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordExampleRequest
+import com.tonihacks.qalam.delivery.dto.word.CreateWordPluralRequest
+import com.tonihacks.qalam.delivery.dto.word.CreateWordRelationRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordRequest
 import com.tonihacks.qalam.delivery.dto.word.UpdateWordRequest
+import com.tonihacks.qalam.delivery.dto.word.UpsertWordMorphologyRequest
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.word.WordService
 import io.ktor.http.*
@@ -158,6 +161,88 @@ fun Route.wordRoutes(service: WordService) {
         post("/{id}/examples/generate") {
             val id = call.pathParameters.getOrFail<String>("id")
             service.generateExamples(id).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.OK, it) },
+            )
+        }
+
+        // Morphology sub-resource
+        get("/{id}/morphology") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            service.getMorphology(id).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.OK, it) },
+            )
+        }
+
+        put("/{id}/morphology") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            val req = call.receive<UpsertWordMorphologyRequest>()
+            service.upsertMorphology(id, req).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.OK, it) },
+            )
+        }
+
+        // Plurals sub-resource
+        get("/{id}/plurals") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            service.getPlurals(id).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.OK, it) },
+            )
+        }
+
+        post("/{id}/plurals") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            val req = call.receive<CreateWordPluralRequest>()
+            service.addPlural(id, req).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.Created, it) },
+            )
+        }
+
+        delete("/{id}/plurals/{pluralId}") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            val pluralId = call.pathParameters.getOrFail<String>("pluralId")
+            service.deletePlural(id, pluralId).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.NoContent) },
+            )
+        }
+
+        // Relations sub-resource
+        get("/{id}/relations") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            service.getRelations(id).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.OK, it) },
+            )
+        }
+
+        post("/{id}/relations") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            val req = call.receive<CreateWordRelationRequest>()
+            service.addRelation(id, req).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.Created, it) },
+            )
+        }
+
+        delete("/{id}/relations/{relatedWordId}/{type}") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            val relatedWordId = call.pathParameters.getOrFail<String>("relatedWordId")
+            val type = call.pathParameters.getOrFail<String>("type")
+            service.deleteRelation(id, relatedWordId, type).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.NoContent) },
+            )
+        }
+
+        // AI word enrichment (ephemeral preview — never auto-saved)
+        post("/{id}/enrich") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            service.enrichWord(id).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.OK, it) },
             )

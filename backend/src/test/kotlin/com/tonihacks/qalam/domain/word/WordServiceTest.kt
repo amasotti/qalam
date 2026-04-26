@@ -41,6 +41,7 @@ class WordServiceTest : FunSpec({
         pronunciationUrl = null,
         rootId = null,
         derivedFromId = null,
+        notes = null,
         createdAt = Instant.fromEpochMilliseconds(0),
         updatedAt = Instant.fromEpochMilliseconds(0),
     )

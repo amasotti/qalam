@@ -39,8 +39,8 @@ const modeLabels: Record<Mode, string> = {
   {/if}
 
   <section class="setup-form">
-    <div class="field">
-      <span class="field-label">Mode</span>
+    <div class="form-field">
+      <span class="form-label">Mode</span>
       <div class="mode-buttons" role="group" aria-label="Training mode">
         {#each modes as mode}
           <Button
@@ -53,8 +53,8 @@ const modeLabels: Record<Mode, string> = {
       </div>
     </div>
 
-    <div class="field">
-      <label for="session-size">Words per session: {sessionSize}</label>
+    <div class="form-field">
+      <label class="form-label" for="session-size">Words per session: {sessionSize}</label>
       <input
         id="session-size"
         type="range"
@@ -67,7 +67,7 @@ const modeLabels: Record<Mode, string> = {
     </div>
 
     {#if createSession.error}
-      <p class="error">{createSession.error.message}</p>
+      <p class="form-error-msg">{createSession.error.message}</p>
     {/if}
 
     <Button onclick={start} disabled={createSession.isPending}>
@@ -106,18 +106,6 @@ const modeLabels: Record<Mode, string> = {
     gap: 1.5rem;
   }
 
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  label,
-  .field-label {
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-
   .mode-buttons {
     display: flex;
     flex-wrap: wrap;
@@ -133,5 +121,4 @@ const modeLabels: Record<Mode, string> = {
     color: hsl(var(--muted-foreground));
   }
 
-  .error { color: hsl(var(--destructive)); font-size: 0.875rem; }
 </style>

@@ -27,26 +27,21 @@ class ExposedWordRelationsRepository {
         suspendTransaction {
             try {
                 val id = wordId.value.toKotlinUuid()
-
-                val direct = WordRelationsTable
+                WordRelationsTable
                     .selectAll()
-                    .where { WordRelationsTable.wordId eq id }
-                    .map { it.toWordRelation() }
-
-                val reverse = WordRelationsTable
-                    .selectAll()
-                    .where { WordRelationsTable.relatedWordId eq id }
-                    .map { row ->
-                        WordRelation(
-                            wordId        = wordId,
-                            relatedWordId = WordId(row[WordRelationsTable.wordId].toJavaUuid()),
-                            relationType  = RelationType.fromString(row[WordRelationsTable.relationType])
-                                ?: RelationType.RELATED,
-                        )
+                    .where {
+                        (WordRelationsTable.wordId eq id) or (WordRelationsTable.relatedWordId eq id)
                     }
-
-                (direct + reverse)
-                    .distinctBy { it.relatedWordId.value to it.relationType }
+                    .map { row ->
+                        val storedWordId = row[WordRelationsTable.wordId]
+                        val type = RelationType.fromString(row[WordRelationsTable.relationType])
+                            ?: RelationType.RELATED
+                        if (storedWordId == id) {
+                            WordRelation(wordId, WordId(row[WordRelationsTable.relatedWordId].toJavaUuid()), type)
+                        } else {
+                            WordRelation(wordId, WordId(storedWordId.toJavaUuid()), type)
+                        }
+                    }
                     .right()
             } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
                 DomainError.DatabaseError.left()
@@ -63,10 +58,12 @@ class ExposedWordRelationsRepository {
                 }
                 relation.right()
             } catch (e: java.sql.SQLException) {
-                if (e.sqlState == PSQLState.UNIQUE_VIOLATION.state) {
-                    DomainError.Conflict("WordRelation", "${relation.wordId}-${relation.relatedWordId}").left()
-                } else {
-                    DomainError.DatabaseError.left()
+                when (e.sqlState) {
+                    PSQLState.UNIQUE_VIOLATION.state ->
+                        DomainError.Conflict("WordRelation", "${relation.wordId}-${relation.relatedWordId}").left()
+                    PSQLState.FOREIGN_KEY_VIOLATION.state ->
+                        DomainError.NotFound("Word", relation.relatedWordId.toString()).left()
+                    else -> DomainError.DatabaseError.left()
                 }
             }
         }
@@ -77,23 +74,27 @@ class ExposedWordRelationsRepository {
         type: RelationType,
     ): Either<DomainError, Unit> =
         suspendTransaction {
-            either {
-                val a = wordId.value.toKotlinUuid()
-                val b = relatedWordId.value.toKotlinUuid()
-                val t = type.name
+            try {
+                either {
+                    val a = wordId.value.toKotlinUuid()
+                    val b = relatedWordId.value.toKotlinUuid()
+                    val t = type.name
 
-                val deletedCount = WordRelationsTable.deleteWhere {
-                    (
-                        (WordRelationsTable.wordId eq a) and
-                        (WordRelationsTable.relatedWordId eq b) and
-                        (WordRelationsTable.relationType eq t)
-                    ) or (
-                        (WordRelationsTable.wordId eq b) and
-                        (WordRelationsTable.relatedWordId eq a) and
-                        (WordRelationsTable.relationType eq t)
-                    )
+                    val deletedCount = WordRelationsTable.deleteWhere {
+                        (
+                            (WordRelationsTable.wordId eq a) and
+                            (WordRelationsTable.relatedWordId eq b) and
+                            (WordRelationsTable.relationType eq t)
+                        ) or (
+                            (WordRelationsTable.wordId eq b) and
+                            (WordRelationsTable.relatedWordId eq a) and
+                            (WordRelationsTable.relationType eq t)
+                        )
+                    }
+                    ensure(deletedCount > 0) { DomainError.NotFound("WordRelation", "$wordId-$relatedWordId-$type") }
                 }
-                ensure(deletedCount > 0) { DomainError.NotFound("WordRelation", "$wordId-$relatedWordId-$type") }
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                DomainError.DatabaseError.left()
             }
         }
 }

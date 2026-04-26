@@ -57,29 +57,15 @@ async function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
 {:else if summary}
   <SessionSummary {summary} />
 {:else if currentWord}
-  <div class="session-header">
-    <span class="progress">
-      {currentIndex + 1} / {localWords.length}
-    </span>
-    <span class="mode">{session.data?.mode}</span>
-  </div>
   <FlashCard
     word={currentWord}
     isPending={isPending || record.isPending || complete.isPending}
+    currentIndex={currentIndex}
+    totalWords={localWords.length}
+    mode={session.data?.mode ?? ''}
     onresult={handleResult}
   />
 {:else if isFinished}
   <p>All words answered. Completing session…</p>
 {/if}
 
-<style>
-  .session-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem 2rem;
-    font-size: 0.875rem;
-    color: hsl(var(--muted-foreground));
-    max-width: 32rem;
-    margin: 0 auto;
-  }
-</style>

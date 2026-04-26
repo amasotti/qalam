@@ -289,6 +289,7 @@ class WordService(
 
     suspend fun deleteRelation(wordId: String, relatedWordId: String, type: String): Either<DomainError, Unit> = either {
         val wId = parseWordId(wordId).bind()
+        repo.findById(wId).bind()
         val rId = parseWordId(relatedWordId).bind()
         val relationType = parseWordEnum("relationType", type) { RelationType.fromString(it) }.bind()
         repo.deleteRelation(wId, rId, relationType).bind()

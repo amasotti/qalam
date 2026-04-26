@@ -5,32 +5,39 @@
 
 ## Problem
 
-The existing AI layer generates examples and tokenizes sentences but offers no linguistic intelligence: no semantic disambiguation, no awareness of near-synonyms and their nuances, no corrections for learner mistakes. When studying a word or reviewing a sentence you wrote, there is no way to ask "what's the difference between this and that?", "is my phrasing natural?", or "what should I watch out for?". This fills that gap.
+The existing AI layer generates examples and tokenizes sentences but offers no linguistic intelligence: no semantic
+disambiguation, no awareness of near-synonyms and their nuances, no corrections for learner mistakes. When studying a
+word or reviewing a sentence you wrote, there is no way to ask "what's the difference between this and that?", "is my
+phrasing natural?", or "what should I watch out for?". This fills that gap.
 
 ## Scope
 
 Two surfaces, one backend endpoint:
 
-1. **Word insight** — on the word detail page, an on-demand panel gives linguistic analysis of the word: semantic disambiguation from near-synonyms (primary focus), synonyms/antonyms, common learner mistakes, register/dialect notes.
-2. **Sentence insight** — on the interlinear text view, each sentence gets an on-demand inline panel. The AI receives the full text as context to evaluate the target sentence and suggest corrections or alternatives.
+1. **Word insight** — on the word detail page, an on-demand panel gives linguistic analysis of the word: semantic
+   disambiguation from near-synonyms (primary focus), synonyms/antonyms, common learner mistakes, register/dialect
+   notes.
+2. **Sentence insight** — on the interlinear text view, each sentence gets an on-demand button for insights. The AI receives
+   the full text as context to evaluate the target sentence and suggest corrections or alternatives or a simple evaluation of the
+   sentence. 
 
 **Not in scope:** persistence (insights are ephemeral), background/auto-load, audio, new data model tables.
 
 ## Decisions Made
 
-| Question | Decision |
-|---|---|
-| Trigger | On-demand only — explicit button click on both surfaces |
-| Persistence | Ephemeral — generated on request, discarded on close |
-| Backend surface | Single endpoint `POST /api/v1/ai/insight` |
-| Context enrichment | Backend loads entity from DB before calling AI |
-| Sentence context | Full text (all sentences) sent, not just neighbours |
-| Sentence mode flag | Optional `mode: HOMEWORK \| READING` — hints prompt focus |
-| Word panel position | After `word-related`, before `DictionaryLinks` |
-| Sentence panel | Inline below each `InterlinearSentence` row, per-sentence toggle |
-| Markdown rendering | `marked` (already in `package.json`) |
-| Graceful degradation | 503 `AI_NOT_CONFIGURED` hides the button; no error shown |
-| System prompt | Adapted from `skills/et-tounsi-persona.md` |
+| Question             | Decision                                                         |
+|----------------------|------------------------------------------------------------------|
+| Trigger              | On-demand only — explicit button click on both surfaces          |
+| Persistence          | Ephemeral — generated on request, discarded on close             |
+| Backend surface      | Single endpoint `POST /api/v1/ai/insight`                        |
+| Context enrichment   | Backend loads entity from DB before calling AI                   |
+| Sentence context     | Full text (all sentences) sent, not just neighbours              |
+| Sentence mode flag   | Optional `mode: HOMEWORK \| READING` — hints prompt focus        |
+| Word panel position  | After `word-related`, before `DictionaryLinks`                   |
+| Sentence panel       | Inline below each `InterlinearSentence` row, per-sentence toggle |
+| Markdown rendering   | `marked` (already in `package.json`)                             |
+| Graceful degradation | 503 `AI_NOT_CONFIGURED` hides the button; no error shown         |
+| System prompt        | Adapted from `skills/et-tounsi-persona.md`                       |
 
 ## API
 
@@ -50,7 +57,9 @@ Content-Type: application/json
 ### Response
 
 ```json
-{ "insight": "<markdown string>" }
+{
+  "insight": "<markdown string>"
+}
 ```
 
 ### Error cases
@@ -109,9 +118,11 @@ sealed class InsightContext {
 
 ### AiInsightService responsibilities
 
-**WORD:** load `Word` by id → load `ArabicRoot` if `rootId` set → load up to 3 `WordExample` records (most recently created) → build `WordInsight`.
+**WORD:** load `Word` by id → load `ArabicRoot` if `rootId` set → load up to 3 `WordExample` records (most recently
+created) → build `WordInsight`.
 
-**SENTENCE:** load `Sentence` by id → load parent `Text` (for title + dialect) → load all `Sentence` records for that text ordered by position → build `SentenceInsight`. When `mode` is absent from the request, default to `HOMEWORK`.
+**SENTENCE:** load `Sentence` by id → load parent `Text` (for title + dialect) → load all `Sentence` records for that
+text ordered by position → build `SentenceInsight`. When `mode` is absent from the request, default to `HOMEWORK`.
 
 ### Prompt design
 
@@ -188,9 +199,9 @@ src/lib/api/types.gen.ts                    regenerated after endpoint added
 
 ```typescript
 interface Props {
-  entityType: 'WORD' | 'SENTENCE';
-  entityId: string;
-  mode?: 'HOMEWORK' | 'READING'; // SENTENCE only
+    entityType: 'WORD' | 'SENTENCE';
+    entityId: string;
+    mode?: 'HOMEWORK' | 'READING'; // SENTENCE only
 }
 ```
 
@@ -212,13 +223,16 @@ Annotations
 
 ### Sentence placement
 
-Per-sentence toggle button in `InterlinearSentence`. When active, an inline panel expands below the sentence row. Only one sentence panel open at a time per text is not enforced — each is independent state.
+Per-sentence toggle button in `InterlinearSentence`. When active, an inline panel expands below the sentence row. Only
+one sentence panel open at a time per text is not enforced — each is independent state.
 
 ## Prompt context budget
 
 WORD: small — arabicText + root + 3 short examples. Well within any model's context.
 
-SENTENCE: potentially large for long texts. `allSentences` is the full ordered list. For texts with > 30 sentences, truncate to the 10 sentences nearest the target (5 before, 5 after) and note the truncation in the prompt. This avoids token bloat while preserving enough context.
+SENTENCE: potentially large for long texts. `allSentences` is the full ordered list. For texts with > 30 sentences,
+truncate to the 10 sentences nearest the target (5 before, 5 after) and note the truncation in the prompt. This avoids
+token bloat while preserving enough context.
 
 ## Out of scope
 

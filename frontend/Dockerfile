@@ -13,7 +13,8 @@ RUN corepack enable && corepack prepare pnpm@10 --activate
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
 
 
 # ---------- Stage 2: build static assets ---------------------------------

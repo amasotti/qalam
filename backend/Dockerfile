@@ -12,12 +12,14 @@ COPY gradlew settings.gradle.kts build.gradle.kts ./
 RUN chmod +x gradlew
 
 # cache dependencies
-RUN ./gradlew dependencies --no-daemon || true
+RUN --mount=type=cache,target=/root/.gradle \
+    ./gradlew dependencies --no-daemon
 
 COPY src src
 
 # build distribution instead of fat jar
-RUN ./gradlew installDist --no-daemon
+RUN --mount=type=cache,target=/root/.gradle \
+    ./gradlew installDist --no-daemon
 
 
 # ---------- Runtime stage ----------

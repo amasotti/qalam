@@ -10,9 +10,10 @@ default:
 up:
     docker compose up -d
 
-# Rebuild images and start all services
+# Rebuild images (parallel via bake) and start all services
 build:
-    docker compose up -d --build
+    docker buildx bake
+    docker compose up -d
 
 # Stop all services
 down:

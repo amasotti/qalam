@@ -47,7 +47,11 @@ import org.jetbrains.exposed.v1.jdbc.update
 import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
 
-class ExposedWordRepository : WordRepository {
+class ExposedWordRepository(
+    private val morphologyRepo: ExposedWordMorphologyRepository,
+    private val pluralsRepo: ExposedWordPluralsRepository,
+    private val relationsRepo: ExposedWordRelationsRepository,
+) : WordRepository {
 
     override suspend fun findById(id: WordId): Either<DomainError, Word> =
         suspendTransaction {
@@ -139,6 +143,7 @@ class ExposedWordRepository : WordRepository {
                     it[pronunciationUrl] = word.pronunciationUrl
                     it[rootId] = word.rootId?.value?.toKotlinUuid()
                     it[derivedFromId] = word.derivedFromId?.value?.toKotlinUuid()
+                    it[notes] = word.notes
                 }
                 // Create word_progress atomically in the same transaction
                 WordProgressTable.insert {
@@ -173,6 +178,7 @@ class ExposedWordRepository : WordRepository {
                     it[pronunciationUrl] = word.pronunciationUrl
                     it[rootId] = word.rootId?.value?.toKotlinUuid()
                     it[derivedFromId] = word.derivedFromId?.value?.toKotlinUuid()
+                    it[notes] = word.notes
                 }
 
                 ensure(updatedCount > 0) { DomainError.NotFound("Word", wordId.toString()) }
@@ -322,36 +328,36 @@ class ExposedWordRepository : WordRepository {
             }
         }
 
-    // Morphology — delegated to ExposedWordMorphologyRepository in Task 4
+    // Morphology — delegated to ExposedWordMorphologyRepository
     override suspend fun findMorphology(wordId: WordId): Either<DomainError, WordMorphology?> =
-        TODO("Implement in Task 4")
+        morphologyRepo.findMorphology(wordId)
 
     override suspend fun upsertMorphology(morphology: WordMorphology): Either<DomainError, WordMorphology> =
-        TODO("Implement in Task 4")
+        morphologyRepo.upsertMorphology(morphology)
 
-    // Plurals — delegated to ExposedWordPluralsRepository in Task 4
+    // Plurals — delegated to ExposedWordPluralsRepository
     override suspend fun findPlurals(wordId: WordId): Either<DomainError, List<WordPlural>> =
-        TODO("Implement in Task 4")
+        pluralsRepo.findPlurals(wordId)
 
     override suspend fun addPlural(plural: WordPlural): Either<DomainError, WordPlural> =
-        TODO("Implement in Task 4")
+        pluralsRepo.addPlural(plural)
 
     override suspend fun deletePlural(wordId: WordId, pluralId: WordPluralId): Either<DomainError, Unit> =
-        TODO("Implement in Task 4")
+        pluralsRepo.deletePlural(wordId, pluralId)
 
-    // Relations — delegated to ExposedWordRelationsRepository in Task 4
+    // Relations — delegated to ExposedWordRelationsRepository
     override suspend fun findRelations(wordId: WordId): Either<DomainError, List<WordRelation>> =
-        TODO("Implement in Task 4")
+        relationsRepo.findRelations(wordId)
 
     override suspend fun addRelation(relation: WordRelation): Either<DomainError, WordRelation> =
-        TODO("Implement in Task 4")
+        relationsRepo.addRelation(relation)
 
     override suspend fun deleteRelation(
         wordId: WordId,
         relatedWordId: WordId,
         type: RelationType,
     ): Either<DomainError, Unit> =
-        TODO("Implement in Task 4")
+        relationsRepo.deleteRelation(wordId, relatedWordId, type)
 }
 
 private fun ResultRow.toWord() = Word(
@@ -366,7 +372,7 @@ private fun ResultRow.toWord() = Word(
     pronunciationUrl = this[WordsTable.pronunciationUrl],
     rootId = this[WordsTable.rootId]?.toJavaUuid()?.let { RootId(it) },
     derivedFromId = this[WordsTable.derivedFromId]?.toJavaUuid()?.let { WordId(it) },
-    notes = null, // TODO Task 4: read from WordsTable.notes
+    notes = this[WordsTable.notes],
     createdAt = this[WordsTable.createdAt],
     updatedAt = this[WordsTable.updatedAt],
 )

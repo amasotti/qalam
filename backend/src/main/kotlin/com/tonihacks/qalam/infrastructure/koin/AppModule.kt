@@ -20,6 +20,9 @@ import com.tonihacks.qalam.infrastructure.exposed.ExposedRootRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedSentenceRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedTextRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedTrainingRepository
+import com.tonihacks.qalam.infrastructure.exposed.ExposedWordMorphologyRepository
+import com.tonihacks.qalam.infrastructure.exposed.ExposedWordPluralsRepository
+import com.tonihacks.qalam.infrastructure.exposed.ExposedWordRelationsRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedWordRepository
 import org.koin.dsl.module
 
@@ -30,7 +33,10 @@ val rootsModules = module {
 
 val wordsModules = module {
     single { AiClient() }
-    single<WordRepository> { ExposedWordRepository() }
+    single { ExposedWordMorphologyRepository() }
+    single { ExposedWordPluralsRepository() }
+    single { ExposedWordRelationsRepository() }
+    single<WordRepository> { ExposedWordRepository(get(), get(), get()) }
     single { WordService(get(), get()) }
 }
 

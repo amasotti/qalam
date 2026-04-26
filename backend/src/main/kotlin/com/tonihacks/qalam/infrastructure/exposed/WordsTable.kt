@@ -15,6 +15,7 @@ object WordsTable : Table("words") {
     val pronunciationUrl = text("pronunciation_url").nullable()
     val rootId = uuid("root_id").nullable()
     val derivedFromId = uuid("derived_from_id").nullable()
+    val notes = text("notes").nullable()
     val createdAt = timestamp("created_at")
     val updatedAt = timestamp("updated_at")
 

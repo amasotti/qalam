@@ -9,6 +9,8 @@ import com.tonihacks.qalam.domain.sentence.SentenceRepository
 import com.tonihacks.qalam.domain.sentence.SentenceService
 import com.tonihacks.qalam.domain.text.TextRepository
 import com.tonihacks.qalam.domain.text.TextService
+import com.tonihacks.qalam.domain.analytics.AnalyticsRepository
+import com.tonihacks.qalam.domain.analytics.AnalyticsService
 import com.tonihacks.qalam.domain.training.TrainingRepository
 import com.tonihacks.qalam.domain.training.TrainingService
 import com.tonihacks.qalam.domain.transliteration.TransliterationService
@@ -19,6 +21,7 @@ import com.tonihacks.qalam.infrastructure.exposed.ExposedAnnotationRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedRootRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedSentenceRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedTextRepository
+import com.tonihacks.qalam.infrastructure.exposed.ExposedAnalyticsRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedTrainingRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedWordMorphologyRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedWordPluralsRepository
@@ -68,6 +71,11 @@ val aiInsightModule = module {
     single { AiInsightService(get(), get(), get(), get(), get()) }
 }
 
+val analyticsModule = module {
+    single<AnalyticsRepository> { ExposedAnalyticsRepository() }
+    single { AnalyticsService(get()) }
+}
+
 val appModule = module {
-    includes(rootsModules, wordsModules, textsModule, sentencesModule, transliterationModule, annotationsModule, trainingModule, aiInsightModule)
+    includes(rootsModules, wordsModules, textsModule, sentencesModule, transliterationModule, annotationsModule, trainingModule, aiInsightModule, analyticsModule)
 }

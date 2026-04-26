@@ -1,6 +1,7 @@
 package com.tonihacks.qalam.delivery
 
 import com.tonihacks.qalam.delivery.routes.aiInsightRoutes
+import com.tonihacks.qalam.delivery.routes.analyticsRoutes
 import com.tonihacks.qalam.delivery.routes.annotationRoutes
 import com.tonihacks.qalam.delivery.routes.annotationWordRoutes
 import com.tonihacks.qalam.delivery.routes.rootRoutes
@@ -10,6 +11,7 @@ import com.tonihacks.qalam.delivery.routes.trainingRoutes
 import com.tonihacks.qalam.delivery.routes.transliterationRoutes
 import com.tonihacks.qalam.delivery.routes.wordRoutes
 import com.tonihacks.qalam.domain.ai.AiInsightService
+import com.tonihacks.qalam.domain.analytics.AnalyticsService
 import com.tonihacks.qalam.domain.annotation.AnnotationService
 import com.tonihacks.qalam.domain.root.RootService
 import com.tonihacks.qalam.domain.sentence.SentenceService
@@ -39,6 +41,7 @@ fun Application.configureRouting() {
     val aiClient by inject<AiClient>()
     val trainingService by inject<TrainingService>()
     val aiInsightService by inject<AiInsightService>()
+    val analyticsService by inject<AnalyticsService>()
 
     routing {
         get("/health") {
@@ -56,6 +59,7 @@ fun Application.configureRouting() {
             annotationWordRoutes(annotationService)
             trainingRoutes(trainingService)
             aiInsightRoutes(aiInsightService)
+            analyticsRoutes(analyticsService)
         }
     }
 }

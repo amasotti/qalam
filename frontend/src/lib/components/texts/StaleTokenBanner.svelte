@@ -32,12 +32,12 @@ async function handleMarkValid() {
 }
 </script>
 
-<div class="stale-banner" role="alert">
-	<AlertTriangle size={14} class="stale-banner-icon" />
-	<span class="stale-banner-text">
+<div class="banner-warning" role="alert">
+	<AlertTriangle size={14} />
+	<span class="banner-text">
 		Arabic text changed — existing tokens may be stale.
 	</span>
-	<div class="stale-banner-actions">
+	<div class="banner-actions">
 		<Button
 			size="sm"
 			variant="outline"
@@ -58,25 +58,12 @@ async function handleMarkValid() {
 </div>
 
 <style>
-.stale-banner {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	padding: 0.5rem 0.75rem;
-	background: hsl(38 92% 95%);
-	border: 1px solid hsl(38 80% 80%);
-	border-radius: 0.375rem;
-	font-size: 0.8125rem;
-	color: hsl(38 80% 28%);
-	flex-wrap: wrap;
-}
-
-.stale-banner-text {
+.banner-text {
 	flex: 1;
 	min-width: 0;
 }
 
-.stale-banner-actions {
+.banner-actions {
 	display: flex;
 	gap: 0.25rem;
 }

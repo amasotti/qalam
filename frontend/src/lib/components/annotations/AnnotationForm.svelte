@@ -52,12 +52,12 @@ async function handleSubmit(e: Event) {
 <form class="annotation-form" onsubmit={handleSubmit}>
 	<div class="form-field">
 		<div class="form-label">Type</div>
-		<div class="type-selector">
+		<div class="toggle-group">
 			{#each TYPES as t}
 				<button
 					type="button"
-					class="type-btn"
-					class:type-btn-active={type === t}
+					class="toggle-btn"
+					class:toggle-btn-active={type === t}
 					onclick={() => (type = t)}
 				>{t.charAt(0) + t.slice(1).toLowerCase()}</button>
 			{/each}
@@ -86,7 +86,7 @@ async function handleSubmit(e: Event) {
 	{/if}
 
 	<div class="form-actions">
-		<button type="submit" class="btn-primary" disabled={isPending}>
+		<button type="submit" class="btn-submit" disabled={isPending}>
 			{initial ? 'Save' : 'Add'}
 		</button>
 		<button type="button" class="btn-ghost" onclick={onCancel} disabled={isPending}>
@@ -97,30 +97,6 @@ async function handleSubmit(e: Event) {
 
 <style>
 .annotation-form { display: flex; flex-direction: column; gap: 0.875rem; }
-
-.form-field { display: flex; flex-direction: column; gap: 0.3rem; }
-
-.form-label {
-	font-size: 0.7rem;
-	font-weight: 600;
-	text-transform: uppercase;
-	letter-spacing: 0.05em;
-	color: hsl(var(--muted-foreground));
-}
-
-.type-selector { display: flex; gap: 0.25rem; flex-wrap: wrap; }
-
-.type-btn {
-	padding: 0.25rem 0.625rem;
-	border-radius: 0.375rem;
-	font-size: 0.75rem;
-	border: 1px solid hsl(var(--border));
-	background: transparent;
-	color: hsl(var(--muted-foreground));
-	cursor: pointer;
-}
-.type-btn:hover { background: hsl(var(--muted)); color: hsl(var(--foreground)); }
-.type-btn-active { background: hsl(var(--primary) / 0.15); border-color: hsl(var(--primary) / 0.5); color: hsl(var(--primary)); }
 
 .form-textarea {
 	padding: 0.375rem 0.625rem;
@@ -138,7 +114,7 @@ async function handleSubmit(e: Event) {
 
 .form-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
 
-.btn-primary {
+.btn-submit {
 	padding: 0.375rem 0.875rem;
 	border-radius: 0.375rem;
 	font-size: 0.8125rem;
@@ -148,16 +124,5 @@ async function handleSubmit(e: Event) {
 	border: none;
 	cursor: pointer;
 }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.btn-ghost {
-	padding: 0.375rem 0.875rem;
-	border-radius: 0.375rem;
-	font-size: 0.8125rem;
-	background: transparent;
-	color: hsl(var(--muted-foreground));
-	border: 1px solid hsl(var(--border));
-	cursor: pointer;
-}
-.btn-ghost:hover { color: hsl(var(--foreground)); background: hsl(var(--muted)); }
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 </style>

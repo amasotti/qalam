@@ -187,5 +187,70 @@ class TrainingIntegrationTest : BaseIntegrationTest() {
                 }
             }
         }
+
+        // ── Group 5: enriched word data in session response ──────────────────────
+
+        "GET /api/v1/training/sessions/{id} returns enriched word data" - {
+            "word response includes root displayForm, examples, and relations" {
+                testApp { client ->
+                    // Create a root
+                    val rootResp = client.post("/api/v1/roots") {
+                        contentType(ContentType.Application.Json)
+                        setBody("""{"root":"كتب"}""")
+                    }
+                    rootResp.status shouldBe HttpStatusCode.Created
+                    val rootBody = rootResp.bodyAsText()
+                    val rootId = Regex(""""id":"([^"]+)"""").find(rootBody)!!.groupValues[1]
+                    val rootDisplayForm = Json.parseToJsonElement(rootBody).jsonObject["displayForm"]!!.jsonPrimitive.content
+
+                    // Create two words (need both for a relation)
+                    val word1Id = createWord(
+                        client,
+                        """{"arabicText":"كَتَبَ","translation":"to write","dialect":"MSA","rootId":"$rootId","notes":"common verb"}""",
+                    )
+                    val word2Id = createWord(
+                        client,
+                        """{"arabicText":"كِتَابٌ","translation":"book","dialect":"MSA"}""",
+                    )
+
+                    // Add an example to word1
+                    client.post("/api/v1/words/$word1Id/examples") {
+                        contentType(ContentType.Application.Json)
+                        setBody("""{"arabic":"كَتَبَ الطَّالِبُ","translation":"The student wrote"}""")
+                    }.status shouldBe HttpStatusCode.Created
+
+                    // Add a relation: word1 RELATED word2
+                    client.post("/api/v1/words/$word1Id/relations") {
+                        contentType(ContentType.Application.Json)
+                        setBody("""{"relatedWordId":"$word2Id","relationType":"RELATED"}""")
+                    }.status shouldBe HttpStatusCode.Created
+
+                    // Create a training session
+                    val sessionResp = client.post("/api/v1/training/sessions") {
+                        contentType(ContentType.Application.Json)
+                        setBody("""{"mode":"MIXED","size":10}""")
+                    }
+                    sessionResp.status shouldBe HttpStatusCode.Created
+                    val sessionId = Json.parseToJsonElement(sessionResp.bodyAsText())
+                        .jsonObject["id"]!!.jsonPrimitive.content
+
+                    // Fetch session and assert enriched data on word1's entry
+                    val getResp = client.get("/api/v1/training/sessions/$sessionId")
+                    getResp.status shouldBe HttpStatusCode.OK
+                    val body = getResp.bodyAsText()
+
+                    // root
+                    body shouldContain rootDisplayForm
+                    // notes
+                    body shouldContain "common verb"
+                    // example
+                    body shouldContain "كَتَبَ الطَّالِبُ"
+                    body shouldContain "The student wrote"
+                    // relation
+                    body shouldContain "كِتَابٌ"
+                    body shouldContain "RELATED"
+                }
+            }
+        }
     }
 }

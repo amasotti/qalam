@@ -1,6 +1,8 @@
 -- Directed lexical relations between words (synonym, antonym, related).
 -- Composite PK prevents duplicate (word, related, type) triples.
 -- no_self_relation guards against a word pointing to itself.
+-- Relations are stored once per direction; callers query both sides
+-- (word_id = ? OR related_word_id = ?) to get the full neighbourhood.
 
 CREATE TABLE word_relations (
     word_id         UUID NOT NULL REFERENCES words(id) ON DELETE CASCADE,

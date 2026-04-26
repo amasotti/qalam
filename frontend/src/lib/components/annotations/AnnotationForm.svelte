@@ -16,8 +16,10 @@ interface Props {
 
 let { textId, anchor, initial, onSuccess, onCancel }: Props = $props();
 
-let type = $state<AnnotationType>((initial?.type as AnnotationType) ?? 'VOCAB');
-let content = $state(initial?.content ?? '');
+const initType = (initial?.type as AnnotationType) ?? 'VOCAB';
+const initContent = initial?.content ?? '';
+let type = $state<AnnotationType>(initType);
+let content = $state(initContent);
 let linkedWords = $state<WordAutocompleteResponse[]>([]);
 
 const createAnnotation = useCreateAnnotation();
@@ -50,7 +52,7 @@ async function handleSubmit(e: Event) {
 
 <form class="annotation-form" onsubmit={handleSubmit}>
 	<div class="form-field">
-		<label class="form-label">Type</label>
+		<div class="form-label">Type</div>
 		<div class="type-selector">
 			{#each TYPES as t}
 				<button
@@ -76,7 +78,7 @@ async function handleSubmit(e: Event) {
 
 	{#if !initial}
 		<div class="form-field">
-			<label class="form-label">Linked words</label>
+			<div class="form-label">Linked words</div>
 			<WordSearchCombobox
 				selectedWords={linkedWords}
 				onchange={(words) => (linkedWords = words)}

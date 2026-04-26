@@ -46,3 +46,39 @@ enum class DictionarySource {
             entries.firstOrNull { it.name.equals(value.trim(), ignoreCase = true) }
     }
 }
+
+enum class Gender {
+    MASCULINE, FEMININE;
+
+    companion object {
+        fun fromString(value: String): Gender? =
+            entries.firstOrNull { it.name.equals(value.trim(), ignoreCase = true) }
+    }
+}
+
+enum class VerbPattern {
+    I, II, III, IV, V, VI, VII, VIII, IX, X;
+
+    companion object {
+        fun fromString(value: String): VerbPattern? =
+            entries.firstOrNull { it.name.equals(value.trim(), ignoreCase = true) }
+    }
+}
+
+enum class PluralType {
+    SOUND_MASC, SOUND_FEM, BROKEN, PAUCAL, COLLECTIVE, OTHER;
+
+    companion object {
+        fun fromString(value: String): PluralType? =
+            entries.firstOrNull { it.name.equals(value.trim(), ignoreCase = true) }
+    }
+}
+
+enum class RelationType {
+    SYNONYM, ANTONYM, RELATED;
+
+    companion object {
+        fun fromString(value: String): RelationType? =
+            entries.firstOrNull { it.name.equals(value.trim(), ignoreCase = true) }
+    }
+}

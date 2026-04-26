@@ -85,6 +85,7 @@ class WordService(
             pronunciationUrl = req.pronunciationUrl,
             rootId = rootId,
             derivedFromId = derivedFromId,
+            notes = null,
             createdAt = now,
             updatedAt = now,
         )

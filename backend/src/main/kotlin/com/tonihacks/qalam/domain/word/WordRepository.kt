@@ -38,4 +38,18 @@ interface WordRepository {
     suspend fun updateProgress(progress: WordProgress): Either<DomainError, Unit>
 
     suspend fun updateMasteryLevel(wordId: WordId, level: MasteryLevel): Either<DomainError, Unit>
+
+    // Morphology
+    suspend fun findMorphology(wordId: WordId): Either<DomainError, WordMorphology?>
+    suspend fun upsertMorphology(morphology: WordMorphology): Either<DomainError, WordMorphology>
+
+    // Plurals
+    suspend fun findPlurals(wordId: WordId): Either<DomainError, List<WordPlural>>
+    suspend fun addPlural(plural: WordPlural): Either<DomainError, WordPlural>
+    suspend fun deletePlural(wordId: WordId, pluralId: WordPluralId): Either<DomainError, Unit>
+
+    // Relations (query both directions)
+    suspend fun findRelations(wordId: WordId): Either<DomainError, List<WordRelation>>
+    suspend fun addRelation(relation: WordRelation): Either<DomainError, WordRelation>
+    suspend fun deleteRelation(wordId: WordId, relatedWordId: WordId, type: RelationType): Either<DomainError, Unit>
 }

@@ -88,62 +88,8 @@ class ExposedTrainingRepository : TrainingRepository {
                     .toList()
 
                 val wordUuids = wordRows.map { it[TrainingSessionWordsTable.wordId] }
-
-                // Batch-fetch examples (max 2 per word, ordered by createdAt)
-                val examplesByWordId: Map<kotlin.uuid.Uuid, List<TrainingWordExample>> =
-                    if (wordUuids.isEmpty()) emptyMap()
-                    else WordExamplesTable
-                        .selectAll()
-                        .where { WordExamplesTable.wordId inList wordUuids }
-                        .orderBy(WordExamplesTable.createdAt)
-                        .groupBy { it[WordExamplesTable.wordId] }
-                        .mapValues { (_, rows) ->
-                            rows.take(2).map { row ->
-                                TrainingWordExample(
-                                    arabic          = row[WordExamplesTable.arabic],
-                                    transliteration = row[WordExamplesTable.transliteration],
-                                    translation     = row[WordExamplesTable.translation],
-                                )
-                            }
-                        }
-
-                // Batch-fetch relations — two queries to avoid a self-join alias on WordsTable
-                val relationsByWordId: Map<kotlin.uuid.Uuid, List<TrainingWordRelation>> =
-                    if (wordUuids.isEmpty()) emptyMap()
-                    else {
-                        val allRelationRows = WordRelationsTable
-                            .selectAll()
-                            .where { WordRelationsTable.wordId inList wordUuids }
-                            .toList()
-
-                        val relatedWordIds = allRelationRows
-                            .map { it[WordRelationsTable.relatedWordId] }
-                            .distinct()
-
-                        val relatedWordsMap: Map<kotlin.uuid.Uuid, Pair<String, String?>> =
-                            if (relatedWordIds.isEmpty()) emptyMap()
-                            else WordsTable
-                                .selectAll()
-                                .where { WordsTable.id inList relatedWordIds }
-                                .associate { row ->
-                                    row[WordsTable.id] to (row[WordsTable.arabicText] to row[WordsTable.translation])
-                                }
-
-                        allRelationRows
-                            .groupBy { it[WordRelationsTable.wordId] }
-                            .mapValues { (_, rows) ->
-                                rows.mapNotNull { row ->
-                                    val rwId = row[WordRelationsTable.relatedWordId]
-                                    val (arabic, translation) = relatedWordsMap[rwId] ?: return@mapNotNull null
-                                    TrainingWordRelation(
-                                        relatedWordId          = rwId.toJavaUuid().toString(),
-                                        relatedWordArabic      = arabic,
-                                        relatedWordTranslation = translation,
-                                        relationType           = row[WordRelationsTable.relationType],
-                                    )
-                                }
-                            }
-                    }
+                val examplesByWordId  = fetchExamplesByWordId(wordUuids)
+                val relationsByWordId = fetchRelationsByWordId(wordUuids)
 
                 val words = wordRows.map { row ->
                     val wid = row[TrainingSessionWordsTable.wordId]
@@ -240,6 +186,63 @@ class ExposedTrainingRepository : TrainingRepository {
                     .right()
             } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
                 DomainError.DatabaseError.left()
+            }
+        }
+}
+
+// ── Batch-fetch helpers (run within existing transaction) ───────────────────
+
+private fun fetchExamplesByWordId(
+    wordUuids: List<kotlin.uuid.Uuid>,
+): Map<kotlin.uuid.Uuid, List<TrainingWordExample>> {
+    if (wordUuids.isEmpty()) return emptyMap()
+    return WordExamplesTable
+        .selectAll()
+        .where { WordExamplesTable.wordId inList wordUuids }
+        .orderBy(WordExamplesTable.createdAt)
+        .groupBy { it[WordExamplesTable.wordId] }
+        .mapValues { (_, rows) ->
+            rows.take(2).map { row ->
+                TrainingWordExample(
+                    arabic          = row[WordExamplesTable.arabic],
+                    transliteration = row[WordExamplesTable.transliteration],
+                    translation     = row[WordExamplesTable.translation],
+                )
+            }
+        }
+}
+
+private fun fetchRelationsByWordId(
+    wordUuids: List<kotlin.uuid.Uuid>,
+): Map<kotlin.uuid.Uuid, List<TrainingWordRelation>> {
+    if (wordUuids.isEmpty()) return emptyMap()
+
+    val allRelationRows = WordRelationsTable
+        .selectAll()
+        .where { WordRelationsTable.wordId inList wordUuids }
+        .toList()
+
+    val relatedWordIds = allRelationRows.map { it[WordRelationsTable.relatedWordId] }.distinct()
+
+    val relatedWordsMap: Map<kotlin.uuid.Uuid, Pair<String, String?>> =
+        if (relatedWordIds.isEmpty()) emptyMap()
+        else WordsTable
+            .selectAll()
+            .where { WordsTable.id inList relatedWordIds }
+            .associate { row -> row[WordsTable.id] to (row[WordsTable.arabicText] to row[WordsTable.translation]) }
+
+    return allRelationRows
+        .groupBy { it[WordRelationsTable.wordId] }
+        .mapValues { (_, rows) ->
+            rows.mapNotNull { row ->
+                val rwId = row[WordRelationsTable.relatedWordId]
+                val (arabic, translation) = relatedWordsMap[rwId] ?: return@mapNotNull null
+                TrainingWordRelation(
+                    relatedWordId          = rwId.toJavaUuid().toString(),
+                    relatedWordArabic      = arabic,
+                    relatedWordTranslation = translation,
+                    relationType           = row[WordRelationsTable.relationType],
+                )
             }
         }
 }

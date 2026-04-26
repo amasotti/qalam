@@ -2,9 +2,9 @@
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import type { UpdateWordRequest } from '$lib/api/types.gen';
+import AiInsightPanel from '$lib/components/ai/AiInsightPanel.svelte';
 import AnnotationBadge from '$lib/components/annotations/AnnotationBadge.svelte';
 import AiExamples from '$lib/components/words/AiExamples.svelte';
-import AiInsightPanel from '$lib/components/ai/AiInsightPanel.svelte';
 import DictionaryLinks from '$lib/components/words/DictionaryLinks.svelte';
 import WordForm from '$lib/components/words/WordForm.svelte';
 import { useRoot } from '$lib/stores/roots';

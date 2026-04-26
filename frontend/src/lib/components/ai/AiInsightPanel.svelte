@@ -1,7 +1,7 @@
 <script lang="ts">
 import { marked } from 'marked';
-import { useInsight } from '$lib/stores/insight';
 import type { InsightRequest } from '$lib/api/types.gen';
+import { useInsight } from '$lib/stores/insight';
 
 interface Props {
 	entityType: 'WORD' | 'SENTENCE';

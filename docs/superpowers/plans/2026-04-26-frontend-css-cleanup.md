@@ -350,7 +350,16 @@ Keep all other rules unchanged.
 
 Reload the session summary page. Stat cards should now have a visible muted background. Promotion items should show a lighter muted background.
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 4: Run checks**
+
+```bash
+just lint-frontend
+just check-frontend
+```
+
+Expected: zero errors, zero warnings.
+
+- [ ] **Step 5: Commit**
 
 ```bash
 git add frontend/src/lib/components/training/SessionSummary.svelte

@@ -12,7 +12,8 @@
       "Bash(curl:*)",
       "Bash(jar tf *)",
       "Bash(jar xf *)",
-      "Bash(just lint-frontend *)"
+      "Bash(just lint-frontend *)",
+      "Bash(just check-frontend *)"
     ],
     "deny": [
       "Bash(scp *)",

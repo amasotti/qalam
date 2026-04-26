@@ -66,7 +66,7 @@ function handleDelete(pluralId: string) {
 		<div class="plurals-chips">
 			{#each plurals.data ?? [] as p (p.id)}
 				<div class="plural-chip">
-					<span class="plural-chip-ar" dir="rtl">{p.pluralForm}</span>
+					<span class="plural-chip-ar arabic-text" dir="rtl">{p.pluralForm}</span>
 					<span class="plural-chip-type">({typeLabels[p.pluralType]})</span>
 					<button
 						class="chip-delete"
@@ -89,7 +89,8 @@ function handleDelete(pluralId: string) {
 		{#if showForm}
 			<div class="plural-add-form">
 				<input
-					class="example-input-ar"
+					class="form-input input-ar"
+					style="width:10rem"
 					type="text"
 					dir="rtl"
 					placeholder="جمع…"
@@ -97,7 +98,7 @@ function handleDelete(pluralId: string) {
 					disabled={addPlural.isPending}
 				/>
 				<select
-					class="morph-select"
+					class="select-compact"
 					bind:value={newType}
 					disabled={addPlural.isPending}
 				>
@@ -118,7 +119,7 @@ function handleDelete(pluralId: string) {
 					disabled={addPlural.isPending}
 				>Cancel</button>
 				{#if addError}
-					<span style="font-size:0.75rem;color:var(--coral);">{addError}</span>
+					<span class="form-error-msg">{addError}</span>
 				{/if}
 			</div>
 		{/if}
@@ -132,7 +133,8 @@ function handleDelete(pluralId: string) {
 		{#if showForm}
 			<div class="plural-add-form" style="margin-top:0.5rem;">
 				<input
-					class="example-input-ar"
+					class="form-input input-ar"
+					style="width:10rem"
 					type="text"
 					dir="rtl"
 					placeholder="جمع…"
@@ -140,7 +142,7 @@ function handleDelete(pluralId: string) {
 					disabled={addPlural.isPending}
 				/>
 				<select
-					class="morph-select"
+					class="select-compact"
 					bind:value={newType}
 					disabled={addPlural.isPending}
 				>
@@ -161,7 +163,7 @@ function handleDelete(pluralId: string) {
 					disabled={addPlural.isPending}
 				>Cancel</button>
 				{#if addError}
-					<span style="font-size:0.75rem;color:var(--coral);">{addError}</span>
+					<span class="form-error-msg">{addError}</span>
 				{/if}
 			</div>
 		{/if}
@@ -193,7 +195,6 @@ function handleDelete(pluralId: string) {
 }
 
 .plural-chip-ar {
-	font-family: 'Noto Naskh Arabic', serif;
 	font-size: 1rem;
 	line-height: 1.4;
 }
@@ -203,46 +204,10 @@ function handleDelete(pluralId: string) {
 	font-size: 0.75rem;
 }
 
-.chip-delete {
-	background: none;
-	border: none;
-	cursor: pointer;
-	color: var(--coral, #e53e3e);
-	font-size: 0.9rem;
-	line-height: 1;
-	padding: 0 0.125rem;
-}
-
-.chip-delete:disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
-}
-
 .plural-add-form {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
 	flex-wrap: wrap;
-}
-
-.example-input-ar {
-	font-family: 'Noto Naskh Arabic', serif;
-	font-size: 1rem;
-	padding: 0.25rem 0.5rem;
-	border: 1px solid var(--border, #e2e8f0);
-	border-radius: 6px;
-	background: var(--white, #fff);
-	direction: rtl;
-	width: 10rem;
-}
-
-.morph-select {
-	font-size: 0.8rem;
-	padding: 0.25rem 0.5rem;
-	border: 1px solid var(--border, #e2e8f0);
-	border-radius: 6px;
-	background: var(--white, #fff);
-	color: var(--ink, #1a1a1a);
-	height: 2rem;
 }
 </style>

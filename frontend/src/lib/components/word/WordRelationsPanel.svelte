@@ -51,7 +51,7 @@ async function handleAdd() {
 
 {#snippet relationChip(rel: WordRelationResponse, onDelete: () => void)}
 	<a class="relation-chip" href="/words/{rel.relatedWordId}">
-		<span class="relation-chip-ar" dir="rtl">{rel.relatedWordArabic}</span>
+		<span class="relation-chip-ar arabic-text" dir="rtl">{rel.relatedWordArabic}</span>
 		{#if rel.relatedWordTranslation}
 			<span class="relation-chip-tr">{rel.relatedWordTranslation}</span>
 		{/if}
@@ -73,7 +73,7 @@ async function handleAdd() {
 			/>
 		</div>
 		<select
-			class="morph-select"
+			class="select-compact"
 			bind:value={newType}
 			disabled={addRelation.isPending}
 		>
@@ -94,7 +94,7 @@ async function handleAdd() {
 			disabled={addRelation.isPending}
 		>Cancel</button>
 		{#if addError}
-			<span style="font-size:0.75rem;color:var(--coral);">{addError}</span>
+			<span class="form-error-msg">{addError}</span>
 		{/if}
 	</div>
 {/snippet}
@@ -104,7 +104,7 @@ async function handleAdd() {
 		<div class="relations-panel">
 			{#if synonyms.length > 0}
 				<div class="relations-group">
-					<span class="relations-group-label">Synonyms</span>
+					<span class="sect-label">Synonyms</span>
 					<div class="relations-chips">
 						{#each synonyms as rel (rel.relatedWordId)}
 							{@render relationChip(rel, () => handleDelete(rel.relatedWordId, 'SYNONYM'))}
@@ -115,7 +115,7 @@ async function handleAdd() {
 
 			{#if antonyms.length > 0}
 				<div class="relations-group">
-					<span class="relations-group-label">Antonyms</span>
+					<span class="sect-label">Antonyms</span>
 					<div class="relations-chips">
 						{#each antonyms as rel (rel.relatedWordId)}
 							{@render relationChip(rel, () => handleDelete(rel.relatedWordId, 'ANTONYM'))}
@@ -126,7 +126,7 @@ async function handleAdd() {
 
 			{#if related.length > 0}
 				<div class="relations-group">
-					<span class="relations-group-label">Related</span>
+					<span class="sect-label">Related</span>
 					<div class="relations-chips">
 						{#each related as rel (rel.relatedWordId)}
 							{@render relationChip(rel, () => handleDelete(rel.relatedWordId, 'RELATED'))}
@@ -175,14 +175,6 @@ async function handleAdd() {
 	gap: 0.375rem;
 }
 
-.relations-group-label {
-	font-size: 0.75rem;
-	font-weight: 600;
-	text-transform: uppercase;
-	letter-spacing: 0.05em;
-	color: var(--ink-ghost, #a0aec0);
-}
-
 .relations-chips {
 	display: flex;
 	flex-wrap: wrap;
@@ -207,7 +199,6 @@ async function handleAdd() {
 }
 
 .relation-chip-ar {
-	font-family: 'Noto Naskh Arabic', serif;
 	font-size: 1rem;
 	line-height: 1.4;
 }
@@ -215,21 +206,6 @@ async function handleAdd() {
 .relation-chip-tr {
 	font-size: 0.75rem;
 	color: var(--ink-mid, #4a5568);
-}
-
-.chip-delete {
-	background: none;
-	border: none;
-	cursor: pointer;
-	color: var(--coral, #e53e3e);
-	font-size: 0.9rem;
-	line-height: 1;
-	padding: 0 0.125rem;
-}
-
-.chip-delete:disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
 }
 
 .relation-add-form {
@@ -244,13 +220,4 @@ async function handleAdd() {
 	min-width: 14rem;
 }
 
-.morph-select {
-	font-size: 0.8rem;
-	padding: 0.25rem 0.5rem;
-	border: 1px solid var(--border, #e2e8f0);
-	border-radius: 6px;
-	background: var(--white, #fff);
-	color: var(--ink, #1a1a1a);
-	height: 2rem;
-}
 </style>

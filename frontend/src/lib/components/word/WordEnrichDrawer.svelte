@@ -142,7 +142,7 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 	></div>
 
 	<!-- Drawer panel -->
-	<div class="drawer-panel" role="dialog" aria-label="AI Enrichment suggestions">
+	<div class="drawer" style="width:26rem;max-width:95vw" role="dialog" aria-label="AI Enrichment suggestions">
 		<div class="drawer-header">
 			<h2 class="drawer-title">✦ AI Enrichment</h2>
 			<button class="drawer-close" onclick={onClose} aria-label="Close">×</button>
@@ -174,7 +174,7 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 			{:else if suggestion}
 				<!-- Notes -->
 				{#if suggestion.notes}
-					<div class="drawer-field">
+					<div class="form-field">
 						<label class="drawer-field-label">
 							<input type="checkbox" bind:checked={acceptNotes} />
 							Notes
@@ -190,7 +190,7 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 
 				<!-- Gender -->
 				{#if suggestion.gender}
-					<div class="drawer-field">
+					<div class="form-field">
 						<label class="drawer-field-label">
 							<input type="checkbox" bind:checked={acceptGender} />
 							Gender: <strong>{suggestion.gender === 'MASCULINE' ? 'Masculine' : 'Feminine'}</strong>
@@ -200,7 +200,7 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 
 				<!-- Verb pattern -->
 				{#if suggestion.verbPattern}
-					<div class="drawer-field">
+					<div class="form-field">
 						<label class="drawer-field-label">
 							<input type="checkbox" bind:checked={acceptVerbPattern} />
 							Verb form: <strong>Form {suggestion.verbPattern}</strong>
@@ -210,14 +210,14 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 
 				<!-- Plurals -->
 				{#if suggestion.plurals.length > 0}
-					<div class="drawer-field">
+					<div class="form-field">
 						<div class="drawer-field-label" style="font-weight:600;margin-bottom:0.5rem;">
 							Plurals
 						</div>
 						{#each suggestion.plurals as p, i}
 							<label class="drawer-plural-row">
 								<input type="checkbox" bind:checked={acceptedPlurals[i]} />
-								<span class="drawer-plural-ar" dir="rtl">{p.pluralForm}</span>
+								<span class="arabic-text" dir="rtl">{p.pluralForm}</span>
 								<span class="drawer-plural-type">({pluralTypeLabels[p.pluralType]})</span>
 							</label>
 						{/each}
@@ -226,13 +226,13 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 
 				<!-- Relations — read-only display -->
 				{#if suggestion.relations.length > 0}
-					<div class="drawer-field">
+					<div class="form-field">
 						<div class="drawer-field-label" style="font-weight:600;margin-bottom:0.5rem;">
 							Relations (read-only — link manually via word UUID)
 						</div>
 						{#each suggestion.relations as rel}
 							<div class="drawer-relation-row">
-								<span class="drawer-relation-ar" dir="rtl">{rel.arabicText}</span>
+								<span class="arabic-text" dir="rtl">{rel.arabicText}</span>
 								<span class="drawer-relation-type">{rel.relationType.toLowerCase()}</span>
 							</div>
 						{/each}
@@ -240,7 +240,7 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 				{/if}
 
 				{#if saveError}
-					<p style="color:var(--coral);font-size:0.8rem;margin-top:0.5rem;">{saveError}</p>
+					<p class="form-error-msg">{saveError}</p>
 				{/if}
 
 				<div class="drawer-actions">
@@ -257,63 +257,10 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 {/if}
 
 <style>
-.drawer-backdrop {
-	position: fixed;
-	inset: 0;
-	background: rgba(0, 0, 0, 0.35);
-	z-index: 40;
-}
-
-.drawer-panel {
-	position: fixed;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	width: 26rem;
-	max-width: 95vw;
-	background: var(--white, #fff);
-	border-left: 1px solid var(--border, #e2e8f0);
-	z-index: 50;
-	display: flex;
-	flex-direction: column;
-	box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
-}
-
-.drawer-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 1rem 1.25rem;
-	border-bottom: 1px solid var(--border, #e2e8f0);
-}
-
 .drawer-title {
 	font-size: 1rem;
 	font-weight: 700;
 	margin: 0;
-}
-
-.drawer-close {
-	background: none;
-	border: none;
-	font-size: 1.5rem;
-	line-height: 1;
-	cursor: pointer;
-	color: var(--ink-ghost, #a0aec0);
-	padding: 0 0.25rem;
-}
-
-.drawer-close:hover {
-	color: var(--ink, #1a1a1a);
-}
-
-.drawer-body {
-	flex: 1;
-	overflow-y: auto;
-	padding: 1.25rem;
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
 }
 
 .drawer-loading {
@@ -323,19 +270,6 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 	gap: 0.75rem;
 	padding: 2rem 0;
 	color: var(--ink-ghost, #a0aec0);
-}
-
-.spinner {
-	width: 1.75rem;
-	height: 1.75rem;
-	border: 3px solid var(--border, #e2e8f0);
-	border-top-color: var(--olive, #5a7a3a);
-	border-radius: 50%;
-	animation: spin 0.7s linear infinite;
-}
-
-@keyframes spin {
-	to { transform: rotate(360deg); }
 }
 
 .drawer-notice,
@@ -358,12 +292,6 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 .drawer-success {
 	background: #f0fff4;
 	color: #276749;
-}
-
-.drawer-field {
-	display: flex;
-	flex-direction: column;
-	gap: 0.375rem;
 }
 
 .drawer-field-label {
@@ -399,11 +327,6 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 	cursor: pointer;
 }
 
-.drawer-plural-ar {
-	font-family: 'Noto Naskh Arabic', serif;
-	font-size: 1rem;
-}
-
 .drawer-plural-type {
 	color: var(--ink-ghost, #a0aec0);
 	font-size: 0.75rem;
@@ -415,11 +338,6 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 	gap: 0.5rem;
 	padding: 0.25rem 0;
 	font-size: 0.875rem;
-}
-
-.drawer-relation-ar {
-	font-family: 'Noto Naskh Arabic', serif;
-	font-size: 1rem;
 }
 
 .drawer-relation-type {

@@ -85,7 +85,7 @@ let accuracyPercent = $derived(Math.round(summary.accuracy * 100));
 		gap: 0.5rem;
 		padding: 1rem;
 		border-radius: 0.5rem;
-		background-color: var(--color-bg-secondary);
+		background-color: hsl(var(--muted));
 	}
 
 	.stat-value {
@@ -107,7 +107,7 @@ let accuracyPercent = $derived(Math.round(summary.accuracy * 100));
 
 	.stat-label {
 		font-size: 0.875rem;
-		color: var(--color-text-secondary);
+		color: hsl(var(--muted-foreground));
 		text-align: center;
 	}
 
@@ -117,7 +117,7 @@ let accuracyPercent = $derived(Math.round(summary.accuracy * 100));
 		gap: 1rem;
 		padding: 1rem;
 		border-radius: 0.5rem;
-		background-color: var(--color-bg-secondary);
+		background-color: hsl(var(--muted));
 	}
 
 	.promotions-heading {
@@ -136,7 +136,7 @@ let accuracyPercent = $derived(Math.round(summary.accuracy * 100));
 
 	.promotion-item {
 		padding: 0.75rem;
-		background-color: var(--color-bg-tertiary);
+		background-color: hsl(var(--muted) / 0.5);
 		border-radius: 0.375rem;
 		font-size: 0.95rem;
 	}

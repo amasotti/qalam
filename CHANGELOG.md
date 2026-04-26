@@ -2,7 +2,24 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
-## [unreleased]
+## [0.6.1] - 2026-04-26
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/358b48810c6077318bc16e0371371b47d1f752f4..a43a241bfbc070752d0f1a49b3efbb8f5b64b871)
+### 🚜 Refactor
+
+
+- Reset doppler main project ([5a5f2d9](https://github.com/amasotti/qalam/commit/5a5f2d97f0edab571bb1700f44123b7ba25af25d))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Update changelog.md ([dee3915](https://github.com/amasotti/qalam/commit/dee391548a30cb5c236e89c89ba0aab2459616a0))
+
+- *(ci)* Add GitLab CI/CD configuration ([81a3910](https://github.com/amasotti/qalam/commit/81a3910c08a12e972009c1195f07099104d803f9))
+
+- *(ci)* Add all-unnamed flag ([968003d](https://github.com/amasotti/qalam/commit/968003d0109048cd80d3cb5bee35d0ce6f8b6ec7))
+
+## [0.6.0] - 2026-04-26
 
 [Compare with last version](https://github.com/amasotti/qalam/compare/cbfec3d16c98cf620d875dd8174bc07eb19c0705..358b48810c6077318bc16e0371371b47d1f752f4)
 ### 🚀 Features

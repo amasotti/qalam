@@ -199,7 +199,7 @@ Sentence: "$arabicText""""
     // TODO Task 9: implement full prompt + JSON parsing
     suspend fun enrichWord(word: Word): Either<DomainError, WordEnrichmentSuggestion> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
-        return DomainError.InvalidInput("enrichWord not yet implemented — coming in Task 9").left()
+        return DomainError.AiNotConfigured.left() // TODO Task 9: replace with real prompt + JSON parsing
     }
 
     suspend fun generateInsight(context: InsightContext): Either<DomainError, String> {

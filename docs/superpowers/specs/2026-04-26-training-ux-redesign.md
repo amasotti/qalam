@@ -31,7 +31,7 @@ Card is contained (max ~560px wide, not full screen height). Progress bar + coun
 **After reveal:**
 - Question row (compact): arabic + transliteration + root chip, pinned
 - Answer: translation, large and bold
-- Examples (≤ 3): arabic sentence + transliteration + translation
+- Examples (≤ 2): arabic sentence + transliteration + translation
 - Notes: amber-tinted block, shown only if non-empty
 - Related words: chips showing arabic + translation, labelled by relation type (SYNONYM / ANTONYM / RELATED)
 - Action buttons: Correct / Wrong / Skip with keyboard hints
@@ -62,7 +62,7 @@ Add optional fields to be populated from joins at session-load time (no extra AP
 ```
 root?         String    resolved from roots table via word.rootId
 notes?        String    word.notes
-examples[]    { arabic, transliteration?, translation? }   up to 3, from word_examples
+examples[]    { arabic, transliteration?, translation? }   up to 2, from word_examples
 relations[]   { relatedWordId, relatedWordArabic, relatedWordTranslation?, relationType }
 ```
 

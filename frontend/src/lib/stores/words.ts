@@ -1,27 +1,38 @@
 import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query';
 import {
 	addDictionaryLink,
+	addWordPlural,
+	addWordRelation,
 	analyzeWord,
 	autocompleteWords,
 	createWord,
 	deleteDictionaryLink,
 	deleteWord,
 	deleteWordExample,
+	deleteWordPlural,
+	deleteWordRelation,
+	enrichWord,
 	generateWordExamples,
 	getAnnotationsForWord,
 	getWordByArabic,
 	getWordById,
+	getWordMorphology,
+	getWordPlurals,
+	getWordRelations,
 	listDictionaryLinks,
 	listWordExamples,
 	listWords,
 	saveWordExample,
 	updateWord,
+	upsertWordMorphology,
 } from '$lib/api/sdk.gen';
 import type {
 	AiExamplesResponse,
 	AnnotationResponse,
 	CreateDictionaryLinkRequest,
 	CreateWordExampleRequest,
+	CreateWordPluralRequest,
+	CreateWordRelationRequest,
 	CreateWordRequest,
 	Dialect,
 	DictionaryLinkResponse,
@@ -29,9 +40,14 @@ import type {
 	MasteryLevel,
 	PartOfSpeech,
 	UpdateWordRequest,
+	UpsertWordMorphologyRequest,
 	WordAnalysisResponse,
 	WordAutocompleteResponse,
+	WordEnrichmentSuggestion,
 	WordExampleResponse,
+	WordMorphologyResponse,
+	WordPluralResponse,
+	WordRelationResponse,
 	WordResponse,
 } from '$lib/api/types.gen';
 
@@ -260,5 +276,134 @@ export function useAnalyzeWord() {
 			if (error) throw error;
 			return requireData(data, 'analyzeWord') as WordAnalysisResponse;
 		},
+	}));
+}
+
+// --- Word enrichment: morphology ---
+
+export function useMorphology(id: () => string | undefined) {
+	return createQuery(() => ({
+		queryKey: ['words', id(), 'morphology'],
+		queryFn: async () => {
+			const resolvedId = id();
+			if (!resolvedId) throw new Error('Missing word id');
+			const { data, error } = await getWordMorphology({ path: { id: resolvedId } });
+			if (error) throw error;
+			return requireData(data, 'getWordMorphology') as WordMorphologyResponse;
+		},
+		enabled: !!id(),
+	}));
+}
+
+export function useUpsertMorphology() {
+	const qc = useQueryClient();
+	return createMutation(() => ({
+		mutationFn: async ({ id, body }: { id: string; body: UpsertWordMorphologyRequest }) => {
+			const { data, error } = await upsertWordMorphology({ path: { id }, body });
+			if (error) throw error;
+			return requireData(data, 'upsertWordMorphology') as WordMorphologyResponse;
+		},
+		onSuccess: (_data: WordMorphologyResponse, variables: { id: string; body: UpsertWordMorphologyRequest }) => {
+			qc.invalidateQueries({ queryKey: ['words', variables.id, 'morphology'] });
+		},
+	}));
+}
+
+// --- Word enrichment: plurals ---
+
+export function useWordPlurals(id: () => string | undefined) {
+	return createQuery(() => ({
+		queryKey: ['words', id(), 'plurals'],
+		queryFn: async () => {
+			const resolvedId = id();
+			if (!resolvedId) throw new Error('Missing word id');
+			const { data, error } = await getWordPlurals({ path: { id: resolvedId } });
+			if (error) throw error;
+			return requireData(data, 'getWordPlurals') as WordPluralResponse[];
+		},
+		enabled: !!id(),
+	}));
+}
+
+export function useAddWordPlural() {
+	const qc = useQueryClient();
+	return createMutation(() => ({
+		mutationFn: async ({ id, body }: { id: string; body: CreateWordPluralRequest }) => {
+			const { data, error } = await addWordPlural({ path: { id }, body });
+			if (error) throw error;
+			return requireData(data, 'addWordPlural') as WordPluralResponse;
+		},
+		onSuccess: (_data: WordPluralResponse, variables: { id: string; body: CreateWordPluralRequest }) => {
+			qc.invalidateQueries({ queryKey: ['words', variables.id, 'plurals'] });
+		},
+	}));
+}
+
+export function useDeleteWordPlural() {
+	const qc = useQueryClient();
+	return createMutation(() => ({
+		mutationFn: async ({ id, pluralId }: { id: string; pluralId: string }) => {
+			const { error } = await deleteWordPlural({ path: { id, pluralId } });
+			if (error) throw error;
+		},
+		onSuccess: (_data: void, variables: { id: string; pluralId: string }) => {
+			qc.invalidateQueries({ queryKey: ['words', variables.id, 'plurals'] });
+		},
+	}));
+}
+
+// --- Word enrichment: relations ---
+
+export function useWordRelations(id: () => string | undefined) {
+	return createQuery(() => ({
+		queryKey: ['words', id(), 'relations'],
+		queryFn: async () => {
+			const resolvedId = id();
+			if (!resolvedId) throw new Error('Missing word id');
+			const { data, error } = await getWordRelations({ path: { id: resolvedId } });
+			if (error) throw error;
+			return requireData(data, 'getWordRelations') as WordRelationResponse[];
+		},
+		enabled: !!id(),
+	}));
+}
+
+export function useAddWordRelation() {
+	const qc = useQueryClient();
+	return createMutation(() => ({
+		mutationFn: async ({ id, body }: { id: string; body: CreateWordRelationRequest }) => {
+			const { data, error } = await addWordRelation({ path: { id }, body });
+			if (error) throw error;
+			return requireData(data, 'addWordRelation') as WordRelationResponse;
+		},
+		onSuccess: (_data: WordRelationResponse, variables: { id: string; body: CreateWordRelationRequest }) => {
+			qc.invalidateQueries({ queryKey: ['words', variables.id, 'relations'] });
+		},
+	}));
+}
+
+export function useDeleteWordRelation() {
+	const qc = useQueryClient();
+	return createMutation(() => ({
+		mutationFn: async ({ id, relatedWordId, type }: { id: string; relatedWordId: string; type: 'SYNONYM' | 'ANTONYM' | 'RELATED' }) => {
+			const { error } = await deleteWordRelation({ path: { id, relatedWordId, type } });
+			if (error) throw error;
+		},
+		onSuccess: (_data: void, variables: { id: string; relatedWordId: string; type: 'SYNONYM' | 'ANTONYM' | 'RELATED' }) => {
+			qc.invalidateQueries({ queryKey: ['words', variables.id, 'relations'] });
+		},
+	}));
+}
+
+// --- Word enrichment: AI suggestions ---
+
+export function useEnrichWord() {
+	return createMutation(() => ({
+		mutationFn: async (id: string): Promise<WordEnrichmentSuggestion> => {
+			const { data, error } = await enrichWord({ path: { id } });
+			if (error) throw error;
+			return requireData(data, 'enrichWord') as WordEnrichmentSuggestion;
+		},
+		// No cache invalidation — ephemeral preview only
 	}));
 }

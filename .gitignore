@@ -21,3 +21,4 @@ backups/*.dump
 backups/*.sql
 backups/*.gz
 .superpowers/
+.worktrees/

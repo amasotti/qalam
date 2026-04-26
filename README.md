@@ -19,13 +19,22 @@
 ---
 
 *Qalam* (قلم — "pen") manages Arabic texts with interlinear glosses, a root-linked vocabulary
-graph, and SRS flashcard drills. The backend is Ktor on Kotlin 2 with Arrow-typed service
-boundaries, Exposed as the SQL DSL, and a clean onion architecture; the frontend is SvelteKit on
-Svelte 5 runes with Tailwind v4. Built for one user — the developer — but open for anyone to explore, fork, or steal ideas from.
+graph, and SRS flashcard drills. 
+
+**Why I built it**: I love to learn languages and I am currently focused on Arabic, but all available (few) resources
+were missing something: some had good vocabulary management, but not in-depth enough, other were missing the interlinear glosses, 
+or the ability to link words to their roots / related words, or a built-in SRS drill system. 
+So I built my own tool that has all of these features in one place, tailored to my learning style and goals.
+
+**On the tech-stack**: The backend is Ktor on Kotlin 2 with Arrow-typed service boundaries, Exposed as the SQL DSL, and a clean onion architecture, which 
+I personally consider one of the best approaches for structuring non-trivial applications. The database is PostgreSQL with Flyway for migrations and the `pg_trgm` and `unaccent` extensions to power fuzzy search.
+The frontend is SvelteKit on Svelte 5 runes with Tailwind v4. 
+
+Built for one user — the developer — but open for anyone to explore, fork, or steal ideas from.
 
 | Layer    | Stack                                                         |
 |----------|---------------------------------------------------------------|
-| Backend  | Kotlin 2.3 · Ktor 3.x · Exposed · Arrow · Koin               |
+| Backend  | Kotlin 2.3 · Ktor 3.x · Exposed · Arrow · Koin                |
 | Frontend | SvelteKit · Svelte 5 runes · Tailwind v4 · shadcn-svelte      |
 | Database | PostgreSQL 17 · Flyway · `pg_trgm` · `unaccent`               |
 | AI       | OpenRouter — optional, degrades gracefully to 503 without key |
@@ -62,14 +71,14 @@ Svelte 5 runes with Tailwind v4. Built for one user — the developer — but op
 
 ### نصوص — Texts
 
-Arabic passages with optional transliteration and translation, tagged by dialect (MSA, Tunisian,
+Arabic passages with transliteration and translation, tagged by dialect (MSA, Tunisian,
 Egyptian, Levantine, and more) and difficulty. A plain annotated view and a sentence-level
 interlinear gloss view are properties of the same text entity — not separate content types. Select
 any span to open an annotation form; annotations link back to vocabulary entries.
 
 ### جذور — Roots
 
-Arabic's trilateral root system is a first-class citizen. Each word links to its root; the root
+Arabic's root system is a first-class citizen. Each word links to its root; the root
 page shows the derivation graph and an AI-generated semantic note covering the root's core meaning,
 its derived forms, and how meaning shifts across them. All graph queries are depth-limited to
 prevent runaway traversal on the self-referential `derivedFrom` relation.
@@ -120,7 +129,7 @@ doppler setup    # project: qalam, config: dev
 **Run everything:**
 
 ```bash
-just run         # Postgres + backend + frontend
+just up         # Postgres + backend + frontend
 ```
 
 **Run in parts:**
@@ -132,6 +141,28 @@ just frontend    # SvelteKit dev server (requires backend)
 just test        # backend tests (Testcontainers — no external DB needed)
 just stop-db     # shut down Postgres
 ```
+
+### Maintenance
+
+**Rebuild one service:**
+
+```bash
+just rebuild <service>   # service: db | backend | frontend
+```
+
+**Check, test, lint**:
+
+```bash
+just check       # kotlin check task (gradle)
+just test        # backend tests (Testcontainers — no external DB needed)
+
+just lint-openapi   # OpenAPI spec validation (backend)
+
+just lint-frontend # Biome linting (frontend)
+just check-frontend # svelte check (frontend)
+just format-frontend # Biome formatting (frontend)
+```
+
 
 ---
 

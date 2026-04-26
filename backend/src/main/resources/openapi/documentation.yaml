@@ -28,6 +28,8 @@ tags:
     description: Flashcard training sessions and statistics
   - name: ai
     description: AI-powered linguistic analysis
+  - name: analytics
+    description: Aggregated statistics across all domains
   - name: system
     description: Health and API introspection
 
@@ -1946,6 +1948,20 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /api/v1/analytics/overview:
+    get:
+      tags:
+        - analytics
+      summary: Get aggregated analytics overview
+      operationId: getAnalyticsOverview
+      responses:
+        '200':
+          description: Analytics overview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsOverviewResponse'
+
 security: []
 
 components:
@@ -3084,3 +3100,92 @@ components:
         insight:
           type: string
           description: Plain-text linguistic analysis from the AI teacher
+
+    AnalyticsOverviewResponse:
+      type: object
+      required: [words, texts, roots, training]
+      properties:
+        words:
+          $ref: '#/components/schemas/WordStats'
+        texts:
+          $ref: '#/components/schemas/TextStats'
+        roots:
+          $ref: '#/components/schemas/RootStats'
+        training:
+          $ref: '#/components/schemas/TrainingAnalytics'
+
+    WordStats:
+      type: object
+      required: [total, byDialect, byDifficulty, byMastery, byPartOfSpeech]
+      properties:
+        total:
+          type: integer
+        byDialect:
+          type: object
+          additionalProperties:
+            type: integer
+        byDifficulty:
+          type: object
+          additionalProperties:
+            type: integer
+        byMastery:
+          type: object
+          additionalProperties:
+            type: integer
+        byPartOfSpeech:
+          type: object
+          additionalProperties:
+            type: integer
+
+    TextStats:
+      type: object
+      required: [total, byDialect, byDifficulty]
+      properties:
+        total:
+          type: integer
+        byDialect:
+          type: object
+          additionalProperties:
+            type: integer
+        byDifficulty:
+          type: object
+          additionalProperties:
+            type: integer
+
+    RootStats:
+      type: object
+      required: [total]
+      properties:
+        total:
+          type: integer
+
+    TrainingAnalytics:
+      type: object
+      required: [totalSessions, completedSessions, averageAccuracy, totalPromotions, recentSessions]
+      properties:
+        totalSessions:
+          type: integer
+        completedSessions:
+          type: integer
+        averageAccuracy:
+          type: number
+          format: double
+        totalPromotions:
+          type: integer
+        recentSessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionAccuracyPoint'
+
+    SessionAccuracyPoint:
+      type: object
+      required: [date, accuracy, mode]
+      properties:
+        date:
+          type: string
+        accuracy:
+          type: number
+          format: double
+        mode:
+          type: string
+

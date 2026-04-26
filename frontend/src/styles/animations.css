@@ -81,3 +81,18 @@
 		animation: fade-in 100ms ease-out both;
 	}
 }
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.spinner {
+	width: 1.75rem;
+	height: 1.75rem;
+	border: 3px solid var(--border);
+	border-top-color: var(--olive);
+	border-radius: 50%;
+	animation: spin 0.7s linear infinite;
+}

@@ -1,4 +1,5 @@
 <script lang="ts">
+import { untrack } from 'svelte';
 import type { AiPluralSuggestion, WordEnrichmentSuggestion } from '$lib/api/types.gen';
 import {
 	useAddWordPlural,
@@ -59,16 +60,19 @@ function runEnrichment() {
 	});
 }
 
-// Fire enrichment automatically when drawer opens
+// Fire enrichment automatically when drawer opens.
+// untrack() prevents enrichMutation's reactive state changes from re-triggering this effect.
 $effect(() => {
 	if (open) {
-		suggestion = null;
-		errorMessage = '';
-		isAiNotConfigured = false;
-		saving = false;
-		saveError = '';
-		saved = false;
-		runEnrichment();
+		untrack(() => {
+			suggestion = null;
+			errorMessage = '';
+			isAiNotConfigured = false;
+			saving = false;
+			saveError = '';
+			saved = false;
+			runEnrichment();
+		});
 	}
 });
 

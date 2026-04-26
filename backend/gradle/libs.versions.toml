@@ -87,5 +87,5 @@ junitPlatform = ["junit-platformEngine", "junit-platformLauncher", "junit-platfo
 kotlinJvm           = { id = "org.jetbrains.kotlin.jvm",                    version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization",    version.ref = "kotlin" }
 detekt              = { id = "dev.detekt",                                   version.ref = "detekt" }
-versions            = { id = "com.github.ben-manes.versions",                version = "0.53.0" }
+versions            = { id = "com.github.ben-manes.versions",                version = "0.54.0" }
 kover                = { id = "org.jetbrains.kotlinx.kover",                 version = "0.9.8" }

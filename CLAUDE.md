@@ -41,6 +41,13 @@ docker-compose.yml  full dev stack (postgres, backend, frontend)
 - Stores hold server state (svelte-query), not UI state
 - UI state (modals, hover, selection) lives in the component that owns it
 
+**Frontend CSS** — global-first, scoped as last resort:
+- Before adding a scoped `<style>` rule, check `frontend/src/styles/` — use the existing global class if one fits
+- Global files by concern: `layout.css` (structure, buttons, chips, drawers), `semantic.css` (mastery, banners), `animations.css`, `tokens.css`
+- Scoped styles are for component-unique structure only (e.g. a specific grid layout not shared anywhere)
+- Two token systems coexist — prefer shadcn tokens (`hsl(var(--primary))` etc.) for new code; old Busatan tokens (`var(--coral)` etc.) only when touching existing Busatan-era classes
+- App is light-mode only — never add `.dark` variants
+
 **API**:
 - All under `/api/v1/`
 - OpenAPI generated at startup → `/api/v1/openapi.json` + `/api/v1/swagger-ui`
@@ -72,8 +79,12 @@ docker-compose.yml  full dev stack (postgres, backend, frontend)
 4. AI features degrade gracefully to 503 `AI_NOT_CONFIGURED` without `OPENROUTER_API_KEY`
 5. No `any` in TypeScript
 6. `just run` starts everything after `doppler login`
-7. the `superpowers` skill MUST be used and loaded in every new session
- 7b. the `agentsys` plugins can be used if helpful
+7. Frontend checks must always pass before committing any `.svelte` or CSS file:
+   - `just lint-frontend` — Biome lint (zero errors, zero warnings)
+   - `just format-frontend` — Biome format (run, stage any auto-fixes, re-lint)
+   - `just check-frontend` — svelte-check type safety (zero errors, zero warnings)
+8. the `superpowers` skill MUST be used and loaded in every new session
+ 8b. the `agentsys` plugins can be used if helpful
 
 ## Working style with Tony
 

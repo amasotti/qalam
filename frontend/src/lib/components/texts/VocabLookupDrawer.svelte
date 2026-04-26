@@ -70,7 +70,7 @@ function handleKeydown(e: KeyboardEvent) {
 
 {#if open}
   <div
-    class="vocab-backdrop"
+    class="drawer-backdrop"
     onclick={onclose}
     onkeydown={(e) => e.key === 'Enter' && onclose()}
     role="button"
@@ -78,8 +78,8 @@ function handleKeydown(e: KeyboardEvent) {
     tabindex="-1"
   ></div>
 
-  <aside class="vocab-drawer" transition:fly={{ x: 360, duration: 220, opacity: 1 }}>
-    <header class="vocab-header">
+  <aside class="drawer" style="width:340px" transition:fly={{ x: 360, duration: 220, opacity: 1 }}>
+    <header class="drawer-header">
       <input
         class="vocab-header-input arabic-text"
         bind:value={searchText}
@@ -87,10 +87,10 @@ function handleKeydown(e: KeyboardEvent) {
         aria-label="Lookup word"
         dir="rtl"
       />
-      <button class="vocab-close" onclick={onclose} aria-label="Close">×</button>
+      <button class="drawer-close" onclick={onclose} aria-label="Close">×</button>
     </header>
 
-    <div class="vocab-body">
+    <div class="drawer-body">
       {#if loading}
         <p class="vocab-state-msg">Looking up…</p>
       {:else if found}
@@ -102,7 +102,7 @@ function handleKeydown(e: KeyboardEvent) {
           {#if found.translation}
             <p class="vocab-card-translation">{found.translation}</p>
           {/if}
-          <span class="vocab-mastery-badge vocab-mastery-{found.masteryLevel.toLowerCase()}">
+          <span class="vocab-mastery-badge mastery-{found.masteryLevel.toLowerCase()}">
             {found.masteryLevel}
           </span>
           <a href="/words/{found.id}" class="vocab-open-link">Open in vocabulary →</a>
@@ -117,7 +117,7 @@ function handleKeydown(e: KeyboardEvent) {
       {/if}
     </div>
 
-    <footer class="vocab-footer">
+    <footer class="drawer-footer">
       <button class="vocab-annotate-btn" onclick={handleAnnotate}>
         {found ? 'View / Add Annotations →' : 'Annotate this token →'}
       </button>
@@ -126,35 +126,6 @@ function handleKeydown(e: KeyboardEvent) {
 {/if}
 
 <style>
-.vocab-backdrop {
-  position: fixed;
-  inset: 0;
-  background: hsl(var(--foreground) / 0.2);
-  z-index: 40;
-  cursor: default;
-}
-.vocab-drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 340px;
-  z-index: 50;
-  background: hsl(var(--background));
-  border-left: 1px solid hsl(var(--border));
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.vocab-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid hsl(var(--border));
-  flex-shrink: 0;
-  gap: 0.5rem;
-}
 .vocab-header-input {
   font-size: 1.5rem;
   line-height: 1.4;
@@ -170,24 +141,6 @@ function handleKeydown(e: KeyboardEvent) {
 }
 .vocab-header-input:focus {
   border-bottom-color: hsl(var(--primary) / 0.5);
-}
-.vocab-close {
-  font-size: 1.25rem;
-  line-height: 1;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: hsl(var(--foreground) / 0.6);
-  padding: 0.25rem;
-  flex-shrink: 0;
-}
-.vocab-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 }
 .vocab-state-msg {
   font-size: 0.875rem;
@@ -209,10 +162,6 @@ function handleKeydown(e: KeyboardEvent) {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
-.vocab-mastery-new      { background: hsl(var(--muted));           color: hsl(var(--muted-foreground)); }
-.vocab-mastery-learning { background: hsl(40 90% 60% / 0.2);       color: hsl(40 70% 40%); }
-.vocab-mastery-known    { background: hsl(210 80% 60% / 0.2);      color: hsl(210 60% 40%); }
-.vocab-mastery-mastered { background: hsl(140 60% 40% / 0.15);     color: hsl(140 50% 32%); }
 .vocab-open-link {
   font-size: 0.8125rem;
   color: hsl(var(--primary));
@@ -220,11 +169,6 @@ function handleKeydown(e: KeyboardEvent) {
   margin-top: 0.25rem;
 }
 .vocab-open-link:hover { text-decoration: underline; }
-.vocab-footer {
-  border-top: 1px solid hsl(var(--border));
-  padding: 0.75rem 1.25rem;
-  flex-shrink: 0;
-}
 .vocab-annotate-btn {
   background: none;
   border: none;

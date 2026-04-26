@@ -50,7 +50,7 @@ async function handleDelete(id: string) {
 	></div>
 
 	<aside
-		class="annotation-drawer"
+		class="drawer"
 		transition:fly={{ x: 360, duration: 220, opacity: 1 }}
 		aria-label="Annotations"
 	>
@@ -98,68 +98,10 @@ async function handleDelete(id: string) {
 {/if}
 
 <style>
-.drawer-backdrop {
-	position: fixed;
-	inset: 0;
-	background: hsl(0 0% 0% / 0.35);
-	z-index: 40;
-	cursor: default;
-}
-
-.annotation-drawer {
-	position: fixed;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	width: 360px;
-	background: hsl(var(--background));
-	border-left: 1px solid hsl(var(--border));
-	z-index: 50;
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-}
-
-.drawer-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 1rem 1.25rem 0.875rem;
-	border-bottom: 1px solid hsl(var(--border) / 0.6);
-	gap: 0.75rem;
-	flex-shrink: 0;
-}
-
 .drawer-anchor {
 	font-size: 1.5rem;
 	line-height: 1.6;
 	color: hsl(var(--foreground));
-}
-
-.drawer-close {
-	flex-shrink: 0;
-	width: 1.75rem;
-	height: 1.75rem;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 0.375rem;
-	background: none;
-	border: none;
-	cursor: pointer;
-	font-size: 1.25rem;
-	line-height: 1;
-	color: hsl(var(--muted-foreground));
-}
-.drawer-close:hover { background: hsl(var(--muted)); color: hsl(var(--foreground)); }
-
-.drawer-body {
-	flex: 1;
-	overflow-y: auto;
-	padding: 0.875rem 1.25rem;
-	display: flex;
-	flex-direction: column;
-	gap: 0;
 }
 
 .drawer-form-section {

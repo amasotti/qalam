@@ -72,6 +72,7 @@ function handleKeydown(e: KeyboardEvent) {
   <div
     class="vocab-backdrop"
     onclick={onclose}
+    onkeydown={(e) => e.key === 'Enter' && onclose()}
     role="button"
     aria-label="Close"
     tabindex="-1"

@@ -15,33 +15,42 @@ function badgesFor(arabicText: string): AnnotationResponse[] {
 }
 </script>
 
+{#snippet cellBody(token: AlignmentTokenResponse, badges: AnnotationResponse[])}
+	<span class="token-ar">{token.arabic}</span>
+	{#if token.transliteration}
+		<span class="token-tr">{token.transliteration}</span>
+	{/if}
+	{#if token.translation}
+		<span class="token-gloss">{token.translation}</span>
+	{/if}
+	{#if badges.length > 0}
+		<div style="display:flex;gap:0.125rem;margin-top:0.125rem;justify-content:center;">
+			{#each badges as ann (ann.id)}
+				<AnnotationBadge type={ann.type} />
+			{/each}
+		</div>
+	{/if}
+{/snippet}
+
 {#if tokens.length > 0}
 	<div class="token-grid-wrap">
 		{#each tokens as token (token.id)}
 			{@const tokenBadges = badgesFor(token.arabic)}
-			<div
-				class="token-cell"
-				class:token-cell-clickable={!!onTokenClick}
-				role={onTokenClick ? 'button' : undefined}
-				tabindex={onTokenClick ? 0 : undefined}
-				onclick={() => onTokenClick?.(token)}
-				onkeydown={(e) => e.key === 'Enter' && onTokenClick?.(token)}
-			>
-				<span class="token-ar">{token.arabic}</span>
-				{#if token.transliteration}
-					<span class="token-tr">{token.transliteration}</span>
-				{/if}
-				{#if token.translation}
-					<span class="token-gloss">{token.translation}</span>
-				{/if}
-				{#if tokenBadges.length > 0}
-					<div style="display:flex;gap:0.125rem;margin-top:0.125rem;justify-content:center;">
-						{#each tokenBadges as ann (ann.id)}
-							<AnnotationBadge type={ann.type} />
-						{/each}
-					</div>
-				{/if}
-			</div>
+			{#if onTokenClick}
+				<div
+					class="token-cell token-cell-clickable"
+					role="button"
+					tabindex="0"
+					onclick={() => onTokenClick(token)}
+					onkeydown={(e) => e.key === 'Enter' && onTokenClick(token)}
+				>
+					{@render cellBody(token, tokenBadges)}
+				</div>
+			{:else}
+				<div class="token-cell">
+					{@render cellBody(token, tokenBadges)}
+				</div>
+			{/if}
 		{/each}
 	</div>
 {/if}

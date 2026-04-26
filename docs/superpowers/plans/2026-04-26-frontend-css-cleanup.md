@@ -8,6 +8,18 @@
 
 **Tech Stack:** SvelteKit 5 (Svelte runes), Tailwind v4, CSS custom properties (two coexisting token systems: old Busatan `var(--coral)` etc., and shadcn `hsl(var(--primary))` etc.). Global styles in `frontend/src/styles/`. Svelte scoped `<style>` blocks get a hash-based attribute selector — they win over unscoped global rules of the same specificity.
 
+**Acceptance criteria:** All three of these must pass clean (zero errors, zero warnings) at the end:
+
+```bash
+just lint-frontend      # biome check src/ — lints JS/TS/Svelte
+just format-frontend    # biome check --write + biome format --write — auto-fixes, run and re-check
+just check-frontend     # svelte-kit sync && svelte-check — TypeScript type safety
+```
+
+**Verification protocol per task:**
+- CSS-only tasks (0–4, 7–9, 15): no type risk; `just lint-frontend` is sufficient.
+- `.svelte`-modifying tasks (5, 6, 10–14, 16): run all three checks after the visual verify step, before committing. If `format-frontend` modifies files, stage the formatting changes and include them in the commit.
+
 ---
 
 ## Phase 1 — Delete Dead CSS
@@ -47,7 +59,16 @@ In `frontend/src/lib/components/texts/StaleTokenBanner.svelte`, delete the block
 }
 ```
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 4: Run checks**
+
+```bash
+just lint-frontend
+just check-frontend
+```
+
+Expected: zero errors, zero warnings.
+
+- [ ] **Step 5: Commit**
 
 ```bash
 git add frontend/src/styles/tokens.css \

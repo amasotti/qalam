@@ -12,6 +12,51 @@
 
 ## Phase 1 — Delete Dead CSS
 
+### Task 0: Remove dark mode remnants (app is light-mode only)
+
+**Files:**
+- Modify: `frontend/src/styles/tokens.css`
+- Modify: `frontend/src/lib/components/texts/StaleTokenBanner.svelte`
+- Note: shadcn UI components (`badge.svelte`, `input.svelte`, `button.svelte`) contain `dark:` Tailwind classes from the original copy-paste. These are **harmless** (`.dark` is never applied to the document) — skip them unless a full shadcn refresh is planned.
+
+- [ ] **Step 1: Verify `.dark` is never applied anywhere**
+
+```bash
+rg -rn 'class.*\bdark\b|classList.*dark|document.*dark|toggleDark\|darkMode' frontend/src/ --type svelte --type ts
+```
+
+Expected: zero results (confirming no JS ever adds `.dark` class to the document).
+
+- [ ] **Step 2: Remove the dead dark variant from tokens.css**
+
+In `frontend/src/styles/tokens.css`, delete line 6:
+
+```css
+@custom-variant dark (&:is(.dark *));
+```
+
+- [ ] **Step 3: Remove the dark override from StaleTokenBanner.svelte**
+
+In `frontend/src/lib/components/texts/StaleTokenBanner.svelte`, delete the block:
+
+```css
+:global(.dark) .stale-banner {
+	background: hsl(38 60% 12%);
+	border-color: hsl(38 60% 28%);
+	color: hsl(38 80% 70%);
+}
+```
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add frontend/src/styles/tokens.css \
+        frontend/src/lib/components/texts/StaleTokenBanner.svelte
+git commit -m "style: remove dark mode variant and dark overrides (app is light-mode only)"
+```
+
+---
+
 ### Task 1: Purge dead animation keyframes and utility classes
 
 **Files:**
@@ -556,15 +601,7 @@ Append to `frontend/src/styles/semantic.css`:
 }
 ```
 
-For dark mode on `.banner-warning`, the `:global(.dark)` wrapper cannot be used in a plain CSS file. Use the plain `.dark .banner-warning` selector:
-
-```css
-.dark .banner-warning {
-	background: hsl(38 60% 12%);
-	border-color: hsl(38 60% 28%);
-	color: hsl(38 80% 70%);
-}
-```
+App is **light mode only** — no dark mode variant needed. Do not add any `.dark` selector.
 
 - [ ] **Step 2: Commit**
 
@@ -777,7 +814,7 @@ The `<style>` block after cleanup:
 
 - [ ] **Step 4: Verify**
 
-Open a text detail that has stale tokens (or temporarily trigger the condition). The amber warning banner should display correctly with dark mode support.
+Open a text detail that has stale tokens (or temporarily trigger the condition). The amber warning banner should display correctly.
 
 - [ ] **Step 5: Commit**
 

@@ -31,6 +31,4 @@ sealed class DomainError {
     /** Training session is already completed and cannot accept more results. */
     data class SessionAlreadyCompleted(val sessionId: String) : DomainError()
 
-    /** Method is defined in the interface but not yet implemented. */
-    data object NotImplemented : DomainError()
 }

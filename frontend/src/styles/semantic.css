@@ -4,38 +4,6 @@
    Never override layout or spacing — colour and text only.
    ============================================================ */
 
-/* ── Mastery levels ── */
-
-.mastery-new {
-	background-color: var(--bg-dark);
-	color: var(--ink-ghost);
-	border-color: var(--border);
-}
-
-.mastery-learning {
-	background-color: var(--m-learning-bg);
-	color: var(--m-learning);
-	border-color: rgba(74, 98, 40, 0.3);
-}
-
-.mastery-familiar {
-	background-color: var(--m-familiar-bg);
-	color: var(--m-familiar);
-	border-color: rgba(192, 72, 48, 0.3);
-}
-
-.mastery-known {
-	background-color: var(--m-known-bg);
-	color: var(--m-known);
-	border-color: rgba(42, 120, 80, 0.3);
-}
-
-.mastery-mastered {
-	background-color: var(--m-mastered-bg);
-	color: var(--m-mastered);
-	border-color: rgba(26, 96, 56, 0.3);
-}
-
 /* ── Buttons ── */
 
 .btn-outline-danger {
@@ -46,68 +14,4 @@
 .btn-outline-danger:hover {
 	background-color: hsl(var(--destructive) / 0.06) !important;
 	border-color: hsl(var(--destructive) / 0.7) !important;
-}
-
-/* ── Difficulty ── */
-
-.difficulty-beginner {
-	background-color: var(--coral-pale);
-	color: var(--coral);
-	border-color: rgba(192, 72, 48, 0.22);
-}
-
-.difficulty-intermediate {
-	background-color: var(--coral-pale);
-	color: var(--coral);
-	border-color: rgba(192, 72, 48, 0.22);
-}
-
-.difficulty-advanced {
-	background-color: var(--coral-pale);
-	color: var(--coral);
-	border-color: rgba(192, 72, 48, 0.22);
-}
-
-/* ── Dialect ── */
-
-.dialect-msa {
-	background-color: var(--cerulean-pale);
-	color: var(--cerulean);
-	border-color: rgba(30, 88, 152, 0.22);
-}
-
-.dialect-tunisian {
-	background-color: var(--cerulean-pale);
-	color: var(--cerulean);
-	border-color: rgba(30, 88, 152, 0.22);
-}
-
-.dialect-moroccan {
-	background-color: var(--cerulean-pale);
-	color: var(--cerulean);
-	border-color: rgba(30, 88, 152, 0.22);
-}
-
-.dialect-egyptian {
-	background-color: var(--cerulean-pale);
-	color: var(--cerulean);
-	border-color: rgba(30, 88, 152, 0.22);
-}
-
-.dialect-gulf {
-	background-color: var(--cerulean-pale);
-	color: var(--cerulean);
-	border-color: rgba(30, 88, 152, 0.22);
-}
-
-.dialect-levantine {
-	background-color: var(--cerulean-pale);
-	color: var(--cerulean);
-	border-color: rgba(30, 88, 152, 0.22);
-}
-
-.dialect-iraqi {
-	background-color: var(--cerulean-pale);
-	color: var(--cerulean);
-	border-color: rgba(30, 88, 152, 0.22);
 }

@@ -874,13 +874,190 @@ git commit -m "refactor: training setup page uses global chip, form-field, toggl
 
 ---
 
+### Task 15: Add `.morph-select`, `.chip-delete`, `.input-ar-compact`, and `.spinner` to globals
+
+**Files:**
+- Modify: `frontend/src/styles/layout.css`
+- Modify: `frontend/src/styles/animations.css`
+
+These four patterns appear in 2–3 of the new `word/` components with **identical definitions** — they must be extracted before the components are updated.
+
+**Context on existing `.form-input.ar-input`:** layout.css already has an Arabic input modifier (uses Amiri at 1.25rem — a large display font). The new components need a compact Arabic input (Noto Naskh at 1rem for inline forms). Add a separate `.input-ar` class rather than reusing `.form-input.ar-input`.
+
+- [ ] **Step 1: Add to layout.css**
+
+Find the btn/chip section in layout.css. After `.btn-full`, add the compact select and chip-delete. After the form input section (around `.form-input.ar-input`), add the compact Arabic input.
+
+```css
+/* Compact inline select — for inline editing strips */
+.select-compact {
+	font-size: 0.8rem;
+	padding: 0.25rem 0.5rem;
+	border: 1px solid var(--border, #e2e8f0);
+	border-radius: 6px;
+	background: var(--white, #fff);
+	color: var(--ink, #1a1a1a);
+	height: 2rem;
+	font-family: inherit;
+}
+
+/* Delete button inside a chip/pill */
+.chip-delete {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--coral);
+	font-size: 0.9rem;
+	line-height: 1;
+	padding: 0 0.125rem;
+}
+.chip-delete:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Compact Arabic text input for inline forms */
+.input-ar {
+	font-family: 'Noto Naskh Arabic', serif;
+	font-size: 1rem;
+	direction: rtl;
+	text-align: right;
+}
+```
+
+Note: The class is `.select-compact` (not `.morph-select`) — name it for its role, not the component it came from.
+
+- [ ] **Step 2: Add spinner to animations.css**
+
+At the end of `frontend/src/styles/animations.css`, add:
+
+```css
+@keyframes spin {
+	to { transform: rotate(360deg); }
+}
+
+.spinner {
+	width: 1.75rem;
+	height: 1.75rem;
+	border: 3px solid var(--border);
+	border-top-color: var(--olive);
+	border-radius: 50%;
+	animation: spin 0.7s linear infinite;
+}
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add frontend/src/styles/layout.css frontend/src/styles/animations.css
+git commit -m "style: add select-compact, chip-delete, input-ar, spinner to global design system"
+```
+
+---
+
+### Task 16: Update word/* components to use global patterns
+
+**Files:**
+- Modify: `frontend/src/lib/components/word/WordEnrichDrawer.svelte`
+- Modify: `frontend/src/lib/components/word/WordMorphologyStrip.svelte`
+- Modify: `frontend/src/lib/components/word/WordPluralChips.svelte`
+- Modify: `frontend/src/lib/components/word/WordRelationsPanel.svelte`
+
+**Depends on:** Task 8 (drawer shell in layout.css), Task 7 (form-field/form-error-msg), Task 15 (select-compact, chip-delete, input-ar, spinner).
+
+#### WordEnrichDrawer.svelte
+
+This component re-implements the full drawer shell. Map to globals:
+
+| Local class | Global |
+|---|---|
+| `.drawer-backdrop` | `.drawer-backdrop` (global) |
+| `.drawer-panel` | `.drawer` (global) + local `style="width:26rem; max-width:95vw"` or local override rule |
+| `.drawer-header` | `.drawer-header` (global) |
+| `.drawer-close` | `.drawer-close` (global) |
+| `.drawer-body` | `.drawer-body` (global) |
+| `.drawer-field` | `.form-field` (global, Task 7) |
+| `.drawer-field-label` | `.form-label` — but check: this uses a `<label>` with checkbox inside it; the global `.form-label` is a plain label element. If visual conflicts exist, keep scoped. |
+| `.drawer-title` | keep scoped (component-specific heading) |
+| `.spinner` | `.spinner` (global, Task 15) — delete local `@keyframes spin` and `.spinner` rule |
+| `.drawer-loading` | keep scoped (component-specific layout) |
+| `.drawer-notice/error/success` | keep scoped for now (semantic status boxes — candidate for a future semantic.css addition) |
+| `.drawer-plural-ar`, `.drawer-relation-ar` | delete; add `arabic-text` class to those elements in HTML |
+| `.drawer-textarea` | keep scoped (component-specific textarea styling) |
+| `.drawer-actions` | keep scoped (component-specific action row) |
+
+- [ ] **Step 1: Update WordEnrichDrawer.svelte HTML**
+
+In the template:
+- `class="drawer-backdrop"` → `class="drawer-backdrop"` (no HTML change, class already matches global)
+- `class="drawer-panel"` → `class="drawer"`, add `style="width:26rem;max-width:95vw"` (or a local `.drawer-wide` override)
+- `class="drawer-header"` → `class="drawer-header"` (no HTML change)
+- `class="drawer-close"` → `class="drawer-close"` (no HTML change)
+- `class="drawer-body"` → `class="drawer-body"` (no HTML change)
+- Each `class="drawer-field"` → `class="form-field"`
+- On the `<span>` elements with Arabic text inside `.drawer-plural-row` and `.drawer-relation-row`: add `class="arabic-text"` to the Arabic spans, remove `.drawer-plural-ar` and `.drawer-relation-ar` from HTML
+
+- [ ] **Step 2: Update WordEnrichDrawer.svelte `<style>` block**
+
+Delete: `.drawer-backdrop`, `.drawer-panel`, `.drawer-header`, `.drawer-close`, `.drawer-body`, `.drawer-field`, `.drawer-plural-ar`, `.drawer-relation-ar`, `.spinner`, `@keyframes spin`
+
+Keep: `.drawer-title`, `.drawer-loading`, `.drawer-notice`, `.drawer-error`, `.drawer-success`, `.drawer-field-label`, `.drawer-textarea`, `.drawer-plural-row`, `.drawer-plural-type`, `.drawer-relation-row`, `.drawer-relation-type`, `.drawer-actions`
+
+Replace inline error styles `style="color:var(--coral);font-size:0.8rem;"` with `class="form-error-msg"` on the error `<p>` or `<span>` elements.
+
+- [ ] **Step 3: Update WordMorphologyStrip.svelte**
+
+In HTML: change `class="morph-select"` → `class="select-compact"` (both `<select>` elements).
+
+In `<style>`: delete `.morph-select { ... }` entirely. Keep all `.morph-strip*` and `.morph-edit-btn` rules.
+
+- [ ] **Step 4: Update WordPluralChips.svelte**
+
+In HTML:
+- `class="morph-select"` → `class="select-compact"`
+- `class="chip-delete"` → `class="chip-delete"` (no HTML change — class name matches global)
+- `class="example-input-ar"` → `class="form-input input-ar"` (compose global form input + arabic modifier), remove the `width: 10rem` from the scoped rule or keep it as a local override
+- `.plural-chip-ar` span: add `arabic-text` to class list; the font/size will come from global. Keep `.plural-chip-ar` only if you need to preserve its specific `font-size: 1rem; line-height: 1.4` (check whether `.arabic-text` sets these — if so, delete `.plural-chip-ar` entirely)
+
+In `<style>`: delete `.morph-select`, `.chip-delete`, `.example-input-ar`. Keep `.plurals-section`, `.plurals-chips`, `.plural-chip`, `.plural-chip-ar` (if still needed for line-height), `.plural-chip-type`, `.plural-add-form`.
+
+Replace inline error `style="font-size:0.75rem;color:var(--coral);"` with `class="form-error-msg"`.
+
+- [ ] **Step 5: Update WordRelationsPanel.svelte**
+
+In HTML:
+- `class="morph-select"` → `class="select-compact"`
+- `class="chip-delete"` → `class="chip-delete"` (no HTML change)
+- `class="relations-group-label"` → `class="sect-label"` (already global in layout.css)
+- `.relation-chip-ar` span: add `arabic-text` to class list; delete `.relation-chip-ar` from style if `.arabic-text` covers the same properties
+
+In `<style>`: delete `.morph-select`, `.chip-delete`, `.relations-group-label`. Keep `.relations-panel`, `.relations-group`, `.relations-chips`, `.relation-chip`, `.relation-chip-ar` (if needed), `.relation-chip-tr`, `.relation-add-form`, `.relation-id-input`.
+
+Replace inline error `style="font-size:0.75rem;color:var(--coral);"` with `class="form-error-msg"`.
+
+- [ ] **Step 6: Visual verification**
+
+Navigate to a word detail page. Check:
+- WordMorphologyStrip renders gender/verb pattern chips correctly, edit mode shows select dropdowns
+- WordPluralChips shows plural chips with Arabic text, add form works
+- WordRelationsPanel shows grouped relations, group labels render as small uppercase labels
+- WordEnrichDrawer opens from the AI enrichment button, drawer slides in, spinner shows while loading, suggestions render with Arabic text
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add frontend/src/lib/components/word/
+git commit -m "refactor: word/* components use global drawer shell, select-compact, chip-delete, arabic-text classes"
+```
+
+---
+
 ## Self-Review Checklist
 
 - [x] All dead CSS tasks verified with `rg` before deletion
 - [x] Bug fixes (SessionSummary, FullTextPanel) are independent of phase 3/4
-- [x] Global additions (Task 7–9) committed before component updates that depend on them
+- [x] Global additions (Tasks 7–9, 15) committed before component updates that depend on them
 - [x] Mastery classes deleted (Task 4) before re-added correctly (Task 9) — correct order
 - [x] `.btn-outline-danger` explicitly preserved (not deleted in Task 4)
 - [x] AnnotationDrawer and VocabLookupDrawer done in same task since they share the drawer shell pattern
 - [x] VocabLookupDrawer mastery migration depends on Task 9 — Task 12 comes after
+- [x] Task 15 (new globals) must run before Task 16 (word/* component updates)
+- [x] `.morph-select` renamed to `.select-compact` in global — name reflects role not origin component
 - [x] No placeholders — every step has explicit commands or code

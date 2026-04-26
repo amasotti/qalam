@@ -1124,12 +1124,64 @@ Navigate to a word detail page. Check:
 - WordRelationsPanel shows grouped relations, group labels render as small uppercase labels
 - WordEnrichDrawer opens from the AI enrichment button, drawer slides in, spinner shows while loading, suggestions render with Arabic text
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 7: Run checks**
+
+```bash
+just lint-frontend
+just check-frontend
+```
+
+Expected: zero errors, zero warnings.
+
+- [ ] **Step 8: Commit**
 
 ```bash
 git add frontend/src/lib/components/word/
 git commit -m "refactor: word/* components use global drawer shell, select-compact, chip-delete, arabic-text classes"
 ```
+
+---
+
+### Task 17: Final acceptance gate
+
+Run all three checks clean, with zero errors and zero warnings. This is the definition of done.
+
+- [ ] **Step 1: Lint**
+
+```bash
+just lint-frontend
+```
+
+Expected output: no errors, no warnings. If Biome reports issues, fix them before proceeding.
+
+- [ ] **Step 2: Format**
+
+```bash
+just format-frontend
+```
+
+This auto-fixes and reformats. If it modifies any files, stage and commit the formatting changes:
+
+```bash
+git add -p   # stage only formatting changes
+git commit -m "style: apply biome formatting after CSS cleanup"
+```
+
+- [ ] **Step 3: Type check**
+
+```bash
+just check-frontend
+```
+
+Expected: zero type errors, zero warnings. If svelte-check reports errors, fix them — do not proceed with outstanding type errors.
+
+- [ ] **Step 4: Re-run lint after any formatting fixes**
+
+```bash
+just lint-frontend
+```
+
+Confirm still clean after any fixes from steps 2–3.
 
 ---
 
@@ -1143,5 +1195,7 @@ git commit -m "refactor: word/* components use global drawer shell, select-compa
 - [x] AnnotationDrawer and VocabLookupDrawer done in same task since they share the drawer shell pattern
 - [x] VocabLookupDrawer mastery migration depends on Task 9 — Task 12 comes after
 - [x] Task 15 (new globals) must run before Task 16 (word/* component updates)
-- [x] `.morph-select` renamed to `.select-compact` in global — name reflects role not origin component
+- [x] `.morph-select` renamed to `.select-compact` — name reflects role not origin component
+- [x] Every `.svelte`-modifying task has `just lint-frontend` + `just check-frontend` before commit
+- [x] Task 17 is the final gate — plan is done only when all three checks pass clean
 - [x] No placeholders — every step has explicit commands or code

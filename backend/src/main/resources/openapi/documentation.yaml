@@ -2756,6 +2756,35 @@ components:
           minimum: 1
           maximum: 100
 
+    TrainingWordExampleResponse:
+      type: object
+      required: [arabic]
+      properties:
+        arabic:
+          type: string
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+
+    TrainingWordRelationResponse:
+      type: object
+      required: [relatedWordId, relatedWordArabic, relationType]
+      properties:
+        relatedWordId:
+          type: string
+          format: uuid
+        relatedWordArabic:
+          type: string
+        relatedWordTranslation:
+          type: string
+          nullable: true
+        relationType:
+          type: string
+          description: Relation type (SYNONYM, ANTONYM, RELATED, etc.)
+
     TrainingSessionWordResponse:
       type: object
       required: [wordId, arabicText, translation, frontSide, position, masteryLevel]
@@ -2787,6 +2816,24 @@ components:
           type: string
           description: Current mastery level for this word
           enum: [NEW, LEARNING, KNOWN, MASTERED]
+        root:
+          type: string
+          nullable: true
+          description: Display form of the Arabic root (e.g. "ك ل م"), if available
+        notes:
+          type: string
+          nullable: true
+          description: Learner notes attached to the word
+        examples:
+          type: array
+          description: Up to 2 usage examples
+          items:
+            $ref: "#/components/schemas/TrainingWordExampleResponse"
+        relations:
+          type: array
+          description: Related words (synonyms, antonyms, etc.)
+          items:
+            $ref: "#/components/schemas/TrainingWordRelationResponse"
 
     TrainingSessionResponse:
       type: object

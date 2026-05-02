@@ -262,7 +262,7 @@ export function useLookupWordByArabic() {
 	return createMutation(() => ({
 		mutationFn: async (arabicText: string): Promise<WordResponse | null> => {
 			const { data, error, response } = await getWordByArabic({ query: { q: arabicText } });
-			if (response.status === 404) return null;
+			if (response?.status === 404) return null;
 			if (error) throw error;
 			return requireData(data, 'getWordByArabic') as WordResponse;
 		},

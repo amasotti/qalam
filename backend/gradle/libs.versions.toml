@@ -8,7 +8,7 @@ junitPlatform        = "6.0.3"
 junitJupiter         = "6.0.3"
 ktor                 = "3.4.2"
 exposed              = "1.2.0"
-flyway               = "12.4.0"
+flyway               = "12.5.0"
 koin                 = "4.2.1"
 mockk                = "1.14.9"
 testcontainers       = "1.21.4"
@@ -87,5 +87,5 @@ junitPlatform = ["junit-platformEngine", "junit-platformLauncher", "junit-platfo
 kotlinJvm           = { id = "org.jetbrains.kotlin.jvm",                    version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization",    version.ref = "kotlin" }
 detekt              = { id = "dev.detekt",                                   version.ref = "detekt" }
-versions            = { id = "com.github.ben-manes.versions",                version = "0.53.0" }
+versions            = { id = "com.github.ben-manes.versions",                version = "0.54.0" }
 kover                = { id = "org.jetbrains.kotlinx.kover",                 version = "0.9.8" }

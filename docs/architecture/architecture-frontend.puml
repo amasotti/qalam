@@ -46,8 +46,8 @@ package "Components  [src/lib/components/]" #E8F5E9 {
         component "Button · Badge\nCard · Input\n…" as cmpUI
     }
 
-    package "Styles  [lib/styles/]" #C8E6C9 {
-        component "tokens.css · base.css\narabic.css · layout.css\nanimations.css" as styles
+    package "Styles  [src/styles/]" #C8E6C9 {
+        component "tokens · base · arabic\nlayout · components · utilities\nword · root · text · lists · home\nforms · training · annotations\neditors · ai · error\nsemantic · animations" as styles
     }
 }
 

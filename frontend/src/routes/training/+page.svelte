@@ -28,17 +28,17 @@ const modeLabels: Record<Mode, string> = {
 </script>
 
 <div class="training-setup">
-  <h1>Start training</h1>
+  <h1 class="panel-page-title">Start training</h1>
 
   {#if stats.data}
-    <div class="distribution">
+    <div class="distribution-chips">
       {#each Object.entries(stats.data.masteryDistribution) as [level, count]}
-        <span class="dist-badge">{level}: {count}</span>
+        <span class="distribution-badge">{level}: {count}</span>
       {/each}
     </div>
   {/if}
 
-  <section class="setup-form">
+  <section class="training-form">
     <div class="form-field">
       <span class="form-label">Mode</span>
       <div class="mode-buttons" role="group" aria-label="Training mode">
@@ -56,6 +56,7 @@ const modeLabels: Record<Mode, string> = {
     <div class="form-field">
       <label class="form-label" for="session-size">Words per session: {sessionSize}</label>
       <input
+        class="range-input"
         id="session-size"
         type="range"
         min="5"
@@ -75,50 +76,3 @@ const modeLabels: Record<Mode, string> = {
     </Button>
   </section>
 </div>
-
-<style>
-  .training-setup {
-    max-width: 32rem;
-    margin: 2rem auto;
-    padding: 0 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .distribution {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .dist-badge {
-    font-size: 0.75rem;
-    padding: 0.2rem 0.6rem;
-    border-radius: 9999px;
-    background: hsl(var(--muted));
-    color: hsl(var(--muted-foreground));
-  }
-
-  .setup-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .mode-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  input[type='range'] { width: 100%; }
-
-  .range-hints {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: hsl(var(--muted-foreground));
-  }
-
-</style>

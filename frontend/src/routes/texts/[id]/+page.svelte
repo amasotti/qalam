@@ -70,9 +70,9 @@ function formatEnum(value: string): string {
 </script>
 
 {#if text.isPending}
-	<p style="color:var(--ink-ghost);">Loading…</p>
+	<p class="status-text status-text-muted">Loading…</p>
 {:else if text.isError}
-	<p style="color:var(--coral);">Text not found.</p>
+	<p class="status-text status-text-danger">Text not found.</p>
 {:else if text.data}
 	<!-- Breadcrumb -->
 	<nav class="breadcrumb">
@@ -127,10 +127,10 @@ function formatEnum(value: string): string {
 
 			<!-- Info edit panel (collapsible) -->
 			{#if editingInfo}
-				<div style="border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1.5rem;background:var(--bg-dark);">
-					<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-						<span style="font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-ghost);">Text info</span>
-						<button onclick={() => (editingInfo = false)} style="background:none;border:none;cursor:pointer;color:var(--ink-ghost);">×</button>
+				<div class="surface-card-muted surface-card-pad-md section-block">
+					<div class="row-between section-block">
+						<span class="helper-copy-strong">Text info</span>
+						<button onclick={() => (editingInfo = false)} class="plain-icon-btn">×</button>
 					</div>
 					<TextForm
 						isEdit
@@ -154,13 +154,13 @@ function formatEnum(value: string): string {
 			<!-- Interlinear section -->
 			<div class="sect-label">Interlinear analysis</div>
 			{#if sentences.isPending}
-				<p style="color:var(--ink-ghost);">Loading…</p>
+				<p class="status-text status-text-muted">Loading…</p>
 			{:else if sentences.isError}
-				<p style="color:var(--coral);">Could not load sentences.</p>
+				<p class="status-text status-text-danger">Could not load sentences.</p>
 			{:else if editingSentences}
 				<SentenceEditor sentences={sentences.data ?? []} textId={id} />
 			{:else if (sentences.data ?? []).length === 0}
-				<div style="display:flex;flex-direction:column;align-items:center;gap:0.75rem;padding:3rem 0;color:var(--ink-ghost);">
+				<div class="empty-state-inline">
 					<p>No sentences yet.</p>
 					<button class="btn" onclick={() => (editingSentences = true)}>Add sentences</button>
 				</div>
@@ -205,7 +205,7 @@ function formatEnum(value: string): string {
 			{#if text.data.tags.length > 0}
 				<div class="meta-card">
 					<div class="meta-card-title">Tags</div>
-					<div style="display:flex;flex-wrap:wrap;gap:0.375rem;">
+					<div class="word-card-badges">
 						{#each text.data.tags as tag}
 							<span class="chip c-muted">{tag}</span>
 						{/each}
@@ -216,7 +216,7 @@ function formatEnum(value: string): string {
 			<!-- Actions card -->
 			<div class="meta-card">
 				<div class="meta-card-title">Actions</div>
-				<div style="display:flex;flex-direction:column;gap:0.5rem;">
+				<div class="meta-actions">
 					<button class="btn btn-full" onclick={() => (editingSentences = true)}>+ Add sentence</button>
 					<a href="/training" class="ext-link">Practice words →</a>
 				</div>

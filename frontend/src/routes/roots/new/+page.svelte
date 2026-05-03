@@ -14,7 +14,7 @@ async function handleSubmit(req: CreateRootRequest | UpdateRootRequest) {
 </script>
 
 <div class="form-page">
-	<a href="/roots" class="btn" style="margin-bottom:1.5rem;">← Back to Roots</a>
+	<a href="/roots" class="btn section-block">← Back to Roots</a>
 
 	<header class="form-page-header">
 		<h1 class="form-page-title">New root</h1>

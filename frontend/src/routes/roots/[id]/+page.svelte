@@ -54,16 +54,16 @@ const famBarColors: Record<string, string> = {
 </script>
 
 {#if root.isPending}
-	<p style="color: var(--ink-ghost); font-size: 0.875rem; padding: 2rem 3rem;">Loading…</p>
+	<p class="detail-status status-text status-text-muted">Loading…</p>
 {:else if root.isError}
-	<p style="color: var(--coral); font-size: 0.875rem; padding: 2rem 3rem;">Root not found.</p>
+	<p class="detail-status status-text status-text-danger">Root not found.</p>
 {:else if root.data}
 	{#if isEditing}
 		<!-- ── Edit mode ── -->
-		<div style="padding: 2rem 3rem;">
-			<div style="margin-bottom:1.5rem;">
-				<div class="root-letter-ar" style="font-size:3rem;">{root.data.displayForm}</div>
-				<div style="color:var(--ink-ghost);font-size:0.875rem;">{root.data.normalizedForm}</div>
+		<div class="detail-edit-content">
+			<div class="section-block">
+				<div class="root-letter-ar arabic-display">{root.data.displayForm}</div>
+				<div class="status-text status-text-muted">{root.data.normalizedForm}</div>
 			</div>
 			<RootForm
 				isEdit
@@ -90,7 +90,7 @@ const famBarColors: Record<string, string> = {
 				<div class="root-hero">
 					<div class="root-hero-ghost">{root.data.displayForm}</div>
 					<div>
-						<div style="display:flex;align-items:flex-end;gap:0.75rem;direction:rtl;margin-bottom:0.75rem;">
+						<div class="row-rtl-end section-block-sm">
 							<span class="root-letter-ar">{root.data.displayForm}</span>
 						</div>
 						<div class="root-hero-meta">
@@ -111,7 +111,7 @@ const famBarColors: Record<string, string> = {
 				{#if root.data.meaning}
 					<p class="root-meaning">{root.data.meaning}</p>
 				{:else}
-					<p style="color:var(--ink-ghost);font-style:italic;margin-bottom:2.5rem;">No meaning recorded</p>
+					<p class="annot-empty section-block-lg">No meaning recorded</p>
 				{/if}
 
 				<!-- Analysis -->
@@ -120,7 +120,7 @@ const famBarColors: Record<string, string> = {
 					{#if root.data.analysis}
 						<Markdown content={root.data.analysis} />
 					{:else}
-						<p style="color:var(--ink-ghost);font-style:italic;">No analysis recorded</p>
+						<p class="annot-empty">No analysis recorded</p>
 					{/if}
 				</div>
 
@@ -128,13 +128,13 @@ const famBarColors: Record<string, string> = {
 				<div class="sect-label">
 					Word family
 					{#if words.data !== undefined}
-						<span style="font-size:0.72rem;color:var(--ink-light);text-transform:none;letter-spacing:0;font-family:'DM Sans',sans-serif;margin-left:-0.5rem">{words.data.length} words</span>
+						<span class="meta-inline-count">{words.data.length} words</span>
 					{/if}
 				</div>
 				{#if words.isPending}
-					<p style="color:var(--ink-ghost);font-size:0.875rem;">Loading words…</p>
+					<p class="status-text status-text-muted">Loading words…</p>
 				{:else if words.isError}
-					<p style="color:var(--coral);font-size:0.875rem;">Could not load words.</p>
+					<p class="status-text status-text-danger">Could not load words.</p>
 				{:else if words.data && words.data.length > 0}
 					<div class="word-family-grid">
 						{#each words.data as word (word.id)}
@@ -155,7 +155,7 @@ const famBarColors: Record<string, string> = {
 						{/each}
 					</div>
 				{:else}
-					<p style="color:var(--ink-ghost);font-style:italic;">No words linked to this root yet.</p>
+					<p class="annot-empty">No words linked to this root yet.</p>
 				{/if}
 			</div>
 
@@ -198,7 +198,7 @@ const famBarColors: Record<string, string> = {
 							{#each [['MASTERED','mastered'],['KNOWN','known'],['FAMILIAR','familiar'],['LEARNING','learning'],['NEW','new']] as [level, cls]}
 								<div class="fam-row">
 									<span class="fam-dot fam-dot-{cls}"></span>
-									<span class="fam-label" style="text-transform:capitalize">{level.toLowerCase()}</span>
+									<span class="fam-label">{formatEnum(level)}</span>
 									<div class="fam-bar-outer">
 										<div class="fam-bar-inner" style="width:{total > 0 ? Math.round(masteryCount[level] / total * 100) : 0}%;background:{famBarColors[level]};"></div>
 									</div>
@@ -225,7 +225,7 @@ const famBarColors: Record<string, string> = {
 				<!-- Actions card -->
 				<div class="meta-card">
 					<div class="meta-card-title">Actions</div>
-					<div style="display:flex;flex-direction:column;gap:0.5rem;">
+					<div class="meta-actions">
 						<a href="/words/new" class="btn btn-full">+ Add word to family</a>
 						<a href="/training" class="btn btn-full">Practice this root</a>
 					</div>

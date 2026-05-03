@@ -110,14 +110,14 @@ const masterySteps: Record<string, number> = {
 </script>
 
 {#if word.isPending}
-	<p style="color: var(--ink-ghost); font-size: 0.875rem; padding: 2rem 3rem;">Loading…</p>
+	<p class="detail-status status-text status-text-muted">Loading…</p>
 {:else if word.isError}
-	<p style="color: var(--coral); font-size: 0.875rem; padding: 2rem 3rem;">Word not found.</p>
+	<p class="detail-status status-text status-text-danger">Word not found.</p>
 {:else if word.data}
 	{#if isEditing}
 		<!-- ── Edit mode ── -->
-		<div style="padding: 2rem 3rem;">
-			<div class="word-hero" style="margin-bottom: 1.5rem;">
+		<div class="detail-edit-content">
+			<div class="word-hero detail-edit-hero">
 				<div class="word-hero-ar">{word.data.arabicText}</div>
 				{#if word.data.transliteration}
 					<div class="word-hero-tr">{word.data.transliteration}</div>
@@ -187,7 +187,7 @@ const masterySteps: Record<string, number> = {
 				</div>
 
 				<!-- Translation + Pronunciation -->
-				<div style="margin-bottom: 1.5rem;">
+				<div class="section-block">
 					<div class="sect-label">Translation</div>
 					{#if word.data.translation}
 						<p class="word-translation">{word.data.translation}</p>
@@ -195,7 +195,7 @@ const masterySteps: Record<string, number> = {
 						<p class="annot-empty">No translation recorded</p>
 					{/if}
 					{#if word.data.pronunciationUrl}
-						<div style="margin-top: 0.875rem;">
+						<div class="section-block-sm">
 							<a
 								class="pron-link"
 								href={word.data.pronunciationUrl}
@@ -217,8 +217,7 @@ const masterySteps: Record<string, number> = {
 					<span>Examples</span>
 					{#if !addingExample}
 						<button
-							class="btn"
-							style="font-size:0.75rem;padding:0.25rem 0.625rem;"
+							class="btn btn-sm"
 							onclick={() => (addingExample = true)}
 						>+ Add</button>
 					{/if}
@@ -256,7 +255,7 @@ const masterySteps: Record<string, number> = {
 					{/if}
 
 					{#if examples.isPending}
-						<p style="color: var(--ink-ghost); font-size: 0.875rem;">Loading…</p>
+						<p class="status-text status-text-muted">Loading…</p>
 					{:else if (examples.data ?? []).length === 0 && !addingExample}
 						<p class="annot-empty">No examples saved yet</p>
 					{:else}
@@ -295,30 +294,27 @@ const masterySteps: Record<string, number> = {
 					<span>Notes</span>
 					{#if !editingNotes}
 						<button
-							class="btn"
-							style="font-size:0.75rem;padding:0.2rem 0.5rem;"
+							class="btn btn-xs"
 							onclick={startEditNotes}
 						>✏ Edit</button>
 					{/if}
 				</div>
 				{#if editingNotes}
-					<div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.5rem;">
+					<div class="stack-xs section-block">
 						<textarea
 							class="notes-textarea"
 							rows="5"
 							bind:value={editedNotes}
 							disabled={updateWord.isPending}
 						></textarea>
-						<div style="display:flex;gap:0.5rem;">
+						<div class="row-sm">
 							<button
-								class="btn btn-primary"
-								style="font-size:0.75rem;padding:0.25rem 0.75rem;"
+								class="btn btn-primary btn-sm"
 								onclick={saveNotes}
 								disabled={updateWord.isPending}
 							>{updateWord.isPending ? 'Saving…' : 'Save'}</button>
 							<button
-								class="btn"
-								style="font-size:0.75rem;padding:0.25rem 0.625rem;"
+								class="btn btn-sm"
 								onclick={() => (editingNotes = false)}
 								disabled={updateWord.isPending}
 							>Cancel</button>
@@ -327,14 +323,14 @@ const masterySteps: Record<string, number> = {
 				{:else if word.data.notes}
 					<p class="notes-text">{word.data.notes}</p>
 				{:else}
-					<p class="annot-empty" style="margin-bottom:1.5rem;">No notes yet.</p>
+					<p class="annot-empty section-block">No notes yet.</p>
 				{/if}
 
 				<hr class="sect-divider" />
 
 				<!-- Dictionary sources -->
 				<div class="sect-label">Dictionary sources</div>
-				<div style="margin-bottom: 2.5rem;">
+				<div class="section-block-lg">
 					<DictionaryLinks wordId={id} arabicText={word.data.arabicText} />
 				</div>
 
@@ -345,16 +341,16 @@ const masterySteps: Record<string, number> = {
 				{:else if (annotations.data ?? []).length === 0}
 					<p class="annot-empty">No annotations link this word yet.</p>
 				{:else}
-					<ul style="list-style:none;display:flex;flex-direction:column;gap:0.5rem;">
+					<ul class="annotation-list">
 						{#each annotations.data ?? [] as annotation (annotation.id)}
-							<li style="display:flex;flex-direction:column;gap:0.25rem;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:8px;background:var(--white);">
-								<div style="display:flex;align-items:center;gap:0.5rem;">
+							<li class="annotation-list-item">
+								<div class="row-sm">
 									<AnnotationBadge type={annotation.type} />
-									<span style="font-size:0.875rem;direction:rtl;font-family:'Noto Naskh Arabic',serif;">{annotation.anchor}</span>
-									<a style="margin-left:auto;font-size:0.8rem;color:var(--cerulean);text-decoration:none;" href="/texts/{annotation.textId}">View text →</a>
+									<span class="anchor-ar">{annotation.anchor}</span>
+									<a class="annotation-link" href="/texts/{annotation.textId}">View text →</a>
 								</div>
 								{#if annotation.content}
-									<p style="font-size:0.8125rem;color:var(--ink-mid);line-height:1.5;margin:0.125rem 0 0 1.5rem;">{annotation.content}</p>
+									<p class="annotation-content">{annotation.content}</p>
 								{/if}
 							</li>
 						{/each}
@@ -428,32 +424,3 @@ const masterySteps: Record<string, number> = {
 		/>
 	{/if}
 {/if}
-
-<style>
-.sect-divider {
-	border: none;
-	border-top: 1px solid var(--border, #e2e8f0);
-	margin: 1.5rem 0;
-}
-
-.notes-textarea {
-	font-size: 0.875rem;
-	padding: 0.5rem;
-	border: 1px solid var(--border, #e2e8f0);
-	border-radius: 6px;
-	resize: vertical;
-	background: var(--white, #fff);
-	line-height: 1.6;
-	width: 100%;
-	box-sizing: border-box;
-}
-
-.notes-text {
-	font-size: 0.9rem;
-	font-style: italic;
-	color: var(--ink-mid, #4a5568);
-	line-height: 1.7;
-	margin-bottom: 1.5rem;
-	white-space: pre-wrap;
-}
-</style>

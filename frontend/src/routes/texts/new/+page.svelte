@@ -14,7 +14,7 @@ async function handleSubmit(req: CreateTextRequest) {
 </script>
 
 <div class="form-page">
-	<a href="/texts" class="btn" style="margin-bottom:1.5rem;">← Back to Texts</a>
+	<a href="/texts" class="btn section-block">← Back to Texts</a>
 
 	<header class="form-page-header">
 		<h1 class="form-page-title">New text</h1>

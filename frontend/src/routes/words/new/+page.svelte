@@ -14,7 +14,7 @@ async function handleSubmit(req: CreateWordRequest | UpdateWordRequest) {
 </script>
 
 <div class="form-page">
-	<a href="/words" class="btn" style="margin-bottom:1.5rem;">← Back to Words</a>
+	<a href="/words" class="btn section-block">← Back to Words</a>
 
 	<header class="form-page-header">
 		<h1 class="form-page-title">New word</h1>

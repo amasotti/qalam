@@ -167,8 +167,8 @@ function formatEnum(value: string): string {
 						<div class="word-card-en">{word.translation}</div>
 					{/if}
 					<div class="word-card-badges">
-						<span class="chip c-coral" style="font-size:0.65rem;padding:0.15rem 0.6rem;">{formatEnum(word.masteryLevel)}</span>
-						<span class="chip c-muted" style="font-size:0.65rem;padding:0.15rem 0.6rem;">{word.dialect}</span>
+						<span class="chip chip-sm c-coral">{formatEnum(word.masteryLevel)}</span>
+						<span class="chip chip-sm c-cerulean">{word.dialect}</span>
 					</div>
 				</a>
 			{/each}

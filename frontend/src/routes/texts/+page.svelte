@@ -157,10 +157,10 @@ function formatEnum(value: string): string {
 						<div class="text-card-desc">{text.comments}</div>
 					{/if}
 					<div class="text-card-badges">
-						<span class="chip c-coral" style="font-size:0.65rem;padding:0.15rem 0.6rem;">{formatEnum(text.difficulty)}</span>
-						<span class="chip c-cerulean" style="font-size:0.65rem;padding:0.15rem 0.6rem;">{text.dialect}</span>
+						<span class="chip chip-sm c-coral">{formatEnum(text.difficulty)}</span>
+						<span class="chip chip-sm c-cerulean">{text.dialect}</span>
 						{#each text.tags as tag}
-							<span class="chip c-muted" style="font-size:0.65rem;padding:0.15rem 0.6rem;">{tag}</span>
+							<span class="chip chip-sm c-muted">{tag}</span>
 						{/each}
 					</div>
 				</a>

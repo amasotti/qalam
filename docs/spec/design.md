@@ -95,41 +95,47 @@ routes/ (SvelteKit pages)         ← thin: compose components, load data via st
 
 ### Design System
 
-The frontend has a **single, consistent design system**. Every interactive element (button,
-input, badge, modal, dropdown, pagination, card) is implemented once as a component and reused
-everywhere. No one-off inline styles for things that have a component equivalent.
+The frontend has a **single, consistent design system**: **Busatan**. Every interactive element
+(button, input, badge, modal, dropdown, pagination, card) is expressed through Busatan tokens,
+semantics, and shared visual rules. No one-off inline styles for things that have a Busatan
+equivalent.
 
-- shadcn-svelte provides the base layer: components are copy-pasted into `lib/components/ui/`
-  and fully owned. No runtime npm dependency on shadcn-svelte.
-- Each component has clear variants (e.g., Button: primary / secondary / outline / danger).
-  A new variant is only added when there is a genuine design reason — not for minor spacing
+- Busatan is the only app-level design system. Routes and feature components must depend on
+  Busatan primitives and semantic classes, not on raw shadcn theme semantics or Tailwind utility
+  styling for app look and feel.
+- Global CSS in `frontend/src/styles/*` is the source of truth for tokens, typography, layout,
+  semantic roles, and shared visual patterns.
+- Low-level controls in `lib/components/ui/` may use shadcn/Tailwind internally, but their public
+  API and visual semantics must be Busatan-only. No runtime npm dependency on shadcn-svelte.
+- Each component has clear variants (e.g., Button: primary / secondary / outline / danger). A
+  new variant is only added when there is a genuine design reason — not for minor spacing
   differences.
-- Tailwind utility classes are used for layout and spacing. Domain-specific visual rules
-  (Arabic text direction, font choices) are encapsulated in named CSS classes, not repeated
-  inline.
+- Inline `style=` is allowed only for dynamic values that cannot be expressed cleanly through
+  classes, such as computed widths, CSS variables, or animation delays.
+- Component-scoped `<style>` is allowed only for structure unique to a single component and only
+  after checking existing global classes first.
 
 ### Arabic / RTL
 
-Arabic font stack:
-- **Body Arabic**: Noto Naskh Arabic, Lateef (serif fallback)
-- **Display Arabic**: Lateef, Noto Naskh Arabic
-- **Text Arabic**: Markazi Text, Noto Naskh Arabic
+Arabic font stack follows Busatan:
+- **Body Arabic**: Noto Naskh Arabic, Amiri
+- **Display Arabic**: Amiri, Noto Naskh Arabic
+- **Text Arabic**: Noto Naskh Arabic, Amiri
 
-These fonts were chosen with care for readability at body size and are not changed.
+These fonts are part of Busatan and are not swapped ad hoc per page or component.
 
 ```css
 .arabic {
-    font-family: 'Noto Naskh Arabic', 'Lateef', serif;
+    font-family: 'Noto Naskh Arabic', 'Amiri', serif;
     direction: rtl;
     text-align: right;
 }
 .transliteration {
     direction: ltr;
     font-style: italic;
+    color: var(--olive);
 }
 ```
-
-Tailwind `rtl:` variants handle directional layout adjustments per component.
 
 ---
 

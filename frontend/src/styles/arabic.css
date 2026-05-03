@@ -2,11 +2,11 @@
    arabic.css — Arabic text and transliteration classes
 
    Use these in markup — never set Arabic font/direction inline.
-   Pick the role that matches the content:
-     .arabic          → UI labels, word cards, short strings   (Noto Naskh Arabic)
-     .arabic-display  → Headings, titles                       (Lateef)
-     .arabic-text     → Reading passages, interlinear text     (Markazi Text)
-     .transliteration → Latin phonetic representation          (italic, muted)
+   Busatan roles:
+     .arabic          → UI labels, word cards, short strings
+     .arabic-display  → Headings and hero Arabic
+     .arabic-text     → Reading passages and interlinear text
+     .transliteration → Latin phonetic representation
    ============================================================ */
 
 .arabic {
@@ -27,15 +27,16 @@
 
 .arabic-text {
 	font-family: var(--font-arabic-text);
-	font-size: var(--arabic-font-size-body);
+	font-size: 1.5rem;
 	line-height: var(--arabic-line-height-text);
 	direction: rtl;
 	text-align: right;
 }
 
 .transliteration {
+	font-family: var(--font-display);
 	font-style: italic;
-	color: hsl(var(--muted-foreground));
-	font-size: 0.9em;
+	color: var(--olive);
+	font-size: 0.875rem;
 	letter-spacing: 0.01em;
 }

@@ -7,9 +7,6 @@
    Import order matters — do not reorder.
    ============================================================ */
 
-/* External: Google Fonts (must precede @import "tailwindcss") */
-@import url("https://fonts.googleapis.com/css2?family=Lateef:wght@200;300;400;500;600;700;800&family=Markazi+Text:wght@400..700&family=Noto+Naskh+Arabic:wght@400..700&display=swap");
-
 /* Tailwind v4 */
 @import "tailwindcss";
 

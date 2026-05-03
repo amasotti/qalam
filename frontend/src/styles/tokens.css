@@ -1,22 +1,15 @@
 /* ============================================================
-   tokens.css — Design tokens (Busatan warm-parchment system)
-   @theme (Tailwind), :root (CSS custom properties)
+   tokens.css — Busatan design tokens
+   Global source of truth for typography, color, and sizing.
    ============================================================ */
 
 @theme {
-	/* ·· Latin UI fonts ·· */
 	--font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-	--font-display: "Spectral", Georgia, serif;
+	--font-display: "Lora", Georgia, serif;
+	--font-arabic: "Noto Naskh Arabic", "Amiri", serif;
+	--font-arabic-display: "Amiri", "Noto Naskh Arabic", serif;
+	--font-arabic-text: "Noto Naskh Arabic", "Amiri", serif;
 
-	/* ·· Arabic font families ··
-     body    → Noto Naskh Arabic + Lateef    (UI labels, word cards, short strings)
-     display → Lateef + Noto Naskh Arabic     (headings, banner titles)
-     text    → Markazi Text + Noto Naskh Arabic (reading passages, interlinear)   */
-	--font-arabic: "Noto Naskh Arabic", "Lateef", "Amiri", serif;
-	--font-arabic-display: "Lateef", "Noto Naskh Arabic", "Amiri", serif;
-	--font-arabic-text: "Markazi Text", "Noto Naskh Arabic", "Amiri", serif;
-
-	/* ·· Color tokens (resolved from :root HSL values) ·· */
 	--color-border: hsl(var(--border));
 	--color-input: hsl(var(--input));
 	--color-ring: hsl(var(--ring));
@@ -38,9 +31,6 @@
 	--color-accent: hsl(var(--accent));
 	--color-accent-foreground: hsl(var(--accent-foreground));
 
-	--color-popover: hsl(var(--popover));
-	--color-popover-foreground: hsl(var(--popover-foreground));
-
 	--color-card: hsl(var(--card));
 	--color-card-foreground: hsl(var(--card-foreground));
 
@@ -53,113 +43,94 @@
 	--color-sidebar-border: hsl(var(--sidebar-border));
 	--color-sidebar-ring: hsl(var(--sidebar-ring));
 
-	/* ·· Border radii ·· */
 	--radius-xl: calc(var(--radius) + 4px);
 	--radius-lg: var(--radius);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-sm: calc(var(--radius) - 4px);
 }
 
-/* ── :root — raw CSS custom properties ── */
-
 :root {
-	/* ── Busatan direct palette (hex) ── */
-	--bg: #f9f8f1; /* warm sand */
-	--bg-dark: #eee8dc; /* dark sand */
-	--bg-darker: #e4ddd0; /* darker sand */
-	--white: #ffffff;
+	/* Base */
+	--background: 48 22% 96%;
+	--foreground: 36 14% 9%;
+	--card: 0 0% 100%;
+	--card-foreground: 36 14% 9%;
+	--border: 40 20% 80%;
+	--input: 40 20% 80%;
+	--ring: 102 40% 28%;
+	--radius: 0.625rem;
 
-	/* Ink scale */
+	/* Busatan semantic roles */
+	--primary: 102 40% 28%;
+	--primary-foreground: 0 0% 98%;
+	--secondary: 36 14% 22%;
+	--secondary-foreground: 0 0% 98%;
+	--muted: 40 22% 88%;
+	--muted-foreground: 36 14% 40%;
+	--accent: 40 18% 82%;
+	--accent-foreground: 102 40% 28%;
+	--destructive: 0 72% 47%;
+	--destructive-foreground: 0 0% 98%;
+
+	/* Sidebar */
+	--sidebar: 40 22% 88%;
+	--sidebar-foreground: 36 14% 40%;
+	--sidebar-primary: 102 40% 28%;
+	--sidebar-primary-foreground: 0 0% 98%;
+	--sidebar-accent: 48 22% 96%;
+	--sidebar-accent-foreground: 102 40% 28%;
+	--sidebar-border: 40 20% 80%;
+	--sidebar-ring: 102 40% 28%;
+
+	/* Busatan direct palette */
+	--olive: #4a6228;
+	--olive-soft: #5a7838;
+	--olive-pale: #e8f0d8;
+	--coral: #c04830;
+	--coral-soft: #d05a40;
+	--coral-pale: #fae8e4;
+	--cerulean: #1e5898;
+	--cerulean-soft: #2868b0;
+	--cerulean-pale: #e0eaf8;
+	--sage: #2a6840;
+	--sage-pale: #d8eee0;
+	--amber: #b07820;
+	--amber-pale: #f5edd0;
+	--bg: #f9f8f1;
+	--bg-dark: #eee8dc;
+	--bg-darker: #e4ddd0;
+	--white: #ffffff;
 	--ink: #1a1810;
 	--ink-mid: #3c3428;
 	--ink-light: #786848;
 	--ink-ghost: #b8a888;
-
-	/* Olive — structural / brand */
-	--olive: #3c501f;
-	--olive-soft: #5a7838;
-	--olive-pale: #e8f0d8;
-
-	/* Coral — action / progress */
-	--coral: #c04830;
-	--coral-soft: #d05a40;
-	--coral-pale: #fae8e4;
-
-	/* Cerulean — info / external */
-	--cerulean: #1e5898;
-	--cerulean-soft: #2868b0;
-	--cerulean-pale: #e0eaf8;
-
-	/* Sage — mastered */
-	--sage: #2a6840;
-	--sage-pale: #d8eee0;
-
-	/* Amber */
-	--amber: #b07820;
-	--amber-pale: #f5edd0;
-
-	/* Danger */
 	--danger: #c03030;
-
-	/* Borders */
 	--border-color: #ddd5c0;
 	--border-thin: #ede8dc;
 
 	/* Mastery scale */
-	--m-mastered: #1a6038;
-	--m-mastered-bg: #d4eee0;
-	--m-known: #2a7850;
-	--m-known-bg: #d0f0e4;
+	--m-mastered: #2a6840;
+	--m-mastered-bg: #d8eee0;
+	--m-known: #5a9870;
+	--m-known-bg: #e0f0e4;
 	--m-familiar: #c04830;
 	--m-familiar-bg: #fae8e4;
 	--m-learning: #4a6228;
 	--m-learning-bg: #e8f0d8;
+	--m-new: #ddd5c0;
+	--m-new-bg: #eee8dc;
 
-	/* ── shadcn / Tailwind HSL vars (used by components) ── */
-	--background: 50 38% 96%; /* ≈ #F9F8F1 warm sand */
-	--foreground: 46 22% 9%; /* ≈ #1A1810 ink */
-	--card: 0 0% 100%;
-	--card-foreground: 46 22% 9%;
-	--popover: 0 0% 100%;
-	--popover-foreground: 46 22% 9%;
-	--primary: 10 61% 47%; /* ≈ #C04830 coral */
-	--primary-foreground: 0 0% 100%;
-	--secondary: 89 42% 27%; /* ≈ #4A6228 olive */
-	--secondary-foreground: 0 0% 100%;
-	--muted: 42 32% 90%; /* ≈ #EEE8DC bg-dark */
-	--muted-foreground: 30 22% 45%; /* ≈ #786848 ink-light */
-	--accent: 88 30% 86%; /* ≈ #E8F0D8 olive-pale */
-	--accent-foreground: 89 42% 27%; /* ≈ olive */
-	--destructive: 0 62% 47%; /* ≈ #C03030 */
-	--destructive-foreground: 0 0% 100%;
-	--border: 40 24% 80%; /* ≈ #DDD5C0 */
-	--input: 40 24% 80%;
-	--ring: 89 42% 27%; /* ≈ olive */
-	--radius: 0.5rem;
-
-	/* Sidebar — light warm (Busatan: no dark sidebar) */
-	--sidebar: 42 32% 90%; /* ≈ #EEE8DC bg-dark */
-	--sidebar-foreground: 30 22% 45%; /* ≈ ink-light */
-	--sidebar-primary: 89 42% 27%; /* olive */
-	--sidebar-primary-foreground: 0 0% 100%;
-	--sidebar-accent: 88 30% 86%; /* olive-pale */
-	--sidebar-accent-foreground: 89 42% 27%;
-	--sidebar-border: 40 24% 80%;
-	--sidebar-ring: 89 42% 27%;
-
-	/* Arabic typography tokens
-     Used by semantic classes in arabic.css — never used directly in markup. */
-	--arabic-font-size-body: 1.125rem; /* 18px — Arabic reads better a touch larger */
-	--arabic-font-size-ui: 1rem; /* 16px — labels, badges, compact contexts   */
-	--arabic-font-size-display: 2.25rem; /* 36px */
-	--arabic-font-size-xl: 3rem; /* 48px */
-
-	--arabic-line-height-body: 1.9; /* Arabic needs generous leading              */
+	/* Arabic typography tokens */
+	--arabic-font-size-body: 1.125rem;
+	--arabic-font-size-ui: 1rem;
+	--arabic-font-size-display: 2.25rem;
+	--arabic-font-size-xl: 3rem;
+	--arabic-line-height-body: 1.9;
 	--arabic-line-height-display: 1.5;
-	--arabic-line-height-text: 1.8; /* for Markazi Text reading passages          */
+	--arabic-line-height-text: 2;
 
-	/* Spacing tokens for the content grid */
-	--content-max-width: 72rem; /* 1152px */
+	/* Layout tokens */
+	--content-max-width: 72rem;
 	--content-padding-x: 1.5rem;
 	--sidebar-width: 220px;
 }

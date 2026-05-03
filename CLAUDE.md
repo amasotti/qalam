@@ -42,7 +42,10 @@ docker-compose.yml  full dev stack (postgres, backend, frontend)
 
 **Frontend CSS** — global-first, scoped as last resort:
 - Before adding a scoped `<style>` rule, check `frontend/src/styles/` — use the existing global class if one fits
-- Global files by concern: `layout.css` (structure, buttons, chips, drawers), `semantic.css` (mastery, banners), `animations.css`, `tokens.css`
+- `frontend/src/app.css` is the style import manifest and source of truth for import order
+- Global files are split by concern: `layout.css` (app shell and page layouts), `components.css` (shared component primitives), `utilities.css` (layout helpers), feature partials like `word.css`, `root.css`, `text.css`, `lists.css`, `home.css`, `forms.css`, `training.css`, `annotations.css`, `editors.css`, `ai.css`, `error.css`, plus `semantic.css`, `animations.css`, `tokens.css`, `base.css`, `arabic.css`
+- Do not grow `layout.css` into a catch-all again; new shared rules go into the narrowest existing partial that fits, or a new partial if the concern is genuinely new
+- Avoid duplicate names across feature families; class names should stay semantic within their slice (`root-*`, `word-*`, `fc-*`, `annotation-*`, etc.)
 - Scoped styles are for component-unique structure only (e.g. a specific grid layout not shared anywhere)
 - App is light-mode only — never add `.dark` variants
 

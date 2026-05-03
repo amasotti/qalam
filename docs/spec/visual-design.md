@@ -510,17 +510,34 @@ Below the interlinear section, separated by `section-label`:
 
 Current structure:
 ```
-src/styles/tokens.css      ← replace :root block (§2 above)
-src/styles/semantic.css    ← update mastery/difficulty/dialect colors to Busatan palette
-src/styles/layout.css      ← full rewrite per §4–8
-src/app.css                ← add Google Fonts import, touch nothing else
+src/styles/tokens.css       ← design tokens and HSL bridge
+src/styles/base.css         ← base element defaults and prose
+src/styles/arabic.css       ← Arabic and transliteration roles
+src/styles/layout.css       ← app shell, drawer shell, breadcrumb, page layouts
+src/styles/components.css   ← shared component primitives (buttons, chips, meta cards, toggles)
+src/styles/utilities.css    ← spacing/layout helpers and cross-page utility classes
+src/styles/word.css         ← word detail, dictionary pills, morphology, notes
+src/styles/root.css         ← root detail and word-family visuals
+src/styles/text.css         ← text detail presentation
+src/styles/lists.css        ← list pages, search/filter bars, collection cards
+src/styles/home.css         ← landing page composition
+src/styles/forms.css        ← full-page forms and autocomplete flows
+src/styles/training.css     ← analytics, training, flashcards, vocab lookup
+src/styles/annotations.css  ← annotation UI and drawer form patterns
+src/styles/editors.css      ← token/sentence editing surfaces
+src/styles/ai.css           ← AI result cards and notices
+src/styles/error.css        ← error states
+src/styles/semantic.css     ← mastery/difficulty/dialect semantic color classes
+src/styles/animations.css   ← animation utilities
+src/app.css                 ← import manifest only; preserve import order
 ```
 
-`semantic.css` changes needed:
-- Mastery badge colors → sage/coral/olive scale (replace current green shades)
-- Dialect badge → cerulean
-- Difficulty badge → coral
-- POS badge → olive/cerulean/coral per §7 table
+Reorganisation rules:
+- `layout.css` is intentionally narrow. It owns only shell/layout primitives, not feature styling.
+- Shared reusable visual primitives belong in `components.css` or `utilities.css`, not in feature partials.
+- Feature-specific classes stay in their feature partial and keep clear prefixes where possible.
+- When a concern grows beyond a few tightly-related selectors, split it into its own partial and register it in `src/app.css`.
+- Avoid reusing the same class name for different concepts across features.
 
 ---
 
@@ -532,11 +549,11 @@ Work in this order to avoid regressions:
 2. **Color tokens** — replace `:root` in `tokens.css`. Verify shadcn components still render (HSL variables).
 3. **Sidebar** — update `layout.css` sidebar: light bg-dark, olive brand + active states.
 4. **Breadcrumb** — update breadcrumb bar component.
-5. **Buttons/chips/badges** — update `semantic.css` + shadcn Button overrides. Dict pills get cerulean default style.
-6. **Word detail** — rewrite `.page-word-detail`, `.word-hero`, `.word-info`, `.word-examples-list` CSS. Update badge color assignments per §5.
-7. **Root detail** — rewrite `.page-root-detail`, `.root-hero`, `.word-family-grid`, `.word-chip` blocks.
-8. **Text detail** — rewrite text page CSS + `InterlinearSentence.svelte` styles + `TokenGrid.svelte` styles + `FullTextPanel.svelte` styles. POS chips → §7 table.
-9. **Meta sidebar cards** — add `.meta-card` pattern to `layout.css`, update page svelte files to use 2-column grid.
+5. **Buttons/chips/badges** — update `components.css` and `semantic.css`. Dict pills get cerulean default style in `word.css`.
+6. **Word detail** — place word-specific rules in `word.css`. Update badge color assignments per §5.
+7. **Root detail** — place root-specific rules in `root.css`; keep family-card naming distinct from annotation chips.
+8. **Text detail** — place text presentation rules in `text.css` and editing surfaces in `editors.css`. POS chips → §7 table.
+9. **Meta sidebar cards** — keep `.meta-card` in `components.css`, page grid/layout in `layout.css`.
 10. **Home page** — update `.home-shell` to use `--bg` background and olive/coral accents.
 
 ---

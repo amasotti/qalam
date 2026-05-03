@@ -50,7 +50,7 @@ async function handleDelete(id: string) {
 	></div>
 
 	<aside
-		class="drawer"
+		class="drawer drawer-sm"
 		transition:fly={{ x: 360, duration: 220, opacity: 1 }}
 		aria-label="Annotations"
 	>
@@ -96,34 +96,3 @@ async function handleDelete(id: string) {
 		</div>
 	</aside>
 {/if}
-
-<style>
-.drawer-anchor {
-	font-size: 1.5rem;
-	line-height: 1.6;
-	color: hsl(var(--foreground));
-}
-
-.drawer-form-section {
-	padding-top: 0.5rem;
-	border-top: 1px solid hsl(var(--border) / 0.4);
-	margin-top: 0.5rem;
-}
-
-.drawer-add-btn {
-	margin-top: 0.75rem;
-	display: inline-flex;
-	align-items: center;
-	gap: 0.25rem;
-	font-size: 0.8125rem;
-	color: hsl(var(--primary));
-	background: none;
-	border: 1px dashed hsl(var(--primary) / 0.4);
-	border-radius: 0.375rem;
-	padding: 0.375rem 0.75rem;
-	cursor: pointer;
-	width: 100%;
-	justify-content: center;
-}
-.drawer-add-btn:hover { background: hsl(var(--primary) / 0.06); }
-</style>

@@ -21,24 +21,29 @@
    Requires a 1px border so border-color is visible. */
 
 .mastery-new {
-	background: hsl(var(--muted));
-	color: hsl(var(--muted-foreground));
-	border-color: hsl(var(--border));
+	background: var(--m-new-bg);
+	color: var(--ink-light);
+	border-color: var(--m-new);
 }
 .mastery-learning {
-	background: hsl(40 90% 60% / 0.2);
-	color: hsl(40 70% 40%);
-	border-color: hsl(40 70% 60% / 0.4);
+	background: var(--m-learning-bg);
+	color: var(--m-learning);
+	border-color: color-mix(in srgb, var(--m-learning) 28%, transparent);
+}
+.mastery-familiar {
+	background: var(--m-familiar-bg);
+	color: var(--m-familiar);
+	border-color: color-mix(in srgb, var(--m-familiar) 28%, transparent);
 }
 .mastery-known {
-	background: hsl(210 80% 60% / 0.2);
-	color: hsl(210 60% 40%);
-	border-color: hsl(210 60% 55% / 0.4);
+	background: var(--m-known-bg);
+	color: var(--m-known);
+	border-color: color-mix(in srgb, var(--m-known) 28%, transparent);
 }
 .mastery-mastered {
-	background: hsl(140 60% 40% / 0.15);
-	color: hsl(140 50% 32%);
-	border-color: hsl(140 50% 45% / 0.4);
+	background: var(--m-mastered-bg);
+	color: var(--m-mastered);
+	border-color: color-mix(in srgb, var(--m-mastered) 28%, transparent);
 }
 
 /* ── Warning banner ── */

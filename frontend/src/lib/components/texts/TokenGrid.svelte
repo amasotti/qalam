@@ -24,7 +24,7 @@ function badgesFor(arabicText: string): AnnotationResponse[] {
 		<span class="token-gloss">{token.translation}</span>
 	{/if}
 	{#if badges.length > 0}
-		<div style="display:flex;gap:0.125rem;margin-top:0.125rem;justify-content:center;">
+		<div class="token-badges">
 			{#each badges as ann (ann.id)}
 				<AnnotationBadge type={ann.type} />
 			{/each}
@@ -54,7 +54,3 @@ function badgesFor(arabicText: string): AnnotationResponse[] {
 		{/each}
 	</div>
 {/if}
-
-<style>
-/* Token grid styles are in layout.css via .token-grid-wrap and .token-cell */
-</style>

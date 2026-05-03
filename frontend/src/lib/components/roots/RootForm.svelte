@@ -71,7 +71,7 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
-<form class="root-form" onsubmit={handleSubmit} novalidate>
+<form class="form-shell" onsubmit={handleSubmit} novalidate>
 	{#if !isEdit}
 		<div class="form-field">
 			<label class="form-label" for="root-letters">Root letters</label>
@@ -146,41 +146,3 @@ async function handleSubmit(e: SubmitEvent) {
 		</Button>
 	</div>
 </form>
-
-<style>
-.root-form {
-	display: flex;
-	flex-direction: column;
-	gap: 1.5rem;
-}
-
-/* Normalize preview block */
-.root-preview {
-	display: flex;
-	align-items: center;
-	gap: 1rem;
-	padding: 0.875rem 1.125rem;
-	background: var(--bg-dark);
-	border: 1px solid var(--border);
-	border-radius: 8px;
-}
-.root-preview-ar {
-	font-family: "Amiri", serif;
-	font-size: 2.5rem;
-	direction: rtl;
-	color: var(--ink);
-	line-height: 1;
-}
-.root-preview-meta {
-	display: flex;
-	flex-direction: column;
-	gap: 0.25rem;
-}
-.root-preview-normalized {
-	font-family: "Amiri", serif;
-	font-size: 1rem;
-	color: var(--ink-light);
-	direction: rtl;
-	font-style: italic;
-}
-</style>

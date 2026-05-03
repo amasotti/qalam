@@ -56,15 +56,3 @@ async function handleMarkValid() {
 		</Button>
 	</div>
 </div>
-
-<style>
-.banner-text {
-	flex: 1;
-	min-width: 0;
-}
-
-.banner-actions {
-	display: flex;
-	gap: 0.25rem;
-}
-</style>

@@ -147,7 +147,7 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
-<form class="word-form" onsubmit={handleSubmit} novalidate>
+<form class="form-shell" onsubmit={handleSubmit} novalidate>
 	<!-- Arabic text -->
 	{#if isEdit}
 		<div class="form-field">
@@ -199,7 +199,7 @@ async function handleSubmit(e: SubmitEvent) {
 	</div>
 
 	<!-- POS / Dialect / Difficulty — 3-col grid -->
-	<div class="word-form-section">
+	<div class="form-row-3">
 		<div class="form-field">
 			<label class="form-label" for="word-pos">Part of speech</label>
 			<select id="word-pos" class="form-select" bind:value={partOfSpeech} disabled={isPending}>
@@ -247,7 +247,7 @@ async function handleSubmit(e: SubmitEvent) {
 	<!-- Pronunciation URL -->
 	<div class="form-field">
 		<label class="form-label" for="word-pronunciation">Pronunciation URL</label>
-		<div class="input-row">
+		<div class="form-input-row">
 			<input
 				id="word-pronunciation"
 				class="form-input"
@@ -259,7 +259,7 @@ async function handleSubmit(e: SubmitEvent) {
 			{#if arabicText.trim() && !pronunciationUrl}
 				<button
 					type="button"
-					class="forvo-btn"
+					class="btn form-inline-btn"
 					onclick={() => { pronunciationUrl = `https://forvo.com/search/${encodeURIComponent(arabicText.trim())}`; }}
 					disabled={isPending}
 				>Forvo</button>
@@ -363,105 +363,3 @@ async function handleSubmit(e: SubmitEvent) {
 		</Button>
 	</div>
 </form>
-
-<style>
-.word-form {
-	display: flex;
-	flex-direction: column;
-	gap: 1.5rem;
-}
-
-/* Edit mode — non-editable Arabic display */
-.arabic-display {
-	font-family: "Amiri", serif;
-	font-size: 2rem;
-	direction: rtl;
-	text-align: right;
-	color: var(--ink);
-	line-height: 1.4;
-}
-
-/* 3-col grid for POS / dialect / difficulty */
-.word-form-section {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 1rem;
-}
-
-/* Pronunciation URL row */
-.input-row {
-	display: flex;
-	gap: 0.5rem;
-	align-items: center;
-}
-.input-row .form-input {
-	flex: 1;
-}
-.forvo-btn {
-	padding: 0.45rem 0.875rem;
-	border-radius: 6px;
-	border: 1px solid var(--border);
-	background: transparent;
-	color: var(--ink-mid);
-	font-size: 0.78rem;
-	font-weight: 500;
-	cursor: pointer;
-	white-space: nowrap;
-	font-family: inherit;
-	transition: all 150ms;
-}
-.forvo-btn:hover {
-	border-color: var(--ink-mid);
-	color: var(--ink);
-}
-
-/* Autocomplete */
-.autocomplete-wrap {
-	position: relative;
-}
-.autocomplete-results {
-	position: absolute;
-	top: 100%;
-	left: 0;
-	right: 0;
-	background: var(--white);
-	border: 1px solid var(--border);
-	border-radius: 6px;
-	box-shadow: 0 4px 16px rgba(26, 24, 16, 0.08);
-	z-index: 20;
-	list-style: none;
-	padding: 0.25rem 0;
-	margin: 0;
-	max-height: 14rem;
-	overflow-y: auto;
-}
-.autocomplete-item {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	width: 100%;
-	padding: 0.5rem 0.875rem;
-	background: none;
-	border: none;
-	cursor: pointer;
-	text-align: right;
-	font-size: 0.875rem;
-	color: var(--ink);
-	font-family: inherit;
-	transition: background 120ms;
-}
-.autocomplete-item:hover {
-	background: var(--bg-dark);
-}
-.autocomplete-selected {
-	display: flex;
-	align-items: center;
-	gap: 0.75rem;
-	padding: 0.5rem 0.75rem;
-	background: var(--bg-dark);
-	border: 1px solid var(--border);
-	border-radius: 6px;
-	font-size: 0.875rem;
-	color: var(--ink-mid);
-}
-</style>

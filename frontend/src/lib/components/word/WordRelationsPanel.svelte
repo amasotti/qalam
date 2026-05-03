@@ -82,14 +82,12 @@ async function handleAdd() {
 			<option value="ANTONYM">Antonym</option>
 		</select>
 		<button
-			class="btn btn-primary"
-			style="font-size:0.75rem;padding:0.25rem 0.75rem;"
+			class="btn btn-primary btn-sm"
 			onclick={handleAdd}
 			disabled={addRelation.isPending || selectedRelated.length === 0}
 		>{addRelation.isPending ? 'Adding…' : 'Add'}</button>
 		<button
-			class="btn"
-			style="font-size:0.75rem;padding:0.25rem 0.625rem;"
+			class="btn btn-sm"
 			onclick={() => { showForm = false; selectedRelated = []; addError = ''; }}
 			disabled={addRelation.isPending}
 		>Cancel</button>
@@ -137,8 +135,7 @@ async function handleAdd() {
 
 			{#if !showForm}
 				<button
-					class="btn"
-					style="font-size:0.75rem;padding:0.2rem 0.5rem;"
+					class="btn btn-xs"
 					onclick={() => (showForm = true)}
 				>+ Add relation</button>
 			{:else}
@@ -146,78 +143,16 @@ async function handleAdd() {
 			{/if}
 		</div>
 	{:else}
-		<div style="margin-bottom:0.75rem;">
+		<div class="section-block">
 			<button
-				class="btn"
-				style="font-size:0.75rem;padding:0.2rem 0.5rem;"
+				class="btn btn-xs"
 				onclick={() => (showForm = true)}
 			>+ Add relation</button>
 			{#if showForm}
-				<div style="margin-top:0.5rem;">
+				<div class="relation-add-form-offset">
 					{@render addForm()}
 				</div>
 			{/if}
 		</div>
 	{/if}
 {/if}
-
-<style>
-.relations-panel {
-	display: flex;
-	flex-direction: column;
-	gap: 0.75rem;
-	margin-bottom: 1.25rem;
-}
-
-.relations-group {
-	display: flex;
-	flex-direction: column;
-	gap: 0.375rem;
-}
-
-.relations-chips {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.5rem;
-}
-
-.relation-chip {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.375rem;
-	border: 1px solid var(--border, #e2e8f0);
-	border-radius: 8px;
-	padding: 0.25rem 0.625rem;
-	background: var(--white, #fff);
-	text-decoration: none;
-	color: inherit;
-	transition: background 0.15s;
-}
-
-.relation-chip:hover {
-	background: var(--bg-subtle, #f7fafc);
-}
-
-.relation-chip-ar {
-	font-size: 1rem;
-	line-height: 1.4;
-}
-
-.relation-chip-tr {
-	font-size: 0.75rem;
-	color: var(--ink-mid, #4a5568);
-}
-
-.relation-add-form {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	flex-wrap: wrap;
-}
-
-.relation-search-wrap {
-	flex: 1;
-	min-width: 14rem;
-}
-
-</style>

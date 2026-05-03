@@ -693,6 +693,97 @@
 	line-height: 1.5;
 	margin: 0.125rem 0 0 1.5rem;
 }
+
+/* Shared inline editor strips */
+.morph-strip,
+.plurals-chips,
+.relations-chips {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem;
+}
+.morph-strip {
+	margin-bottom: 1rem;
+}
+.morph-strip-edit {
+	padding: 0.625rem 0;
+}
+.morph-edit-btn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 0.85rem;
+	color: var(--ink-ghost);
+	padding: 0.125rem 0.25rem;
+	line-height: 1;
+	transition: color 0.15s;
+}
+.morph-edit-btn:hover {
+	color: var(--ink-mid);
+}
+.plurals-section,
+.relations-panel {
+	margin-bottom: 1.25rem;
+}
+.plural-chip,
+.relation-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	font-size: 0.8125rem;
+	text-decoration: none;
+	color: inherit;
+}
+.plural-chip {
+	border: 1px solid rgba(30, 88, 152, 0.2);
+	border-radius: 6px;
+	padding: 0.2rem 0.5rem;
+	background: var(--cerulean-pale);
+}
+.relation-chip {
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	padding: 0.25rem 0.625rem;
+	background: var(--white);
+	transition: background 0.15s;
+}
+.relation-chip:hover {
+	background: var(--bg-dark);
+}
+.plural-chip-ar,
+.relation-chip-ar {
+	font-size: 1rem;
+	line-height: 1.4;
+}
+.plural-chip-type,
+.relation-chip-tr {
+	color: var(--ink-mid);
+	font-size: 0.75rem;
+}
+.plural-add-form,
+.relation-add-form {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+.plural-add-form-offset,
+.relation-add-form-offset {
+	margin-top: 0.5rem;
+}
+.plural-input {
+	width: 10rem;
+}
+.relations-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.375rem;
+}
+.relation-search-wrap {
+	flex: 1;
+	min-width: 14rem;
+}
 /* ── Word detail classes ── */
 
 /* Hero */
@@ -904,6 +995,40 @@
 	background: var(--cerulean);
 	color: white;
 	border-color: var(--cerulean);
+}
+.dict-pill-group {
+	display: inline-flex;
+	align-items: center;
+	gap: 0;
+	border-radius: 6px;
+	overflow: hidden;
+	border: 1px solid rgba(30, 88, 152, 0.2);
+}
+.dict-pill-main {
+	border-radius: 0;
+	border: none;
+}
+.dict-pill-remove {
+	padding: 0.28rem 0.5rem;
+	background: var(--cerulean-pale);
+	border: none;
+	border-left: 1px solid rgba(30, 88, 152, 0.2);
+	cursor: pointer;
+	font-size: 0.8rem;
+	color: var(--cerulean);
+	line-height: 1;
+}
+.dict-pill-remove:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+.dict-controls {
+	display: flex;
+	gap: 0.5rem;
+	margin-bottom: 0.75rem;
+}
+.dict-links-add-actions {
+	margin-top: 0.75rem;
 }
 
 /* Word annotations empty state */
@@ -2095,5 +2220,89 @@
 	justify-content: flex-end;
 	gap: 0.5rem;
 	padding-top: 0.5rem;
+	border-top: 1px solid var(--border);
+}
+
+/* Drawer field patterns */
+.drawer-title {
+	font-size: 1rem;
+	font-weight: 700;
+	margin: 0;
+}
+.drawer-loading {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 2rem 0;
+	color: var(--ink-ghost);
+}
+.drawer-notice,
+.drawer-error,
+.drawer-success {
+	font-size: 0.875rem;
+	padding: 0.75rem;
+	border-radius: 8px;
+}
+.drawer-notice {
+	background: var(--cerulean-pale);
+}
+.drawer-error {
+	background: var(--coral-pale);
+	color: var(--coral);
+}
+.drawer-success {
+	background: var(--sage-pale);
+	color: var(--sage);
+}
+.drawer-field-label {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.875rem;
+	color: var(--ink-mid);
+	cursor: pointer;
+}
+.drawer-field-title {
+	font-weight: 600;
+	margin-bottom: 0.5rem;
+}
+.drawer-textarea {
+	font-size: 0.875rem;
+	padding: 0.5rem;
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	resize: vertical;
+	background: var(--white);
+	line-height: 1.5;
+}
+.drawer-textarea:disabled {
+	background: var(--bg-dark);
+	color: var(--ink-ghost);
+}
+.drawer-plural-row,
+.drawer-relation-row {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.875rem;
+	padding: 0.25rem 0;
+}
+.drawer-plural-type {
+	color: var(--ink-ghost);
+	font-size: 0.75rem;
+}
+.drawer-relation-type {
+	color: var(--ink-ghost);
+	font-size: 0.75rem;
+	background: var(--bg-dark);
+	padding: 0.1rem 0.35rem;
+	border-radius: 4px;
+}
+.drawer-actions {
+	display: flex;
+	gap: 0.5rem;
+	margin-top: 0.5rem;
+	padding-top: 0.75rem;
 	border-top: 1px solid var(--border);
 }

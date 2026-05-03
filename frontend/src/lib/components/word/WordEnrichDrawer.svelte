@@ -142,7 +142,7 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 	></div>
 
 	<!-- Drawer panel -->
-	<div class="drawer" style="width:26rem;max-width:95vw" role="dialog" aria-label="AI Enrichment suggestions">
+		<div class="drawer drawer-lg" role="dialog" aria-label="AI Enrichment suggestions">
 		<div class="drawer-header">
 			<h2 class="drawer-title">✦ AI Enrichment</h2>
 			<button class="drawer-close" onclick={onClose} aria-label="Close">×</button>
@@ -160,12 +160,11 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 				</div>
 			{:else if errorMessage}
 				<div class="drawer-error">
-					<p>{errorMessage}</p>
-					<button
-						class="btn"
-						style="margin-top:0.75rem;font-size:0.8rem;"
-						onclick={runEnrichment}
-					>Try again</button>
+						<p>{errorMessage}</p>
+						<button
+							class="btn btn-sm dict-links-add-actions"
+							onclick={runEnrichment}
+						>Try again</button>
 				</div>
 			{:else if saved}
 				<div class="drawer-success">
@@ -209,11 +208,11 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 				{/if}
 
 				<!-- Plurals -->
-				{#if suggestion.plurals.length > 0}
-					<div class="form-field">
-						<div class="drawer-field-label" style="font-weight:600;margin-bottom:0.5rem;">
-							Plurals
-						</div>
+					{#if suggestion.plurals.length > 0}
+						<div class="form-field">
+							<div class="drawer-field-label drawer-field-title">
+								Plurals
+							</div>
 						{#each suggestion.plurals as p, i}
 							<label class="drawer-plural-row">
 								<input type="checkbox" bind:checked={acceptedPlurals[i]} />
@@ -225,11 +224,11 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 				{/if}
 
 				<!-- Relations — read-only display -->
-				{#if suggestion.relations.length > 0}
-					<div class="form-field">
-						<div class="drawer-field-label" style="font-weight:600;margin-bottom:0.5rem;">
-							Relations (read-only — link manually via word UUID)
-						</div>
+					{#if suggestion.relations.length > 0}
+						<div class="form-field">
+							<div class="drawer-field-label drawer-field-title">
+								Relations (read-only — link manually via word UUID)
+							</div>
 						{#each suggestion.relations as rel}
 							<div class="drawer-relation-row">
 								<span class="arabic-text" dir="rtl">{rel.arabicText}</span>
@@ -255,104 +254,3 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 		</div>
 	</div>
 {/if}
-
-<style>
-.drawer-title {
-	font-size: 1rem;
-	font-weight: 700;
-	margin: 0;
-}
-
-.drawer-loading {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 0.75rem;
-	padding: 2rem 0;
-	color: var(--ink-ghost, #a0aec0);
-}
-
-.drawer-notice,
-.drawer-error,
-.drawer-success {
-	font-size: 0.875rem;
-	padding: 0.75rem;
-	border-radius: 8px;
-}
-
-.drawer-notice {
-	background: var(--cerulean-pale, #ebf3ff);
-}
-
-.drawer-error {
-	background: #fff5f5;
-	color: var(--coral, #e53e3e);
-}
-
-.drawer-success {
-	background: #f0fff4;
-	color: #276749;
-}
-
-.drawer-field-label {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	font-size: 0.875rem;
-	color: var(--ink-mid, #4a5568);
-	cursor: pointer;
-}
-
-.drawer-textarea {
-	font-size: 0.875rem;
-	padding: 0.5rem;
-	border: 1px solid var(--border, #e2e8f0);
-	border-radius: 6px;
-	resize: vertical;
-	background: var(--white, #fff);
-	line-height: 1.5;
-}
-
-.drawer-textarea:disabled {
-	background: var(--bg-subtle, #f7fafc);
-	color: var(--ink-ghost, #a0aec0);
-}
-
-.drawer-plural-row {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	font-size: 0.875rem;
-	padding: 0.25rem 0;
-	cursor: pointer;
-}
-
-.drawer-plural-type {
-	color: var(--ink-ghost, #a0aec0);
-	font-size: 0.75rem;
-}
-
-.drawer-relation-row {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	padding: 0.25rem 0;
-	font-size: 0.875rem;
-}
-
-.drawer-relation-type {
-	color: var(--ink-ghost, #a0aec0);
-	font-size: 0.75rem;
-	background: var(--bg-subtle, #f7fafc);
-	padding: 0.1rem 0.35rem;
-	border-radius: 4px;
-}
-
-.drawer-actions {
-	display: flex;
-	gap: 0.5rem;
-	margin-top: 0.5rem;
-	padding-top: 0.75rem;
-	border-top: 1px solid var(--border, #e2e8f0);
-}
-</style>

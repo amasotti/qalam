@@ -80,15 +80,13 @@ const VERB_PATTERNS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', '
 		</select>
 
 		<button
-			class="btn btn-primary"
-			style="font-size:0.75rem;padding:0.25rem 0.75rem;"
+			class="btn btn-primary btn-sm"
 			onclick={handleSave}
 			disabled={upsert.isPending}
 		>{upsert.isPending ? 'Saving…' : 'Save'}</button>
 
 		<button
-			class="btn"
-			style="font-size:0.75rem;padding:0.25rem 0.625rem;"
+			class="btn btn-sm"
 			onclick={() => (editing = false)}
 			disabled={upsert.isPending}
 		>Cancel</button>
@@ -115,42 +113,8 @@ const VERB_PATTERNS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', '
 {:else}
 	<div class="morph-strip morph-strip-empty">
 		<button
-			class="btn"
-			style="font-size:0.75rem;padding:0.25rem 0.625rem;"
+			class="btn btn-sm"
 			onclick={startEdit}
 		>+ Morphology</button>
 	</div>
 {/if}
-
-<style>
-.morph-strip {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	margin-bottom: 1rem;
-	flex-wrap: wrap;
-}
-
-.morph-strip-edit {
-	padding: 0.625rem 0;
-}
-
-.morph-strip-empty {
-	min-height: 0;
-}
-
-.morph-edit-btn {
-	background: none;
-	border: none;
-	cursor: pointer;
-	font-size: 0.85rem;
-	color: var(--ink-ghost, #a0aec0);
-	padding: 0.125rem 0.25rem;
-	line-height: 1;
-	transition: color 0.15s;
-}
-
-.morph-edit-btn:hover {
-	color: var(--ink-mid, #4a5568);
-}
-</style>

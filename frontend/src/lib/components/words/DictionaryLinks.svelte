@@ -128,14 +128,14 @@ function handleAddOne() {
 
 <div>
 	{#if links.length > 0 || missingTemplated.length > 0}
-		<div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
+		<div class="dict-controls">
 			{#if links.length > 0}
-				<button class="btn" style="font-size:0.75rem;padding:0.25rem 0.625rem;" onclick={handleOpenAll}>
+				<button class="btn btn-sm" onclick={handleOpenAll}>
 					Open all ↗
 				</button>
 			{/if}
 			{#if missingTemplated.length > 0}
-				<button class="btn" style="font-size:0.75rem;padding:0.25rem 0.625rem;" onclick={handleAddAll} disabled={isAddingAll}>
+				<button class="btn btn-sm" onclick={handleAddAll} disabled={isAddingAll}>
 					{isAddingAll ? 'Adding…' : '+ Add all dictionaries'}
 				</button>
 			{/if}
@@ -151,16 +151,15 @@ function handleAddOne() {
 	{:else}
 		<div class="dict-pills">
 			{#each links as link (link.id)}
-				<div style="display:inline-flex;align-items:center;gap:0;border-radius:6px;overflow:hidden;border:1px solid rgba(30,88,152,0.2);">
+				<div class="dict-pill-group">
 					<a
 						href={link.url}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="dict-pill"
-						style="border-radius:0;border:none;"
+						class="dict-pill dict-pill-main"
 					>{sourceLabels[link.source]} ↗</a>
 					<button
-						style="padding:0.28rem 0.5rem;background:var(--cerulean-pale);border:none;border-left:1px solid rgba(30,88,152,0.2);cursor:pointer;font-size:0.8rem;color:var(--cerulean);line-height:1;"
+						class="dict-pill-remove"
 						onclick={() => deleteMutation.mutate({ id: wordId, linkId: link.id })}
 						disabled={deleteMutation.isPending}
 						aria-label="Remove {sourceLabels[link.source]}"
@@ -170,7 +169,7 @@ function handleAddOne() {
 		</div>
 	{/if}
 
-	<div style="margin-top:0.75rem;">
+	<div class="dict-links-add-actions">
 		<button
 			class="dict-link-add-toggle"
 			onclick={() => (showManual = !showManual)}
@@ -203,8 +202,7 @@ function handleAddOne() {
 					<p class="dict-links-add-error">{addError}</p>
 				{/if}
 				<button
-					class="btn btn-primary"
-					style="font-size:0.75rem;padding:0.25rem 0.75rem;align-self:flex-start;"
+					class="btn btn-primary btn-sm"
 					onclick={handleAddOne}
 					disabled={addMutation.isPending || !urlInput.trim()}
 				>Add</button>

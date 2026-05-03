@@ -79,8 +79,7 @@ function handleDelete(pluralId: string) {
 
 			{#if !showForm}
 				<button
-					class="btn"
-					style="font-size:0.75rem;padding:0.2rem 0.5rem;"
+					class="btn btn-xs"
 					onclick={() => (showForm = true)}
 				>+ Add plural</button>
 			{/if}
@@ -89,8 +88,7 @@ function handleDelete(pluralId: string) {
 		{#if showForm}
 			<div class="plural-add-form">
 				<input
-					class="form-input input-ar"
-					style="width:10rem"
+					class="form-input input-ar plural-input"
 					type="text"
 					dir="rtl"
 					placeholder="جمع…"
@@ -107,14 +105,12 @@ function handleDelete(pluralId: string) {
 					{/each}
 				</select>
 				<button
-					class="btn btn-primary"
-					style="font-size:0.75rem;padding:0.25rem 0.75rem;"
+					class="btn btn-primary btn-sm"
 					onclick={handleAdd}
 					disabled={addPlural.isPending || !newForm.trim()}
 				>{addPlural.isPending ? 'Adding…' : 'Add'}</button>
 				<button
-					class="btn"
-					style="font-size:0.75rem;padding:0.25rem 0.625rem;"
+					class="btn btn-sm"
 					onclick={() => { showForm = false; newForm = ''; addError = ''; }}
 					disabled={addPlural.isPending}
 				>Cancel</button>
@@ -125,16 +121,14 @@ function handleDelete(pluralId: string) {
 		{/if}
 	{:else}
 		<button
-			class="btn"
-			style="font-size:0.75rem;padding:0.2rem 0.5rem;"
+			class="btn btn-xs"
 			onclick={() => (showForm = true)}
 		>+ Add plural</button>
 
 		{#if showForm}
-			<div class="plural-add-form" style="margin-top:0.5rem;">
+			<div class="plural-add-form plural-add-form-offset">
 				<input
-					class="form-input input-ar"
-					style="width:10rem"
+					class="form-input input-ar plural-input"
 					type="text"
 					dir="rtl"
 					placeholder="جمع…"
@@ -151,14 +145,12 @@ function handleDelete(pluralId: string) {
 					{/each}
 				</select>
 				<button
-					class="btn btn-primary"
-					style="font-size:0.75rem;padding:0.25rem 0.75rem;"
+					class="btn btn-primary btn-sm"
 					onclick={handleAdd}
 					disabled={addPlural.isPending || !newForm.trim()}
 				>{addPlural.isPending ? 'Adding…' : 'Add'}</button>
 				<button
-					class="btn"
-					style="font-size:0.75rem;padding:0.25rem 0.625rem;"
+					class="btn btn-sm"
 					onclick={() => { showForm = false; newForm = ''; addError = ''; }}
 					disabled={addPlural.isPending}
 				>Cancel</button>
@@ -169,45 +161,3 @@ function handleDelete(pluralId: string) {
 		{/if}
 	{/if}
 </div>
-
-<style>
-.plurals-section {
-	margin-bottom: 1.25rem;
-}
-
-.plurals-chips {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 0.5rem;
-	margin-bottom: 0.5rem;
-}
-
-.plural-chip {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.25rem;
-	border: 1px solid rgba(30, 88, 152, 0.2);
-	border-radius: 6px;
-	padding: 0.2rem 0.5rem;
-	background: var(--cerulean-pale, #ebf3ff);
-	font-size: 0.8125rem;
-}
-
-.plural-chip-ar {
-	font-size: 1rem;
-	line-height: 1.4;
-}
-
-.plural-chip-type {
-	color: var(--ink-mid, #4a5568);
-	font-size: 0.75rem;
-}
-
-.plural-add-form {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	flex-wrap: wrap;
-}
-</style>

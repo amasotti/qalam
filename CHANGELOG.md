@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.6.4] - 2026-05-03
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/d7421a0f79adb06eaecf29eeb67be4a498602a6a..91da67c8b44bf638a128d56ffd33f5f8b13faaa2)
+### 🚜 Refactor
+
+
+- Generalize busatan as my style system for this frontend ([4f72981](https://github.com/amasotti/qalam/commit/4f729816ec4062f67e47050efc0ce7aafd64968d))
+
+- Finish preparing global css files for route migration ([d0e631a](https://github.com/amasotti/qalam/commit/d0e631a87bcbebec58477c0507b3576cd36df7a7))
+
+- Move shared rules from route files into layout.css ([5bca57d](https://github.com/amasotti/qalam/commit/5bca57dc5c9f5abc097a88e4df9649d7b9cb086a))
+
+- Split layout.css - develop a semantic organization ([0db6869](https://github.com/amasotti/qalam/commit/0db686921c6bb428b215e845dcb27c4249228280))
+
+### 🎨 Styling
+
+
+- Migrate core routes to global busatan classes ([b16e3bc](https://github.com/amasotti/qalam/commit/b16e3bc327d950c1e4ae8ae490e4ae42fbb57850))
+
+- Migrate feature components to global busatan classes ([03c9f94](https://github.com/amasotti/qalam/commit/03c9f94d70e4bb1ede9d0e55bf47f426d87cc467))
+
+- Migrate remaining feature components to global busatan classes ([b951348](https://github.com/amasotti/qalam/commit/b951348877542affec51d1f83058d90b598b3e77))
+
+### 🧪 Testing
+
+
+- Add unit tests frontend ([61242f6](https://github.com/amasotti/qalam/commit/61242f65ddec5da2115196aa5b524d93d4690be2))
+
+- Add test run for FE in the pipeline ([6cf4b07](https://github.com/amasotti/qalam/commit/6cf4b07232abe188174986f9b96241e823923686))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Update changelog ([1a3bda5](https://github.com/amasotti/qalam/commit/1a3bda5b22338d9f0f7ce6ce65f8e4ce1cf07f90))
+
+- Remove dead style paths and add busatan guardrails ([cf3983e](https://github.com/amasotti/qalam/commit/cf3983e5117e24e695e0e75e39d353a71d448f2c))
+
+- Remove inconsistencies ([c52edb0](https://github.com/amasotti/qalam/commit/c52edb0e5f9e671ea1dcb2822346c4bc06c91a29))
+
 ## [0.6.3] - 2026-05-02
 
 [Compare with last version](https://github.com/amasotti/qalam/compare/61cf7477a8d2b4b3c8a0a3e5d178bb258495d820..d7421a0f79adb06eaecf29eeb67be4a498602a6a)

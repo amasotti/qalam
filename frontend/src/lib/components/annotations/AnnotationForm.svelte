@@ -49,7 +49,7 @@ async function handleSubmit(e: Event) {
 }
 </script>
 
-<form class="annotation-form" onsubmit={handleSubmit}>
+<form class="annotation-form-shell" onsubmit={handleSubmit}>
 	<div class="form-field">
 		<div class="form-label">Type</div>
 		<div class="toggle-group">
@@ -86,7 +86,7 @@ async function handleSubmit(e: Event) {
 	{/if}
 
 	<div class="form-actions">
-		<button type="submit" class="btn-submit" disabled={isPending}>
+		<button type="submit" class="btn btn-primary btn-sm" disabled={isPending}>
 			{initial ? 'Save' : 'Add'}
 		</button>
 		<button type="button" class="btn-ghost" onclick={onCancel} disabled={isPending}>
@@ -94,35 +94,3 @@ async function handleSubmit(e: Event) {
 		</button>
 	</div>
 </form>
-
-<style>
-.annotation-form { display: flex; flex-direction: column; gap: 0.875rem; }
-
-.form-textarea {
-	padding: 0.375rem 0.625rem;
-	background: hsl(var(--muted) / 0.5);
-	border: 1px solid hsl(var(--border));
-	border-radius: 0.375rem;
-	font-size: 0.8125rem;
-	color: hsl(var(--foreground));
-	resize: vertical;
-	outline: none;
-	font-family: inherit;
-	line-height: 1.5;
-}
-.form-textarea:focus { border-color: hsl(var(--primary) / 0.6); }
-
-.form-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
-
-.btn-submit {
-	padding: 0.375rem 0.875rem;
-	border-radius: 0.375rem;
-	font-size: 0.8125rem;
-	font-weight: 600;
-	background: hsl(var(--primary));
-	color: hsl(var(--primary-foreground));
-	border: none;
-	cursor: pointer;
-}
-.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-</style>

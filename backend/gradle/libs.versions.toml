@@ -13,7 +13,7 @@ koin                 = "4.2.1"
 mockk                = "1.14.9"
 testcontainers       = "1.21.4"
 hikaricp             = "7.0.2"
-postgresql           = "42.7.10"
+postgresql           = "42.7.11"
 arrow                = "2.2.2.1"
 
 [libraries]

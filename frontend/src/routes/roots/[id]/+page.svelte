@@ -123,7 +123,7 @@ function formatEnum(value: string): string {
 					<div class="word-family-grid">
 						{#each words.data as word (word.id)}
 							{@const masteryClass = 'wc-' + (word.masteryLevel?.toLowerCase() ?? 'new')}
-							<a class="word-chip {masteryClass}" href="/words/{word.id}">
+							<a class="root-word-chip {masteryClass}" href="/words/{word.id}">
 								<span class="wc-ar">{word.arabicText}</span>
 								{#if word.translation}
 									<span class="wc-en">{word.translation}</span>

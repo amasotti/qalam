@@ -563,6 +563,40 @@
 .section-block {
 	margin-bottom: 1.5rem;
 }
+.section-block-lg {
+	margin-bottom: 2.5rem;
+}
+.section-block-sm {
+	margin-bottom: 0.875rem;
+}
+.detail-status {
+	padding: 2rem 3rem;
+	font-size: 0.875rem;
+}
+.detail-edit-content {
+	padding: 2rem 3rem;
+}
+.detail-edit-hero {
+	margin-bottom: 1.5rem;
+}
+.plain-icon-btn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--ink-ghost);
+	padding: 0;
+}
+.plain-icon-btn:hover {
+	color: var(--ink-mid);
+}
+.meta-inline-count {
+	font-size: 0.72rem;
+	color: var(--ink-light);
+	text-transform: none;
+	letter-spacing: 0;
+	font-family: var(--font-sans);
+	margin-left: -0.5rem;
+}
 .meta-actions {
 	display: flex;
 	flex-direction: column;
@@ -602,6 +636,50 @@
 .drawer-lg {
 	width: 26rem;
 	max-width: 95vw;
+}
+.sect-divider {
+	border: none;
+	border-top: 1px solid var(--border);
+	margin: 1.5rem 0;
+}
+.notes-textarea {
+	font-size: 0.875rem;
+	padding: 0.5rem;
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	resize: vertical;
+	background: var(--white);
+	line-height: 1.6;
+	width: 100%;
+	box-sizing: border-box;
+}
+.notes-text {
+	font-size: 0.9rem;
+	font-style: italic;
+	color: var(--ink-mid);
+	line-height: 1.7;
+	margin-bottom: 1.5rem;
+	white-space: pre-wrap;
+}
+.anchor-ar {
+	font-size: 0.875rem;
+	direction: rtl;
+	font-family: var(--font-arabic);
+}
+.annotation-link {
+	margin-left: auto;
+	font-size: 0.8rem;
+	color: var(--cerulean);
+	text-decoration: none;
+}
+.annotation-link:hover {
+	text-decoration: underline;
+}
+.annotation-content {
+	font-size: 0.8125rem;
+	color: var(--ink-mid);
+	line-height: 1.5;
+	margin: 0.125rem 0 0 1.5rem;
 }
 /* ── Word detail classes ── */
 

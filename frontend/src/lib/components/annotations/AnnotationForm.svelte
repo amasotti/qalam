@@ -4,7 +4,7 @@ import type { AnnotationResponse, WordAutocompleteResponse } from '$lib/api/type
 import { useCreateAnnotation, useUpdateAnnotation } from '$lib/stores/annotations';
 import WordSearchCombobox from './WordSearchCombobox.svelte';
 
-const TYPES = ['VOCAB', 'GRAMMAR', 'CULTURAL', 'STRUCTURE'] as const;
+const TYPES = ['VOCABULARY', 'GRAMMAR', 'CULTURAL', 'OTHER'] as const;
 type AnnotationType = (typeof TYPES)[number];
 
 interface Props {
@@ -17,7 +17,7 @@ interface Props {
 
 let { textId, anchor, initial, onSuccess, onCancel }: Props = $props();
 
-let type = $state<AnnotationType>(untrack(() => (initial?.type as AnnotationType) ?? 'VOCAB'));
+let type = $state<AnnotationType>(untrack(() => (initial?.type as AnnotationType) ?? 'VOCABULARY'));
 let content = $state(untrack(() => initial?.content ?? ''));
 let linkedWords = $state<WordAutocompleteResponse[]>([]);
 

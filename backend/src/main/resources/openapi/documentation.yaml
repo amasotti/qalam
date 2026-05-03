@@ -2685,7 +2685,7 @@ components:
           description: The anchored text fragment this annotation refers to
         type:
           type: string
-          enum: [VOCAB, GRAMMAR, CULTURAL, STRUCTURE]
+          enum: [VOCABULARY, GRAMMAR, CULTURAL, OTHER]
         content:
           type: string
           nullable: true
@@ -2715,7 +2715,7 @@ components:
           type: string
         type:
           type: string
-          enum: [VOCAB, GRAMMAR, CULTURAL, STRUCTURE]
+          enum: [VOCABULARY, GRAMMAR, CULTURAL, OTHER]
         content:
           type: string
           nullable: true
@@ -2743,7 +2743,7 @@ components:
         type:
           type: string
           nullable: true
-          enum: [VOCAB, GRAMMAR, CULTURAL, STRUCTURE]
+          enum: [VOCABULARY, GRAMMAR, CULTURAL, OTHER]
         content:
           type: string
           nullable: true

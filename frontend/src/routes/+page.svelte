@@ -20,9 +20,7 @@ const health = createQuery(() => ({
 	retry: false,
 }));
 
-// Verse: words stagger quickly (0.08s apart), whole sequence done in ~0.5s
 const verseWords = ['معرفة', 'اللغات', 'مدخل', 'إلى', 'الحكمة'];
-const wordDelay = (i: number) => `${0.05 + i * 0.08}s`;
 
 const sections = [
 	{
@@ -98,8 +96,8 @@ const learningLinks = [
 	<!-- ── Verse ── -->
 	<div class="home-verse-block">
 		<div class="home-verse-words" aria-label="معرفة اللغات مدخل إلى الحكمة">
-			{#each verseWords as word, i}
-				<span class="home-verse-word" style="animation-delay: {wordDelay(i)}">
+			{#each verseWords as word}
+				<span class="home-verse-word">
 					{word}
 				</span>
 			{/each}
@@ -114,12 +112,8 @@ const learningLinks = [
 
 	<!-- ── Section cards — appear immediately alongside verse ── -->
 	<nav class="home-nav-grid" aria-label="Sections">
-		{#each sections as s, i}
-			<a
-				class="home-nav-card"
-				href={s.href}
-				style="animation: slide-up 280ms cubic-bezier(0.16,1,0.3,1) both; animation-delay: {0.05 + i * 0.06}s;"
-			>
+		{#each sections as s}
+			<a class="home-nav-card" href={s.href}>
 				<div class="home-nav-card-header">
 					<div class="home-nav-card-icon">
 						<s.icon size={18} />

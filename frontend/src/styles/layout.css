@@ -35,7 +35,7 @@
 	display: block;
 }
 .sb-name {
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-size: 0.62rem;
 	letter-spacing: 0.32em;
 	text-transform: uppercase;
@@ -278,7 +278,7 @@
 	box-shadow: 0 1px 4px rgba(26, 24, 16, 0.04);
 }
 .meta-card-title {
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-size: 0.72rem;
 	font-weight: 600;
 	color: var(--ink);
@@ -332,6 +332,12 @@
 	border-color: var(--ink-mid);
 	color: var(--ink);
 }
+.btn:disabled,
+.btn[aria-disabled="true"] {
+	opacity: 0.5;
+	cursor: not-allowed;
+	pointer-events: none;
+}
 .btn-primary {
 	background: var(--coral);
 	color: white;
@@ -352,6 +358,14 @@
 .btn-full {
 	width: 100%;
 	justify-content: flex-start;
+}
+.btn-sm {
+	padding: 0.25rem 0.75rem;
+	font-size: 0.75rem;
+}
+.btn-xs {
+	padding: 0.2rem 0.5rem;
+	font-size: 0.75rem;
 }
 
 /* Ghost variant (shadcn-token context) */
@@ -431,7 +445,7 @@
 
 /* Compact Arabic text input for inline forms */
 .input-ar {
-	font-family: "Noto Naskh Arabic", serif;
+	font-family: var(--font-arabic);
 	font-size: 1rem;
 	direction: rtl;
 	text-align: right;
@@ -444,6 +458,10 @@
 	font-weight: 500;
 	border-radius: 999px;
 	border: 1px solid;
+}
+.chip-sm {
+	padding: 0.15rem 0.6rem;
+	font-size: 0.65rem;
 }
 .c-olive {
 	background: var(--olive-pale);
@@ -464,6 +482,126 @@
 	background: var(--bg-dark);
 	color: var(--ink-light);
 	border-color: var(--border);
+}
+
+/* Common layout helpers */
+.stack-2xs {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+.stack-xs {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+.stack-sm {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+.row-xs {
+	display: flex;
+	align-items: center;
+	gap: 0.375rem;
+}
+.row-sm {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+.row-wrap-sm {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+/* Common status and helper text */
+.status-text {
+	font-size: 0.875rem;
+}
+.status-text-muted {
+	color: var(--ink-ghost);
+}
+.status-text-danger {
+	color: var(--coral);
+}
+.helper-copy {
+	font-size: 0.8rem;
+	color: var(--ink-ghost);
+}
+.helper-copy-strong {
+	font-size: 0.8rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--ink-ghost);
+}
+
+/* Reusable surfaces */
+.surface-card {
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background: var(--white);
+}
+.surface-card-muted {
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background: var(--bg-dark);
+}
+.surface-card-pad-sm {
+	padding: 0.75rem;
+}
+.surface-card-pad-md {
+	padding: 1rem;
+}
+.surface-card-pad-lg {
+	padding: 1.25rem;
+}
+
+/* Shared content blocks */
+.section-block {
+	margin-bottom: 1.5rem;
+}
+.meta-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+.empty-state-inline {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 3rem 0;
+	color: var(--ink-ghost);
+}
+.annotation-list {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+.annotation-list-item {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	padding: 0.5rem 0.75rem;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background: var(--white);
+}
+
+/* Drawer width modifiers */
+.drawer-sm {
+	width: 340px;
+}
+.drawer-md {
+	width: 360px;
+}
+.drawer-lg {
+	width: 26rem;
+	max-width: 95vw;
 }
 /* ── Word detail classes ── */
 
@@ -498,7 +636,7 @@
 	display: block;
 }
 .word-hero-tr {
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-style: italic;
 	font-size: 1.25rem;
 	color: var(--olive);
@@ -527,7 +665,7 @@
 
 /* Word content sections */
 .word-translation {
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-size: 1.2rem;
 	line-height: 1.6;
 	color: var(--ink);
@@ -641,7 +779,7 @@
 	margin-bottom: 0.3rem;
 }
 .example-card-tr {
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-style: italic;
 	font-size: 0.78rem;
 	color: var(--olive-soft);
@@ -795,7 +933,7 @@
 	align-self: flex-start;
 }
 .root-meaning {
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-size: 1.2rem;
 	line-height: 1.7;
 	color: var(--ink);
@@ -875,7 +1013,7 @@
 	line-height: 1.2;
 }
 .wc-tr {
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-size: 0.65rem;
 	font-style: italic;
 	color: var(--olive);
@@ -1009,7 +1147,7 @@
 	margin-bottom: 2.5rem;
 }
 .text-title {
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-size: 1.75rem;
 	font-weight: 600;
 	line-height: 1.3;
@@ -1056,7 +1194,7 @@
 }
 .sentence-num {
 	color: var(--olive);
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-style: italic;
 	font-size: 0.75rem;
 	padding-top: 0.55rem;
@@ -1078,7 +1216,7 @@
 	letter-spacing: 0.02em;
 }
 .sentence-tr {
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-size: 0.875rem;
 	font-style: italic;
 	color: var(--olive);
@@ -1130,7 +1268,7 @@
 	direction: rtl;
 }
 .token-tr {
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-size: 0.8rem;
 	font-style: italic;
 	color: var(--olive);
@@ -1153,7 +1291,7 @@
 	border-left: 2px solid var(--olive);
 	background: rgba(74, 98, 40, 0.03);
 	border-radius: 0 4px 4px 0;
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-style: italic;
 }
 .sentence-trans-label {
@@ -1199,7 +1337,7 @@
 	margin-bottom: 1.25rem;
 }
 .full-text-tr {
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-size: 0.9rem;
 	font-style: italic;
 	color: var(--olive);
@@ -1251,7 +1389,7 @@
 	margin-bottom: 1.5rem;
 }
 .list-page-title {
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-size: 1.75rem;
 	font-weight: 600;
 	color: var(--ink);
@@ -1363,7 +1501,7 @@
 	font-style: italic;
 	color: var(--ink-light);
 	margin-bottom: 0.2rem;
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 }
 .word-card-en {
 	font-size: 0.8rem;
@@ -1484,7 +1622,7 @@
 	transform: translateY(-1px);
 }
 .text-card-title {
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-size: 1.1rem;
 	font-weight: 600;
 	color: var(--ink);
@@ -1614,7 +1752,7 @@
 .home-verse-tr {
 	font-size: 0.875rem;
 	font-style: italic;
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	color: var(--olive);
 	letter-spacing: 0.02em;
 }
@@ -1798,7 +1936,7 @@
 	gap: 0.25rem;
 }
 .form-page-title {
-	font-family: "Spectral", serif;
+	font-family: var(--font-display);
 	font-size: 1.5rem;
 	font-weight: 600;
 	color: var(--ink);

@@ -179,4 +179,4 @@ Full schema + data via `pg_dump --format=custom`.
 3. **The API is primary** — every feature reachable via `curl`. The UI is a convenience layer.
 4. **AI features are optional** — fully functional without `OPENROUTER_API_KEY`.
 5. **No `any` in TypeScript** — enforced by linter.
-6. **`just run` starts everything** — zero additional setup after `doppler login`.
+6. **`doppler run -- just up` starts everything** — full Docker stack from the committed `justfile` and Compose config.

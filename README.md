@@ -116,8 +116,8 @@ breakdowns. Useful for seeing where gaps are and how the knowledge base is growi
 | pnpm    | latest  | `corepack enable && corepack prepare pnpm@latest --activate`      |
 | Docker  | any     | Docker Desktop or Colima                                          |
 
-`JAVA_HOME` must point to JDK 25 (sdkman sets this automatically). Doppler can be swapped for
-Vault, Infisical, or a plain `.env` file.
+`JAVA_HOME` must point to JDK 25 (sdkman sets this automatically). Secrets are managed through
+Doppler only; `.env` files are not used.
 
 **One-time setup:**
 
@@ -129,18 +129,22 @@ doppler setup    # project: qalam, config: dev
 **Run everything:**
 
 ```bash
-just up         # Postgres + backend + frontend
+doppler run -- just up  # Postgres + backend + frontend
 ```
 
 **Run in parts:**
 
 ```bash
-just start-db    # Postgres only (Docker Compose)
-just backend     # Ktor backend (requires DB)
-just frontend    # SvelteKit dev server (requires backend)
-just test        # backend tests (Testcontainers — no external DB needed)
-just stop-db     # shut down Postgres
+just db           # Postgres only (Docker Compose)
+just dev-backend  # Ktor backend against Docker DB (requires Doppler)
+just dev-frontend # SvelteKit dev server (proxies to localhost:8085)
+just dev          # DB + local backend + local frontend
+just test         # backend tests (Testcontainers — no external DB needed)
+just down         # shut down all Docker Compose services
 ```
+
+`just up` itself is a thin `docker compose up -d` wrapper. The backend container requires
+`DOPPLER_TOKEN`, so either keep that token in your shell or run it through `doppler run`.
 
 ### Maintenance
 
@@ -156,7 +160,7 @@ just rebuild <service>   # service: db | backend | frontend
 just check       # kotlin check task (gradle)
 just test        # backend tests (Testcontainers — no external DB needed)
 
-just lint-openapi   # OpenAPI spec validation (backend)
+just lint-api   # OpenAPI spec validation (backend)
 
 just lint-frontend # Biome linting (frontend)
 just check-frontend # svelte check (frontend)

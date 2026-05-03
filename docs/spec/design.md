@@ -160,11 +160,12 @@ Tailwind `rtl:` variants handle directional layout adjustments per component.
 ### Local Development
 
 ```
-just run          # full stack: postgres + backend + frontend
-just start-db     # postgres only
-just backend      # Ktor with hot reload
-just frontend     # SvelteKit dev server
-just test         # all tests (backend + frontend)
+doppler run -- just up # full Docker stack: postgres + backend + frontend
+just db           # postgres only
+just dev-backend  # Ktor backend against Docker DB (requires Doppler)
+just dev-frontend # SvelteKit dev server
+just dev          # DB + local backend + local frontend
+just test         # backend tests
 ```
 
 No native image. No 30-minute builds. Ktor on JVM starts in under 5 seconds.
@@ -174,12 +175,14 @@ No native image. No 30-minute builds. Ktor on JVM starts in under 5 seconds.
 Secrets are managed with **Doppler**, not `.env` files. Doppler injects environment variables into the process at runtime.
 
 ```
-just run          # runs: doppler run -- docker compose up
-just backend      # runs: doppler run -- ./gradlew run
+doppler run -- just up # full Docker stack; passes DOPPLER_TOKEN to compose
+just dev-backend  # runs: doppler run -- ./backend/gradlew -p backend run
 ```
 
 `.env` files are not committed and not expected to be present. The `doppler.yaml` project
-config file is committed. A `DOPPLER_TOKEN` is the only secret needed in CI.
+config file is committed. The backend Docker service expects `DOPPLER_TOKEN` in the shell
+environment; `doppler run -- just up` supplies it for local full-stack runs. A `DOPPLER_TOKEN`
+is the only secret needed in CI.
 
 ### Docker Compose
 

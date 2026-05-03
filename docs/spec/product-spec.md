@@ -32,10 +32,10 @@ permissions. All endpoints are implicitly authorized.
 
 ## Developer Experience Requirement
 
-A single `just run` command starts the complete stack (database, backend, frontend) with no
-further setup. Individual parts (backend only, frontend only, database only) must also be
-startable in isolation for debugging. A developer returning to the project after months of
-absence should be productive within 5 minutes.
+A single `doppler run -- just up` command starts the complete stack (database, backend, frontend)
+from the checked-in task runner and Compose config. Individual parts (backend only, frontend only,
+database only) must also be startable in isolation for debugging. A developer returning to the
+project after months of absence should be productive within 5 minutes.
 
 ---
 

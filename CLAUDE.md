@@ -10,7 +10,7 @@ Personal Arabic learning tool — texts, vocabulary, roots, SRS training, annota
 backend/      Kotlin + Ktor
 frontend/     SvelteKit (bootstrapped, M2 complete)
 docs/         Source of truth for design decisions, architecture rules, plans and working rules
-justfile      dev commands: just run / just test / just backend / just frontend
+justfile      dev commands: just up / just db / just dev-backend / just dev-frontend / just test
 docker-compose.yml  full dev stack (postgres, backend, frontend)
 ```
 
@@ -67,7 +67,7 @@ docker-compose.yml  full dev stack (postgres, backend, frontend)
 2. Every feature reachable via `curl`
 3. AI features degrade gracefully to 503 `AI_NOT_CONFIGURED` without `OPENROUTER_API_KEY`
 4. No `any` in TypeScript, as few nullable values as possible in Kotlin — enforced by linters and code review
-5. `just up` starts everything after `doppler login`
+5. `doppler run -- just up` starts the full Docker stack; local backend dev uses `just dev-backend`
 6. Frontend checks must always pass before committing any `.svelte` or CSS file:
    - `just lint-frontend` — Biome lint (zero errors, zero warnings)
    - `just format-frontend` — Biome format (run, stage any auto-fixes, re-lint)

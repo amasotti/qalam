@@ -45,7 +45,7 @@ function isActive(href: string): boolean {
 			</nav>
 			<div class="sb-progress">
 				<div class="sb-prog-label">Vocabulary</div>
-				<div class="sb-prog-track"><div class="sb-prog-fill" style="width: 38%"></div></div>
+				<div class="sb-prog-track"><div class="sb-prog-fill sb-prog-fill-sample"></div></div>
 				<div class="sb-prog-note">Study your words</div>
 			</div>
 		</aside>

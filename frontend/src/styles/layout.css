@@ -114,6 +114,9 @@
 	background: linear-gradient(to right, var(--olive), var(--coral));
 	border-radius: 2px;
 }
+.sb-prog-fill-sample {
+	width: 38%;
+}
 .sb-prog-note {
 	font-size: 0.68rem;
 	color: var(--ink-ghost);
@@ -1270,6 +1273,26 @@
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
 }
+.wc-mastery-mastered {
+	background: var(--m-mastered-bg);
+	color: var(--m-mastered);
+}
+.wc-mastery-known {
+	background: var(--m-known-bg);
+	color: var(--m-known);
+}
+.wc-mastery-familiar {
+	background: var(--m-familiar-bg);
+	color: var(--m-familiar);
+}
+.wc-mastery-learning {
+	background: var(--m-learning-bg);
+	color: var(--m-learning);
+}
+.wc-mastery-new {
+	background: var(--bg-dark);
+	color: var(--ink-ghost);
+}
 
 /* Root side panel */
 .fam-mastery {
@@ -1318,6 +1341,21 @@
 .fam-bar-inner {
 	height: 100%;
 	border-radius: 2px;
+}
+.fam-bar-inner-mastered {
+	background: var(--m-mastered);
+}
+.fam-bar-inner-known {
+	background: var(--m-known);
+}
+.fam-bar-inner-familiar {
+	background: var(--m-familiar);
+}
+.fam-bar-inner-learning {
+	background: var(--m-learning);
+}
+.fam-bar-inner-new {
+	background: var(--border);
 }
 .fam-count {
 	width: 1.5rem;
@@ -1963,6 +2001,22 @@
 	font-size: 2.25rem;
 	line-height: 1.5;
 	color: var(--ink);
+	animation: slide-up 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.home-verse-word:nth-child(1) {
+	animation-delay: 0.05s;
+}
+.home-verse-word:nth-child(2) {
+	animation-delay: 0.13s;
+}
+.home-verse-word:nth-child(3) {
+	animation-delay: 0.21s;
+}
+.home-verse-word:nth-child(4) {
+	animation-delay: 0.29s;
+}
+.home-verse-word:nth-child(5) {
+	animation-delay: 0.37s;
 }
 .home-verse-tr {
 	font-size: 0.875rem;
@@ -2012,6 +2066,22 @@
 		border-color 180ms,
 		box-shadow 180ms,
 		transform 180ms;
+	animation: slide-up 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.home-nav-card:nth-child(1) {
+	animation-delay: 0.05s;
+}
+.home-nav-card:nth-child(2) {
+	animation-delay: 0.11s;
+}
+.home-nav-card:nth-child(3) {
+	animation-delay: 0.17s;
+}
+.home-nav-card:nth-child(4) {
+	animation-delay: 0.23s;
+}
+.home-nav-card:nth-child(5) {
+	animation-delay: 0.29s;
 }
 .home-nav-card:hover {
 	transform: translateY(-2px);

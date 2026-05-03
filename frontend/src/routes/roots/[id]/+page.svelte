@@ -35,22 +35,6 @@ async function handleDelete() {
 function formatEnum(value: string): string {
 	return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 }
-
-const famColors: Record<string, { bg: string; color: string }> = {
-	MASTERED: { bg: 'var(--m-mastered-bg)', color: 'var(--m-mastered)' },
-	KNOWN: { bg: 'var(--m-known-bg)', color: 'var(--m-known)' },
-	FAMILIAR: { bg: 'var(--m-familiar-bg)', color: 'var(--m-familiar)' },
-	LEARNING: { bg: 'var(--m-learning-bg)', color: 'var(--m-learning)' },
-	NEW: { bg: 'var(--bg-dark)', color: 'var(--ink-ghost)' },
-};
-
-const famBarColors: Record<string, string> = {
-	MASTERED: 'var(--m-mastered)',
-	KNOWN: 'var(--m-known)',
-	FAMILIAR: 'var(--m-familiar)',
-	LEARNING: 'var(--m-learning)',
-	NEW: 'var(--border)',
-};
 </script>
 
 {#if root.isPending}
@@ -139,7 +123,6 @@ const famBarColors: Record<string, string> = {
 					<div class="word-family-grid">
 						{#each words.data as word (word.id)}
 							{@const masteryClass = 'wc-' + (word.masteryLevel?.toLowerCase() ?? 'new')}
-							{@const masteryColor = famColors[word.masteryLevel ?? 'NEW'] ?? famColors['NEW']}
 							<a class="word-chip {masteryClass}" href="/words/{word.id}">
 								<span class="wc-ar">{word.arabicText}</span>
 								{#if word.translation}
@@ -149,7 +132,7 @@ const famBarColors: Record<string, string> = {
 									<span class="wc-pos pos-{word.partOfSpeech.toLowerCase() === 'verb' ? 'verb' : word.partOfSpeech.toLowerCase() === 'noun' ? 'noun' : word.partOfSpeech.toLowerCase() === 'adjective' ? 'adj' : 'other'}">{formatEnum(word.partOfSpeech)}</span>
 								{/if}
 								{#if word.masteryLevel}
-									<span class="wc-mastery" style="background:{masteryColor.bg};color:{masteryColor.color};">{formatEnum(word.masteryLevel)}</span>
+									<span class="wc-mastery wc-mastery-{word.masteryLevel.toLowerCase()}">{formatEnum(word.masteryLevel)}</span>
 								{/if}
 							</a>
 						{/each}
@@ -200,7 +183,7 @@ const famBarColors: Record<string, string> = {
 									<span class="fam-dot fam-dot-{cls}"></span>
 									<span class="fam-label">{formatEnum(level)}</span>
 									<div class="fam-bar-outer">
-										<div class="fam-bar-inner" style="width:{total > 0 ? Math.round(masteryCount[level] / total * 100) : 0}%;background:{famBarColors[level]};"></div>
+										<div class="fam-bar-inner fam-bar-inner-{cls}" style="width:{total > 0 ? Math.round(masteryCount[level] / total * 100) : 0}%;"></div>
 									</div>
 									<span class="fam-count">{masteryCount[level]}</span>
 								</div>

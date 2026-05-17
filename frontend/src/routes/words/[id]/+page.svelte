@@ -1,7 +1,7 @@
 <script lang="ts">
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
-import type { UpdateWordRequest } from '$lib/api/types.gen';
+import type { UpdateWordRequest, WordResponse } from '$lib/api/types.gen';
 import AiInsightPanel from '$lib/components/ai/AiInsightPanel.svelte';
 import AnnotationBadge from '$lib/components/annotations/AnnotationBadge.svelte';
 import WordEnrichDrawer from '$lib/components/word/WordEnrichDrawer.svelte';
@@ -98,6 +98,11 @@ function cancelAddExample() {
 
 function formatEnum(value: string): string {
 	return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+}
+
+function formatAddedDate(word: WordResponse): string {
+	const date = new Date(word.createdAt);
+	return date.toLocaleDateString("en-GB", { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
 const masterySteps: Record<string, number> = {
@@ -410,6 +415,10 @@ const masterySteps: Record<string, number> = {
 					<div class="meta-row">
 						<span class="meta-key">Difficulty</span>
 						<span class="meta-val">{formatEnum(word.data.difficulty)}</span>
+					</div>
+					<div class="meta-row">
+						<span class="meta-key">Added</span>
+						<span class="meta-val">{formatAddedDate(word.data)}</span>
 					</div>
 				</div>
 			</aside>

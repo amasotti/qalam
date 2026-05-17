@@ -23,3 +23,5 @@ backups/*.gz
 .superpowers/
 .worktrees/
 scripts/**/*.json
+
+**/*.pdf

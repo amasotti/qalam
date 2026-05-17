@@ -1,8 +1,8 @@
 # Visual Design System — Busatan (بُسْتَان)
 
-> **Status:** Approved direction. Reference mockups in `docs/mockups/mockup-busatan-word.html`, `mockup-busatan-root.html`, `mockup-busatan-text.html`.
+> **Status:** Approved direction.
 >
-> This document is the source of truth for implementing the Busatan design system into the live SvelteKit frontend. When implementing, read the mockup HTML files for exact CSS values — this spec captures intent, rationale, and component contracts.
+> This document is the source of truth for implementing the Busatan design system into the live SvelteKit frontend.
 
 ---
 

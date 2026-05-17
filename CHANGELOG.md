@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.6.5] - 2026-05-17
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/91da67c8b44bf638a128d56ffd33f5f8b13faaa2..eac416897eea445dab055c517be29a58e2d38dc3)
+### 🐛 Bug Fixes
+
+
+- Update annotation types ([eb1b8de](https://github.com/amasotti/qalam/commit/eb1b8de740196ff8f5e36e4d41c479b0c5bd7fad))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Update dependencies ([dd49ba7](https://github.com/amasotti/qalam/commit/dd49ba76e213bc670149bb54a239932adcd42ffd))
+
+- Update wrapper ([eac4168](https://github.com/amasotti/qalam/commit/eac416897eea445dab055c517be29a58e2d38dc3))
+
 ## [0.6.4] - 2026-05-03
 
 [Compare with last version](https://github.com/amasotti/qalam/compare/d7421a0f79adb06eaecf29eeb67be4a498602a6a..91da67c8b44bf638a128d56ffd33f5f8b13faaa2)

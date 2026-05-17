@@ -1,0 +1,6 @@
+[project]
+name = "batch-word-import"
+version = "0.1.0"
+description = "Import vocabulary words from CSV into qalam"
+requires-python = ">=3.11"
+dependencies = []

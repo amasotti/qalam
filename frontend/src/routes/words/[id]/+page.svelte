@@ -102,7 +102,7 @@ function formatEnum(value: string): string {
 
 function formatAddedDate(word: WordResponse): string {
 	const date = new Date(word.createdAt);
-	return date.toLocaleDateString("en-GB", { year: 'numeric', month: 'short', day: 'numeric' });
+	return date.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
 const masterySteps: Record<string, number> = {

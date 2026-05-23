@@ -44,7 +44,7 @@ jobs:
 
       - name: Update CHANGELOG.md
         if: steps.version.outputs.skip == 'false'
-        run: git cliff --config .github/cliff.toml --bump -o CHANGELOG.md
+        run: git-cliff --config .github/cliff.toml --bump -o CHANGELOG.md
 
       - name: Bump version — build.gradle.kts
         if: steps.version.outputs.skip == 'false'
@@ -62,7 +62,7 @@ jobs:
         run: |
           {
             echo "content<<CLIFF_EOF"
-            git cliff --config .github/cliff.toml --unreleased --strip header
+            git-cliff --config .github/cliff.toml --unreleased --strip header
             echo "CLIFF_EOF"
           } >> "$GITHUB_OUTPUT"
 

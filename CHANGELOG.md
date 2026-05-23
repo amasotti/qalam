@@ -2,9 +2,28 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
-## [0.7.0] - 2026-05-17
+## [0.7.1] - 2026-05-23
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/fbf37e3be27c355107dfd335ffdccc35d06b1f2c..be32813c1c2c7ec78fea210d0264bc62e6891a17)
+[Compare with last version](https://github.com/amasotti/qalam/compare/d6c87e871105ca6001c80a2046f7ccdb1987982e..faa8af005bb521a715fec0e4e207f8de8c5533d0)
+### 🐛 Bug Fixes
+
+
+- Calling git-cliff ([a5c3066](https://github.com/amasotti/qalam/commit/a5c30662b45157a897e195b043964c977f1140fe))
+
+- Calling git-cliff ([ea983e3](https://github.com/amasotti/qalam/commit/ea983e3d9bac2000feee038180e0c202ae03180f))
+
+- Drop release PAT, github token is enough ([faa8af0](https://github.com/amasotti/qalam/commit/faa8af005bb521a715fec0e4e207f8de8c5533d0))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Improve setup of ci/cd pipeline and tagging ([7181590](https://github.com/amasotti/qalam/commit/7181590d5bd9f0f5fac8ee0dc178f4f4cfdcc2b9))
+
+- Remove old release action ([ec99af0](https://github.com/amasotti/qalam/commit/ec99af0311a5b2f28a9ea5c2cfa16da462d76fc5))
+
+## [0.7.0] - 2026-05-23
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/fbf37e3be27c355107dfd335ffdccc35d06b1f2c..d6c87e871105ca6001c80a2046f7ccdb1987982e)
 ### 🚀 Features
 
 
@@ -81,7 +100,7 @@ All notable changes to this project will be documented in this file (created wit
 
 ## [0.6.3] - 2026-05-02
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/61cf7477a8d2b4b3c8a0a3e5d178bb258495d820..d7421a0f79adb06eaecf29eeb67be4a498602a6a)
+[Compare with last version](https://github.com/amasotti/qalam/compare/a43a241bfbc070752d0f1a49b3efbb8f5b64b871..d7421a0f79adb06eaecf29eeb67be4a498602a6a)
 ### 🐛 Bug Fixes
 
 
@@ -96,6 +115,8 @@ All notable changes to this project will be documented in this file (created wit
 ### ⚙️ Miscellaneous Tasks
 
 
+- *(ci)* Configure Testcontainers with Docker in GitLab CI ([61cf747](https://github.com/amasotti/qalam/commit/61cf7477a8d2b4b3c8a0a3e5d178bb258495d820))
+
 - Python utility to import structured texts ([695450e](https://github.com/amasotti/qalam/commit/695450e4e2ea55aa58da4a2a5025f34252455af2))
 
 - Update dependencies to latest versions ([c995c31](https://github.com/amasotti/qalam/commit/c995c31a5a9de584e8848b6b60cd5fe0f946a6aa))
@@ -105,14 +126,6 @@ All notable changes to this project will be documented in this file (created wit
 - Update backend deps ([2eb5c76](https://github.com/amasotti/qalam/commit/2eb5c7631225b800880ae1cf509e2959f9ff48eb))
 
 - Remove deprecated check from detekt configuration ([ecbe14c](https://github.com/amasotti/qalam/commit/ecbe14c5883cebec17f9057515332cba0c216710))
-
-## [0.6.2] - 2026-04-26
-
-[Compare with last version](https://github.com/amasotti/qalam/compare/a43a241bfbc070752d0f1a49b3efbb8f5b64b871..61cf7477a8d2b4b3c8a0a3e5d178bb258495d820)
-### ⚙️ Miscellaneous Tasks
-
-
-- *(ci)* Configure Testcontainers with Docker in GitLab CI ([61cf747](https://github.com/amasotti/qalam/commit/61cf7477a8d2b4b3c8a0a3e5d178bb258495d820))
 
 ## [0.6.1] - 2026-04-26
 

@@ -2,9 +2,32 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.7.0] - 2026-05-17
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/fbf37e3be27c355107dfd335ffdccc35d06b1f2c..be32813c1c2c7ec78fea210d0264bc62e6891a17)
+### 🚀 Features
+
+
+- Script to import words from a csv ([12e6a61](https://github.com/amasotti/qalam/commit/12e6a6153181cc8ab1a80435432a3013ff953056))
+
+- Add creation date info ([fd948ed](https://github.com/amasotti/qalam/commit/fd948ed14866c922c408f235abea36df79025e59))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Ignore pdfs ([3be7f60](https://github.com/amasotti/qalam/commit/3be7f603afc3aa2272a5ef4370711c048ba63de9))
+
+- Remove mockups, already implemented ([017d9f2](https://github.com/amasotti/qalam/commit/017d9f2fdae507e4a7ef64b416866164372d0ff8))
+
+- Dependencies update ([0206daa](https://github.com/amasotti/qalam/commit/0206daabf950aca1b690843b476c9eabc4ac11a2))
+
+- Dependencies update frontend ([4109f94](https://github.com/amasotti/qalam/commit/4109f9458846c91f88ea546fa69f4844ec1dec23))
+
+- Update flyway ([be32813](https://github.com/amasotti/qalam/commit/be32813c1c2c7ec78fea210d0264bc62e6891a17))
+
 ## [0.6.5] - 2026-05-17
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/91da67c8b44bf638a128d56ffd33f5f8b13faaa2..eac416897eea445dab055c517be29a58e2d38dc3)
+[Compare with last version](https://github.com/amasotti/qalam/compare/91da67c8b44bf638a128d56ffd33f5f8b13faaa2..fbf37e3be27c355107dfd335ffdccc35d06b1f2c)
 ### 🐛 Bug Fixes
 
 

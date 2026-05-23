@@ -1,0 +1,80 @@
+name: Release PR
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-pr:
+    name: Open / update Release PR
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Compute next version
+        id: cliff_version
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: .github/cliff.toml
+          args: --bumped-version
+
+      - name: Check if release is needed
+        id: version
+        run: |
+          NEXT=$(echo "${{ steps.cliff_version.outputs.content }}" | tr -d '[:space:]')
+          if [ -z "$NEXT" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          BARE="${NEXT#v}"
+          # Version already in CHANGELOG.md → we just released it, nothing to do
+          if grep -qF "## [$BARE]" CHANGELOG.md 2>/dev/null; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "next=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "bare=$BARE" >> "$GITHUB_OUTPUT"
+
+      - name: Update CHANGELOG.md
+        if: steps.version.outputs.skip == 'false'
+        run: git cliff --config .github/cliff.toml --bump -o CHANGELOG.md
+
+      - name: Bump version — build.gradle.kts
+        if: steps.version.outputs.skip == 'false'
+        run: |
+          sed -i 's/^version = ".*"/version = "${{ steps.version.outputs.bare }}"/' backend/build.gradle.kts
+
+      - name: Bump version — package.json
+        if: steps.version.outputs.skip == 'false'
+        run: |
+          sed -i 's/"version": ".*"/"version": "${{ steps.version.outputs.bare }}"/' frontend/package.json
+
+      - name: Generate release notes for PR body
+        id: notes
+        if: steps.version.outputs.skip == 'false'
+        run: |
+          {
+            echo "content<<CLIFF_EOF"
+            git cliff --config .github/cliff.toml --unreleased --strip header
+            echo "CLIFF_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create or update Release PR
+        if: steps.version.outputs.skip == 'false'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.RELEASE_TOKEN }}
+          branch: release/next
+          base: main
+          title: "chore: release ${{ steps.version.outputs.next }}"
+          body: ${{ steps.notes.outputs.content }}
+          labels: autorelease
+          commit-message: "chore: release ${{ steps.version.outputs.next }}"
+          delete-branch: false

@@ -2,9 +2,19 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.7.2] - 2026-05-24
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/cdfe470f5ed200917469f80c9418af650eeceb23..be5a51759861985c652f7acad4c681a755e20884)
+### ⚙️ Miscellaneous Tasks
+
+
+- Update frontend deps ([ecec75b](https://github.com/amasotti/qalam/commit/ecec75bcecd7cf72f5683dbc9dc2a714fb9b6bcd))
+
+- Add test recipies ([56b4c80](https://github.com/amasotti/qalam/commit/56b4c8097cec3e1737271f3a603a62aa7bb8c6ff))
+
 ## [0.7.1] - 2026-05-23
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/d6c87e871105ca6001c80a2046f7ccdb1987982e..faa8af005bb521a715fec0e4e207f8de8c5533d0)
+[Compare with last version](https://github.com/amasotti/qalam/compare/d6c87e871105ca6001c80a2046f7ccdb1987982e..cdfe470f5ed200917469f80c9418af650eeceb23)
 ### 🐛 Bug Fixes
 
 
@@ -20,6 +30,8 @@ All notable changes to this project will be documented in this file (created wit
 - Improve setup of ci/cd pipeline and tagging ([7181590](https://github.com/amasotti/qalam/commit/7181590d5bd9f0f5fac8ee0dc178f4f4cfdcc2b9))
 
 - Remove old release action ([ec99af0](https://github.com/amasotti/qalam/commit/ec99af0311a5b2f28a9ea5c2cfa16da462d76fc5))
+
+- Release v0.7.1 ([cdfe470](https://github.com/amasotti/qalam/commit/cdfe470f5ed200917469f80c9418af650eeceb23))
 
 ## [0.7.0] - 2026-05-23
 

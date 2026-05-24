@@ -72,6 +72,7 @@ dump-restore file:
 # Run backend tests (Testcontainers spins its own Postgres — no secrets needed)
 test:
     ./backend/gradlew -p backend test --no-daemon
+    pnpm --prefix frontend test
 
 # Run frontend E2E tests (requires: just up — backend + DB must be running)
 e2e:
@@ -97,6 +98,9 @@ lint-frontend:
 format-frontend:
     pnpm --prefix frontend lint:fix
     pnpm --prefix frontend format
+
+test-frontend:
+    pnpm --prefix frontend test:unit:ui
 
 # Run check svelte with Biome (requires: just up — backend + DB must be running)
 check-frontend:

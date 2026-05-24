@@ -69,7 +69,7 @@ jobs:
 
       - name: Create or update Release PR
         if: steps.version.outputs.skip == 'false'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           branch: release/next
           base: main

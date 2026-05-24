@@ -32,7 +32,7 @@
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/svelte": "^5.2.8",
 		"@types/node": "^24.12.4",
-		"@vitest/ui": "3.2.4",
+		"@vitest/ui": "4.1.7",
 		"jsdom": "^29.1.1",
 		"mode-watcher": "^1.1.0",
 		"svelte": "^5.55.5",
@@ -41,7 +41,7 @@
 		"tailwindcss": "^4.3.0",
 		"typescript": "^6.0.3",
 		"vite": "8.0.13",
-		"vitest": "^3.2.4"
+		"vitest": "^4.1.7"
 	},
 	"dependencies": {
 		"@hey-api/client-fetch": "^0.13.1",

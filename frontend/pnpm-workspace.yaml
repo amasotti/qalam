@@ -1,5 +1,7 @@
 allowBuilds:
   esbuild: true
+minimumReleaseAgeExclude:
+  - '@sveltejs/kit@2.61.1'
 onlyBuiltDependencies:
   - '@biomejs/biome'
   - esbuild

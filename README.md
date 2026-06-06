@@ -4,6 +4,7 @@
 
 <div align="center">
 
+[![FreePalestine.Dev](https://freepalestine.dev/badge?t=d&u=1&r=1)](https://freepalestine.dev)
 [![CI](https://github.com/amasotti/qalam/actions/workflows/ci.yml/badge.svg)](https://github.com/amasotti/qalam/actions/workflows/ci.yml)
 [![E2E — Frontend](https://github.com/amasotti/qalam/actions/workflows/e2e-frontend.yml/badge.svg)](https://github.com/amasotti/qalam/actions/workflows/e2e-frontend.yml)
 [![Release](https://github.com/amasotti/qalam/actions/workflows/release.yml/badge.svg)](https://github.com/amasotti/qalam/actions/workflows/release.yml)

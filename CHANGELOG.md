@@ -2,15 +2,25 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.8.0] - 2026-06-07
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/1dcab97b610cf3e3979af131d431619564c78220..39c67943f0bcfe868ea5fa3c422bf0739083882c)
+### 🚀 Features
+
+
+- *(<3)* Add free palestine badge ([00e8331](https://github.com/amasotti/qalam/commit/00e83316d13bc8f6dd1badc47f2fcc8775f066ee))
+
 ## [0.7.2] - 2026-05-24
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/cdfe470f5ed200917469f80c9418af650eeceb23..be5a51759861985c652f7acad4c681a755e20884)
+[Compare with last version](https://github.com/amasotti/qalam/compare/cdfe470f5ed200917469f80c9418af650eeceb23..1dcab97b610cf3e3979af131d431619564c78220)
 ### ⚙️ Miscellaneous Tasks
 
 
 - Update frontend deps ([ecec75b](https://github.com/amasotti/qalam/commit/ecec75bcecd7cf72f5683dbc9dc2a714fb9b6bcd))
 
 - Add test recipies ([56b4c80](https://github.com/amasotti/qalam/commit/56b4c8097cec3e1737271f3a603a62aa7bb8c6ff))
+
+- Release v0.7.2 ([1dcab97](https://github.com/amasotti/qalam/commit/1dcab97b610cf3e3979af131d431619564c78220))
 
 ## [0.7.1] - 2026-05-23
 

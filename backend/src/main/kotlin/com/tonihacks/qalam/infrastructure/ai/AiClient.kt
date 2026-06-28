@@ -89,7 +89,7 @@ class AiClient : java.io.Closeable {
 Return a JSON object with a "tokens" array. Each element must have:
 - "position": integer index starting at 0
 - "arabic": the Arabic word
-- "transliteration": practical Latin transliteration of the token
+- "transliteration": practical Latin transliteration of the token. Use chat Arabic conventions (e.g. "3" for ع, "7" for ح) and avoid diacritics.
 - "translation": concise English gloss for the token
 
 Sentence: "$arabicText""""

@@ -9,7 +9,7 @@
 [![E2E — Frontend](https://github.com/amasotti/qalam/actions/workflows/e2e-frontend.yml/badge.svg)](https://github.com/amasotti/qalam/actions/workflows/e2e-frontend.yml)
 [![Release](https://github.com/amasotti/qalam/actions/workflows/release.yml/badge.svg)](https://github.com/amasotti/qalam/actions/workflows/release.yml)
 
-![Kotlin](https://img.shields.io/badge/Kotlin-2.3-7F52FF?logo=kotlin&logoColor=white)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.4-7F52FF?logo=kotlin&logoColor=white)
 ![Ktor](https://img.shields.io/badge/Ktor-3.x-087CFA?logo=ktor&logoColor=white)
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)

@@ -2763,8 +2763,9 @@ components:
       properties:
         mode:
           type: string
-          description: Training mode (e.g., ARABIC_TO_TRANSLITERATION, ARABIC_TO_TRANSLATION, etc.)
-          example: ARABIC_TO_TRANSLATION
+          description: Training mode by mastery bucket
+          enum: [NEW, LEARNING, KNOWN, MIXED]
+          example: MIXED
         size:
           type: integer
           description: Number of words to include in the session

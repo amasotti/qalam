@@ -22,6 +22,7 @@ import com.tonihacks.qalam.domain.word.WordExample
 import com.tonihacks.qalam.domain.word.WordExampleId
 import com.tonihacks.qalam.domain.word.WordFilters
 import com.tonihacks.qalam.domain.word.WordId
+import com.tonihacks.qalam.domain.word.WordSortField
 import com.tonihacks.qalam.domain.word.Gender
 import com.tonihacks.qalam.domain.word.PluralType
 import com.tonihacks.qalam.domain.word.RelationType
@@ -34,6 +35,7 @@ import com.tonihacks.qalam.domain.word.WordRelation
 import com.tonihacks.qalam.domain.word.WordRepository
 import org.jetbrains.exposed.v1.core.Op
 import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.or
@@ -93,6 +95,17 @@ class ExposedWordRepository(
                 }
 
                 condition?.let { q.where { it } } ?: q
+            }.let { q ->
+                val col = when (filters.sortBy) {
+                    WordSortField.CREATED_AT -> WordsTable.createdAt
+                    WordSortField.ARABIC_TEXT -> WordsTable.arabicText
+                    WordSortField.TRANSLATION -> WordsTable.translation
+                    WordSortField.DIFFICULTY -> WordsTable.difficulty
+                    WordSortField.MASTERY_LEVEL -> WordsTable.masteryLevel
+                    WordSortField.UPDATED_AT -> WordsTable.updatedAt
+                }
+                val order = if (filters.sortDesc) SortOrder.DESC else SortOrder.ASC
+                q.orderBy(col to order)
             }
 
             val total = query.count()

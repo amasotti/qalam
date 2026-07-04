@@ -1,5 +1,7 @@
 package com.tonihacks.qalam.domain.word
 
+enum class WordSortField { UPDATED_AT, CREATED_AT, ARABIC_TEXT, TRANSLATION, DIFFICULTY, MASTERY_LEVEL }
+
 enum class PartOfSpeech {
     UNKNOWN, NOUN, VERB, ADJECTIVE, ADVERB,
     PREPOSITION, PARTICLE, INTERJECTION, CONJUNCTION, PRONOUN;

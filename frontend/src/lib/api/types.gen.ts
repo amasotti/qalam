@@ -353,9 +353,9 @@ export type UpdateAnnotationRequest = {
 
 export type CreateSessionRequest = {
     /**
-     * Training mode (e.g., ARABIC_TO_TRANSLITERATION, ARABIC_TO_TRANSLATION, etc.)
+     * Training mode by mastery bucket
      */
-    mode: string;
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
     /**
      * Number of words to include in the session
      */
@@ -821,6 +821,14 @@ export type ListWordsData = {
         difficulty?: Difficulty;
         partOfSpeech?: PartOfSpeech;
         masteryLevel?: MasteryLevel;
+        /**
+         * Field to sort by (default UPDATED_AT)
+         */
+        sortBy?: 'UPDATED_AT' | 'CREATED_AT' | 'ARABIC_TEXT' | 'TRANSLATION' | 'DIFFICULTY' | 'MASTERY_LEVEL';
+        /**
+         * Sort descending (default true)
+         */
+        sortDesc?: boolean;
     };
     url: '/api/v1/words';
 };

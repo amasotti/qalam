@@ -13,6 +13,8 @@ data class WordFilters(
     val difficulty: Difficulty? = null,
     val partOfSpeech: PartOfSpeech? = null,
     val masteryLevel: MasteryLevel? = null,
+    val sortBy: WordSortField = WordSortField.UPDATED_AT,
+    val sortDesc: Boolean = true,
 )
 
 interface WordRepository {

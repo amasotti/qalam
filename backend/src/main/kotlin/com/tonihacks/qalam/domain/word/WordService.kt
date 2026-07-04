@@ -46,7 +46,17 @@ class WordService(
         difficulty: String?,
         partOfSpeech: String?,
         masteryLevel: String?,
+        sortBy: String?,
+        sortDesc: Boolean?,
     ): Either<DomainError, PaginatedResponse<WordResponse>> = either {
+        val parsedSortBy = when (sortBy?.uppercase()) {
+            "CREATED_AT" -> WordSortField.CREATED_AT
+            "ARABIC_TEXT" -> WordSortField.ARABIC_TEXT
+            "TRANSLATION" -> WordSortField.TRANSLATION
+            "DIFFICULTY" -> WordSortField.DIFFICULTY
+            "MASTERY_LEVEL" -> WordSortField.MASTERY_LEVEL
+            else -> WordSortField.UPDATED_AT
+        }
         val filters = WordFilters(
             q = q,
             rootId = rootId?.let { parseWordUuid(it, "rootId").bind()?.let { u -> RootId(u) } },
@@ -54,6 +64,8 @@ class WordService(
             difficulty = difficulty?.let { parseWordEnum("difficulty", it) { s -> Difficulty.fromString(s) }.bind() },
             partOfSpeech = partOfSpeech?.let { parseWordEnum("partOfSpeech", it) { s -> PartOfSpeech.fromString(s) }.bind() },
             masteryLevel = masteryLevel?.let { parseWordEnum("masteryLevel", it) { s -> MasteryLevel.fromString(s) }.bind() },
+            sortBy = parsedSortBy,
+            sortDesc = sortDesc ?: true,
         )
         val paged = repo.list(PageRequest.from(page, size), filters).bind()
         PaginatedResponse(

@@ -112,6 +112,25 @@ class WordsIntegrationTest : BaseIntegrationTest() {
                 }
             }
 
+            "sorts by arabicText ascending" {
+                testApp { client ->
+                    client.post("/api/v1/words") {
+                        contentType(ContentType.Application.Json)
+                        setBody(katabJson)  // كَتَبَ
+                    }
+                    client.post("/api/v1/words") {
+                        contentType(ContentType.Application.Json)
+                        setBody(qaraJson)  // قَرَأَ
+                    }
+
+                    val result = client.get("/api/v1/words?sortBy=ARABIC_TEXT&sortDesc=false")
+                    result.status shouldBe HttpStatusCode.OK
+                    val body = result.bodyAsText()
+                    // ق (U+0642) < ك (U+0643) — ascending puts قَرَأَ before كَتَبَ
+                    (body.indexOf("قَرَأَ") < body.indexOf("كَتَبَ")) shouldBe true
+                }
+            }
+
             "searches by arabic text" {
                 testApp { client ->
                     client.post("/api/v1/words") {

@@ -220,17 +220,20 @@ class TextsIntegrationTest : BaseIntegrationTest() {
                 testApp { client ->
                     client.post("/api/v1/texts") {
                         contentType(ContentType.Application.Json)
-                        setBody(createTextJson(title = "sort-beta"))
+                        setBody(createTextJson(title = "zzzsort-beta-unique99"))
                     }
                     client.post("/api/v1/texts") {
                         contentType(ContentType.Application.Json)
-                        setBody(createTextJson(title = "sort-alpha"))
+                        setBody(createTextJson(title = "zzzsort-alpha-unique99"))
                     }
 
-                    val response = client.get("/api/v1/texts?sortBy=TITLE&sortDesc=false")
+                    // Use q= to restrict to our two texts + large size to avoid pagination cutoff
+                    val response = client.get("/api/v1/texts?q=zzzsort&sortBy=TITLE&sortDesc=false&size=100")
                     response.status shouldBe HttpStatusCode.OK
                     val body = response.bodyAsText()
-                    (body.indexOf("sort-alpha") < body.indexOf("sort-beta")) shouldBe true
+                    body shouldContain "zzzsort-alpha-unique99"
+                    body shouldContain "zzzsort-beta-unique99"
+                    (body.indexOf("zzzsort-alpha-unique99") < body.indexOf("zzzsort-beta-unique99")) shouldBe true
                 }
             }
         }

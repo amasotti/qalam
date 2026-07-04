@@ -2,9 +2,36 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.9.0] - 2026-07-04
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/51b53cfe2c83bd1239899dec4302c1d2b13f9d09..2f68aed4b69388e0bdb2b32d267f65c10b934a6c)
+### 🚀 Features
+
+
+- Add sort params for words ([33f2f02](https://github.com/amasotti/qalam/commit/33f2f02f55a9feed56ab7df222a3aea2faa6ab11))
+
+### 🐛 Bug Fixes
+
+
+- Adjust api docs ([7fe0d95](https://github.com/amasotti/qalam/commit/7fe0d95acbad65ea104eade5c6616cf9eb4b879d))
+
+### 🧪 Testing
+
+
+- Fix sort test ([b5dfb2b](https://github.com/amasotti/qalam/commit/b5dfb2bf3ab328e810b3795a39290342f2cfeac7))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Update dependencies ([c82ce4a](https://github.com/amasotti/qalam/commit/c82ce4ab9db16ae010d7be21a604bce9013b13c7))
+
+- Generate types ([cf4e7a5](https://github.com/amasotti/qalam/commit/cf4e7a52e372e780ef8d8ab8b6b37e77a7d92ce3))
+
+- Update svelte kit ([3a91ebf](https://github.com/amasotti/qalam/commit/3a91ebfb3c70af5b7538c6956f5dab016f719244))
+
 ## [0.8.0] - 2026-06-28
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/1dcab97b610cf3e3979af131d431619564c78220..04643e330b55c35d87ce845de1925a9395f1fd4c)
+[Compare with last version](https://github.com/amasotti/qalam/compare/1dcab97b610cf3e3979af131d431619564c78220..51b53cfe2c83bd1239899dec4302c1d2b13f9d09)
 ### 🚀 Features
 
 
@@ -23,6 +50,8 @@ All notable changes to this project will be documented in this file (created wit
 - Improve ai prompt ([4fe794d](https://github.com/amasotti/qalam/commit/4fe794df68566f3483dce41325ab9b273dba733f))
 
 - Update README.md ([2fc6712](https://github.com/amasotti/qalam/commit/2fc67126002c1e0d5e2010b3bfff149db3e8a90f))
+
+- Release v0.8.0 ([51b53cf](https://github.com/amasotti/qalam/commit/51b53cfe2c83bd1239899dec4302c1d2b13f9d09))
 
 ## [0.7.2] - 2026-05-24
 

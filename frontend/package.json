@@ -31,7 +31,7 @@
 		"@tailwindcss/vite": "^4.3.2",
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/svelte": "^5.4.2",
-		"@types/node": "^24.13.2",
+		"@types/node": "^26.1.0",
 		"@vitest/ui": "4.1.9",
 		"jsdom": "^29.1.1",
 		"mode-watcher": "^1.1.0",

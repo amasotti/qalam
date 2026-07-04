@@ -55,6 +55,7 @@ docker-compose.yml  full dev stack (postgres, backend, frontend)
 - Pagination: `page` + `size`, response: `{ items, total, page, size }`
 - Error envelope: `{ error, code }`
 - Frontend types generated via `pnpm generate:types` from the spec — never hand-write types
+- **The API has two consumers**: the SvelteKit frontend AND the Android app ([amasotti/qalam-app](https://github.com/amasotti/qalam-app). Breaking API changes affect both. Never remove or rename endpoints/fields without checking the Android client.
 
 ## Database rules
 

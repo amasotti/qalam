@@ -185,6 +185,12 @@ Full documentation lives in [`docs/`](docs/).
 
 ---
 
+## Related projects
+
+- [qalam-app](https://github.com/amasotti/qalam-app) — Android companion app (Kotlin/Jetpack Compose). Consumes the same `/api/v1/` backend; no separate API layer.
+
+---
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

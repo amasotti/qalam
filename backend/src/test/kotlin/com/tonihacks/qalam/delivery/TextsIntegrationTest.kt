@@ -215,6 +215,24 @@ class TextsIntegrationTest : BaseIntegrationTest() {
                     body shouldNotContain "difficulty-filter-beginner"
                 }
             }
+
+            "?sortBy=TITLE&sortDesc=false sorts ascending by title" {
+                testApp { client ->
+                    client.post("/api/v1/texts") {
+                        contentType(ContentType.Application.Json)
+                        setBody(createTextJson(title = "sort-beta"))
+                    }
+                    client.post("/api/v1/texts") {
+                        contentType(ContentType.Application.Json)
+                        setBody(createTextJson(title = "sort-alpha"))
+                    }
+
+                    val response = client.get("/api/v1/texts?sortBy=TITLE&sortDesc=false")
+                    response.status shouldBe HttpStatusCode.OK
+                    val body = response.bodyAsText()
+                    (body.indexOf("sort-alpha") < body.indexOf("sort-beta")) shouldBe true
+                }
+            }
         }
 
         "PUT /api/v1/texts/{id}" - {

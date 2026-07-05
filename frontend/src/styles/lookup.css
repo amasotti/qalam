@@ -3,6 +3,10 @@
 	gap: 0.5rem;
 }
 
+.dictionary-lookup-results-compact {
+	gap: 0.375rem;
+}
+
 .dictionary-lookup-result {
 	display: grid;
 	grid-template-columns: minmax(5rem, auto) 1fr;

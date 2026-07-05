@@ -1,11 +1,24 @@
 <script lang="ts">
 import { Search } from 'lucide-svelte';
+import { browser } from '$app/environment';
+import { goto } from '$app/navigation';
+import ViewToggle from '$lib/components/ViewToggle.svelte';
 import { useAllRoots } from '$lib/stores/roots';
 
 const roots = useAllRoots();
 
 const LETTER_COUNTS = [2, 3, 4, 5, 6];
 const PAGE_SIZE = 24;
+const STORAGE_KEY = 'qalam:view:roots';
+
+let view = $state<'grid' | 'table'>(
+	browser ? ((localStorage.getItem(STORAGE_KEY) as 'grid' | 'table' | null) ?? 'grid') : 'grid'
+);
+
+function setView(v: 'grid' | 'table') {
+	view = v;
+	if (browser) localStorage.setItem(STORAGE_KEY, v);
+}
 
 let search = $state('');
 let letterFilter = $state<number | null>(null);
@@ -30,6 +43,15 @@ const filtered = $derived.by(() => {
 
 const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
 const paginated = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
+
+function previewAnalysis(raw: string): string {
+	return raw
+		.split('\n')
+		.filter((line) => !line.trimStart().startsWith('#'))
+		.map((line) => line.replace(/[*_`~[\]]/g, '').trim())
+		.filter(Boolean)
+		.join(' ');
+}
 </script>
 
 <div class="list-page">
@@ -47,8 +69,8 @@ const paginated = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SI
 				placeholder="Search roots…"
 				value={search}
 				oninput={(e) => {
-					search = e.currentTarget.value
-					page = 1
+					search = e.currentTarget.value;
+					page = 1;
 				}}
 			/>
 		</div>
@@ -58,8 +80,8 @@ const paginated = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SI
 				class="letter-tab"
 				class:active={letterFilter === null}
 				onclick={() => {
-					letterFilter = null
-					page = 1
+					letterFilter = null;
+					page = 1;
 				}}
 			>
 				All
@@ -69,8 +91,8 @@ const paginated = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SI
 					class="letter-tab"
 					class:active={letterFilter === n}
 					onclick={() => {
-						letterFilter = n
-						page = 1
+						letterFilter = n;
+						page = 1;
 					}}
 				>
 					{n}
@@ -96,27 +118,72 @@ const paginated = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SI
 			{/if}
 		</div>
 	{:else}
-		<p class="results-meta">
-			{filtered.length} root{filtered.length === 1 ? '' : 's'}
-			{#if letterFilter !== null}({letterFilter}-letter){/if}
-		</p>
-
-		<div class="roots-grid stagger-children">
-			{#each paginated as root (root.id)}
-				<a class="root-card" href="/roots/{root.id}">
-					<div class="root-card-ar">{root.displayForm}</div>
-					<div class="root-card-meta">
-						<span class="root-card-letters">{root.letterCount}L</span>
-						{#if root.normalizedForm}
-							<span class="root-card-normalized">{root.normalizedForm}</span>
-						{/if}
-					</div>
-					{#if root.meaning}
-						<div class="root-card-meaning">{root.meaning}</div>
-					{/if}
-				</a>
-			{/each}
+		<div class="results-meta-row">
+			<p class="results-meta" style="margin-bottom:0">
+				{filtered.length} root{filtered.length === 1 ? '' : 's'}
+				{#if letterFilter !== null}({letterFilter}-letter){/if}
+			</p>
+			<ViewToggle {view} onchange={setView} />
 		</div>
+
+		{#if view === 'grid'}
+			<div class="roots-grid stagger-children">
+				{#each paginated as root (root.id)}
+					<a class="root-card" href="/roots/{root.id}">
+						<div class="root-card-ar">{root.displayForm}</div>
+						<div class="root-card-meta">
+							<span class="root-card-letters">{root.letterCount}L</span>
+							{#if root.normalizedForm}
+								<span class="root-card-normalized">{root.normalizedForm}</span>
+							{/if}
+						</div>
+						{#if root.meaning}
+							<div class="root-card-meaning">{root.meaning}</div>
+						{/if}
+					</a>
+				{/each}
+			</div>
+		{:else}
+			<table class="list-table roots-table">
+				<thead>
+					<tr>
+						<th>Root</th>
+						<th>Meaning</th>
+						<th>Analysis</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each paginated as root (root.id)}
+						<tr
+							class="list-table-row"
+							onclick={() => goto(`/roots/${root.id}`)}
+							onkeydown={(e) => e.key === 'Enter' && goto(`/roots/${root.id}`)}
+							tabindex="0"
+							role="link"
+							aria-label={root.displayForm}
+						>
+							<td class="list-table-td-word">
+								<div class="list-table-ar">{root.displayForm}</div>
+							</td>
+							<td class="list-table-td-main">
+								{#if root.meaning}
+									{root.meaning}
+								{:else}
+									<span class="list-table-empty-cell">—</span>
+								{/if}
+							</td>
+							<td class="list-table-td-analysis">
+								{#if root.analysis}
+									{previewAnalysis(root.analysis)}
+								{:else}
+									<span class="list-table-empty-cell">—</span>
+								{/if}
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		{/if}
 
 		{#if totalPages > 1}
 			<div class="pagination">

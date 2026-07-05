@@ -1,9 +1,22 @@
 <script lang="ts">
 import { BookOpen, Search } from 'lucide-svelte';
+import { browser } from '$app/environment';
+import { goto } from '$app/navigation';
 import type { Dialect, Difficulty } from '$lib/api/types.gen';
+import ViewToggle from '$lib/components/ViewToggle.svelte';
 import { type TextSortField, useTexts } from '$lib/stores/texts';
 
 const PAGE_SIZE = 20;
+const STORAGE_KEY = 'qalam:view:texts';
+
+let view = $state<'grid' | 'table'>(
+	browser ? ((localStorage.getItem(STORAGE_KEY) as 'grid' | 'table' | null) ?? 'table') : 'table'
+);
+
+function setView(v: 'grid' | 'table') {
+	view = v;
+	if (browser) localStorage.setItem(STORAGE_KEY, v);
+}
 
 let search = $state('');
 let debouncedSearch = $state('');
@@ -45,6 +58,14 @@ const hasActiveFilters = $derived(
 
 function formatEnum(value: string): string {
 	return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+}
+
+function formatDate(iso: string): string {
+	return new Date(iso).toLocaleDateString('en-GB', {
+		day: 'numeric',
+		month: 'short',
+		year: 'numeric',
+	});
 }
 </script>
 
@@ -145,27 +166,83 @@ function formatEnum(value: string): string {
 			{/if}
 		</div>
 	{:else}
-		<p class="results-meta">
-			{total} text{total === 1 ? '' : 's'}
-		</p>
-
-		<div class="texts-grid stagger-children">
-			{#each texts.data?.items ?? [] as text (text.id)}
-				<a class="text-card" href="/texts/{text.id}">
-					<div class="text-card-title">{text.title}</div>
-					{#if text.comments}
-						<div class="text-card-desc">{text.comments}</div>
-					{/if}
-					<div class="text-card-badges">
-						<span class="chip chip-sm c-coral">{formatEnum(text.difficulty)}</span>
-						<span class="chip chip-sm c-cerulean">{text.dialect}</span>
-						{#each text.tags as tag}
-							<span class="chip chip-sm c-muted">{tag}</span>
-						{/each}
-					</div>
-				</a>
-			{/each}
+		<div class="results-meta-row">
+			<p class="results-meta" style="margin-bottom:0">
+				{total} text{total === 1 ? '' : 's'}
+			</p>
+			<ViewToggle {view} onchange={setView} />
 		</div>
+
+		{#if view === 'grid'}
+			<div class="texts-grid stagger-children">
+				{#each texts.data?.items ?? [] as text (text.id)}
+					<a class="text-card" href="/texts/{text.id}">
+						<div class="text-card-title">{text.title}</div>
+						{#if text.comments}
+							<div class="text-card-desc">{text.comments}</div>
+						{/if}
+						<div class="text-card-badges">
+							<span class="chip chip-sm c-coral">{formatEnum(text.difficulty)}</span>
+							<span class="chip chip-sm c-cerulean">{text.dialect}</span>
+							{#each text.tags as t}
+								<span class="chip chip-sm c-muted">{t}</span>
+							{/each}
+						</div>
+					</a>
+				{/each}
+			</div>
+		{:else}
+			<table class="list-table texts-table">
+				<thead>
+					<tr>
+						<th>Title</th>
+						<th>Dialect</th>
+						<th>Difficulty</th>
+						<th>Tags</th>
+						<th class="list-table-th-right">Updated</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each texts.data?.items ?? [] as text (text.id)}
+						<tr
+							class="list-table-row"
+							onclick={() => goto(`/texts/${text.id}`)}
+							onkeydown={(e) => e.key === 'Enter' && goto(`/texts/${text.id}`)}
+							tabindex="0"
+							role="link"
+							aria-label={text.title}
+						>
+							<td class="list-table-td-main">
+								<div class="list-table-title">{text.title}</div>
+								{#if text.comments}
+									<div class="list-table-sub">{text.comments}</div>
+								{/if}
+							</td>
+							<td>
+								<span class="chip chip-sm c-cerulean">{text.dialect}</span>
+							</td>
+							<td>
+								<span class="chip chip-sm c-coral">{formatEnum(text.difficulty)}</span>
+							</td>
+							<td>
+								{#if text.tags.length}
+									<div class="list-table-badges">
+										{#each text.tags as t}
+											<span class="chip chip-sm c-muted">{t}</span>
+										{/each}
+									</div>
+								{:else}
+									<span class="list-table-empty-cell">—</span>
+								{/if}
+							</td>
+							<td class="list-table-td-right">
+								<span class="list-table-date">{formatDate(text.updatedAt)}</span>
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		{/if}
 
 		{#if totalPages > 1}
 			<div class="pagination">

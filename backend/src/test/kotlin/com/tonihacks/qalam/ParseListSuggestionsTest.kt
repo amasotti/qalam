@@ -1,9 +1,15 @@
 package com.tonihacks.qalam
 
+import com.tonihacks.qalam.infrastructure.ai.WORD_SUGGESTIONS_SCHEMA
 import com.tonihacks.qalam.infrastructure.ai.parseListSuggestions
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.boolean
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 // Regression coverage for the shape-tolerant AI suggestion parser.
 // The model (under response_format=json_object) does not reliably wrap results in
@@ -44,5 +50,21 @@ class ParseListSuggestionsTest : FreeSpec({
 
     "returns empty for a JSON object with no array" {
         parseListSuggestions("""{"note":"none"}""", json) shouldBe emptyList()
+    }
+
+    // OpenRouter/OpenAI strict mode rejects the request (→ 400) unless every object sets
+    // additionalProperties=false and lists ALL its properties in "required".
+    "structured-output schema satisfies strict-mode invariants" {
+        fun assertStrict(obj: JsonObject) {
+            obj["additionalProperties"]!!.jsonPrimitive.boolean shouldBe false
+            val properties = obj["properties"]!!.jsonObject.keys
+            val required = obj["required"]!!.jsonArray.map { it.jsonPrimitive.content }.toSet()
+            required shouldBe properties
+        }
+
+        assertStrict(WORD_SUGGESTIONS_SCHEMA)
+        val items = WORD_SUGGESTIONS_SCHEMA["properties"]!!.jsonObject["suggestions"]!!
+            .jsonObject["items"]!!.jsonObject
+        assertStrict(items)
     }
 })

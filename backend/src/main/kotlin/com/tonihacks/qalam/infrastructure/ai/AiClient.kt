@@ -17,6 +17,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.timeout
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
@@ -25,7 +26,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.add
+import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonArray
+import kotlinx.serialization.json.putJsonObject
 
 // Every OpenRouter call catches broadly on purpose: network, timeout, and JSON-decode
 // failures all collapse to a single degraded DomainError. The suppress keeps that intent
@@ -303,7 +309,13 @@ Respond ONLY with this JSON structure:
                         Message("system", ENRICH_SYSTEM_PROMPT),
                         Message("user", prompt),
                     ),
-                    responseFormat = ResponseFormat("json_object"),
+                    // Structured output: force the model to emit exactly this schema.
+                    responseFormat = ResponseFormat(
+                        type = "json_schema",
+                        jsonSchema = JsonSchemaSpec("word_suggestions", strict = true, schema = WORD_SUGGESTIONS_SCHEMA),
+                    ),
+                    // Hard-fail if the routed provider can't honour structured outputs.
+                    provider = ProviderPreferences(requireParameters = true),
                 ))
             }
 
@@ -311,9 +323,8 @@ Respond ONLY with this JSON structure:
             val content = body.choices.firstOrNull()?.message?.content
                 ?: return DomainError.InvalidInput("Empty AI response").left()
 
-            // json_object mode guarantees valid JSON but NOT our exact shape — the model
-            // sometimes drops or renames the "suggestions" wrapper. Parse defensively so a
-            // shape mismatch degrades to an empty list, never a 400.
+            // Structured output makes the shape reliable; the tolerant parser stays as a
+            // defence-in-depth backstop so any residual drift degrades to empty, never a 400.
             parseListSuggestions(content, jsonConfig).right()
         } catch (e: Exception) {
             log.warn(e) { "OpenRouter suggestWordsForList failed for '$title'" }
@@ -422,6 +433,8 @@ Return a JSON object with an "examples" array. Each element must have:
         val model: String,
         val messages: List<Message>,
         @SerialName("response_format") val responseFormat: ResponseFormat,
+        // Present only when we need a specific capability (e.g. structured outputs). Omitted otherwise.
+        val provider: ProviderPreferences? = null,
     )
 
     @Serializable
@@ -431,7 +444,25 @@ Return a JSON object with an "examples" array. Each element must have:
     )
 
     @Serializable
-    private data class ResponseFormat(val type: String)
+    private data class ResponseFormat(
+        val type: String,
+        // Only set for type == "json_schema"; omitted for plain "json_object".
+        @SerialName("json_schema") val jsonSchema: JsonSchemaSpec? = null,
+    )
+
+    @Serializable
+    private data class JsonSchemaSpec(
+        val name: String,
+        val strict: Boolean,
+        val schema: JsonObject,
+    )
+
+    // require_parameters=true makes OpenRouter route ONLY to providers that honour the requested
+    // parameters (here: structured outputs) and hard-fail otherwise — no silent downgrade.
+    @Serializable
+    private data class ProviderPreferences(
+        @SerialName("require_parameters") val requireParameters: Boolean,
+    )
 
     @Serializable
     private data class Message(val role: String, val content: String)
@@ -476,6 +507,48 @@ Rules:
 - The user is between beginner and B1 level
 - Do not break down every word unless it is the focus of the insight
 - Return plain text with minimal markdown — bold for key terms, no headers"""
+    }
+}
+
+private val PART_OF_SPEECH_VALUES = listOf(
+    "NOUN", "VERB", "ADJECTIVE", "ADVERB", "PREPOSITION",
+    "PARTICLE", "INTERJECTION", "CONJUNCTION", "PRONOUN", "UNKNOWN",
+)
+private val DIFFICULTY_VALUES = listOf("BEGINNER", "INTERMEDIATE", "ADVANCED")
+
+/**
+ * Strict JSON Schema for word-list suggestions, sent as OpenRouter structured output.
+ * Strict mode requires additionalProperties=false and every property listed in "required".
+ */
+internal val WORD_SUGGESTIONS_SCHEMA: JsonObject = buildJsonObject {
+    put("type", "object")
+    put("additionalProperties", false)
+    putJsonArray("required") { add("suggestions") }
+    putJsonObject("properties") {
+        putJsonObject("suggestions") {
+            put("type", "array")
+            putJsonObject("items") {
+                put("type", "object")
+                put("additionalProperties", false)
+                putJsonArray("required") {
+                    add("arabicText"); add("transliteration"); add("translation")
+                    add("partOfSpeech"); add("difficulty")
+                }
+                putJsonObject("properties") {
+                    putJsonObject("arabicText") { put("type", "string") }
+                    putJsonObject("transliteration") { put("type", "string") }
+                    putJsonObject("translation") { put("type", "string") }
+                    putJsonObject("partOfSpeech") {
+                        put("type", "string")
+                        putJsonArray("enum") { PART_OF_SPEECH_VALUES.forEach { add(it) } }
+                    }
+                    putJsonObject("difficulty") {
+                        put("type", "string")
+                        putJsonArray("enum") { DIFFICULTY_VALUES.forEach { add(it) } }
+                    }
+                }
+            }
+        }
     }
 }
 

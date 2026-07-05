@@ -12,7 +12,7 @@ import type {
 } from '$lib/api/types.gen';
 import { Button } from '$lib/components/ui/button';
 import { useAllRoots } from '$lib/stores/roots';
-import { useASDlookup, useWordAutocomplete } from '$lib/stores/words';
+import { useAsdLookup, useWordAutocomplete } from '$lib/stores/words';
 
 interface Props {
 	initial?: Partial<{
@@ -59,7 +59,7 @@ let lookupError = $state<string | null>(null);
 let lookupItems = $state<DictionaryLookupItemResponse[]>([]);
 let lookupQuery = $state('');
 
-const dictionaryLookup = useASDlookup();
+const dictionaryLookup = useAsdLookup();
 
 // Root selector
 const allRoots = useAllRoots();

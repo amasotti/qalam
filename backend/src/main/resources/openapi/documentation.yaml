@@ -352,6 +352,37 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /api/v1/words/dictionary-lookups:
+    get:
+      summary: Search an external dictionary for word suggestions
+      operationId: searchWordDictionaryLookups
+      tags: [words]
+      parameters:
+        - name: source
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Dictionary"
+          description: Dictionary source. Only ASD is currently supported for lookup.
+        - name: query
+          in: query
+          required: true
+          schema: { type: string }
+          description: Arabic word or token to search.
+      responses:
+        "200":
+          description: Normalized dictionary suggestions for creating or updating a word.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DictionaryLookupResponse"
+        "422":
+          description: Missing query/source or unsupported dictionary source
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /api/v1/words/analyze:
     post:
       summary: AI word analysis (ephemeral — does not persist)
@@ -2208,6 +2239,58 @@ components:
           type: string
           nullable: true
 
+    DictionaryLookupResponse:
+      type: object
+      required: [source, query, items]
+      properties:
+        source:
+          $ref: "#/components/schemas/Dictionary"
+        query:
+          type: string
+          example: بناية
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/DictionaryLookupItemResponse"
+
+    DictionaryLookupItemResponse:
+      type: object
+      required: [externalId, arabicText, hasExactWordMatch]
+      properties:
+        externalId:
+          type: string
+          format: uuid
+        arabicText:
+          type: string
+          example: بِنايَة
+        transliteration:
+          type: string
+          nullable: true
+          example: bināya
+        translation:
+          type: string
+          nullable: true
+          example: building, structure, edifice
+        plural:
+          nullable: true
+          allOf:
+            - $ref: "#/components/schemas/DictionaryLookupPluralResponse"
+        hasExactWordMatch:
+          type: boolean
+          description: True when the dictionary headword matches the query after Arabic diacritics are removed.
+
+    DictionaryLookupPluralResponse:
+      type: object
+      required: [arabicText]
+      properties:
+        arabicText:
+          type: string
+          example: بنايات
+        transliteration:
+          type: string
+          nullable: true
+          example: bināyāt
+
     DictionaryLinkResponse:
       type: object
       required: [id, source, url]
@@ -3037,6 +3120,10 @@ components:
       type: string
       enum: [NEW, LEARNING, KNOWN, MASTERED]
 
+    Dictionary:
+      type: string
+      enum: [ALMANY, LIVING_ARABIC, DERJA_NINJA, REVERSO, ASD, WIKTIONARY]
+
     DictionarySource:
       type: string
       enum: [ALMANY, LIVING_ARABIC, DERJA_NINJA, REVERSO, WIKTIONARY, ARABIC_STUDENT_DICTIONARY, LANGENSCHEIDT, CUSTOM]
@@ -3200,4 +3287,3 @@ components:
           format: double
         mode:
           type: string
-

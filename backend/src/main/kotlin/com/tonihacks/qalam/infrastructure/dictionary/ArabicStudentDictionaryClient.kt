@@ -88,7 +88,7 @@ private data class AsdTranslationPayload(
 
 private fun AsdWordPayload.toResponse(q: String): DictionaryLookupItemResponse {
 
-    val isExactMatch = text.removeArabicDiacritics().trim() == q.trim()
+    val isExactMatch = text.removeArabicDiacritics().trim() == q.removeArabicDiacritics().trim()
     return DictionaryLookupItemResponse(
         externalId = id,
         arabicText = text,

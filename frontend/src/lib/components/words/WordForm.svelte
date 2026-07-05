@@ -3,6 +3,7 @@ import { untrack } from 'svelte';
 import type {
 	CreateWordRequest,
 	Dialect,
+	DictionaryLookupItemResponse,
 	Difficulty,
 	PartOfSpeech,
 	RootResponse,
@@ -11,7 +12,7 @@ import type {
 } from '$lib/api/types.gen';
 import { Button } from '$lib/components/ui/button';
 import { useAllRoots } from '$lib/stores/roots';
-import { useWordAutocomplete } from '$lib/stores/words';
+import { useASDlookup, useWordAutocomplete } from '$lib/stores/words';
 
 interface Props {
 	initial?: Partial<{
@@ -53,6 +54,12 @@ let rootId = $state<string | null>(untrack(() => initial.rootId ?? null));
 let derivedFromId = $state<string | null>(untrack(() => initial.derivedFromId ?? null));
 
 let submitError = $state<string | null>(null);
+// Lookup
+let lookupError = $state<string | null>(null);
+let lookupItems = $state<DictionaryLookupItemResponse[]>([]);
+let lookupQuery = $state('');
+
+const dictionaryLookup = useASDlookup();
 
 // Root selector
 const allRoots = useAllRoots();
@@ -112,6 +119,33 @@ function clearDerivedFrom() {
 	showAutocompleteDropdown = false;
 }
 
+async function lookupInASD() {
+	const query = arabicText.trim();
+	if (!query) return;
+
+	lookupError = null;
+	lookupItems = [];
+	lookupQuery = query;
+
+	try {
+		const result = await dictionaryLookup.mutateAsync(query);
+		lookupItems = result.items;
+		if (result.items.length === 0) {
+			lookupError = 'No ASD results';
+		}
+	} catch (err) {
+		lookupError = err instanceof Error ? err.message : 'Could not lookup this word';
+	}
+}
+
+function applyASDSuggestion(item: DictionaryLookupItemResponse) {
+	arabicText = item.arabicText;
+	transliteration = item.transliteration ?? '';
+	translation = item.translation ?? '';
+	lookupItems = [];
+	lookupError = null;
+}
+
 async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
 	submitError = null;
@@ -157,18 +191,60 @@ async function handleSubmit(e: SubmitEvent) {
 	{:else}
 		<div class="form-field">
 			<label class="form-label" for="word-arabic">Arabic *</label>
-			<input
-				id="word-arabic"
-				class="form-input ar-input"
-				type="text"
-				placeholder="أدخل الكلمة بالعربية"
-				bind:value={arabicText}
-				autocomplete="off"
-				spellcheck="false"
-				disabled={isPending}
-				required
-				dir="rtl"
-			/>
+			<div class="form-input-row">
+				<input
+						id="word-arabic"
+						class="form-input ar-input"
+						type="text"
+						placeholder="أدخل الكلمة بالعربية"
+						bind:value={arabicText}
+						autocomplete="off"
+						spellcheck="false"
+						disabled={isPending}
+						required
+						dir="rtl"
+				/>
+				<Button
+						variant="outline"
+						type="button"
+						onclick={lookupInASD}
+						disabled={isPending || dictionaryLookup.isPending || !arabicText.trim()}
+				>
+					{dictionaryLookup.isPending ? 'Looking…' : 'Lookup ASD'}
+				</Button>
+			</div>
+
+			{#if lookupError}
+				<p class="form-error">{lookupError}</p>
+			{/if}
+
+			{#if lookupItems.length > 0}
+				<div class="dictionary-lookup-results" aria-live="polite">
+					<p class="form-hint">ASD suggestions for {lookupQuery}</p>
+					{#each lookupItems.slice(0, 5) as item (item.externalId)}
+						<button
+								class:dictionary-lookup-result-exact={item.hasExactWordMatch}
+								class="dictionary-lookup-result"
+								type="button"
+								onclick={() => applyASDSuggestion(item)}
+								disabled={isPending}
+						>
+							<span class="arabic dictionary-lookup-arabic">{item.arabicText}</span>
+							<span class="dictionary-lookup-main">
+                        {#if item.transliteration}
+                            <span>{item.transliteration}</span>
+                        {/if}
+								{#if item.translation}
+                            <span>{item.translation}</span>
+                        {/if}
+								{#if item.plural}
+                            <span class="form-hint">plural: {item.plural.arabicText}</span>
+                        {/if}
+                    </span>
+						</button>
+					{/each}
+				</div>
+			{/if}
 		</div>
 	{/if}
 

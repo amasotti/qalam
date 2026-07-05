@@ -95,8 +95,8 @@
 
 /* Word detail */
 .word-hero {
-	margin-bottom: 3rem;
-	padding-bottom: 2.5rem;
+	margin-bottom: 2rem;
+	padding-bottom: 1.75rem;
 	border-bottom: 1px solid var(--border);
 	position: relative;
 }
@@ -178,8 +178,7 @@
 .word-examples {
 	display: flex;
 	flex-direction: column;
-	gap: 0.875rem;
-	margin-bottom: 2.5rem;
+	gap: 0.625rem;
 }
 .example-card {
 	position: relative;
@@ -282,63 +281,123 @@
 	line-height: 1.5;
 }
 
-/* Dictionary pills */
-.dict-pills {
+/* Dictionary links — editorial rows */
+.dict-links-list {
 	display: flex;
-	flex-wrap: wrap;
-	gap: 0.4rem;
-	margin-bottom: 2.5rem;
+	flex-direction: column;
+	gap: 0.25rem;
 }
-.dict-pill {
-	display: inline-flex;
+.dict-link-row {
+	display: flex;
 	align-items: center;
-	padding: 0.28rem 0.875rem;
+	gap: 0.5rem;
+	padding: 0.375rem 0.625rem;
 	border-radius: 6px;
-	border: 1px solid rgba(30, 88, 152, 0.2);
-	background: var(--cerulean-pale);
-	font-size: 0.72rem;
-	color: var(--cerulean);
 	text-decoration: none;
-	transition: all 120ms;
-}
-.dict-pill:hover {
-	background: var(--cerulean);
-	color: white;
-	border-color: var(--cerulean);
-}
-.dict-pill-group {
-	display: inline-flex;
-	align-items: center;
-	gap: 0;
-	border-radius: 6px;
-	overflow: hidden;
-	border: 1px solid rgba(30, 88, 152, 0.2);
-}
-.dict-pill-main {
-	border-radius: 0;
-	border: none;
-}
-.dict-pill-remove {
-	padding: 0.28rem 0.5rem;
-	background: var(--cerulean-pale);
-	border: none;
-	border-left: 1px solid rgba(30, 88, 152, 0.2);
-	cursor: pointer;
+	color: var(--ink-mid);
 	font-size: 0.8rem;
-	color: var(--cerulean);
-	line-height: 1;
+	transition: background 0.15s;
 }
-.dict-pill-remove:disabled {
-	opacity: 0.5;
+.dict-link-row:hover {
+	background: var(--bg-dark);
+}
+.dict-link-label {
+	flex: 1;
+	font-weight: 500;
+}
+.dict-link-icon {
+	color: var(--ink-ghost);
+	flex-shrink: 0;
+}
+.dict-link-row:hover .dict-link-icon {
+	color: var(--ink-mid);
+}
+.dict-link-remove {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--ink-ghost);
+	padding: 0.125rem;
+	line-height: 1;
+	border-radius: 3px;
+	flex-shrink: 0;
+	opacity: 0;
+	transition:
+		opacity 0.15s,
+		color 0.15s;
+}
+.dict-link-row:hover .dict-link-remove {
+	opacity: 1;
+}
+.dict-link-remove:hover {
+	color: var(--coral);
+}
+.dict-link-remove:disabled {
+	opacity: 0;
 	cursor: not-allowed;
 }
-.dict-controls {
+.dict-add-actions {
 	display: flex;
-	gap: 0.5rem;
-	margin-bottom: 0.75rem;
+	flex-wrap: wrap;
+	gap: 0.375rem;
+	margin-top: 0.625rem;
 }
-.dict-links-add-actions {
-	margin-top: 0.75rem;
+.dict-quick-add {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	padding: 0.2rem 0.625rem;
+	border-radius: 999px;
+	border: 1px dashed var(--border);
+	background: none;
+	cursor: pointer;
+	font-size: 0.7rem;
+	color: var(--ink-ghost);
+	font-family: inherit;
+	transition: all 0.15s;
+}
+.dict-quick-add:hover {
+	border-color: var(--cerulean);
+	color: var(--cerulean);
+	background: var(--cerulean-pale);
+}
+.dict-quick-add:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+.dict-quick-add-custom {
+	border-style: solid;
+	border-color: var(--border);
+}
+.dict-add-form {
+	display: flex;
+	align-items: center;
+	gap: 0.375rem;
+	padding: 0.5rem 0;
+	flex-wrap: wrap;
+}
+.dict-add-select {
+	font-size: 0.75rem;
+	padding: 0.2rem 0.375rem;
+	border: 1px solid var(--border);
+	border-radius: 4px;
+	background: var(--white);
+	color: var(--ink);
+	font-family: inherit;
+}
+.dict-add-input {
+	font-size: 0.75rem;
+	padding: 0.2rem 0.5rem;
+	border: 1px solid var(--border);
+	border-radius: 4px;
+	background: var(--white);
+	color: var(--ink);
+	font-family: inherit;
+	width: 14rem;
+}
+.dict-add-error {
+	font-size: 0.7rem;
+	color: var(--coral);
 }
 
 /* Notes and annotations on word detail */
@@ -408,19 +467,19 @@
 .word-workbench {
 	display: flex;
 	flex-direction: column;
-	gap: 2rem;
-	margin-top: 1.5rem;
+	gap: 1.25rem;
+	margin-top: 1.25rem;
 }
 .workbench-section {
 	background: var(--white);
 	border: 1px solid var(--border);
-	border-radius: 12px;
-	padding: 1.5rem;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+	border-radius: 10px;
+	padding: 1.25rem;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 	transition: box-shadow 0.2s ease;
 }
 .workbench-section:hover {
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
 }
 .sect-label.with-action {
 	display: flex;
@@ -431,6 +490,22 @@
 .sect-label.with-action::after {
 	content: none;
 }
+.meaning-form-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.25rem;
+	align-items: start;
+}
+.meaning-col {
+	display: flex;
+	flex-direction: column;
+	gap: 0.625rem;
+}
+.form-col {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
 .relations-sources-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -439,16 +514,21 @@
 .notes-display {
 	background: var(--bg-dark);
 	border-radius: 8px;
-	padding: 1.25rem;
+	padding: 1rem 1.25rem;
 	border-left: 3px solid var(--cerulean);
 }
 .sect-sublabel {
-	font-size: 0.85rem;
+	font-size: 0.78rem;
 	font-weight: 600;
-	color: var(--ink-mid);
-	margin-bottom: 0.75rem;
+	color: var(--ink-light);
+	margin-bottom: 0.625rem;
 	text-transform: uppercase;
-	letter-spacing: 0.03em;
+	letter-spacing: 0.04em;
+}
+.example-add-meta {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.5rem;
 }
 .root-link-card {
 	padding: 0.875rem;

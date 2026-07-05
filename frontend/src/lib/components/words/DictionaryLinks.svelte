@@ -1,4 +1,5 @@
 <script lang="ts">
+import { ExternalLink, Plus, X } from 'lucide-svelte';
 import type { CreateDictionaryLinkRequest, DictionarySource } from '$lib/api/types.gen';
 import {
 	useAddDictionaryLink,
@@ -49,164 +50,135 @@ const sources: DictionarySource[] = [
 	'CUSTOM',
 ];
 
-let showManual = $state(false);
+let showAdd = $state(false);
 let selectedSource = $state<DictionarySource>('ALMANY');
 let urlInput = $state('');
-let urlWasAutofilled = $state(false);
 let addError = $state('');
-let isAddingAll = $state(false);
-
-$effect(() => {
-	const template = URL_TEMPLATES[selectedSource];
-	if (template && (urlInput === '' || urlWasAutofilled)) {
-		urlInput = template.replace('{word}', encodeURIComponent(arabicText));
-		urlWasAutofilled = true;
-	} else if (!template && urlWasAutofilled) {
-		urlInput = '';
-		urlWasAutofilled = false;
-	}
-});
 
 const links = $derived(linksQuery.data ?? []);
 const existingSources = $derived(new Set(links.map((l) => l.source)));
-const missingTemplated = $derived(
-	(Object.keys(URL_TEMPLATES) as DictionarySource[]).filter((s) => !existingSources.has(s))
-);
 
-async function handleAddAll() {
-	isAddingAll = true;
-	addError = '';
+// Auto-fill URL when source changes in custom add form
+$effect(() => {
+	if (!showAdd) return;
+	const template = URL_TEMPLATES[selectedSource];
+	if (template) {
+		urlInput = template.replace('{word}', encodeURIComponent(arabicText));
+	} else {
+		urlInput = '';
+	}
+});
+
+function buildTemplateUrl(source: DictionarySource): string {
+	const template = URL_TEMPLATES[source];
+	return template ? template.replace('{word}', encodeURIComponent(arabicText)) : '';
+}
+
+async function handleQuickAdd(source: DictionarySource) {
+	const url = buildTemplateUrl(source);
+	if (!url) return;
 	try {
-		for (const source of missingTemplated) {
-			const template = URL_TEMPLATES[source];
-
-			if (!template) {
-				throw new Error(`No URL template for source ${source}`);
-			}
-
-			await addMutation.mutateAsync({
-				id: wordId,
-				body: { source, url: template.replace('{word}', encodeURIComponent(arabicText)) },
-			});
-		}
+		await addMutation.mutateAsync({
+			id: wordId,
+			body: { source, url },
+		});
 	} catch {
-		addError = 'Failed to add some dictionaries';
-	} finally {
-		isAddingAll = false;
+		addError = 'Failed to add';
 	}
 }
 
-function handleOpenAll() {
-	for (const link of links) {
-		const a = document.createElement('a');
-		a.href = link.url;
-		a.target = '_blank';
-		a.rel = 'noopener noreferrer';
-		a.click();
-	}
+function startCustomAdd() {
+	selectedSource = 'ALMANY';
+	addError = '';
+	showAdd = true;
 }
 
-function handleAddOne() {
+async function handleAddCustom() {
 	if (!urlInput.trim()) return;
 	addError = '';
-	addMutation.mutate(
-		{ id: wordId, body: { source: selectedSource, url: urlInput } as CreateDictionaryLinkRequest },
-		{
-			onSuccess: () => {
-				urlInput = '';
-				urlWasAutofilled = false;
-				selectedSource = 'ALMANY';
-				showManual = false;
-			},
-			onError: (e) => {
-				addError = e instanceof Error ? e.message : 'Failed to add link';
-			},
-		}
-	);
+	try {
+		await addMutation.mutateAsync({
+			id: wordId,
+			body: { source: selectedSource, url: urlInput } as CreateDictionaryLinkRequest,
+		});
+		selectedSource = 'ALMANY';
+		urlInput = '';
+		showAdd = false;
+		addError = '';
+	} catch (e) {
+		addError = e instanceof Error ? e.message : 'Failed to add link';
+	}
 }
 </script>
 
-<div>
-	{#if links.length > 0 || missingTemplated.length > 0}
-		<div class="dict-controls">
-			{#if links.length > 0}
-				<button class="btn btn-sm" onclick={handleOpenAll}>
-					Open all ↗
-				</button>
-			{/if}
-			{#if missingTemplated.length > 0}
-				<button class="btn btn-sm" onclick={handleAddAll} disabled={isAddingAll}>
-					{isAddingAll ? 'Adding…' : '+ Add all dictionaries'}
-				</button>
-			{/if}
-		</div>
-	{/if}
-
-	{#if linksQuery.isPending}
-		<p class="annot-empty">Loading…</p>
-	{:else if linksQuery.isError}
-		<p class="annot-empty">Could not load links.</p>
-	{:else if links.length === 0}
-		<p class="annot-empty">No dictionary links yet.</p>
-	{:else}
-		<div class="dict-pills">
+{#if linksQuery.isPending}
+	<span class="annot-empty">Loading…</span>
+{:else}
+	<div class="dict-links-list">
+		{#if links.length > 0}
 			{#each links as link (link.id)}
-				<div class="dict-pill-group">
-					<a
-						href={link.url}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="dict-pill dict-pill-main"
-					>{sourceLabels[link.source]} ↗</a>
+				<a href={link.url} target="_blank" rel="noopener noreferrer" class="dict-link-row">
+					<span class="dict-link-label">{sourceLabels[link.source]}</span>
+					<ExternalLink size={11} class="dict-link-icon" />
 					<button
-						class="dict-pill-remove"
-						onclick={() => deleteMutation.mutate({ id: wordId, linkId: link.id })}
+						class="dict-link-remove"
+						onclick={(e: MouseEvent) => {
+							e.preventDefault();
+							e.stopPropagation();
+							deleteMutation.mutate({ id: wordId, linkId: link.id });
+						}}
 						disabled={deleteMutation.isPending}
 						aria-label="Remove {sourceLabels[link.source]}"
-					>×</button>
-				</div>
+					><X size={10} /></button>
+				</a>
 			{/each}
-		</div>
-	{/if}
+		{/if}
 
-	<div class="dict-links-add-actions">
-		<button
-			class="dict-link-add-toggle"
-			onclick={() => (showManual = !showManual)}
-		>
-			{showManual ? '− Hide' : '+ Custom link'}
-		</button>
-
-		{#if showManual}
-			<div class="dict-links-add">
-				<div class="dict-links-add-row">
-					<select
-						bind:value={selectedSource}
-						class="dict-links-add-select"
-						disabled={addMutation.isPending}
-					>
-						{#each sources as source}
-							<option value={source}>{sourceLabels[source]}</option>
-						{/each}
-					</select>
-					<input
-						type="url"
-						bind:value={urlInput}
-						class="dict-links-add-input"
-						placeholder="URL"
-						disabled={addMutation.isPending}
-						oninput={() => (urlWasAutofilled = false)}
-					/>
-				</div>
-				{#if addError}
-					<p class="dict-links-add-error">{addError}</p>
-				{/if}
+		{#if showAdd}
+			<div class="dict-add-form">
+				<select
+					class="dict-add-select"
+					bind:value={selectedSource}
+					disabled={addMutation.isPending}
+				>
+					{#each sources as source}
+						<option value={source}>{sourceLabels[source]}</option>
+					{/each}
+				</select>
+				<input
+					type="url"
+					class="dict-add-input"
+					placeholder="URL"
+					bind:value={urlInput}
+					disabled={addMutation.isPending}
+				/>
 				<button
-					class="btn btn-primary btn-sm"
-					onclick={handleAddOne}
+					class="btn btn-xs"
+					onclick={handleAddCustom}
 					disabled={addMutation.isPending || !urlInput.trim()}
 				>Add</button>
+				<button class="btn btn-xs" onclick={() => (showAdd = false)}>Cancel</button>
+				{#if addError}
+					<span class="dict-add-error">{addError}</span>
+				{/if}
 			</div>
 		{/if}
+
+		<div class="dict-add-actions">
+			{#each sources.filter(s => URL_TEMPLATES[s] && !existingSources.has(s)).slice(0, 4) as source (source)}
+				<button
+					class="dict-quick-add"
+					onclick={() => handleQuickAdd(source)}
+					disabled={addMutation.isPending}
+				>
+					<Plus size={10} />
+					{sourceLabels[source]}
+				</button>
+			{/each}
+			<button class="dict-quick-add dict-quick-add-custom" onclick={startCustomAdd}>
+				<Plus size={10} />
+				Custom
+			</button>
+		</div>
 	</div>
-</div>
+{/if}

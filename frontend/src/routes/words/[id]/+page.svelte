@@ -194,33 +194,32 @@ const masterySteps: Record<string, number> = {
 
 				<!-- Word Workbench -->
 				<div class="word-workbench">
-					<!-- Translation -->
+					<!-- Meaning & Form -->
 					<div class="workbench-section">
-						<div class="sect-label">Translation</div>
-						{#if word.data.translation}
-							<p class="word-translation">{word.data.translation}</p>
-						{:else}
-							<p class="annot-empty">No translation recorded</p>
-						{/if}
-						{#if word.data.pronunciationUrl}
-							<div class="section-block-sm">
-								<a
-									class="pron-link"
-									href={word.data.pronunciationUrl}
-									target="_blank"
-									rel="noopener noreferrer"
-								>♪ Forvo ↗</a>
+						<div class="sect-label">Meaning & Form</div>
+						<div class="meaning-form-grid">
+							<div class="meaning-col">
+								{#if word.data.translation}
+									<p class="word-translation">{word.data.translation}</p>
+								{:else}
+									<p class="annot-empty">No translation recorded</p>
+								{/if}
+								{#if word.data.pronunciationUrl}
+									<a
+										class="pron-link"
+										href={word.data.pronunciationUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+									>♪ Forvo ↗</a>
+								{/if}
 							</div>
-						{/if}
-					</div>
-
-					<!-- Morphology -->
-					<div class="workbench-section">
-						<div class="sect-label">Morphology</div>
-						<WordMorphologyStrip wordId={id} />
-						{#if word.data.partOfSpeech === "NOUN"}
-							<WordPluralChips wordId={id} />
-						{/if}
+							<div class="form-col">
+								<WordMorphologyStrip wordId={id} />
+								{#if word.data.partOfSpeech === "NOUN"}
+									<WordPluralChips wordId={id} />
+								{/if}
+							</div>
+						</div>
 					</div>
 
 					<!-- Examples -->
@@ -243,18 +242,20 @@ const masterySteps: Record<string, number> = {
 										placeholder="العربية…"
 										bind:value={newExAr}
 									></textarea>
-									<input
-										class="example-input-latin"
-										type="text"
-										placeholder="Transliteration (optional)"
-										bind:value={newExTr}
-									/>
-									<input
-										class="example-input-latin"
-										type="text"
-										placeholder="Translation (optional)"
-										bind:value={newExEn}
-									/>
+									<div class="example-add-meta">
+										<input
+											class="example-input-latin"
+											type="text"
+											placeholder="Transliteration"
+											bind:value={newExTr}
+										/>
+										<input
+											class="example-input-latin"
+											type="text"
+											placeholder="Translation"
+											bind:value={newExEn}
+										/>
+									</div>
 									<div class="example-form-actions">
 										<button class="btn" onclick={cancelAddExample}>Cancel</button>
 										<button
@@ -305,10 +306,10 @@ const masterySteps: Record<string, number> = {
 							<div class="stack-xs">
 								<textarea
 									class="notes-textarea"
-									rows="5"
+									rows="4"
 									bind:value={editedNotes}
 									disabled={updateWord.isPending}
-									placeholder="What do you know about this word? Usage tips, mnemonics, cultural context…"
+									placeholder="Usage tips, mnemonics, cultural context…"
 								></textarea>
 								<div class="row-sm">
 									<button
@@ -335,19 +336,16 @@ const masterySteps: Record<string, number> = {
 						</div>
 					</div>
 
-					<!-- Relations & Sources -->
+					<!-- Relations -->
 					<div class="workbench-section">
-						<div class="sect-label">Relations & Sources</div>
-						<div class="relations-sources-grid">
-							<div class="relations-panel">
-								<div class="sect-sublabel">Related Words</div>
-								<WordRelationsPanel wordId={id} />
-							</div>
-							<div class="sources-panel">
-								<div class="sect-sublabel">Dictionaries</div>
-								<DictionaryLinks wordId={id} arabicText={word.data.arabicText} />
-							</div>
-						</div>
+						<div class="sect-label">Relations</div>
+						<WordRelationsPanel wordId={id} />
+					</div>
+
+					<!-- Dictionaries -->
+					<div class="workbench-section">
+						<div class="sect-label">Dictionaries</div>
+						<DictionaryLinks wordId={id} arabicText={word.data.arabicText} />
 					</div>
 
 					<!-- Annotations -->
@@ -378,10 +376,8 @@ const masterySteps: Record<string, number> = {
 			</div>
 
 			<aside class="detail-sidebar">
-				<!-- List membership -->
 				<WordListMembership wordId={id} />
 
-				<!-- Root card -->
 				{#if word.data.rootId}
 					<div class="meta-card">
 						<div class="meta-card-title">Root</div>
@@ -398,7 +394,6 @@ const masterySteps: Record<string, number> = {
 					</div>
 				{/if}
 
-				<!-- Mastery gauge -->
 				{#if true}
 				{@const stepsOn = masterySteps[word.data.masteryLevel] ?? 0}
 				<div class="meta-card">
@@ -412,7 +407,6 @@ const masterySteps: Record<string, number> = {
 				</div>
 				{/if}
 
-				<!-- Details card -->
 				<div class="meta-card">
 					<div class="meta-card-title">Details</div>
 					<div class="meta-row">
@@ -441,7 +435,6 @@ const masterySteps: Record<string, number> = {
 			</aside>
 		</div>
 
-		<!-- AI Enrich drawer -->
 		<WordEnrichDrawer
 			wordId={id}
 			open={enrichOpen}

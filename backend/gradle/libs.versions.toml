@@ -66,6 +66,7 @@ ktor-server-swagger      = { module = "io.ktor:ktor-server-swagger-jvm",        
 
 # Logging
 logback-classic          = { module = "ch.qos.logback:logback-classic",                                  version = "1.5.34" }
+kotlin-logging           = { module = "io.github.oshai:kotlin-logging-jvm",                               version = "8.0.4" }
 
 # Testing
 kotest-junitRunner       = { module = "io.kotest:kotest-runner-junit5",                                  version.ref = "kotest" }

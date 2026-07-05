@@ -14,6 +14,7 @@ interface Props {
 	onRetokenize?: (sentence: SentenceResponse) => Promise<void>;
 	onMarkValid?: (sentence: SentenceResponse) => Promise<void>;
 	onTokenClick?: (token: AlignmentTokenResponse) => void;
+	onEdit?: (sentence: SentenceResponse) => void;
 	isPending?: boolean;
 }
 
@@ -23,6 +24,7 @@ let {
 	onRetokenize,
 	onMarkValid,
 	onTokenClick,
+	onEdit,
 	isPending = false,
 }: Props = $props();
 
@@ -64,6 +66,18 @@ const showStaleBanner = $derived(!sentence.tokensValid && sentence.tokens.length
 			</div>
 		{/if}
 
-		<AiInsightPanel entityType="SENTENCE" entityId={sentence.id} />
+		<div class="sentence-actions">
+			<AiInsightPanel entityType="SENTENCE" entityId={sentence.id} />
+
+			{#if onEdit}
+				<button
+					class="btn btn-sm sentence-action-btn sentence-action-edit"
+					type="button"
+					onclick={() => onEdit(sentence)}
+				>
+					Edit sentence
+				</button>
+			{/if}
+		</div>
 	</div>
 </div>

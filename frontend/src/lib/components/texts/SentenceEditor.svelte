@@ -17,9 +17,12 @@ import TokenGrid from './TokenGrid.svelte';
 interface Props {
 	sentences: SentenceResponse[];
 	textId: string;
+	hideAdd?: boolean;
+	hideOrder?: boolean;
+	onDone?: () => void;
 }
 
-let { sentences, textId }: Props = $props();
+let { sentences, textId, hideAdd = false, hideOrder = false, onDone }: Props = $props();
 
 const createSentence = useCreateSentence();
 const updateSentence = useUpdateSentence();
@@ -78,6 +81,7 @@ async function handleUpdate(sentence: SentenceResponse) {
 			},
 		});
 		editingId = null;
+		onDone?.();
 	} catch (err) {
 		editError = err instanceof Error ? err.message : 'Update failed';
 	}
@@ -148,28 +152,37 @@ async function handleMoveDown(s: SentenceResponse, total: number) {
 </script>
 
 <div class="sentence-editor">
+	{#if onDone}
+		<div class="sentence-editor-inline-header">
+			<span class="helper-copy-strong">Sentence editor</span>
+			<Button size="sm" variant="ghost" onclick={onDone}>Done</Button>
+		</div>
+	{/if}
+
 	{#each sentences as sentence (sentence.id)}
 		<div class="sentence-edit-block">
 			<div class="sentence-edit-meta">
 				<span class="sentence-edit-pos">{sentence.position}</span>
-				<div class="sentence-edit-order">
-					<button
-						class="order-btn"
-						onclick={() => handleMoveUp(sentence)}
-						disabled={sentence.position === 1 || reorderSentences.isPending}
-						aria-label="Move sentence up"
-					>
-						<ChevronUp size={12} />
-					</button>
-					<button
-						class="order-btn"
-						onclick={() => handleMoveDown(sentence, sentences.length)}
-						disabled={sentence.position === sentences.length || reorderSentences.isPending}
-						aria-label="Move sentence down"
-					>
-						<ChevronDown size={12} />
-					</button>
-				</div>
+				{#if !hideOrder}
+					<div class="sentence-edit-order">
+						<button
+							class="order-btn"
+							onclick={() => handleMoveUp(sentence)}
+							disabled={sentence.position === 1 || reorderSentences.isPending}
+							aria-label="Move sentence up"
+						>
+							<ChevronUp size={12} />
+						</button>
+						<button
+							class="order-btn"
+							onclick={() => handleMoveDown(sentence, sentences.length)}
+							disabled={sentence.position === sentences.length || reorderSentences.isPending}
+							aria-label="Move sentence down"
+						>
+							<ChevronDown size={12} />
+						</button>
+					</div>
+				{/if}
 			</div>
 
 			<div class="sentence-edit-content">
@@ -291,52 +304,54 @@ async function handleMoveDown(s: SentenceResponse, total: number) {
 		</div>
 	{/each}
 
-	<!-- Add new sentence -->
-	{#if addingNew}
-		<div class="new-sentence-form">
-			<h4 class="new-sentence-heading">New sentence</h4>
-			<textarea
-				class="sentence-edit-textarea arabic-text"
-				rows={3}
-				placeholder="أدخل الجملة بالعربية…"
-				bind:value={newArabic}
-			></textarea>
-			<input
-				class="sentence-edit-input transliteration"
-				type="text"
-				placeholder="Transliteration"
-				bind:value={newTranslit}
-			/>
-			<input
-				class="sentence-edit-input"
-				type="text"
-				placeholder="Free translation"
-				bind:value={newFreeTranslation}
-			/>
-			<input
-				class="sentence-edit-input"
-				type="text"
-				placeholder="Notes"
-				bind:value={newNotes}
-			/>
-			{#if newError}
-				<p class="sentence-edit-error">{newError}</p>
-			{/if}
-			<div class="sentence-edit-form-actions">
-				<Button
-					size="sm"
-					disabled={createSentence.isPending}
-					onclick={handleAdd}
-				>
-					{createSentence.isPending ? 'Adding…' : 'Add sentence'}
-				</Button>
-				<Button size="sm" variant="ghost" onclick={() => (addingNew = false)}>Cancel</Button>
+	{#if !hideAdd}
+		<!-- Add new sentence -->
+		{#if addingNew}
+			<div class="new-sentence-form">
+				<h4 class="new-sentence-heading">New sentence</h4>
+				<textarea
+					class="sentence-edit-textarea arabic-text"
+					rows={3}
+					placeholder="أدخل الجملة بالعربية…"
+					bind:value={newArabic}
+				></textarea>
+				<input
+					class="sentence-edit-input transliteration"
+					type="text"
+					placeholder="Transliteration"
+					bind:value={newTranslit}
+				/>
+				<input
+					class="sentence-edit-input"
+					type="text"
+					placeholder="Free translation"
+					bind:value={newFreeTranslation}
+				/>
+				<input
+					class="sentence-edit-input"
+					type="text"
+					placeholder="Notes"
+					bind:value={newNotes}
+				/>
+				{#if newError}
+					<p class="sentence-edit-error">{newError}</p>
+				{/if}
+				<div class="sentence-edit-form-actions">
+					<Button
+						size="sm"
+						disabled={createSentence.isPending}
+						onclick={handleAdd}
+					>
+						{createSentence.isPending ? 'Adding…' : 'Add sentence'}
+					</Button>
+					<Button size="sm" variant="ghost" onclick={() => (addingNew = false)}>Cancel</Button>
+				</div>
 			</div>
-		</div>
-	{:else}
-		<Button variant="outline" onclick={() => (addingNew = true)}>
-			<Plus size={14} />
-			Add sentence
-		</Button>
+		{:else}
+			<Button variant="outline" onclick={() => (addingNew = true)}>
+				<Plus size={14} />
+				Add sentence
+			</Button>
+		{/if}
 	{/if}
 </div>

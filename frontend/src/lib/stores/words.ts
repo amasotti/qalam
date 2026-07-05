@@ -140,7 +140,7 @@ export function useWordAutocomplete(q: () => string) {
 	}));
 }
 
-export function useASDlookup() {
+export function useAsdLookup() {
 	return createMutation(() => ({
 		mutationFn: async (query: string) => {
 			const normalizedQuery = query.trim();

@@ -235,9 +235,10 @@ layered over the dictionary.
 - Word detail shows which lists a word belongs to; words can be added/removed from there or
   from the list detail page
 - Reachable via `/api/v1/word-lists` (CRUD, add/remove member, lists-for-word)
+- Training sessions can be restricted to one or more selected lists; multiple lists are treated as
+  a union.
 
-Deferred (later phases): AI-suggested words for a list (with add-to-vocabulary), and training
-restricted to one or more lists.
+Deferred (later phases): AI-suggested words for a list (with add-to-vocabulary).
 
 ---
 

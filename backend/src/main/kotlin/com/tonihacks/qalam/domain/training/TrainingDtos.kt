@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class CreateSessionRequest(
     val mode: String,
     val size: Int = 15,
+    val wordListIds: List<String> = emptyList(),
 )
 
 @Serializable

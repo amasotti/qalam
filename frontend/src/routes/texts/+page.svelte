@@ -10,7 +10,7 @@ let debouncedSearch = $state('');
 let dialect = $state<Dialect | ''>('');
 let difficulty = $state<Difficulty | ''>('');
 let tag = $state('');
-let sortBy = $state<TextSortField>('CREATED_AT');
+let sortBy = $state<TextSortField>('UPDATED_AT');
 let sortDesc = $state(true);
 let page = $state(1);
 

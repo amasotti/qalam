@@ -24,11 +24,19 @@ class TrainingService(
     suspend fun createSession(
         modeStr: String,
         size: Int,
+        wordListIds: List<String> = emptyList(),
     ): Either<DomainError, Pair<TrainingSession, List<TrainingSessionWord>>> = either {
-        log.info { "Creating training session mode=$modeStr requestedSize=$size" }
+        log.info { "Creating training session mode=$modeStr requestedSize=$size wordListCount=${wordListIds.size}" }
         val parsedSize = size.coerceIn(1, 50)
         val mode = runCatching { TrainingMode.valueOf(modeStr.uppercase()) }
             .getOrElse { raise(DomainError.InvalidInput("Unknown training mode: $modeStr")) }
+        val parsedWordListIds = wordListIds
+            .filter { it.isNotBlank() }
+            .map { id ->
+                runCatching { UUID.fromString(id) }
+                    .getOrElse { raise(DomainError.InvalidInput("Invalid word list id: $id")) }
+            }
+            .toSet()
 
         val masteryFilter = when (mode) {
             TrainingMode.NEW      -> MasteryLevel.NEW
@@ -37,7 +45,7 @@ class TrainingService(
             TrainingMode.MIXED    -> null
         }
 
-        val words = wordRepo.findForTraining(masteryFilter, parsedSize).bind()
+        val words = wordRepo.findForTraining(masteryFilter, parsedWordListIds, parsedSize).bind()
         ensure(words.isNotEmpty()) {
             DomainError.NotEnoughWords(requested = parsedSize, available = 0)
         }
@@ -76,7 +84,9 @@ class TrainingService(
         trainingRepo.createSession(session, sessionWords).bind()
         log.info { "Created training session id=${session.id} mode=$mode wordCount=${sessionWords.size}" }
         session to sessionWords
-    }.logDomainFailure(log) { "Failed to create training session mode=$modeStr requestedSize=$size: $it" }
+    }.logDomainFailure(log) {
+        "Failed to create training session mode=$modeStr requestedSize=$size wordListCount=${wordListIds.size}: $it"
+    }
 
     suspend fun getSession(
         sessionIdStr: String,

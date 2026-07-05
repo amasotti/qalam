@@ -3275,6 +3275,13 @@ components:
           default: 15
           minimum: 1
           maximum: 100
+        wordListIds:
+          type: array
+          description: Optional word-list IDs that constrain the training pool. Multiple lists use union semantics.
+          items:
+            type: string
+            format: uuid
+          default: []
 
     TrainingWordExampleResponse:
       type: object

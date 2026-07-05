@@ -25,8 +25,10 @@ All words start at `NEW` when created.
 Parameters:
 - `mode` — which mastery tier to draw words from: `NEW`, `LEARNING`, `KNOWN`, or `MIXED` (all tiers)
 - `size` — how many words (clamped to 1–50)
+- `wordListIds` — optional list IDs that restrict the word pool. Multiple lists use union semantics:
+  words from any selected list are eligible. Empty or omitted means all vocabulary.
 
-Backend queries `words` filtered by mastery level, shuffles, takes `size` words.
+Backend queries `words` filtered by mastery level and optional word-list membership, shuffles, takes `size` words.
 For each word a `front_side` is randomly assigned at creation time (`ARABIC` or `TRANSLATION`) — fixed for the life of that session.
 
 ### 2. Answer words

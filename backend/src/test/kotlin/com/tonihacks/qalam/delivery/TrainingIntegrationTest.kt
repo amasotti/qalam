@@ -35,6 +35,22 @@ class TrainingIntegrationTest : BaseIntegrationTest() {
             return Regex(""""id":"([^"]+)"""").find(resp.bodyAsText())!!.groupValues[1]
         }
 
+        suspend fun createList(client: io.ktor.client.HttpClient, title: String): String {
+            val resp = client.post("/api/v1/word-lists") {
+                contentType(ContentType.Application.Json)
+                setBody("""{"title":"$title"}""")
+            }
+            resp.status shouldBe HttpStatusCode.Created
+            return Regex(""""id":"([^"]+)"""").find(resp.bodyAsText())!!.groupValues[1]
+        }
+
+        suspend fun addWordToList(client: io.ktor.client.HttpClient, listId: String, wordId: String) {
+            client.post("/api/v1/word-lists/$listId/words") {
+                contentType(ContentType.Application.Json)
+                setBody("""{"wordId":"$wordId"}""")
+            }.status shouldBe HttpStatusCode.NoContent
+        }
+
         // ── Group 1: POST /api/v1/training/sessions ─────────────────────────────
 
         "POST /api/v1/training/sessions" - {
@@ -77,6 +93,43 @@ class TrainingIntegrationTest : BaseIntegrationTest() {
                     val body = response.bodyAsText()
                     val words = Json.parseToJsonElement(body).jsonObject["words"]!!.jsonArray
                     words.size shouldBe 3
+                }
+            }
+
+            "restricts training words to selected word lists" {
+                testApp { client ->
+                    val colorsListId = createList(client, "Colors")
+                    val familyListId = createList(client, "Family")
+                    val redId = createWord(client, """{"arabicText":"أحمر","translation":"red","dialect":"MSA"}""")
+                    val blueId = createWord(client, """{"arabicText":"أزرق","translation":"blue","dialect":"MSA"}""")
+                    val motherId = createWord(client, """{"arabicText":"أم","translation":"mother","dialect":"MSA"}""")
+                    addWordToList(client, colorsListId, redId)
+                    addWordToList(client, colorsListId, blueId)
+                    addWordToList(client, familyListId, motherId)
+
+                    val response = client.post("/api/v1/training/sessions") {
+                        contentType(ContentType.Application.Json)
+                        setBody("""{"mode":"MIXED","size":10,"wordListIds":["$colorsListId"]}""")
+                    }
+
+                    response.status shouldBe HttpStatusCode.Created
+                    val words = Json.parseToJsonElement(response.bodyAsText()).jsonObject["words"]!!.jsonArray
+                    words.size shouldBe 2
+                    response.bodyAsText() shouldContain "أحمر"
+                    response.bodyAsText() shouldContain "أزرق"
+                    response.bodyAsText().contains("أم") shouldBe false
+                }
+            }
+
+            "returns 400 for malformed word list id" {
+                testApp { client ->
+                    createWord(client)
+                    val response = client.post("/api/v1/training/sessions") {
+                        contentType(ContentType.Application.Json)
+                        setBody("""{"mode":"MIXED","size":1,"wordListIds":["not-a-uuid"]}""")
+                    }
+
+                    response.status shouldBe HttpStatusCode.BadRequest
                 }
             }
         }

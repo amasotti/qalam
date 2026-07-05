@@ -5,6 +5,7 @@ import com.tonihacks.qalam.delivery.dto.PageRequest
 import com.tonihacks.qalam.delivery.dto.PaginatedResponse
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.root.RootId
+import java.util.UUID
 
 data class WordFilters(
     val q: String? = null,
@@ -33,7 +34,11 @@ interface WordRepository {
     suspend fun deleteExample(wordId: WordId, exampleId: WordExampleId): Either<DomainError, Unit>
 
     /** Random sample of words for training, optionally filtered by mastery level. */
-    suspend fun findForTraining(masteryLevel: MasteryLevel?, limit: Int): Either<DomainError, List<Word>>
+    suspend fun findForTraining(
+        masteryLevel: MasteryLevel?,
+        wordListIds: Set<UUID>,
+        limit: Int,
+    ): Either<DomainError, List<Word>>
 
     suspend fun getProgress(wordId: WordId): Either<DomainError, WordProgress>
 

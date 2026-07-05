@@ -114,7 +114,7 @@
 }
 
 .training-setup {
-	max-width: 32rem;
+	max-width: 52rem;
 	margin: 2rem auto;
 	padding: 0 1rem;
 	display: flex;
@@ -137,6 +137,59 @@
 	display: flex;
 	flex-direction: column;
 	gap: 1.5rem;
+}
+.training-scope {
+	display: flex;
+	flex-direction: column;
+	gap: 0.875rem;
+}
+.training-scope-header {
+	display: flex;
+	align-items: flex-start;
+	gap: 1rem;
+}
+.training-scope-note,
+.training-muted {
+	margin: 0.25rem 0 0;
+	font-size: 0.875rem;
+	color: hsl(var(--muted-foreground));
+}
+.training-list-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+}
+.training-list-option {
+	min-height: 1.875rem;
+	border: 1px solid hsl(var(--border));
+	border-radius: 999px;
+	background: hsl(var(--background));
+	padding: 0.25rem 0.65rem;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	cursor: pointer;
+	color: hsl(var(--foreground));
+	font-size: 0.8125rem;
+	line-height: 1.2;
+}
+.training-list-option:hover {
+	border-color: hsl(var(--primary) / 0.55);
+}
+.training-list-option.selected {
+	border-color: hsl(var(--primary));
+	background: hsl(var(--primary) / 0.08);
+}
+.training-list-option:disabled {
+	cursor: not-allowed;
+	opacity: 0.5;
+}
+.training-list-title {
+	font-weight: 500;
+}
+.training-list-meta {
+	font-size: 0.75rem;
+	color: hsl(var(--muted-foreground));
 }
 .mode-buttons {
 	display: flex;

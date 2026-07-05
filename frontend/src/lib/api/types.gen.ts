@@ -437,6 +437,10 @@ export type CreateSessionRequest = {
      * Number of words to include in the session
      */
     size: number;
+    /**
+     * Optional word-list IDs that constrain the training pool. Multiple lists use union semantics.
+     */
+    wordListIds?: Array<string>;
 };
 
 export type TrainingWordExampleResponse = {

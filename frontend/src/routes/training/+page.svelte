@@ -2,21 +2,36 @@
 import { goto } from '$app/navigation';
 import { Button } from '$lib/components/ui/button';
 import { useCreateSession, useTrainingStats } from '$lib/stores/training';
+import { useAllWordLists } from '$lib/stores/wordLists';
 
 const createSession = useCreateSession();
 const stats = useTrainingStats();
+const wordLists = useAllWordLists();
 
 const modes = ['MIXED', 'NEW', 'LEARNING', 'KNOWN'] as const;
 type Mode = (typeof modes)[number];
 
 let selectedMode = $state<Mode>('MIXED');
 let sessionSize = $state(15);
+let selectedWordListIds = $state<string[]>([]);
+
+const selectedListCount = $derived(selectedWordListIds.length);
 
 function start() {
 	createSession.mutate(
-		{ mode: selectedMode, size: sessionSize },
+		{ mode: selectedMode, size: sessionSize, wordListIds: selectedWordListIds },
 		{ onSuccess: (session) => goto(`/training/${session.id}`) }
 	);
+}
+
+function selectAllVocabulary() {
+	selectedWordListIds = [];
+}
+
+function toggleWordList(id: string) {
+	selectedWordListIds = selectedWordListIds.includes(id)
+		? selectedWordListIds.filter((selectedId) => selectedId !== id)
+		: [...selectedWordListIds, id];
 }
 
 const modeLabels: Record<Mode, string> = {
@@ -39,6 +54,50 @@ const modeLabels: Record<Mode, string> = {
   {/if}
 
   <section class="training-form">
+    <div class="training-scope">
+      <div class="training-scope-header">
+        <div>
+          <span class="form-label">Scope</span>
+          <p class="training-scope-note">
+            {selectedListCount === 0
+              ? 'Use the whole vocabulary pool.'
+              : `Use words from ${selectedListCount} selected list${selectedListCount === 1 ? '' : 's'}.`}
+          </p>
+        </div>
+      </div>
+
+      {#if wordLists.isPending}
+        <p class="training-muted">Loading lists…</p>
+      {:else if wordLists.isError}
+        <p class="form-error-msg">Could not load word lists.</p>
+      {:else if (wordLists.data ?? []).length > 0}
+        <div class="training-list-chips" aria-label="Training word lists">
+          <button
+            type="button"
+            class:selected={selectedListCount === 0}
+            class="training-list-option"
+            onclick={selectAllVocabulary}
+          >
+            <span class="training-list-title">All vocabulary</span>
+          </button>
+          {#each wordLists.data ?? [] as list}
+            <button
+              type="button"
+              class:selected={selectedWordListIds.includes(list.id)}
+              class="training-list-option"
+              disabled={list.itemCount === 0}
+              onclick={() => toggleWordList(list.id)}
+            >
+              <span class="training-list-title">{list.title}</span>
+              <span class="training-list-meta">{list.itemCount}</span>
+            </button>
+          {/each}
+        </div>
+      {:else}
+        <p class="training-muted">No word lists yet. Training will use all words.</p>
+      {/if}
+    </div>
+
     <div class="form-field">
       <span class="form-label">Mode</span>
       <div class="mode-buttons" role="group" aria-label="Training mode">

@@ -34,12 +34,15 @@ import com.tonihacks.qalam.domain.word.WordPluralId
 import com.tonihacks.qalam.domain.word.WordProgress
 import com.tonihacks.qalam.domain.word.WordRelation
 import com.tonihacks.qalam.domain.word.WordRepository
+import org.jetbrains.exposed.v1.core.JoinType
 import org.jetbrains.exposed.v1.core.Op
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.core.or
+import java.util.UUID
 import kotlin.time.Clock
 import org.postgresql.util.PSQLState
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
@@ -283,19 +286,47 @@ class ExposedWordRepository(
 
     override suspend fun findForTraining(
         masteryLevel: MasteryLevel?,
+        wordListIds: Set<UUID>,
         limit: Int,
     ): Either<DomainError, List<Word>> =
         suspendTransaction {
             try {
-                val query = WordsTable.selectAll()
-                val filtered = if (masteryLevel != null) {
-                    query.where { WordsTable.masteryLevel eq masteryLevel.name }
+                val query = if (wordListIds.isEmpty()) {
+                    WordsTable.selectAll()
                 } else {
-                    query
+                    WordsTable
+                        .join(
+                            WordListItemsTable,
+                            JoinType.INNER,
+                            additionalConstraint = { WordsTable.id eq WordListItemsTable.wordId },
+                        )
+                        .selectAll()
                 }
-                filtered.toList().shuffled().take(limit).map { it.toWord() }.right()
+
+                val filtered = when {
+                    masteryLevel != null && wordListIds.isNotEmpty() ->
+                        query.where {
+                            (WordsTable.masteryLevel eq masteryLevel.name) and
+                                (WordListItemsTable.listId inList wordListIds.map { it.toKotlinUuid() })
+                        }
+                    masteryLevel != null ->
+                        query.where { WordsTable.masteryLevel eq masteryLevel.name }
+                    wordListIds.isNotEmpty() ->
+                        query.where { WordListItemsTable.listId inList wordListIds.map { it.toKotlinUuid() } }
+                    else -> query
+                }
+
+                filtered
+                    .toList()
+                    .map { it.toWord() }
+                    .distinctBy { it.id }
+                    .shuffled()
+                    .take(limit)
+                    .right()
             } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
-                log.error(e) { "Find words for training failed masteryLevel=$masteryLevel limit=$limit" }
+                log.error(e) {
+                    "Find words for training failed masteryLevel=$masteryLevel wordListCount=${wordListIds.size} limit=$limit"
+                }
                 DomainError.DatabaseError.left()
             }
         }

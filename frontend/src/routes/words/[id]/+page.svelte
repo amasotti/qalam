@@ -47,6 +47,10 @@ let newExEn = $state('');
 let editingNotes = $state(false);
 let editedNotes = $state('');
 
+// Pronunciation inline edit
+let editingPron = $state(false);
+let editedPron = $state('');
+
 function startEditNotes() {
 	editedNotes = word.data?.notes ?? '';
 	editingNotes = true;
@@ -55,6 +59,24 @@ function startEditNotes() {
 async function saveNotes() {
 	await updateWord.mutateAsync({ id, body: { notes: editedNotes.trim() || null } });
 	editingNotes = false;
+}
+
+function startEditPron() {
+	editedPron = word.data?.pronunciationUrl ?? '';
+	if (!editedPron && word.data?.arabicText) {
+		editedPron = `https://forvo.com/search/${encodeURIComponent(word.data.arabicText)}`;
+	}
+	editingPron = true;
+}
+
+function cancelEditPron() {
+	editingPron = false;
+	editedPron = '';
+}
+
+async function savePron() {
+	await updateWord.mutateAsync({ id, body: { pronunciationUrl: editedPron.trim() || null } });
+	editingPron = false;
 }
 
 async function handleUpdate(req: UpdateWordRequest) {
@@ -204,13 +226,32 @@ const masterySteps: Record<string, number> = {
 								{:else}
 									<p class="annot-empty">No translation recorded</p>
 								{/if}
-								{#if word.data.pronunciationUrl}
-									<a
-										class="pron-link"
-										href={word.data.pronunciationUrl}
-										target="_blank"
-										rel="noopener noreferrer"
-									>♪ Forvo ↗</a>
+								{#if editingPron}
+									<div class="pron-edit-row">
+										<input
+											class="pron-edit-input"
+											type="url"
+											placeholder="https://forvo.com/search/…"
+											bind:value={editedPron}
+											disabled={updateWord.isPending}
+										/>
+										<button class="btn btn-primary btn-xs" onclick={savePron} disabled={updateWord.isPending || !editedPron.trim()}>
+											{updateWord.isPending ? 'Saving…' : 'Save'}
+										</button>
+										<button class="btn btn-xs" onclick={cancelEditPron} disabled={updateWord.isPending}>Cancel</button>
+									</div>
+								{:else if word.data.pronunciationUrl}
+									<div class="pron-row">
+										<a
+											class="pron-link"
+											href={word.data.pronunciationUrl}
+											target="_blank"
+											rel="noopener noreferrer"
+										>♪ Forvo ↗</a>
+										<button class="morph-edit-btn" onclick={startEditPron} title="Edit pronunciation link">✏</button>
+									</div>
+								{:else}
+									<button class="pron-add-btn" onclick={startEditPron}>+ Add pronunciation</button>
 								{/if}
 							</div>
 							<div class="form-col">

@@ -7,14 +7,17 @@ import arrow.core.raise.either
 import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.PageRequest
 import com.tonihacks.qalam.delivery.dto.PaginatedResponse
+import com.tonihacks.qalam.domain.logDomainFailure
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.sentence.SentenceRepository
 import com.tonihacks.qalam.domain.word.Dialect
 import com.tonihacks.qalam.domain.word.Difficulty
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.UUID
 import kotlin.time.Clock
 
 class TextService(private val repo: TextRepository, private val sentenceRepo: SentenceRepository) {
+    private val log = KotlinLogging.logger {}
 
     suspend fun list(
         page: Int?,
@@ -26,6 +29,7 @@ class TextService(private val repo: TextRepository, private val sentenceRepo: Se
         sortBy: String?,
         sortDesc: Boolean?,
     ): Either<DomainError, PaginatedResponse<Text>> = either {
+        log.debug { "Listing texts page=$page size=$size hasQuery=${q != null} tag=$tag" }
         val parsedSortBy = when (sortBy?.uppercase()) {
             "UPDATED_AT" -> TextSortField.UPDATED_AT
             "TITLE" -> TextSortField.TITLE
@@ -40,10 +44,11 @@ class TextService(private val repo: TextRepository, private val sentenceRepo: Se
             sortDesc = sortDesc ?: true,
         )
         repo.list(PageRequest.from(page, size), filters).bind()
-    }
+    }.logDomainFailure(log) { "Failed to list texts page=$page size=$size tag=$tag: $it" }
 
     suspend fun getById(id: String): Either<DomainError, Text> =
         parseTextId(id).flatMap { repo.findById(it) }
+            .logDomainFailure(log) { "Failed to get text id=$id: $it" }
 
     suspend fun create(
         title: String,
@@ -55,6 +60,7 @@ class TextService(private val repo: TextRepository, private val sentenceRepo: Se
         comments: String?,
         tags: List<String>,
     ): Either<DomainError, Text> = either {
+        log.info { "Creating text titleLength=${title.length} tagCount=${tags.size}" }
         if (title.isBlank()) raise(DomainError.ValidationError("title", "Title must not be blank"))
 
         val parsedDifficulty = parseTextEnum("difficulty", difficulty) { Difficulty.fromString(it) }.bind()
@@ -75,7 +81,7 @@ class TextService(private val repo: TextRepository, private val sentenceRepo: Se
             updatedAt = now,
         )
         repo.save(text).bind()
-    }
+    }.logDomainFailure(log) { "Failed to create text titleLength=${title.length}: $it" }
 
     suspend fun update(
         id: String,
@@ -88,6 +94,7 @@ class TextService(private val repo: TextRepository, private val sentenceRepo: Se
         comments: String?,
         tags: List<String>?,
     ): Either<DomainError, Text> = either {
+        log.info { "Updating text id=$id tagsChanged=${tags != null}" }
         val textId = parseTextId(id).bind()
         val existing = repo.findById(textId).bind()
 
@@ -111,19 +118,22 @@ class TextService(private val repo: TextRepository, private val sentenceRepo: Se
             updatedAt = Clock.System.now(),
         )
         repo.update(updated).bind()
-    }
+    }.logDomainFailure(log) { "Failed to update text id=$id: $it" }
 
     suspend fun delete(id: String): Either<DomainError, Unit> =
         parseTextId(id).flatMap { repo.delete(it) }
+            .logDomainFailure(log) { "Failed to delete text id=$id: $it" }
 
     suspend fun getPrintView(id: String): Either<DomainError, String> = either {
+        log.debug { "Rendering print view for text id=$id" }
         val textId = parseTextId(id).bind()
         val text = repo.findById(textId).bind()
         val sentences = sentenceRepo.findAllByTextId(textId).bind().sortedBy { it.position }
         renderPrintHtml(text, sentences)
-    }
+    }.logDomainFailure(log) { "Failed to render print view for text id=$id: $it" }
 
     suspend fun syncFromSentences(id: String): Either<DomainError, Text> = either {
+        log.info { "Syncing text body from sentences id=$id" }
         val textId = parseTextId(id).bind()
         val text = repo.findById(textId).bind()
         val sentences = sentenceRepo.findAllByTextId(textId).bind().sortedBy { it.position }
@@ -146,7 +156,7 @@ class TextService(private val repo: TextRepository, private val sentenceRepo: Se
             translation = translation,
             updatedAt = Clock.System.now(),
         )).bind()
-    }
+    }.logDomainFailure(log) { "Failed to sync text from sentences id=$id: $it" }
 }
 
 /** null = keep existing, blank = clear to null, non-blank = use new value */

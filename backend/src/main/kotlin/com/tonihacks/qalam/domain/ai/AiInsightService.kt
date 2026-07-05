@@ -2,6 +2,7 @@ package com.tonihacks.qalam.domain.ai
 
 import arrow.core.Either
 import arrow.core.raise.either
+import com.tonihacks.qalam.domain.logDomainFailure
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.root.RootRepository
 import com.tonihacks.qalam.domain.sentence.SentenceId
@@ -10,6 +11,7 @@ import com.tonihacks.qalam.domain.text.TextRepository
 import com.tonihacks.qalam.domain.word.WordId
 import com.tonihacks.qalam.domain.word.WordRepository
 import com.tonihacks.qalam.infrastructure.ai.AiClient
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.UUID
 
 class AiInsightService(
@@ -19,21 +21,24 @@ class AiInsightService(
     private val textRepository: TextRepository,
     private val aiClient: AiClient,
 ) {
+    private val log = KotlinLogging.logger {}
 
     suspend fun generateInsight(
         entityType: String,
         entityId: String,
         mode: InsightMode?,
     ): Either<DomainError, String> = either {
+        log.info { "Generating AI insight entityType=$entityType entityId=$entityId mode=$mode" }
         val context = when (entityType) {
             "WORD" -> buildWordInsight(entityId).bind()
             "SENTENCE" -> buildSentenceInsight(entityId, mode ?: InsightMode.HOMEWORK).bind()
             else -> raise(DomainError.InvalidInput("entityType must be WORD or SENTENCE, got '$entityType'"))
         }
         aiClient.generateInsight(context).bind()
-    }
+    }.logDomainFailure(log) { "Failed to generate AI insight entityType=$entityType entityId=$entityId mode=$mode: $it" }
 
     private suspend fun buildWordInsight(entityId: String): Either<DomainError, InsightContext.WordInsight> = either {
+        log.debug { "Building word insight context entityId=$entityId" }
         val wordId = WordId(parseUuid(entityId).bind())
         val word = wordRepository.findById(wordId).bind()
 
@@ -59,6 +64,7 @@ class AiInsightService(
         entityId: String,
         mode: InsightMode,
     ): Either<DomainError, InsightContext.SentenceInsight> = either {
+        log.debug { "Building sentence insight context entityId=$entityId mode=$mode" }
         val sentenceId = SentenceId(parseUuid(entityId).bind())
         val sentence = sentenceRepository.findById(sentenceId).bind()
         val text = textRepository.findById(sentence.textId).bind()

@@ -14,11 +14,14 @@ import com.tonihacks.qalam.delivery.dto.root.NormalizeResponse
 import com.tonihacks.qalam.delivery.dto.root.RootResponse
 import com.tonihacks.qalam.delivery.dto.root.UpdateRootRequest
 import com.tonihacks.qalam.delivery.dto.root.toResponse
+import com.tonihacks.qalam.domain.logDomainFailure
 import com.tonihacks.qalam.domain.error.DomainError
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.UUID
 import kotlin.time.Clock
 
 class RootService(private val repo: RootRepository) {
+    private val log = KotlinLogging.logger {}
 
     suspend fun list(page: Int?,size: Int?,letterCount: Int?): Either<DomainError, PaginatedResponse<RootResponse>> =
         repo.list(PageRequest.from(page, size), letterCount)
@@ -28,14 +31,16 @@ class RootService(private val repo: RootRepository) {
                 page = p.page,
                 size = p.size,
             )
-        }
+        }.logDomainFailure(log) { "Failed to list roots page=$page size=$size letterCount=$letterCount: $it" }
 
     suspend fun getById(id: String): Either<DomainError, RootResponse> =
         parseId(id)
             .flatMap { repo.findById(it) }
             .map { it.toResponse() }
+            .logDomainFailure(log) { "Failed to get root id=$id: $it" }
 
     suspend fun create(req: CreateRootRequest): Either<DomainError, RootResponse> = either {
+        log.info { "Creating root inputLength=${req.root.length}" }
 
         val normalized = RootNormalizer.normalize(req.root).bind()
         val rootExistsAlready = repo.existsByNormalizedForm(normalized.normalizedForm).bind()
@@ -60,22 +65,26 @@ class RootService(private val repo: RootRepository) {
             updatedAt = now,
         )
         repo.create(root).bind().toResponse()
-    }
+    }.logDomainFailure(log) { "Failed to create root inputLength=${req.root.length}: $it" }
 
     suspend fun update(id: String, req: UpdateRootRequest): Either<DomainError, RootResponse> =
         parseId(id)
             .flatMap { repo.findById(it) }
             .flatMap { existing ->
+                log.info { "Updating root id=$id" }
                 repo.update(existing.copy(meaning = req.meaning, analysis = req.analysis))
             }
             .map { it.toResponse() }
+            .logDomainFailure(log) { "Failed to update root id=$id: $it" }
 
     suspend fun delete(id: String): Either<DomainError, Unit> =
         parseId(id).flatMap { repo.delete(it) }
+            .logDomainFailure(log) { "Failed to delete root id=$id: $it" }
 
     fun normalize(req: NormalizeRequest): Either<DomainError, NormalizeResponse> =
         RootNormalizer.normalize(req.input)
             .map { NormalizeResponse(it.letters, it.normalizedForm, it.displayForm, it.letterCount) }
+            .logDomainFailure(log) { "Failed to normalize root inputLength=${req.input.length}: $it" }
 
     private fun parseId(id: String): Either<DomainError, RootId> =
         try {

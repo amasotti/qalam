@@ -80,7 +80,7 @@ class AiClient : java.io.Closeable {
 
         val prompt = buildPrompt(arabicText, translation)
 
-        val model = System.getenv("OPENROUTER_MODEL") ?: "qwen/qwen3.5-flash-02-23"
+        val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
 
         return try {
             val response = httpClient.post("https://openrouter.ai/api/v1/chat/completions") {
@@ -111,7 +111,7 @@ class AiClient : java.io.Closeable {
     suspend fun autoTokenize(arabicText: String): Either<DomainError, List<TokenInputDto>> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
-        val model = System.getenv("OPENROUTER_MODEL") ?: "qwen/qwen3.5-flash-02-23"
+        val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
         val prompt = """Split this Arabic sentence into individual word tokens.
 Return a JSON object with a "tokens" array. Each element must have:
 - "position": integer index starting at 0
@@ -150,7 +150,7 @@ Sentence: "$arabicText""""
     suspend fun transliterate(arabicText: String): Either<DomainError, String> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
-        val model = System.getenv("OPENROUTER_MODEL") ?: "qwen/qwen3.5-flash-02-23"
+        val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
         val prompt = """Transliterate this Arabic sentence into Latin script using a practical/Buckwalter-inspired scheme.
 Return a JSON object with a single "transliteration" string field.
 
@@ -185,7 +185,7 @@ Sentence: "$arabicText""""
     suspend fun analyzeWord(arabicText: String): Either<DomainError, WordAnalysisResponse> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
-        val model = System.getenv("OPENROUTER_MODEL") ?: "qwen/qwen3.5-flash-02-23"
+        val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
         val prompt = """Analyze the Arabic word "$arabicText" and return a JSON object with:
 - "transliteration": Latin transliteration using practical chat-alphabet style
 - "translation": English translation or meaning
@@ -229,7 +229,7 @@ Sentence: "$arabicText""""
     suspend fun enrichWord(word: Word): Either<DomainError, WordEnrichmentSuggestion> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
-        val model = System.getenv("OPENROUTER_MODEL") ?: "qwen/qwen3.5-flash-02-23"
+        val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
         val dialectClause = ", dialect: ${word.dialect}"
         val transliterationClause = word.transliteration?.let { " [$it]" } ?: ""
         val prompt = """Analyse the Arabic word: ${word.arabicText}$transliterationClause (${word.translation ?: "no translation"}, partOfSpeech: ${word.partOfSpeech}$dialectClause)
@@ -282,7 +282,7 @@ Respond ONLY with this JSON structure:
     ): Either<DomainError, List<AiListWordSuggestion>> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
-        val model = System.getenv("OPENROUTER_MODEL") ?: "qwen/qwen3.5-flash-02-23"
+        val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
         val descriptionClause = description?.takeIf { it.isNotBlank() }?.let { "\nDescription: $it" } ?: ""
         val existingClause = if (existing.isEmpty()) {
             "\nThe list is currently empty."
@@ -344,7 +344,7 @@ Respond ONLY with this JSON structure:
     suspend fun generateInsight(context: InsightContext): Either<DomainError, String> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
-        val model = System.getenv("OPENROUTER_MODEL") ?: "qwen/qwen3.5-flash-02-23"
+        val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
         val userPrompt = buildInsightPrompt(context)
 
         return try {

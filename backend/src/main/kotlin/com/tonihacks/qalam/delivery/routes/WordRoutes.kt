@@ -64,6 +64,16 @@ fun Route.wordRoutes(service: WordService, dictionaryService: DictionaryLookupSe
             )
         }
 
+        get("/dictionary-lookups") {
+            val source = call.request.queryParameters["source"]
+            val query = call.request.queryParameters["query"]
+
+            dictionaryService.search(source, query).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.OK, it) },
+            )
+        }
+
         get("/{id}") {
             val id = call.pathParameters.getOrFail<String>("id")
             service.getById(id).fold(
@@ -121,16 +131,6 @@ fun Route.wordRoutes(service: WordService, dictionaryService: DictionaryLookupSe
             service.deleteDictionaryLink(id, linkId).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.NoContent) },
-            )
-        }
-
-        get("/dictionary-lookups") {
-            val source = call.request.queryParameters["source"]
-            val query = call.request.queryParameters["query"]
-
-            dictionaryService.search(source, query).fold(
-                { call.respondError(it) },
-                { call.respond(HttpStatusCode.OK, it) },
             )
         }
 

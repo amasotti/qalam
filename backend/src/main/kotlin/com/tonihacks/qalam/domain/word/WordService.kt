@@ -26,9 +26,11 @@ import com.tonihacks.qalam.delivery.dto.word.WordRelationResponse
 import com.tonihacks.qalam.delivery.dto.word.WordResponse
 import com.tonihacks.qalam.delivery.dto.word.toAutocompleteResponse
 import com.tonihacks.qalam.delivery.dto.word.toResponse
+import com.tonihacks.qalam.domain.logDomainFailure
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.root.RootId
 import com.tonihacks.qalam.infrastructure.ai.AiClient
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.UUID
 import kotlin.time.Clock
 
@@ -36,6 +38,7 @@ class WordService(
     private val repo: WordRepository,
     private val aiClient: AiClient,
 ) {
+    private val log = KotlinLogging.logger {}
 
     suspend fun list(
         page: Int?,
@@ -49,6 +52,7 @@ class WordService(
         sortBy: String?,
         sortDesc: Boolean?,
     ): Either<DomainError, PaginatedResponse<WordResponse>> = either {
+        log.debug { "Listing words page=$page size=$size hasQuery=${q != null} rootId=$rootId" }
         val parsedSortBy = when (sortBy?.uppercase()) {
             "CREATED_AT" -> WordSortField.CREATED_AT
             "ARABIC_TEXT" -> WordSortField.ARABIC_TEXT
@@ -74,15 +78,18 @@ class WordService(
             page = paged.page,
             size = paged.size,
         )
-    }
+    }.logDomainFailure(log) { "Failed to list words page=$page size=$size rootId=$rootId: $it" }
 
     suspend fun getById(id: String): Either<DomainError, WordResponse> =
         parseWordId(id).flatMap { repo.findById(it) }.map { it.toResponse() }
+            .logDomainFailure(log) { "Failed to get word id=$id: $it" }
 
     suspend fun findByArabicText(arabicText: String): Either<DomainError, WordResponse?> =
         repo.findByArabicText(arabicText).map { it?.toResponse() }
+            .logDomainFailure(log) { "Failed to find word by arabicText length=${arabicText.length}: $it" }
 
     suspend fun create(req: CreateWordRequest): Either<DomainError, WordResponse> = either {
+        log.info { "Creating word arabicLength=${req.arabicText.length} partOfSpeech=${req.partOfSpeech}" }
         if (req.arabicText.isBlank()) raise(DomainError.ValidationError("arabicText", "Arabic text must not be blank"))
 
         val pos = parseWordEnum("partOfSpeech", req.partOfSpeech) { PartOfSpeech.fromString(it) }.bind()
@@ -109,10 +116,11 @@ class WordService(
             updatedAt = now,
         )
         repo.create(word).bind().toResponse()
-    }
+    }.logDomainFailure(log) { "Failed to create word arabicLength=${req.arabicText.length}: $it" }
 
     @Suppress("CyclomaticComplexMethod") // Inherent complexity of partial-update for 8+ typed fields.
     suspend fun update(id: String, req: UpdateWordRequest): Either<DomainError, WordResponse> = either {
+        log.info { "Updating word id=$id" }
         val wordId = parseWordId(id).bind()
         val existing = repo.findById(wordId).bind()
 
@@ -142,33 +150,38 @@ class WordService(
             derivedFromId = derivedFromId,
             notes = req.notes?.trim()?.takeIf { it.isNotEmpty() } ?: existing.notes,
         )).bind().toResponse()
-    }
+    }.logDomainFailure(log) { "Failed to update word id=$id: $it" }
 
     suspend fun delete(id: String): Either<DomainError, Unit> =
         parseWordId(id).flatMap { repo.delete(it) }
+            .logDomainFailure(log) { "Failed to delete word id=$id: $it" }
 
     suspend fun autocomplete(query: String, limit: Int?): Either<DomainError, List<WordAutocompleteResponse>> =
         repo.autocomplete(query, limit?.coerceIn(1, 50) ?: 10)
             .map { words -> words.map { it.toAutocompleteResponse() } }
+            .logDomainFailure(log) { "Failed to autocomplete words queryLength=${query.length} limit=$limit: $it" }
 
     suspend fun getDictionaryLinks(wordId: String): Either<DomainError, List<DictionaryLinkResponse>> =
         parseWordId(wordId)
             .flatMap { id -> repo.findById(id).flatMap { repo.findDictionaryLinks(id) } }
             .map { links -> links.map { it.toResponse() } }
+            .logDomainFailure(log) { "Failed to get dictionary links wordId=$wordId: $it" }
 
     suspend fun addDictionaryLink(
         wordId: String,
         req: CreateDictionaryLinkRequest,
     ): Either<DomainError, DictionaryLinkResponse> = either {
+        log.info { "Adding dictionary link wordId=$wordId source=${req.source}" }
         val id = parseWordId(wordId).bind()
         repo.findById(id).bind()
         val source = parseWordEnum("source", req.source) { DictionarySource.fromString(it) }.bind()
         repo.addDictionaryLink(
             DictionaryLink(id = DictionaryLinkId(UUID.randomUUID()), wordId = id, source = source, url = req.url)
         ).bind().toResponse()
-    }
+    }.logDomainFailure(log) { "Failed to add dictionary link wordId=$wordId source=${req.source}: $it" }
 
     suspend fun deleteDictionaryLink(wordId: String, linkId: String): Either<DomainError, Unit> = either {
+        log.info { "Deleting dictionary link wordId=$wordId linkId=$linkId" }
         val wId = parseWordId(wordId).bind()
         repo.findById(wId).bind()
         val lId = try {
@@ -177,25 +190,29 @@ class WordService(
             raise(DomainError.InvalidInput("'$linkId' is not a valid UUID"))
         }
         repo.deleteDictionaryLink(wId, lId).bind()
-    }
+    }.logDomainFailure(log) { "Failed to delete dictionary link wordId=$wordId linkId=$linkId: $it" }
 
     suspend fun analyzeWord(arabicText: String): Either<DomainError, WordAnalysisResponse> =
         aiClient.analyzeWord(arabicText)
+            .logDomainFailure(log) { "Failed to analyze word arabicLength=${arabicText.length}: $it" }
 
     suspend fun generateExamples(wordId: String): Either<DomainError, AiExamplesResponse> = either {
+        log.info { "Generating AI examples wordId=$wordId" }
         val id = parseWordId(wordId).bind()
         val word = repo.findById(id).bind()
         val examples = aiClient.generateExamples(word.arabicText, word.translation).bind()
         AiExamplesResponse(examples)
-    }
+    }.logDomainFailure(log) { "Failed to generate AI examples wordId=$wordId: $it" }
 
     suspend fun getExamples(wordId: String): Either<DomainError, List<WordExampleResponse>> = either {
+        log.debug { "Loading examples wordId=$wordId" }
         val id = parseWordId(wordId).bind()
         repo.findById(id).bind()
         repo.findExamples(id).bind().map { it.toResponse() }
-    }
+    }.logDomainFailure(log) { "Failed to load examples wordId=$wordId: $it" }
 
     suspend fun saveExample(wordId: String, req: CreateWordExampleRequest): Either<DomainError, WordExampleResponse> = either {
+        log.info { "Saving word example wordId=$wordId arabicLength=${req.arabic.length}" }
         if (req.arabic.isBlank()) raise(DomainError.ValidationError("arabic", "Arabic text must not be blank"))
         val id = parseWordId(wordId).bind()
         repo.findById(id).bind()
@@ -208,9 +225,10 @@ class WordService(
             createdAt = Clock.System.now(),
         )
         repo.addExample(example).bind().toResponse()
-    }
+    }.logDomainFailure(log) { "Failed to save word example wordId=$wordId: $it" }
 
     suspend fun deleteExample(wordId: String, exampleId: String): Either<DomainError, Unit> = either {
+        log.info { "Deleting word example wordId=$wordId exampleId=$exampleId" }
         val wId = parseWordId(wordId).bind()
         repo.findById(wId).bind()
         val eId = try {
@@ -219,19 +237,21 @@ class WordService(
             raise(DomainError.InvalidInput("'$exampleId' is not a valid UUID"))
         }
         repo.deleteExample(wId, eId).bind()
-    }
+    }.logDomainFailure(log) { "Failed to delete word example wordId=$wordId exampleId=$exampleId: $it" }
 
     // --- Morphology ---
 
     suspend fun getMorphology(wordId: String): Either<DomainError, WordMorphologyResponse> = either {
+        log.debug { "Loading word morphology wordId=$wordId" }
         val id = parseWordId(wordId).bind()
         repo.findById(id).bind()
         val morphology = repo.findMorphology(id).bind()
         val plurals = repo.findPlurals(id).bind()
         morphology?.toResponse(plurals) ?: WordMorphologyResponse(gender = null, verbPattern = null, plurals = plurals.map { it.toResponse() })
-    }
+    }.logDomainFailure(log) { "Failed to load morphology wordId=$wordId: $it" }
 
     suspend fun upsertMorphology(wordId: String, req: UpsertWordMorphologyRequest): Either<DomainError, WordMorphologyResponse> = either {
+        log.info { "Upserting word morphology wordId=$wordId gender=${req.gender} verbPattern=${req.verbPattern}" }
         val id = parseWordId(wordId).bind()
         repo.findById(id).bind()
         val gender = req.gender?.let { parseWordEnum("gender", it) { s -> Gender.fromString(s) }.bind() }
@@ -240,17 +260,19 @@ class WordService(
         repo.upsertMorphology(morphology).bind()
         val plurals = repo.findPlurals(id).bind()
         morphology.toResponse(plurals)
-    }
+    }.logDomainFailure(log) { "Failed to upsert morphology wordId=$wordId: $it" }
 
     // --- Plurals ---
 
     suspend fun getPlurals(wordId: String): Either<DomainError, List<WordPluralResponse>> = either {
+        log.debug { "Loading word plurals wordId=$wordId" }
         val id = parseWordId(wordId).bind()
         repo.findById(id).bind()
         repo.findPlurals(id).bind().map { it.toResponse() }
-    }
+    }.logDomainFailure(log) { "Failed to load plurals wordId=$wordId: $it" }
 
     suspend fun addPlural(wordId: String, req: CreateWordPluralRequest): Either<DomainError, WordPluralResponse> = either {
+        log.info { "Adding word plural wordId=$wordId pluralType=${req.pluralType}" }
         if (req.pluralForm.isBlank()) raise(DomainError.ValidationError("pluralForm", "must not be blank"))
         val id = parseWordId(wordId).bind()
         repo.findById(id).bind()
@@ -262,9 +284,10 @@ class WordService(
             pluralType = pluralType,
         )
         repo.addPlural(plural).bind().toResponse()
-    }
+    }.logDomainFailure(log) { "Failed to add plural wordId=$wordId: $it" }
 
     suspend fun deletePlural(wordId: String, pluralId: String): Either<DomainError, Unit> = either {
+        log.info { "Deleting word plural wordId=$wordId pluralId=$pluralId" }
         val wId = parseWordId(wordId).bind()
         repo.findById(wId).bind()
         val pId = try {
@@ -273,11 +296,12 @@ class WordService(
             raise(DomainError.InvalidInput("'$pluralId' is not a valid UUID"))
         }
         repo.deletePlural(wId, pId).bind()
-    }
+    }.logDomainFailure(log) { "Failed to delete plural wordId=$wordId pluralId=$pluralId: $it" }
 
     // --- Relations ---
 
     suspend fun getRelations(wordId: String): Either<DomainError, List<WordRelationResponse>> = either {
+        log.debug { "Loading word relations wordId=$wordId" }
         val id = parseWordId(wordId).bind()
         repo.findById(id).bind()
         val relations = repo.findRelations(id).bind()
@@ -285,9 +309,10 @@ class WordService(
             val relatedWord = repo.findById(relation.relatedWordId).bind()
             relation.toResponse(relatedWord)
         }
-    }
+    }.logDomainFailure(log) { "Failed to load relations wordId=$wordId: $it" }
 
     suspend fun addRelation(wordId: String, req: CreateWordRelationRequest): Either<DomainError, WordRelationResponse> = either {
+        log.info { "Adding word relation wordId=$wordId relatedWordId=${req.relatedWordId} type=${req.relationType}" }
         val id = parseWordId(wordId).bind()
         repo.findById(id).bind()
         val relatedId = parseWordId(req.relatedWordId).bind()
@@ -297,23 +322,27 @@ class WordService(
         val relation = WordRelation(wordId = id, relatedWordId = relatedId, relationType = type)
         repo.addRelation(relation).bind()
         relation.toResponse(relatedWord)
+    }.logDomainFailure(log) {
+        "Failed to add relation wordId=$wordId relatedWordId=${req.relatedWordId} type=${req.relationType}: $it"
     }
 
     suspend fun deleteRelation(wordId: String, relatedWordId: String, type: String): Either<DomainError, Unit> = either {
+        log.info { "Deleting word relation wordId=$wordId relatedWordId=$relatedWordId type=$type" }
         val wId = parseWordId(wordId).bind()
         repo.findById(wId).bind()
         val rId = parseWordId(relatedWordId).bind()
         val relationType = parseWordEnum("relationType", type) { RelationType.fromString(it) }.bind()
         repo.deleteRelation(wId, rId, relationType).bind()
-    }
+    }.logDomainFailure(log) { "Failed to delete relation wordId=$wordId relatedWordId=$relatedWordId type=$type: $it" }
 
     // --- AI Enrichment (preview only — never auto-saved) ---
 
     suspend fun enrichWord(wordId: String): Either<DomainError, WordEnrichmentSuggestion> = either {
+        log.info { "Generating AI word enrichment wordId=$wordId" }
         val id = parseWordId(wordId).bind()
         val word = repo.findById(id).bind()
         aiClient.enrichWord(word).bind()
-    }
+    }.logDomainFailure(log) { "Failed to generate AI word enrichment wordId=$wordId: $it" }
 }
 
 // --- top-level helpers (excluded from TooManyFunctions count) ---

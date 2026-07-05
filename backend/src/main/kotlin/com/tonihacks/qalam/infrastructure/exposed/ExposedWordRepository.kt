@@ -6,6 +6,7 @@ import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.core.raise.ensureNotNull
 import arrow.core.right
+import io.github.oshai.kotlinlogging.KotlinLogging
 import com.tonihacks.qalam.delivery.dto.PageRequest
 import com.tonihacks.qalam.delivery.dto.PaginatedResponse
 import com.tonihacks.qalam.domain.error.DomainError
@@ -54,6 +55,7 @@ class ExposedWordRepository(
     private val pluralsRepo: ExposedWordPluralsRepository,
     private val relationsRepo: ExposedWordRelationsRepository,
 ) : WordRepository {
+    private val log = KotlinLogging.logger {}
 
     override suspend fun findById(id: WordId): Either<DomainError, Word> =
         suspendTransaction {
@@ -169,8 +171,10 @@ class ExposedWordRepository(
                 word.right()
             } catch (e: java.sql.SQLException) {
                 if (e.sqlState == PSQLState.FOREIGN_KEY_VIOLATION.state) {
+                    log.warn(e) { "Word create failed due to missing root wordId=${word.id} rootId=${word.rootId}" }
                     DomainError.NotFound("ArabicRoot", word.rootId?.toString() ?: "unknown").left()
                 } else {
+                    log.error(e) { "Word create failed wordId=${word.id}" }
                     DomainError.DatabaseError.left()
                 }
             }
@@ -290,7 +294,8 @@ class ExposedWordRepository(
                     query
                 }
                 filtered.toList().shuffled().take(limit).map { it.toWord() }.right()
-            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
+                log.error(e) { "Find words for training failed masteryLevel=$masteryLevel limit=$limit" }
                 DomainError.DatabaseError.left()
             }
         }
@@ -305,7 +310,8 @@ class ExposedWordRepository(
                     ?.toWordProgress()
                     ?.right()
                     ?: DomainError.NotFound("WordProgress", wordId.value.toString()).left()
-            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
+                log.error(e) { "Get word progress failed wordId=$wordId" }
                 DomainError.DatabaseError.left()
             }
         }
@@ -336,7 +342,8 @@ class ExposedWordRepository(
                     it[updatedAt]    = Clock.System.now()
                 }
                 Unit.right()
-            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
+                log.error(e) { "Update word mastery failed wordId=$wordId level=$level" }
                 DomainError.DatabaseError.left()
             }
         }

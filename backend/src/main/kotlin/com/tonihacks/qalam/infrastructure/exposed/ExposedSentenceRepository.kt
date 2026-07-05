@@ -14,6 +14,7 @@ import com.tonihacks.qalam.domain.sentence.SentenceId
 import com.tonihacks.qalam.domain.sentence.SentenceRepository
 import com.tonihacks.qalam.domain.text.TextId
 import com.tonihacks.qalam.domain.word.WordId
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
@@ -28,6 +29,7 @@ import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
 
 class ExposedSentenceRepository : SentenceRepository {
+    private val log = KotlinLogging.logger {}
 
     override suspend fun findAllByTextId(textId: TextId): Either<DomainError, List<Sentence>> =
         suspendTransaction {
@@ -81,8 +83,10 @@ class ExposedSentenceRepository : SentenceRepository {
             }
         } catch (e: ExposedSQLException) {
             if (e.message?.contains("sentences_text_id_fkey") == true) {
+                log.warn(e) { "Sentence save failed due to missing text sentenceId=${sentence.id} textId=${sentence.textId}" }
                 DomainError.NotFound("Text", sentence.textId.toString()).left()
             } else {
+                log.error(e) { "Sentence save failed sentenceId=${sentence.id}" }
                 throw e
             }
         }

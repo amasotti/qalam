@@ -5,11 +5,13 @@ import arrow.core.left
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.core.right
+import com.tonihacks.qalam.domain.logDomainFailure
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.word.MasteryLevel
 import com.tonihacks.qalam.domain.word.WordId
 import com.tonihacks.qalam.domain.word.WordProgress
 import com.tonihacks.qalam.domain.word.WordRepository
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.UUID
 import kotlin.time.Clock
 
@@ -17,11 +19,13 @@ class TrainingService(
     private val trainingRepo: TrainingRepository,
     private val wordRepo: WordRepository,
 ) {
+    private val log = KotlinLogging.logger {}
 
     suspend fun createSession(
         modeStr: String,
         size: Int,
     ): Either<DomainError, Pair<TrainingSession, List<TrainingSessionWord>>> = either {
+        log.info { "Creating training session mode=$modeStr requestedSize=$size" }
         val parsedSize = size.coerceIn(1, 50)
         val mode = runCatching { TrainingMode.valueOf(modeStr.uppercase()) }
             .getOrElse { raise(DomainError.InvalidInput("Unknown training mode: $modeStr")) }
@@ -70,21 +74,24 @@ class TrainingService(
         }
 
         trainingRepo.createSession(session, sessionWords).bind()
+        log.info { "Created training session id=${session.id} mode=$mode wordCount=${sessionWords.size}" }
         session to sessionWords
-    }
+    }.logDomainFailure(log) { "Failed to create training session mode=$modeStr requestedSize=$size: $it" }
 
     suspend fun getSession(
         sessionIdStr: String,
     ): Either<DomainError, Pair<TrainingSession, List<TrainingSessionWord>>> = either {
+        log.debug { "Loading training session id=$sessionIdStr" }
         val id = parseSessionId(sessionIdStr).bind()
         trainingRepo.findSessionWithWords(id).bind()
-    }
+    }.logDomainFailure(log) { "Failed to load training session id=$sessionIdStr: $it" }
 
     suspend fun recordResult(
         sessionIdStr: String,
         wordIdStr: String,
         resultStr: String,
     ): Either<DomainError, RecordResultResponse> = either {
+        log.info { "Recording training result sessionId=$sessionIdStr wordId=$wordIdStr result=$resultStr" }
         val sessionId = parseSessionId(sessionIdStr).bind()
         val wordId    = parseWordId(wordIdStr).bind()
         val result    = runCatching { TrainingResult.valueOf(resultStr.uppercase()) }
@@ -102,6 +109,7 @@ class TrainingService(
         wordRepo.updateProgress(updatedProgress).bind()
 
         if (newMastery != null) {
+            log.info { "Promoting word mastery wordId=$wordId from=${word.masteryLevel} to=$newMastery" }
             wordRepo.updateMasteryLevel(wordId, newMastery).bind()
         }
 
@@ -125,11 +133,14 @@ class TrainingService(
                 )
             },
         )
+    }.logDomainFailure(log) {
+        "Failed to record training result sessionId=$sessionIdStr wordId=$wordIdStr result=$resultStr: $it"
     }
 
     suspend fun completeSession(
         sessionIdStr: String,
     ): Either<DomainError, SessionSummaryResponse> = either {
+        log.info { "Completing training session id=$sessionIdStr" }
         val sessionId = parseSessionId(sessionIdStr).bind()
         val (session, words) = trainingRepo.findSessionWithWords(sessionId).bind()
 
@@ -178,9 +189,10 @@ class TrainingService(
             promotions  = promotions,
             completedAt = completed.completedAt.toString(),
         )
-    }
+    }.logDomainFailure(log) { "Failed to complete training session id=$sessionIdStr: $it" }
 
     suspend fun listSessions(page: Int, size: Int): Either<DomainError, PaginatedSessionsResponse> = either {
+        log.debug { "Listing training sessions page=$page size=$size" }
         val (items, total) = trainingRepo.listSessions(page, size).bind()
         PaginatedSessionsResponse(
             items = items.map { it.toListItemResponse() },
@@ -188,9 +200,10 @@ class TrainingService(
             page  = page,
             size  = size,
         )
-    }
+    }.logDomainFailure(log) { "Failed to list training sessions page=$page size=$size: $it" }
 
     suspend fun getStats(): Either<DomainError, TrainingStatsResponse> = either {
+        log.debug { "Loading training stats" }
         val distribution         = trainingRepo.getMasteryDistribution().bind()
         val (recentItems, total) = trainingRepo.listSessions(1, 10).bind()
         TrainingStatsResponse(
@@ -198,7 +211,7 @@ class TrainingService(
             totalSessions       = total.toInt(),
             recentSessions      = recentItems.map { it.toListItemResponse() },
         )
-    }
+    }.logDomainFailure(log) { "Failed to load training stats: $it" }
 }
 
 // ── Pure helper (unit-testable) ─────────────────────────────────────────────

@@ -13,6 +13,7 @@ import com.tonihacks.qalam.domain.annotation.AnnotationType
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.text.TextId
 import com.tonihacks.qalam.domain.word.WordId
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
@@ -31,6 +32,7 @@ import kotlin.uuid.toKotlinUuid
 
 @OptIn(ExperimentalTime::class)
 class ExposedAnnotationRepository : AnnotationRepository {
+    private val log = KotlinLogging.logger {}
 
     override suspend fun findAllByTextId(textId: TextId): Either<DomainError, List<Annotation>> =
         suspendTransaction {
@@ -80,9 +82,18 @@ class ExposedAnnotationRepository : AnnotationRepository {
             }
         } catch (e: ExposedSQLException) {
             when (e.sqlState) {
-                PSQLState.FOREIGN_KEY_VIOLATION.state -> DomainError.NotFound("Text", annotation.textId.toString()).left()
-                PSQLState.UNIQUE_VIOLATION.state -> DomainError.Conflict("Annotation", annotation.id.toString()).left()
-                else -> throw e
+                PSQLState.FOREIGN_KEY_VIOLATION.state -> {
+                    log.warn(e) { "Annotation save failed due to missing text annotationId=${annotation.id} textId=${annotation.textId}" }
+                    DomainError.NotFound("Text", annotation.textId.toString()).left()
+                }
+                PSQLState.UNIQUE_VIOLATION.state -> {
+                    log.warn(e) { "Annotation save conflict annotationId=${annotation.id}" }
+                    DomainError.Conflict("Annotation", annotation.id.toString()).left()
+                }
+                else -> {
+                    log.error(e) { "Annotation save failed annotationId=${annotation.id}" }
+                    throw e
+                }
             }
         }
 
@@ -151,8 +162,10 @@ class ExposedAnnotationRepository : AnnotationRepository {
             }
         } catch (e: ExposedSQLException) {
             if (e.sqlState == PSQLState.FOREIGN_KEY_VIOLATION.state) {
+                log.warn(e) { "Annotation word link failed due to missing word annotationId=$annotationId wordId=$wordId" }
                 DomainError.NotFound("Word", wordId.toString()).left()
             } else {
+                log.error(e) { "Annotation word link failed annotationId=$annotationId wordId=$wordId" }
                 throw e
             }
         }

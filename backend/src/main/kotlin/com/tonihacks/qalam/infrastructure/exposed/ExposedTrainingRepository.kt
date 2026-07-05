@@ -5,6 +5,7 @@ import arrow.core.left
 import arrow.core.right
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.training.FlashcardSide
+import io.github.oshai.kotlinlogging.KotlinLogging
 import com.tonihacks.qalam.domain.training.SessionStatus
 import com.tonihacks.qalam.domain.training.TrainingMode
 import com.tonihacks.qalam.domain.training.TrainingRepository
@@ -30,6 +31,8 @@ import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
 
 class ExposedTrainingRepository : TrainingRepository {
+
+    private val log = KotlinLogging.logger {}
 
     override suspend fun createSession(
         session: TrainingSession,
@@ -62,6 +65,7 @@ class ExposedTrainingRepository : TrainingRepository {
                 }
                 session.right()
             } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                log.error(e) { "Training repository operation failed" }
                 DomainError.DatabaseError.left()
             }
         }
@@ -101,6 +105,7 @@ class ExposedTrainingRepository : TrainingRepository {
 
                 (session to words).right()
             } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                log.error(e) { "Training repository operation failed" }
                 DomainError.DatabaseError.left()
             }
         }
@@ -124,6 +129,7 @@ class ExposedTrainingRepository : TrainingRepository {
                 }
                 Unit.right()
             } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                log.error(e) { "Training repository operation failed" }
                 DomainError.DatabaseError.left()
             }
         }
@@ -153,6 +159,7 @@ class ExposedTrainingRepository : TrainingRepository {
                     .toTrainingSession()
                     .right()
             } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                log.error(e) { "Training repository operation failed" }
                 DomainError.DatabaseError.left()
             }
         }
@@ -172,6 +179,7 @@ class ExposedTrainingRepository : TrainingRepository {
                     .map { it.toTrainingSession() }
                 (items to total).right()
             } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                log.error(e) { "Training repository operation failed" }
                 DomainError.DatabaseError.left()
             }
         }
@@ -185,6 +193,7 @@ class ExposedTrainingRepository : TrainingRepository {
                     .mapValues { (_, rows) -> rows.size }
                     .right()
             } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                log.error(e) { "Training repository operation failed" }
                 DomainError.DatabaseError.left()
             }
         }

@@ -8,6 +8,7 @@ import com.tonihacks.qalam.domain.word.Gender
 import com.tonihacks.qalam.domain.word.VerbPattern
 import com.tonihacks.qalam.domain.word.WordId
 import com.tonihacks.qalam.domain.word.WordMorphology
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -17,6 +18,8 @@ import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
 
 class ExposedWordMorphologyRepository {
+
+    private val log = KotlinLogging.logger {}
 
     suspend fun findMorphology(wordId: WordId): Either<DomainError, WordMorphology?> =
         suspendTransaction {
@@ -28,6 +31,7 @@ class ExposedWordMorphologyRepository {
                     ?.toWordMorphology()
                     .right()
             } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                log.error(e) { "Word morphology repository operation failed" }
                 DomainError.DatabaseError.left()
             }
         }
@@ -42,6 +46,7 @@ class ExposedWordMorphologyRepository {
                 }
                 morphology.right()
             } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                log.error(e) { "Word morphology repository operation failed" }
                 DomainError.DatabaseError.left()
             }
         }

@@ -2676,9 +2676,9 @@ export type CreateWordListData = {
 
 export type CreateWordListErrors = {
     /**
-     * Invalid input
+     * Validation error (e.g. blank title)
      */
-    400: ErrorResponse;
+    422: ErrorResponse;
 };
 
 export type CreateWordListError = CreateWordListErrors[keyof CreateWordListErrors];
@@ -2788,13 +2788,13 @@ export type UpdateWordListData = {
 
 export type UpdateWordListErrors = {
     /**
-     * Invalid input
-     */
-    400: ErrorResponse;
-    /**
      * Word list not found
      */
     404: ErrorResponse;
+    /**
+     * Validation error (e.g. blank title)
+     */
+    422: ErrorResponse;
 };
 
 export type UpdateWordListError = UpdateWordListErrors[keyof UpdateWordListErrors];

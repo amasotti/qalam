@@ -84,6 +84,7 @@ dependencies {
 
     // Logging
     implementation(libs.logback.classic)
+    implementation(libs.kotlin.logging)
 
     // Test
     testImplementation(libs.kotest.junitRunner)

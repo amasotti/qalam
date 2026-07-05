@@ -65,3 +65,8 @@
 	gap: 0.375rem;
 	flex-shrink: 0;
 }
+.enrich-col {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}

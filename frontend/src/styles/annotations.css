@@ -299,6 +299,32 @@
 	padding: 0.1rem 0.35rem;
 	border-radius: 4px;
 }
+.drawer-relation-tr {
+	color: var(--ink-muted);
+	font-size: 0.75rem;
+	font-style: italic;
+}
+.drawer-relation-gloss {
+	color: var(--ink-secondary);
+	font-size: 0.75rem;
+}
+.drawer-relation-action {
+	margin-left: auto;
+	white-space: nowrap;
+}
+.drawer-relation-checking {
+	color: var(--ink-ghost);
+	font-size: 0.75rem;
+}
+.drawer-relation-linked {
+	color: var(--color-success, #4caf50);
+	font-size: 0.75rem;
+	font-weight: 600;
+}
+.drawer-relation-err {
+	color: var(--color-danger, #e53935);
+	font-size: 0.75rem;
+}
 .drawer-actions {
 	display: flex;
 	gap: 0.5rem;

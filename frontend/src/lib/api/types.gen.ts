@@ -209,6 +209,8 @@ export type AiPluralSuggestion = {
 export type AiRelationSuggestion = {
     arabicText: string;
     relationType: 'SYNONYM' | 'ANTONYM' | 'RELATED';
+    transliteration?: string | null;
+    translation?: string | null;
 };
 
 export type AnalyzeWordRequest = {

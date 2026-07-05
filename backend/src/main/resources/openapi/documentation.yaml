@@ -2514,6 +2514,12 @@ components:
         relationType:
           type: string
           enum: [SYNONYM, ANTONYM, RELATED]
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
 
     AnalyzeWordRequest:
       type: object

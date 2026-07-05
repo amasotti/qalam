@@ -208,15 +208,15 @@ Provide:
 - gender (MASCULINE/FEMININE, nouns only, null for others)
 - verbPattern (Roman numeral I-X, verbs only, null for others)
 - plurals: list of plural forms with types (SOUND_MASC/SOUND_FEM/BROKEN/PAUCAL/COLLECTIVE/OTHER)
-- relations: synonyms, antonyms, related words as {arabicText, relationType} (SYNONYM/ANTONYM/RELATED)
-- notes: brief mnemonic or usage note in English (null if nothing useful)
+- relations: 2–4 high-value entries — near-synonyms with register/nuance difference, strong antonyms, or words from the same semantic field. Avoid generic filler. Each entry: arabicText (unvoweled), transliteration (practical chat-style), translation (concise English gloss), relationType (SYNONYM/ANTONYM/RELATED)
+- notes: brief mnemonic or usage note in English, focusing on common learner confusions, collocations, or register constraints (null if nothing genuinely useful)
 
 Respond ONLY with this JSON structure:
 {
   "gender": "MASCULINE" | "FEMININE" | null,
   "verbPattern": "I" | "II" | "III" | "IV" | "V" | "VI" | "VII" | "VIII" | "IX" | "X" | null,
   "plurals": [{"pluralForm": "...", "pluralType": "BROKEN"}],
-  "relations": [{"arabicText": "...", "relationType": "SYNONYM"}],
+  "relations": [{"arabicText": "...", "transliteration": "...", "translation": "...", "relationType": "SYNONYM"}],
   "notes": "..." | null
 }"""
 

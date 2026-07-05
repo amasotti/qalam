@@ -9,12 +9,15 @@ import com.tonihacks.qalam.domain.analytics.TextStats
 import com.tonihacks.qalam.domain.analytics.TrainingAnalytics
 import com.tonihacks.qalam.domain.analytics.WordStats
 import com.tonihacks.qalam.domain.error.DomainError
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.isNotNull
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 
 class ExposedAnalyticsRepository : AnalyticsRepository {
+
+    private val log = KotlinLogging.logger {}
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override suspend fun getWordStats(): Either<DomainError, WordStats> =
@@ -29,6 +32,7 @@ class ExposedAnalyticsRepository : AnalyticsRepository {
                     byPartOfSpeech = rows.groupBy { it[WordsTable.partOfSpeech] }.mapValues { it.value.size },
                 ).right()
             } catch (e: Exception) {
+                log.error(e) { "Analytics query failed" }
                 DomainError.DatabaseError.left()
             }
         }
@@ -44,6 +48,7 @@ class ExposedAnalyticsRepository : AnalyticsRepository {
                     byDifficulty = rows.groupBy { it[TextsTable.difficulty] }.mapValues { it.value.size },
                 ).right()
             } catch (e: Exception) {
+                log.error(e) { "Analytics query failed" }
                 DomainError.DatabaseError.left()
             }
         }
@@ -54,6 +59,7 @@ class ExposedAnalyticsRepository : AnalyticsRepository {
             try {
                 RootsTable.selectAll().count().toInt().right()
             } catch (e: Exception) {
+                log.error(e) { "Analytics query failed" }
                 DomainError.DatabaseError.left()
             }
         }
@@ -99,6 +105,7 @@ class ExposedAnalyticsRepository : AnalyticsRepository {
                     recentSessions = recent,
                 ).right()
             } catch (e: Exception) {
+                log.error(e) { "Analytics query failed" }
                 DomainError.DatabaseError.left()
             }
         }

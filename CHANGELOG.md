@@ -2,9 +2,52 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.10.0] - 2026-07-05
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/3882dd769e741a4bd4304ee1156e8f761f78a0e0..99013457bb33d99555592ba354715850089908a9)
+### 🚀 Features
+
+
+- Add ([cc83bf6](https://github.com/amasotti/qalam/commit/cc83bf61462f9c777004ea35b184736e4000fc5a))
+
+- Wire ASD suggestions in frontend ([cf919cd](https://github.com/amasotti/qalam/commit/cf919cd2506e99cc52462e841de1e0cf132c9e05))
+
+- Add asd lookup also to interlinear text ([53f29f0](https://github.com/amasotti/qalam/commit/53f29f05faf5e2c1a61057ea0565cb4640a98d4b))
+
+- Auto tokenize entire text ([b805bb1](https://github.com/amasotti/qalam/commit/b805bb11086441b68d884cb96a8841f20d568166))
+
+- Edit on single sentence ([e17dc5b](https://github.com/amasotti/qalam/commit/e17dc5bed6bd29efba381c14a09fb8dd62782636))
+
+- Table views ([9901345](https://github.com/amasotti/qalam/commit/99013457bb33d99555592ba354715850089908a9))
+
+### 🎨 Styling
+
+
+- Button visibility ([77f96aa](https://github.com/amasotti/qalam/commit/77f96aa2d7eb1da978db75cb69bd5f71cf47525e))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Add note about android app ([037f5f9](https://github.com/amasotti/qalam/commit/037f5f903f98d407c0bd10603f0751278544ab2b))
+
+- Add claude rules ([745b9d1](https://github.com/amasotti/qalam/commit/745b9d1c23d687ccfafb830cc2d2900f056e5d56))
+
+- Improve api for lookup ([e2a3155](https://github.com/amasotti/qalam/commit/e2a3155ca240aa55a11dce8b9faf9cc09c085e34))
+
+- Update types ([f53e4fe](https://github.com/amasotti/qalam/commit/f53e4fe6e657638c8f5232d7d003819b12c6e75b))
+
+- Naming ([2863f77](https://github.com/amasotti/qalam/commit/2863f77575cf9e4b56a810d4bb20f6988a13fb84))
+
+- Fix openapi spec ([b9ec740](https://github.com/amasotti/qalam/commit/b9ec740304a7cad593978d2384d7952d063e34d2))
+
+### E2e
+
+
+- Fix tests ([f97d9c6](https://github.com/amasotti/qalam/commit/f97d9c6a04ccc604f1abbcc4f1039593be3aa9cf))
+
 ## [0.9.0] - 2026-07-04
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/51b53cfe2c83bd1239899dec4302c1d2b13f9d09..2f68aed4b69388e0bdb2b32d267f65c10b934a6c)
+[Compare with last version](https://github.com/amasotti/qalam/compare/51b53cfe2c83bd1239899dec4302c1d2b13f9d09..3882dd769e741a4bd4304ee1156e8f761f78a0e0)
 ### 🚀 Features
 
 
@@ -28,6 +71,8 @@ All notable changes to this project will be documented in this file (created wit
 - Generate types ([cf4e7a5](https://github.com/amasotti/qalam/commit/cf4e7a52e372e780ef8d8ab8b6b37e77a7d92ce3))
 
 - Update svelte kit ([3a91ebf](https://github.com/amasotti/qalam/commit/3a91ebfb3c70af5b7538c6956f5dab016f719244))
+
+- Release v0.9.0 ([3882dd7](https://github.com/amasotti/qalam/commit/3882dd769e741a4bd4304ee1156e8f761f78a0e0))
 
 ## [0.8.0] - 2026-06-28
 

@@ -23,6 +23,7 @@ import {
 	listWordExamples,
 	listWords,
 	saveWordExample,
+	searchWordDictionaryLookups,
 	updateWord,
 	upsertWordMorphology,
 } from '$lib/api/sdk.gen';
@@ -36,6 +37,7 @@ import type {
 	CreateWordRequest,
 	Dialect,
 	DictionaryLinkResponse,
+	DictionaryLookupResponse,
 	Difficulty,
 	MasteryLevel,
 	PartOfSpeech,
@@ -135,6 +137,22 @@ export function useWordAutocomplete(q: () => string) {
 			return requireData(data, 'autocompleteWords') as WordAutocompleteResponse[];
 		},
 		enabled: q().length >= 2,
+	}));
+}
+
+export function useASDlookup() {
+	return createMutation(() => ({
+		mutationFn: async (query: string) => {
+			const normalizedQuery = query.trim();
+			if (!normalizedQuery) throw new Error('Arabic text required');
+
+			const { data, error } = await searchWordDictionaryLookups({
+				query: { source: 'ASD', query: normalizedQuery },
+			});
+
+			if (error) throw error;
+			return requireData(data, 'searchWordDictionaryLookups') as DictionaryLookupResponse;
+		},
 	}));
 }
 

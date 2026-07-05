@@ -36,7 +36,7 @@ test.describe('Texts', () => {
 
 		await page.goto(`/texts/${createdId}`);
 
-		await page.getByRole('button', { name: 'Settings' }).click();
+		await page.locator('.text-actions').getByRole('button', { name: 'Edit' }).click();
 
 		await page.locator('#tf-title').clear();
 		await page.locator('#tf-title').fill('Updated title');

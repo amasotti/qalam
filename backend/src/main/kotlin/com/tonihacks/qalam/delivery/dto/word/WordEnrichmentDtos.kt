@@ -66,6 +66,8 @@ data class AiPluralSuggestion(
 data class AiRelationSuggestion(
     val arabicText: String,   // free-text from AI; frontend resolves to word via autocomplete
     val relationType: String,
+    val transliteration: String? = null,
+    val translation: String? = null,
 )
 
 fun WordMorphology.toResponse(plurals: List<WordPlural>) = WordMorphologyResponse(

@@ -46,6 +46,17 @@ enum class DictionarySource {
     companion object {
         fun fromString(value: String): DictionarySource? =
             entries.firstOrNull { it.name.equals(value.trim(), ignoreCase = true) }
+
+        fun toSearchUrl(source: DictionarySource, q: String) : String? = when (source) {
+            ALMANY -> "https://www.almaany.com/en/dict/ar-en/$q"
+            LIVING_ARABIC -> "https://www.livingarabic.com/en/search?q=$q"
+            DERJA_NINJA -> "https://derja.ninja/search?search=$q&script=arabic"
+            REVERSO -> "https://dictionary.reverso.net/arabic-english/$q"
+            WIKTIONARY -> "https://en.wiktionary.org/wiki/$q"
+            ARABIC_STUDENT_DICTIONARY -> "https://www.arabicstudentsdictionary.com/search?q=$q"
+            LANGENSCHEIDT -> "https://de.langenscheidt.com/arabisch-deutsch/$q"
+            else -> null
+        }
     }
 }
 

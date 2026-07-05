@@ -45,7 +45,9 @@ function reset() {
 
 {#if !aiUnavailable}
 	{#if uiState === 'idle'}
-		<button class="btn ai-insight-btn" onclick={fetchInsight}>Get insight</button>
+		<div class="ai-trigger">
+			<button class="btn btn-sm sentence-action-btn ai-insight-btn" type="button" onclick={fetchInsight}>Get insight</button>
+		</div>
 	{:else if uiState === 'loading'}
 		<span class="ai-insight-loading">Loading…</span>
 	{:else if uiState === 'result'}

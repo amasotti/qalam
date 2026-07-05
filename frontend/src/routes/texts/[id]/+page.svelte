@@ -1,7 +1,11 @@
 <script lang="ts">
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
-import type { AlignmentTokenResponse, UpdateTextRequest } from '$lib/api/types.gen';
+import type {
+	AlignmentTokenResponse,
+	SentenceResponse,
+	UpdateTextRequest,
+} from '$lib/api/types.gen';
 import AnnotationDrawer from '$lib/components/annotations/AnnotationDrawer.svelte';
 import FullTextPanel from '$lib/components/texts/FullTextPanel.svelte';
 import InterlinearSentence from '$lib/components/texts/InterlinearSentence.svelte';
@@ -46,8 +50,13 @@ const autoTokenize = useAutoTokenize();
 const markValid = useMarkTokensValid();
 
 let editingSentences = $state(false);
+let editingSentenceId = $state<string | null>(null);
 let editingInfo = $state(false);
 let deleteConfirm = $state(false);
+let bulkTokenizing = $state(false);
+let bulkTokenizeIndex = $state(0);
+let bulkTokenizeTotal = $state(0);
+let bulkTokenizeError = $state<string | null>(null);
 
 async function handleUpdate(req: UpdateTextRequest) {
 	await updateText.mutateAsync({ id, body: req });
@@ -62,6 +71,33 @@ async function handleDelete() {
 	}
 	await deleteText.mutateAsync(id);
 	goto('/texts');
+}
+
+async function handleAutoTokenizeAll() {
+	const loadedSentences = sentences.data ?? [];
+	if (loadedSentences.length === 0) return;
+
+	bulkTokenizing = true;
+	bulkTokenizeError = null;
+	bulkTokenizeTotal = loadedSentences.length;
+	bulkTokenizeIndex = 0;
+
+	try {
+		for (const sentence of loadedSentences) {
+			bulkTokenizeIndex += 1;
+			await autoTokenize.mutateAsync({ textId: id, id: sentence.id });
+		}
+	} catch (err) {
+		bulkTokenizeError = err instanceof Error ? err.message : 'Auto-tokenize failed';
+	} finally {
+		bulkTokenizing = false;
+	}
+}
+
+function startSentenceEdit(sentence: SentenceResponse) {
+	editingSentences = false;
+	editingInfo = false;
+	editingSentenceId = sentence.id;
 }
 
 function formatEnum(value: string): string {
@@ -89,15 +125,20 @@ function formatEnum(value: string): string {
 					<h1 class="text-title">{text.data.title}</h1>
 					<div class="text-actions">
 						<button
-							class="btn btn-primary"
-							onclick={() => { editingSentences = !editingSentences; editingInfo = false; }}
-						>
-							{editingSentences ? 'Done' : 'Edit'}
-						</button>
+							class="btn"
+							onclick={() => { editingInfo = !editingInfo; editingSentences = false; editingSentenceId = null; }}
+						>Edit</button>
 						<button
 							class="btn"
-							onclick={() => { editingInfo = !editingInfo; editingSentences = false; }}
-						>Settings</button>
+							disabled={bulkTokenizing || autoTokenize.isPending || (sentences.data ?? []).length === 0}
+							onclick={handleAutoTokenizeAll}
+						>
+							{#if bulkTokenizing}
+								Tokenizing {bulkTokenizeIndex}/{bulkTokenizeTotal}
+							{:else}
+								Auto-tokenize all
+							{/if}
+						</button>
 						<a
 							class="btn"
 							href="/api/v1/texts/{id}/print"
@@ -122,6 +163,9 @@ function formatEnum(value: string): string {
 				</div>
 				{#if text.data.comments}
 					<p class="text-desc">{text.data.comments}</p>
+				{/if}
+				{#if bulkTokenizeError}
+					<p class="form-error">{bulkTokenizeError}</p>
 				{/if}
 			</div>
 
@@ -166,14 +210,25 @@ function formatEnum(value: string): string {
 				</div>
 			{:else}
 				{#each sentences.data ?? [] as sentence (sentence.id)}
-					<InterlinearSentence
-						{sentence}
-						annotations={annotations.data ?? []}
-						onTokenClick={openVocabLookup}
-						isPending={autoTokenize.isPending || markValid.isPending}
-						onRetokenize={async (s) => { await autoTokenize.mutateAsync({ textId: id, id: s.id }); }}
-						onMarkValid={async (s) => { await markValid.mutateAsync({ textId: id, id: s.id, currentTokens: s.tokens }); }}
-					/>
+					{#if editingSentenceId === sentence.id}
+						<SentenceEditor
+							sentences={[sentence]}
+							textId={id}
+							hideAdd
+							hideOrder
+							onDone={() => (editingSentenceId = null)}
+						/>
+					{:else}
+						<InterlinearSentence
+							{sentence}
+							annotations={annotations.data ?? []}
+							onTokenClick={openVocabLookup}
+							onEdit={startSentenceEdit}
+							isPending={autoTokenize.isPending || markValid.isPending || bulkTokenizing}
+							onRetokenize={async (s) => { await autoTokenize.mutateAsync({ textId: id, id: s.id }); }}
+							onMarkValid={async (s) => { await markValid.mutateAsync({ textId: id, id: s.id, currentTokens: s.tokens }); }}
+						/>
+					{/if}
 				{/each}
 			{/if}
 

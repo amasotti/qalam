@@ -192,176 +192,189 @@ const masterySteps: Record<string, number> = {
 					</div>
 				</div>
 
-				<!-- Translation + Pronunciation -->
-				<div class="section-block">
-					<div class="sect-label">Translation</div>
-					{#if word.data.translation}
-						<p class="word-translation">{word.data.translation}</p>
-					{:else}
-						<p class="annot-empty">No translation recorded</p>
-					{/if}
-					{#if word.data.pronunciationUrl}
-						<div class="section-block-sm">
-							<a
-								class="pron-link"
-								href={word.data.pronunciationUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-							>♪ Forvo ↗</a>
-						</div>
-					{/if}
-				</div>
-
-				<!-- Morphology + Plurals -->
-				<WordMorphologyStrip wordId={id} />
-				<WordPluralChips wordId={id} />
-
-				<hr class="sect-divider" />
-
-				<!-- Examples -->
-				<div class="sect-label">
-					<span>Examples</span>
-					{#if !addingExample}
-						<button
-							class="btn btn-sm"
-							onclick={() => (addingExample = true)}
-						>+ Add</button>
-					{/if}
-				</div>
-				<div class="word-examples">
-					{#if addingExample}
-						<div class="example-add-form">
-							<textarea
-								class="example-input-ar"
-								rows="2"
-								placeholder="العربية…"
-								bind:value={newExAr}
-							></textarea>
-							<input
-								class="example-input-latin"
-								type="text"
-								placeholder="Transliteration (optional)"
-								bind:value={newExTr}
-							/>
-							<input
-								class="example-input-latin"
-								type="text"
-								placeholder="Translation (optional)"
-								bind:value={newExEn}
-							/>
-							<div class="example-form-actions">
-								<button class="btn" onclick={cancelAddExample}>Cancel</button>
-								<button
-									class="btn btn-primary"
-									onclick={handleSaveExample}
-									disabled={saveExample.isPending || !newExAr.trim()}
-								>Save</button>
+				<!-- Word Workbench -->
+				<div class="word-workbench">
+					<!-- Translation -->
+					<div class="workbench-section">
+						<div class="sect-label">Translation</div>
+						{#if word.data.translation}
+							<p class="word-translation">{word.data.translation}</p>
+						{:else}
+							<p class="annot-empty">No translation recorded</p>
+						{/if}
+						{#if word.data.pronunciationUrl}
+							<div class="section-block-sm">
+								<a
+									class="pron-link"
+									href={word.data.pronunciationUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+								>♪ Forvo ↗</a>
 							</div>
-						</div>
-					{/if}
+						{/if}
+					</div>
 
-					{#if examples.isPending}
-						<p class="status-text status-text-muted">Loading…</p>
-					{:else if (examples.data ?? []).length === 0 && !addingExample}
-						<p class="annot-empty">No examples saved yet</p>
-					{:else}
-						{#each examples.data ?? [] as ex (ex.id)}
-							<div class="example-card">
-								<p class="example-card-ar">{ex.arabic}</p>
-								{#if ex.transliteration}<p class="example-card-tr">{ex.transliteration}</p>{/if}
-								{#if ex.translation}<p class="example-card-en">{ex.translation}</p>{/if}
+					<!-- Morphology -->
+					<div class="workbench-section">
+						<div class="sect-label">Morphology</div>
+						<WordMorphologyStrip wordId={id} />
+						{#if word.data.partOfSpeech === "NOUN"}
+							<WordPluralChips wordId={id} />
+						{/if}
+					</div>
+
+					<!-- Examples -->
+					<div class="workbench-section">
+						<div class="sect-label with-action">
+							<span>Examples</span>
+							{#if !addingExample}
 								<button
-									class="example-delete"
-									onclick={() => deleteExample.mutate({ id, exampleId: ex.id })}
-									disabled={deleteExample.isPending}
-									aria-label="Delete example"
-								>×</button>
-							</div>
-						{/each}
-					{/if}
+									class="btn btn-xs"
+									onclick={() => (addingExample = true)}
+								>+ Add</button>
+							{/if}
+						</div>
+						<div class="word-examples">
+							{#if addingExample}
+								<div class="example-add-form">
+									<textarea
+										class="example-input-ar"
+										rows="2"
+										placeholder="العربية…"
+										bind:value={newExAr}
+									></textarea>
+									<input
+										class="example-input-latin"
+										type="text"
+										placeholder="Transliteration (optional)"
+										bind:value={newExTr}
+									/>
+									<input
+										class="example-input-latin"
+										type="text"
+										placeholder="Translation (optional)"
+										bind:value={newExEn}
+									/>
+									<div class="example-form-actions">
+										<button class="btn" onclick={cancelAddExample}>Cancel</button>
+										<button
+											class="btn btn-primary"
+											onclick={handleSaveExample}
+											disabled={saveExample.isPending || !newExAr.trim()}
+										>Save</button>
+									</div>
+								</div>
+							{/if}
 
-					<!-- AI examples -->
-					<AiExamples wordId={id} />
-				</div>
+							{#if examples.isPending}
+								<p class="status-text status-text-muted">Loading…</p>
+							{:else if (examples.data ?? []).length === 0 && !addingExample}
+								<p class="annot-empty">No examples saved yet</p>
+							{:else}
+								{#each examples.data ?? [] as ex (ex.id)}
+									<div class="example-card">
+										<p class="example-card-ar">{ex.arabic}</p>
+										{#if ex.transliteration}<p class="example-card-tr">{ex.transliteration}</p>{/if}
+										{#if ex.translation}<p class="example-card-en">{ex.translation}</p>{/if}
+										<button
+											class="example-delete"
+											onclick={() => deleteExample.mutate({ id, exampleId: ex.id })}
+											disabled={deleteExample.isPending}
+											aria-label="Delete example"
+										>×</button>
+									</div>
+								{/each}
+							{/if}
 
-				<!-- AI insight -->
-				<AiInsightPanel entityType="WORD" entityId={id} />
-
-				<hr class="sect-divider" />
-
-				<!-- Relations -->
-				<div class="sect-label">Relations</div>
-				<WordRelationsPanel wordId={id} />
-
-				<hr class="sect-divider" />
-
-				<!-- Notes -->
-				<div class="sect-label">
-					<span>Notes</span>
-					{#if !editingNotes}
-						<button
-							class="btn btn-xs"
-							onclick={startEditNotes}
-						>✏ Edit</button>
-					{/if}
-				</div>
-				{#if editingNotes}
-					<div class="stack-xs section-block">
-						<textarea
-							class="notes-textarea"
-							rows="5"
-							bind:value={editedNotes}
-							disabled={updateWord.isPending}
-						></textarea>
-						<div class="row-sm">
-							<button
-								class="btn btn-primary btn-sm"
-								onclick={saveNotes}
-								disabled={updateWord.isPending}
-							>{updateWord.isPending ? 'Saving…' : 'Save'}</button>
-							<button
-								class="btn btn-sm"
-								onclick={() => (editingNotes = false)}
-								disabled={updateWord.isPending}
-							>Cancel</button>
+							<AiExamples wordId={id} />
 						</div>
 					</div>
-				{:else if word.data.notes}
-					<p class="notes-text">{word.data.notes}</p>
-				{:else}
-					<p class="annot-empty section-block">No notes yet.</p>
-				{/if}
 
-				<hr class="sect-divider" />
-
-				<!-- Dictionary sources -->
-				<div class="sect-label">Dictionary sources</div>
-				<div class="section-block-lg">
-					<DictionaryLinks wordId={id} arabicText={word.data.arabicText} />
-				</div>
-
-				<!-- Annotations -->
-				<div class="sect-label">Annotations</div>
-				{#if annotations.isPending}
-					<p class="annot-empty">Loading annotations…</p>
-				{:else if (annotations.data ?? []).length === 0}
-					<p class="annot-empty">No annotations link this word yet.</p>
-				{:else}
-					<ul class="annotation-list">
-						{#each annotations.data ?? [] as annotation (annotation.id)}
-							<li class="annotation-list-item">
+					<!-- Notes & AI -->
+					<div class="workbench-section">
+						<div class="sect-label with-action">
+							<span>Notes & AI</span>
+							{#if !editingNotes}
+								<button
+									class="btn btn-xs"
+									onclick={startEditNotes}
+								>✏ Edit</button>
+							{/if}
+						</div>
+						{#if editingNotes}
+							<div class="stack-xs">
+								<textarea
+									class="notes-textarea"
+									rows="5"
+									bind:value={editedNotes}
+									disabled={updateWord.isPending}
+									placeholder="What do you know about this word? Usage tips, mnemonics, cultural context…"
+								></textarea>
 								<div class="row-sm">
-									<AnnotationBadge type={annotation.type} />
-									<span class="anchor-ar">{annotation.anchor}</span>
-									<a class="annotation-link" href="/texts/{annotation.textId}">View text →</a>
+									<button
+										class="btn btn-primary btn-sm"
+										onclick={saveNotes}
+										disabled={updateWord.isPending}
+									>{updateWord.isPending ? 'Saving…' : 'Save'}</button>
+									<button
+										class="btn btn-sm"
+										onclick={() => (editingNotes = false)}
+										disabled={updateWord.isPending}
+									>Cancel</button>
 								</div>
-								{#if annotation.content}
-									<p class="annotation-content">{annotation.content}</p>
-								{/if}
-							</li>
-						{/each}
-					</ul>
-				{/if}
+							</div>
+						{:else if word.data.notes}
+							<div class="notes-display">
+								<p class="notes-text">{word.data.notes}</p>
+							</div>
+						{:else}
+							<p class="annot-empty">No notes yet. Add observations, mnemonics, or insights.</p>
+						{/if}
+						<div class="section-block-sm">
+							<AiInsightPanel entityType="WORD" entityId={id} />
+						</div>
+					</div>
+
+					<!-- Relations & Sources -->
+					<div class="workbench-section">
+						<div class="sect-label">Relations & Sources</div>
+						<div class="relations-sources-grid">
+							<div class="relations-panel">
+								<div class="sect-sublabel">Related Words</div>
+								<WordRelationsPanel wordId={id} />
+							</div>
+							<div class="sources-panel">
+								<div class="sect-sublabel">Dictionaries</div>
+								<DictionaryLinks wordId={id} arabicText={word.data.arabicText} />
+							</div>
+						</div>
+					</div>
+
+					<!-- Annotations -->
+					<div class="workbench-section">
+						<div class="sect-label">Annotations</div>
+						{#if annotations.isPending}
+							<p class="annot-empty">Loading annotations…</p>
+						{:else if (annotations.data ?? []).length === 0}
+							<p class="annot-empty">No annotations link this word yet.</p>
+						{:else}
+							<ul class="annotation-list">
+								{#each annotations.data ?? [] as annotation (annotation.id)}
+									<li class="annotation-list-item">
+										<div class="row-sm">
+											<AnnotationBadge type={annotation.type} />
+											<span class="anchor-ar">{annotation.anchor}</span>
+											<a class="annotation-link" href="/texts/{annotation.textId}">View text →</a>
+										</div>
+										{#if annotation.content}
+											<p class="annotation-content">{annotation.content}</p>
+										{/if}
+									</li>
+								{/each}
+							</ul>
+						{/if}
+					</div>
+				</div>
 			</div>
 
 			<aside class="detail-sidebar">

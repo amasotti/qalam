@@ -17,10 +17,12 @@ const memberIds = $derived(new Set((memberships.data ?? []).map((l) => l.id)));
 const available = $derived((allLists.data ?? []).filter((l) => !memberIds.has(l.id)));
 
 async function addToList(e: Event) {
-	const listId = (e.currentTarget as HTMLSelectElement).value;
+	// Capture the element before awaiting — currentTarget is nulled once the event settles.
+	const select = e.currentTarget as HTMLSelectElement;
+	const listId = select.value;
 	if (!listId) return;
 	await addWord.mutateAsync({ listId, wordId });
-	(e.currentTarget as HTMLSelectElement).value = '';
+	select.value = '';
 }
 </script>
 

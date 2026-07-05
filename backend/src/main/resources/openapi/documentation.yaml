@@ -26,6 +26,8 @@ tags:
     description: Annotation management (vocabulary, grammar, cultural, structure notes)
   - name: training
     description: Flashcard training sessions and statistics
+  - name: word-lists
+    description: Curated topical vocabulary lists (e.g. Colors, Family)
   - name: ai
     description: AI-powered linguistic analysis
   - name: analytics
@@ -1971,6 +1973,234 @@ paths:
         '422':
           description: Validation error
 
+  /api/v1/word-lists:
+    get:
+      summary: List curated word lists (paginated, with member counts)
+      operationId: listWordLists
+      tags: [word-lists]
+      parameters:
+        - name: page
+          in: query
+          description: Page number (1-based)
+          schema: { type: integer, default: 1 }
+        - name: size
+          in: query
+          description: Number of items per page
+          schema: { type: integer, default: 20, maximum: 500 }
+      responses:
+        "200":
+          description: Paginated list of word lists
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PaginatedResponse"
+                  - type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/WordListResponse"
+    post:
+      summary: Create a new word list
+      operationId: createWordList
+      tags: [word-lists]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWordListRequest"
+      responses:
+        "201":
+          description: Word list created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordListResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/word-lists/by-word/{wordId}:
+    get:
+      summary: List the word lists a given word belongs to
+      operationId: listsForWord
+      tags: [word-lists]
+      parameters:
+        - name: wordId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Lists containing the word
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WordListRefResponse"
+        "400":
+          description: Malformed UUID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/word-lists/{id}:
+    get:
+      summary: Get a word list with its ordered member words
+      operationId: getWordListById
+      tags: [word-lists]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Word list found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordListDetailResponse"
+        "400":
+          description: Malformed UUID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Word list not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      summary: Update a word list's title or description
+      operationId: updateWordList
+      tags: [word-lists]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateWordListRequest"
+      responses:
+        "200":
+          description: Word list updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordListResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Word list not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Delete a word list
+      operationId: deleteWordList
+      tags: [word-lists]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "204":
+          description: Word list deleted
+        "404":
+          description: Word list not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/word-lists/{id}/words:
+    post:
+      summary: Add an existing word to a list (appended at the end)
+      operationId: addWordToList
+      tags: [word-lists]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddWordToListRequest"
+      responses:
+        "204":
+          description: Word added to the list
+        "400":
+          description: Malformed UUID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: List or word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Word is already in the list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/word-lists/{id}/words/{wordId}:
+    delete:
+      summary: Remove a word from a list
+      operationId: removeWordFromList
+      tags: [word-lists]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: wordId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "204":
+          description: Word removed from the list
+        "400":
+          description: Malformed UUID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Word is not in the list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /api/v1/ai/insight:
     post:
       summary: Generate AI linguistic insight for a word or sentence
@@ -2118,6 +2348,90 @@ components:
           type: integer
 
     # --- Words ---
+
+    WordListResponse:
+      type: object
+      required: [id, title, itemCount, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        itemCount:
+          type: integer
+          format: int64
+          description: Number of words in the list
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    WordListDetailResponse:
+      type: object
+      required: [id, title, createdAt, updatedAt, words]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        words:
+          type: array
+          items:
+            $ref: "#/components/schemas/WordResponse"
+
+    WordListRefResponse:
+      type: object
+      required: [id, title]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+
+    CreateWordListRequest:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+
+    UpdateWordListRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+
+    AddWordToListRequest:
+      type: object
+      required: [wordId]
+      properties:
+        wordId:
+          type: string
+          format: uuid
 
     WordResponse:
       type: object

@@ -9,6 +9,7 @@ import com.tonihacks.qalam.delivery.routes.sentenceRoutes
 import com.tonihacks.qalam.delivery.routes.textRoutes
 import com.tonihacks.qalam.delivery.routes.trainingRoutes
 import com.tonihacks.qalam.delivery.routes.transliterationRoutes
+import com.tonihacks.qalam.delivery.routes.wordListRoutes
 import com.tonihacks.qalam.delivery.routes.wordRoutes
 import com.tonihacks.qalam.domain.ai.AiInsightService
 import com.tonihacks.qalam.domain.analytics.AnalyticsService
@@ -20,6 +21,7 @@ import com.tonihacks.qalam.domain.text.TextService
 import com.tonihacks.qalam.domain.training.TrainingService
 import com.tonihacks.qalam.domain.transliteration.TransliterationService
 import com.tonihacks.qalam.domain.word.WordService
+import com.tonihacks.qalam.domain.wordlist.WordListService
 import com.tonihacks.qalam.infrastructure.ai.AiClient
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -42,6 +44,7 @@ fun Application.configureRouting() {
     val annotationService by inject<AnnotationService>()
     val aiClient by inject<AiClient>()
     val trainingService by inject<TrainingService>()
+    val wordListService by inject<WordListService>()
     val aiInsightService by inject<AiInsightService>()
     val analyticsService by inject<AnalyticsService>()
 
@@ -60,6 +63,7 @@ fun Application.configureRouting() {
             annotationRoutes(annotationService)
             annotationWordRoutes(annotationService)
             trainingRoutes(trainingService)
+            wordListRoutes(wordListService)
             aiInsightRoutes(aiInsightService)
             analyticsRoutes(analyticsService)
         }

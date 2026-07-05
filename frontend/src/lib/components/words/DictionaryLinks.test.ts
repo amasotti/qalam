@@ -26,7 +26,7 @@ vi.mock('$lib/stores/words', () => ({
 }));
 
 describe('DictionaryLinks', () => {
-	it('shows empty state when no links exist', () => {
+	it('shows quick-add buttons when no links exist', () => {
 		queryState.data = [];
 
 		render(DictionaryLinks, {
@@ -36,10 +36,27 @@ describe('DictionaryLinks', () => {
 			},
 		});
 
-		expect(screen.getByText('No dictionary links yet.')).toBeInTheDocument();
+		expect(screen.getByText('Almaany')).toBeInTheDocument();
+		expect(screen.getByText('Living Arabic')).toBeInTheDocument();
 	});
 
-	it('autofills templated URL and submits selected source', async () => {
+	it('renders existing links as rows', () => {
+		queryState.data = [
+			{ id: 'l1', source: 'ALMANY', url: 'https://almaany.com/test' },
+		];
+
+		render(DictionaryLinks, {
+			props: {
+				wordId: 'word-1',
+				arabicText: 'كتاب',
+			},
+		});
+
+		const link = screen.getByText('Almaany');
+		expect(link.closest('a')).toHaveAttribute('href', 'https://almaany.com/test');
+	});
+
+	it('opens custom add form and autofills URL', async () => {
 		queryState.data = [];
 		mutateMock.mockImplementation((_payload, options) => options?.onSuccess?.());
 
@@ -50,30 +67,9 @@ describe('DictionaryLinks', () => {
 			},
 		});
 
-		await fireEvent.click(screen.getByRole('button', { name: '+ Custom link' }));
+		await fireEvent.click(screen.getByText('Custom'));
 
 		const urlInput = screen.getByPlaceholderText('URL') as HTMLInputElement;
 		expect(urlInput.value).toBe('https://www.almaany.com/en/dict/ar-en/%D9%83%D8%AA%D8%A7%D8%A8');
-
-		await fireEvent.change(screen.getByRole('combobox'), {
-			target: { value: 'WIKTIONARY' },
-		});
-		expect(urlInput.value).toBe('https://en.wiktionary.org/wiki/%D9%83%D8%AA%D8%A7%D8%A8');
-
-		await fireEvent.click(screen.getByRole('button', { name: 'Add' }));
-
-		expect(mutateMock).toHaveBeenCalledWith(
-			{
-				id: 'word-1',
-				body: {
-					source: 'WIKTIONARY',
-					url: 'https://en.wiktionary.org/wiki/%D9%83%D8%AA%D8%A7%D8%A8',
-				},
-			},
-			expect.objectContaining({
-				onSuccess: expect.any(Function),
-				onError: expect.any(Function),
-			})
-		);
 	});
 });

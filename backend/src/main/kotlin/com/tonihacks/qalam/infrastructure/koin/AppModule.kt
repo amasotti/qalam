@@ -56,7 +56,7 @@ val dictionaryLookupModule = module {
 
 val wordListsModule = module {
     single<WordListRepository> { ExposedWordListRepository() }
-    single { WordListService(get()) }
+    single { WordListService(get(), get()) }
 }
 
 val textsModule = module {

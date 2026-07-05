@@ -2201,6 +2201,42 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /api/v1/word-lists/{id}/suggest:
+    post:
+      summary: AI-suggest 5–10 new words for a list (ephemeral preview, never auto-saved)
+      operationId: suggestWordsForList
+      tags: [word-lists]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Suggested words
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordListSuggestionsResponse"
+        "400":
+          description: Malformed UUID or empty AI response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Word list not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: AI not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /api/v1/ai/insight:
     post:
       summary: Generate AI linguistic insight for a word or sentence
@@ -2432,6 +2468,34 @@ components:
         wordId:
           type: string
           format: uuid
+
+    AiListWordSuggestion:
+      type: object
+      required: [arabicText]
+      properties:
+        arabicText:
+          type: string
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+        partOfSpeech:
+          type: string
+          nullable: true
+        difficulty:
+          type: string
+          nullable: true
+
+    WordListSuggestionsResponse:
+      type: object
+      required: [suggestions]
+      properties:
+        suggestions:
+          type: array
+          items:
+            $ref: "#/components/schemas/AiListWordSuggestion"
 
     WordResponse:
       type: object

@@ -177,6 +177,24 @@ class WordListsIntegrationTest : BaseIntegrationTest() {
             }
         }
 
+        "POST /api/v1/word-lists/{id}/suggest" - {
+            "returns 503 when AI is not configured" {
+                testApp { client ->
+                    val listId = createList(client, "Colors")
+                    val response = client.post("/api/v1/word-lists/$listId/suggest")
+                    response.status shouldBe HttpStatusCode.ServiceUnavailable
+                }
+            }
+
+            "returns 404 for an unknown list" {
+                testApp { client ->
+                    val response =
+                        client.post("/api/v1/word-lists/00000000-0000-0000-0000-000000000000/suggest")
+                    response.status shouldBe HttpStatusCode.NotFound
+                }
+            }
+        }
+
         "DELETE /api/v1/word-lists/{id}" - {
             "deletes a list, then 404 on fetch" {
                 testApp { client ->

@@ -7,9 +7,11 @@ import {
 	listsForWord,
 	listWordLists,
 	removeWordFromList,
+	suggestWordsForList,
 	updateWordList,
 } from '$lib/api/sdk.gen';
 import type {
+	AiListWordSuggestion,
 	CreateWordListRequest,
 	UpdateWordListRequest,
 	WordListRefResponse,
@@ -112,6 +114,17 @@ export function useAddWordToList() {
 		},
 		onSuccess: () => {
 			qc.invalidateQueries({ queryKey: ['wordLists'] });
+		},
+	}));
+}
+
+/** AI-suggest new words for a list (ephemeral — nothing is saved until the user adds a word). */
+export function useSuggestWordsForList() {
+	return createMutation(() => ({
+		mutationFn: async (listId: string) => {
+			const { data, error } = await suggestWordsForList({ path: { id: listId } });
+			if (error) throw error;
+			return (requireData(data, 'suggestWordsForList').suggestions ?? []) as AiListWordSuggestion[];
 		},
 	}));
 }

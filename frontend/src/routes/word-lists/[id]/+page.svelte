@@ -3,6 +3,7 @@ import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import ViewToggle from '$lib/components/ViewToggle.svelte';
+import WordListSuggestDrawer from '$lib/components/word/WordListSuggestDrawer.svelte';
 import {
 	useAddWordToList,
 	useDeleteWordList,
@@ -32,6 +33,8 @@ let isEditing = $state(false);
 let editedTitle = $state('');
 let editedDesc = $state('');
 let deleteConfirm = $state(false);
+let suggestOpen = $state(false);
+let aiUnavailable = $state(false);
 
 // Add-word search
 let addQuery = $state('');
@@ -124,6 +127,9 @@ function formatEnum(value: string): string {
 				</div>
 				<div class="word-actions">
 					<button class="btn btn-primary" onclick={startEdit}>Edit</button>
+					{#if !aiUnavailable}
+						<button class="btn" onclick={() => (suggestOpen = true)}>✦ AI Suggest</button>
+					{/if}
 					<button class="btn btn-danger" onclick={handleDelete} disabled={deleteList.isPending}>
 						{deleteConfirm ? 'Confirm delete' : 'Delete'}
 					</button>
@@ -251,4 +257,14 @@ function formatEnum(value: string): string {
 			{/if}
 		{/if}
 	</div>
+
+	<WordListSuggestDrawer
+		listId={id}
+		open={suggestOpen}
+		onClose={() => (suggestOpen = false)}
+		onAiUnavailable={() => {
+			aiUnavailable = true;
+			suggestOpen = false;
+		}}
+	/>
 {/if}

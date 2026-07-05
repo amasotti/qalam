@@ -14,15 +14,20 @@ import com.tonihacks.qalam.delivery.dto.wordlist.UpdateWordListRequest
 import com.tonihacks.qalam.delivery.dto.wordlist.WordListDetailResponse
 import com.tonihacks.qalam.delivery.dto.wordlist.WordListRefResponse
 import com.tonihacks.qalam.delivery.dto.wordlist.WordListResponse
+import com.tonihacks.qalam.delivery.dto.wordlist.WordListSuggestionsResponse
 import com.tonihacks.qalam.delivery.dto.wordlist.toDetailResponse
 import com.tonihacks.qalam.delivery.dto.wordlist.toRefResponse
 import com.tonihacks.qalam.delivery.dto.wordlist.toResponse
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.word.WordId
+import com.tonihacks.qalam.infrastructure.ai.AiClient
 import java.util.UUID
 import kotlin.time.Clock
 
-class WordListService(private val repo: WordListRepository) {
+class WordListService(
+    private val repo: WordListRepository,
+    private val aiClient: AiClient,
+) {
 
     suspend fun list(page: Int?, size: Int?): Either<DomainError, PaginatedResponse<WordListResponse>> =
         repo.list(PageRequest.from(page, size)).map { p ->
@@ -95,6 +100,16 @@ class WordListService(private val repo: WordListRepository) {
     suspend fun listsForWord(wordId: String): Either<DomainError, List<WordListRefResponse>> = either {
         val word = parseWordId(wordId).bind()
         repo.listsForWord(word).bind().map { it.toRefResponse() }
+    }
+
+    // --- AI word suggestions (ephemeral preview — never auto-saved) ---
+
+    suspend fun suggestWords(id: String): Either<DomainError, WordListSuggestionsResponse> = either {
+        val listId = parseId(id).bind()
+        val list = repo.findById(listId).bind()
+        val existing = repo.membersOf(listId).bind()
+        val suggestions = aiClient.suggestWordsForList(list.title, list.description, existing).bind()
+        WordListSuggestionsResponse(suggestions)
     }
 
     private fun parseId(id: String): Either<DomainError, WordListId> =

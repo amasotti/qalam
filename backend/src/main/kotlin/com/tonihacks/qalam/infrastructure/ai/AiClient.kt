@@ -7,6 +7,7 @@ import com.tonihacks.qalam.delivery.dto.sentence.TokenInputDto
 import com.tonihacks.qalam.delivery.dto.word.AiExampleSentence
 import com.tonihacks.qalam.delivery.dto.word.WordAnalysisResponse
 import com.tonihacks.qalam.delivery.dto.word.WordEnrichmentSuggestion
+import com.tonihacks.qalam.delivery.dto.wordlist.AiListWordSuggestion
 import com.tonihacks.qalam.domain.ai.InsightContext
 import com.tonihacks.qalam.domain.ai.InsightMode
 import com.tonihacks.qalam.domain.error.DomainError
@@ -54,7 +55,7 @@ class AiClient : java.io.Closeable {
 
         val prompt = buildPrompt(arabicText, translation)
 
-        val model = System.getenv("OPENROUTER_MODEL") ?: "openai/gpt-4o-mini"
+        val model = System.getenv("OPENROUTER_MODEL") ?: "qwen/qwen3.5-flash-02-23"
 
         return try {
             val response = httpClient.post("https://openrouter.ai/api/v1/chat/completions") {
@@ -84,7 +85,7 @@ class AiClient : java.io.Closeable {
     suspend fun autoTokenize(arabicText: String): Either<DomainError, List<TokenInputDto>> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
-        val model = System.getenv("OPENROUTER_MODEL") ?: "openai/gpt-4o-mini"
+        val model = System.getenv("OPENROUTER_MODEL") ?: "qwen/qwen3.5-flash-02-23"
         val prompt = """Split this Arabic sentence into individual word tokens.
 Return a JSON object with a "tokens" array. Each element must have:
 - "position": integer index starting at 0
@@ -122,7 +123,7 @@ Sentence: "$arabicText""""
     suspend fun transliterate(arabicText: String): Either<DomainError, String> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
-        val model = System.getenv("OPENROUTER_MODEL") ?: "openai/gpt-4o-mini"
+        val model = System.getenv("OPENROUTER_MODEL") ?: "qwen/qwen3.5-flash-02-23"
         val prompt = """Transliterate this Arabic sentence into Latin script using a practical/Buckwalter-inspired scheme.
 Return a JSON object with a single "transliteration" string field.
 
@@ -156,7 +157,7 @@ Sentence: "$arabicText""""
     suspend fun analyzeWord(arabicText: String): Either<DomainError, WordAnalysisResponse> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
-        val model = System.getenv("OPENROUTER_MODEL") ?: "openai/gpt-4o-mini"
+        val model = System.getenv("OPENROUTER_MODEL") ?: "qwen/qwen3.5-flash-02-23"
         val prompt = """Analyze the Arabic word "$arabicText" and return a JSON object with:
 - "transliteration": Latin transliteration using practical chat-alphabet style
 - "translation": English translation or meaning
@@ -199,7 +200,7 @@ Sentence: "$arabicText""""
     suspend fun enrichWord(word: Word): Either<DomainError, WordEnrichmentSuggestion> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
-        val model = System.getenv("OPENROUTER_MODEL") ?: "openai/gpt-4o-mini"
+        val model = System.getenv("OPENROUTER_MODEL") ?: "qwen/qwen3.5-flash-02-23"
         val dialectClause = ", dialect: ${word.dialect}"
         val transliterationClause = word.transliteration?.let { " [$it]" } ?: ""
         val prompt = """Analyse the Arabic word: ${word.arabicText}$transliterationClause (${word.translation ?: "no translation"}, partOfSpeech: ${word.partOfSpeech}$dialectClause)
@@ -244,10 +245,67 @@ Respond ONLY with this JSON structure:
         }
     }
 
+    suspend fun suggestWordsForList(
+        title: String,
+        description: String?,
+        existing: List<Word>,
+    ): Either<DomainError, List<AiListWordSuggestion>> {
+        if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
+
+        val model = System.getenv("OPENROUTER_MODEL") ?: "qwen/qwen3.5-flash-02-23"
+        val descriptionClause = description?.takeIf { it.isNotBlank() }?.let { "\nDescription: $it" } ?: ""
+        val existingClause = if (existing.isEmpty()) {
+            "\nThe list is currently empty."
+        } else {
+            "\nWords already in the list (do NOT suggest these or close variants):\n" +
+                existing.joinToString("\n") { "- ${it.arabicText}${it.translation?.let { t -> " — $t" } ?: ""}" }
+        }
+        val prompt = """Suggest between 5 and 10 NEW Arabic vocabulary words that belong in this themed list.
+List title: $title$descriptionClause$existingClause
+
+Each suggestion must fit the theme and must not duplicate an existing word. Prefer common, useful words.
+For each word provide:
+- arabicText: the word in Arabic script, unvoweled
+- transliteration: practical chat-alphabet style
+- translation: concise English gloss
+- partOfSpeech: one of NOUN, VERB, ADJECTIVE, ADVERB, PREPOSITION, PARTICLE, INTERJECTION, CONJUNCTION, PRONOUN, UNKNOWN
+- difficulty: one of BEGINNER, INTERMEDIATE, ADVANCED
+
+Respond ONLY with this JSON structure:
+{
+  "suggestions": [
+    {"arabicText": "...", "transliteration": "...", "translation": "...", "partOfSpeech": "NOUN", "difficulty": "BEGINNER"}
+  ]
+}"""
+
+        return try {
+            val response = httpClient.post("https://openrouter.ai/api/v1/chat/completions") {
+                header(HttpHeaders.Authorization, "Bearer $apiKey")
+                contentType(ContentType.Application.Json)
+                setBody(OpenRouterRequest(
+                    model = model,
+                    messages = listOf(
+                        Message("system", ENRICH_SYSTEM_PROMPT),
+                        Message("user", prompt),
+                    ),
+                    responseFormat = ResponseFormat("json_object"),
+                ))
+            }
+
+            val body = response.body<OpenRouterResponse>()
+            val content = body.choices.firstOrNull()?.message?.content
+                ?: return DomainError.InvalidInput("Empty AI response").left()
+
+            jsonConfig.decodeFromString<ListSuggestionsPayload>(content).suggestions.right()
+        } catch (_: Exception) {
+            DomainError.InvalidInput("AI list suggestion request failed").left()
+        }
+    }
+
     suspend fun generateInsight(context: InsightContext): Either<DomainError, String> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
-        val model = System.getenv("OPENROUTER_MODEL") ?: "openai/gpt-4o-mini"
+        val model = System.getenv("OPENROUTER_MODEL") ?: "qwen/qwen3.5-flash-02-23"
         val userPrompt = buildInsightPrompt(context)
 
         return try {
@@ -381,6 +439,9 @@ Return a JSON object with an "examples" array. Each element must have:
 
     @Serializable
     private data class TransliterationPayload(val transliteration: String)
+
+    @Serializable
+    private data class ListSuggestionsPayload(val suggestions: List<AiListWordSuggestion>)
 
     private companion object {
         const val SYSTEM_PROMPT = "You are a structured assistant as companion for an Arabic language teacher. " +

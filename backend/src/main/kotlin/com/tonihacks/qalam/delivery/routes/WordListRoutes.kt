@@ -86,4 +86,13 @@ private fun Route.membershipRoutes(service: WordListService) {
             { call.respond(HttpStatusCode.OK, it) },
         )
     }
+
+    // AI word suggestions for a list (ephemeral preview — never auto-saved)
+    post("/{id}/suggest") {
+        val id = call.pathParameters.getOrFail<String>("id")
+        service.suggestWords(id).fold(
+            { call.respondError(it) },
+            { call.respond(HttpStatusCode.OK, it) },
+        )
+    }
 }

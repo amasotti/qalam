@@ -88,6 +88,18 @@ export type AddWordToListRequest = {
     wordId: string;
 };
 
+export type AiListWordSuggestion = {
+    arabicText: string;
+    transliteration?: string | null;
+    translation?: string | null;
+    partOfSpeech?: string | null;
+    difficulty?: string | null;
+};
+
+export type WordListSuggestionsResponse = {
+    suggestions: Array<AiListWordSuggestion>;
+};
+
 export type WordResponse = {
     id: string;
     arabicText: string;
@@ -2874,6 +2886,41 @@ export type RemoveWordFromListResponses = {
 };
 
 export type RemoveWordFromListResponse = RemoveWordFromListResponses[keyof RemoveWordFromListResponses];
+
+export type SuggestWordsForListData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/word-lists/{id}/suggest';
+};
+
+export type SuggestWordsForListErrors = {
+    /**
+     * Malformed UUID or empty AI response
+     */
+    400: ErrorResponse;
+    /**
+     * Word list not found
+     */
+    404: ErrorResponse;
+    /**
+     * AI not configured
+     */
+    503: ErrorResponse;
+};
+
+export type SuggestWordsForListError = SuggestWordsForListErrors[keyof SuggestWordsForListErrors];
+
+export type SuggestWordsForListResponses = {
+    /**
+     * Suggested words
+     */
+    200: WordListSuggestionsResponse;
+};
+
+export type SuggestWordsForListResponse = SuggestWordsForListResponses[keyof SuggestWordsForListResponses];
 
 export type GenerateInsightData = {
     body: InsightRequest;

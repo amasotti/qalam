@@ -53,6 +53,24 @@ data class WordListRefResponse(
     val title: String,
 )
 
+/**
+ * AI-suggested new word for a list — ephemeral preview, never auto-saved.
+ * Fields align with CreateWordRequest so the frontend can create the word directly.
+ */
+@Serializable
+data class AiListWordSuggestion(
+    val arabicText: String,
+    val transliteration: String? = null,
+    val translation: String? = null,
+    val partOfSpeech: String? = null,
+    val difficulty: String? = null,
+)
+
+@Serializable
+data class WordListSuggestionsResponse(
+    val suggestions: List<AiListWordSuggestion>,
+)
+
 fun WordListSummary.toResponse() = WordListResponse(
     id = list.id.toString(),
     title = list.title,

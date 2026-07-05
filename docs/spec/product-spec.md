@@ -224,6 +224,23 @@ Read-only dashboard.
 
 ---
 
+### 6. Word Lists
+
+Curated topical vocabulary sets (e.g. "Colors", "Family") — a deliberate, ordered grouping
+layered over the dictionary.
+
+- A list has a **title** and optional **description**
+- Membership is **many-to-many** (a word can be in several lists) and **insertion-ordered**
+- Lists reference **existing** dictionary words; adding a word never creates one
+- Word detail shows which lists a word belongs to; words can be added/removed from there or
+  from the list detail page
+- Reachable via `/api/v1/word-lists` (CRUD, add/remove member, lists-for-word)
+
+Deferred (later phases): AI-suggested words for a list (with add-to-vocabulary), and training
+restricted to one or more lists.
+
+---
+
 ## Cross-Cutting Features
 
 ### Audio
@@ -281,6 +298,8 @@ Text ──< Annotation ──< AnnotationWord >── Word
 TrainingSession ──< TrainingSessionWord >── Word
 TrainingSession ──< TrainingSessionResult >── Word
 Word ──── WordProgressTracking (1:1)
+
+WordList ──< WordListItem >── Word   (many-to-many, insertion-ordered)
 ```
 
 Notes:

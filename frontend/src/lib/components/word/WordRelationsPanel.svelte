@@ -56,7 +56,7 @@ async function handleAdd() {
 			<span class="relation-chip-tr">{rel.relatedWordTranslation}</span>
 		{/if}
 		<button
-			class="chip-delete"
+			class="relation-chip-delete"
 			onclick={(e) => { e.preventDefault(); onDelete(); }}
 			disabled={deleteRelation.isPending}
 			aria-label="Remove relation"
@@ -98,61 +98,51 @@ async function handleAdd() {
 {/snippet}
 
 {#if !relations.isPending}
-	{#if hasAny || showForm}
-		<div class="relations-panel">
-			{#if synonyms.length > 0}
-				<div class="relations-group">
-					<span class="sect-label">Synonyms</span>
-					<div class="relations-chips">
-						{#each synonyms as rel (rel.relatedWordId)}
-							{@render relationChip(rel, () => handleDelete(rel.relatedWordId, 'SYNONYM'))}
-						{/each}
-					</div>
+	<div class="relations-panel">
+		{#if synonyms.length > 0}
+			<div class="relations-group">
+				<span class="relation-group-label">Synonyms</span>
+				<div class="relations-chips">
+					{#each synonyms as rel (rel.relatedWordId)}
+						{@render relationChip(rel, () => handleDelete(rel.relatedWordId, 'SYNONYM'))}
+					{/each}
 				</div>
-			{/if}
+			</div>
+		{/if}
 
-			{#if antonyms.length > 0}
-				<div class="relations-group">
-					<span class="sect-label">Antonyms</span>
-					<div class="relations-chips">
-						{#each antonyms as rel (rel.relatedWordId)}
-							{@render relationChip(rel, () => handleDelete(rel.relatedWordId, 'ANTONYM'))}
-						{/each}
-					</div>
+		{#if antonyms.length > 0}
+			<div class="relations-group">
+				<span class="relation-group-label">Antonyms</span>
+				<div class="relations-chips">
+					{#each antonyms as rel (rel.relatedWordId)}
+						{@render relationChip(rel, () => handleDelete(rel.relatedWordId, 'ANTONYM'))}
+					{/each}
 				</div>
-			{/if}
+			</div>
+		{/if}
 
-			{#if related.length > 0}
-				<div class="relations-group">
-					<span class="sect-label">Related</span>
-					<div class="relations-chips">
-						{#each related as rel (rel.relatedWordId)}
-							{@render relationChip(rel, () => handleDelete(rel.relatedWordId, 'RELATED'))}
-						{/each}
-					</div>
+		{#if related.length > 0}
+			<div class="relations-group">
+				<span class="relation-group-label">Related</span>
+				<div class="relations-chips">
+					{#each related as rel (rel.relatedWordId)}
+						{@render relationChip(rel, () => handleDelete(rel.relatedWordId, 'RELATED'))}
+					{/each}
 				</div>
-			{/if}
+			</div>
+		{/if}
 
-			{#if !showForm}
-				<button
-					class="btn btn-xs"
-					onclick={() => (showForm = true)}
-				>+ Add relation</button>
-			{:else}
-				{@render addForm()}
-			{/if}
-		</div>
-	{:else}
-		<div class="section-block">
+		{#if !showForm}
 			<button
-				class="btn btn-xs"
+				class="btn btn-sm"
 				onclick={() => (showForm = true)}
 			>+ Add relation</button>
-			{#if showForm}
-				<div class="relation-add-form-offset">
-					{@render addForm()}
-				</div>
-			{/if}
-		</div>
-	{/if}
+		{:else}
+			{@render addForm()}
+		{/if}
+
+		{#if !hasAny && !showForm}
+			<p class="annot-empty">No relations yet</p>
+		{/if}
+	</div>
 {/if}

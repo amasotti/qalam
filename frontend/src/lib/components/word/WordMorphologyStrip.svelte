@@ -98,9 +98,11 @@ const VERB_PATTERNS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', '
 {:else if hasData}
 	<div class="morph-strip">
 		{#if morphology.data?.gender}
+			<span class="morph-tag">Gender</span>
 			<span class="chip c-olive">{genderLabel[morphology.data.gender] ?? morphology.data.gender}</span>
 		{/if}
 		{#if morphology.data?.verbPattern}
+			<span class="morph-tag">Pattern</span>
 			<span class="chip c-cerulean">Form {morphology.data.verbPattern}</span>
 		{/if}
 		<button

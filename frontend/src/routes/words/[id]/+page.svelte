@@ -331,9 +331,7 @@ const masterySteps: Record<string, number> = {
 						{:else}
 							<p class="annot-empty">No notes yet. Add observations, mnemonics, or insights.</p>
 						{/if}
-						<div class="section-block-sm">
-							<AiInsightPanel entityType="WORD" entityId={id} />
-						</div>
+						<AiInsightPanel entityType="WORD" entityId={id} />
 					</div>
 
 					<!-- Relations -->

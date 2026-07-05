@@ -1008,6 +1008,10 @@ export type AnalyzeWordData = {
 
 export type AnalyzeWordErrors = {
     /**
+     * Invalid request body
+     */
+    400: ErrorResponse;
+    /**
      * AI not configured (OPENROUTER_API_KEY missing)
      */
     503: ErrorResponse;
@@ -1379,6 +1383,15 @@ export type GetWordPluralsData = {
     url: '/api/v1/words/{id}/plurals';
 };
 
+export type GetWordPluralsErrors = {
+    /**
+     * Word not found
+     */
+    404: ErrorResponse;
+};
+
+export type GetWordPluralsError = GetWordPluralsErrors[keyof GetWordPluralsErrors];
+
 export type GetWordPluralsResponses = {
     /**
      * List of plural forms
@@ -1451,6 +1464,15 @@ export type GetWordRelationsData = {
     query?: never;
     url: '/api/v1/words/{id}/relations';
 };
+
+export type GetWordRelationsErrors = {
+    /**
+     * Word not found
+     */
+    404: ErrorResponse;
+};
+
+export type GetWordRelationsError = GetWordRelationsErrors[keyof GetWordRelationsErrors];
 
 export type GetWordRelationsResponses = {
     /**
@@ -2615,6 +2637,15 @@ export type GetAnalyticsOverviewData = {
     query?: never;
     url: '/api/v1/analytics/overview';
 };
+
+export type GetAnalyticsOverviewErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse;
+};
+
+export type GetAnalyticsOverviewError = GetAnalyticsOverviewErrors[keyof GetAnalyticsOverviewErrors];
 
 export type GetAnalyticsOverviewResponses = {
     /**

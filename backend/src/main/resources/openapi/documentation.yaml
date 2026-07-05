@@ -401,6 +401,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/WordAnalysisResponse"
+        "400":
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "503":
           description: AI not configured (OPENROUTER_API_KEY missing)
           content:
@@ -759,6 +765,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/WordPluralResponse"
+        "404":
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
     post:
       summary: Add a plural form to a word
       operationId: addWordPlural
@@ -831,6 +843,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/WordRelationResponse"
+        "404":
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
     post:
       summary: Add a semantic relation to a word
       operationId: addWordRelation
@@ -2003,6 +2021,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AnalyticsOverviewResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 security: []
 
@@ -2272,6 +2296,7 @@ components:
           nullable: true
           example: building, structure, edifice
         plural:
+          type: object
           nullable: true
           allOf:
             - $ref: "#/components/schemas/DictionaryLookupPluralResponse"

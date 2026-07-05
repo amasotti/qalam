@@ -16,8 +16,8 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.timeout
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
@@ -38,15 +38,19 @@ import kotlinx.serialization.json.putJsonObject
 // explicit while we log the real cause for diagnostics.
 @Suppress("TooGenericExceptionCaught")
 class AiClient : java.io.Closeable {
-
     private val log = KotlinLogging.logger {}
 
     private var apiKey: String? = System.getenv("OPENROUTER_API_KEY")
+    private val requestTimeoutMs = positiveLongEnv("OPENROUTER_REQUEST_TIMEOUT_MS")
+        ?: DEFAULT_AI_REQUEST_TIMEOUT_MS
+    private val connectTimeoutMs = positiveLongEnv("OPENROUTER_CONNECT_TIMEOUT_MS")
+        ?: DEFAULT_AI_CONNECT_TIMEOUT_MS
 
     init {
         if (apiKey.isNullOrBlank()) {
             log.warn { "OPENROUTER_API_KEY is not set — AI features will be unavailable." }
         }
+        log.info { "AI client timeout configured requestTimeoutMs=$requestTimeoutMs connectTimeoutMs=$connectTimeoutMs" }
     }
 
     private val jsonConfig = Json { ignoreUnknownKeys = true }
@@ -55,6 +59,11 @@ class AiClient : java.io.Closeable {
     private val lazyHttpClient = lazy {
         HttpClient(CIO) {
             install(ContentNegotiation) { json(jsonConfig) }
+            install(HttpTimeout) {
+                requestTimeoutMillis = requestTimeoutMs
+                socketTimeoutMillis = requestTimeoutMs
+                connectTimeoutMillis = connectTimeoutMs
+            }
         }
     }
     private val httpClient: HttpClient get() = lazyHttpClient.value
@@ -428,6 +437,9 @@ Return a JSON object with an "examples" array. Each element must have:
 - "translation": English translation"""
     }
 
+    private fun positiveLongEnv(name: String): Long? =
+        System.getenv(name)?.toLongOrNull()?.takeIf { it > 0 }
+
     @Serializable
     private data class OpenRouterRequest(
         val model: String,
@@ -493,6 +505,9 @@ Return a JSON object with an "examples" array. Each element must have:
 
 
     private companion object {
+        const val DEFAULT_AI_REQUEST_TIMEOUT_MS = 120_000L
+        const val DEFAULT_AI_CONNECT_TIMEOUT_MS = 15_000L
+
         const val SYSTEM_PROMPT = "You are a structured assistant as companion for an Arabic language teacher. " +
                 "Return only valid JSON."
 

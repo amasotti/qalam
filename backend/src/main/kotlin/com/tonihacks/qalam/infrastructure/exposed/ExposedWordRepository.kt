@@ -373,7 +373,7 @@ class ExposedWordRepository(
         relationsRepo.deleteRelation(wordId, relatedWordId, type)
 }
 
-private fun ResultRow.toWord() = Word(
+internal fun ResultRow.toWord() = Word(
     id = WordId(this[WordsTable.id].toJavaUuid()),
     arabicText = this[WordsTable.arabicText],
     transliteration = this[WordsTable.transliteration],

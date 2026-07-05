@@ -10,6 +10,7 @@ import com.tonihacks.qalam.domain.word.PluralType
 import com.tonihacks.qalam.domain.word.WordId
 import com.tonihacks.qalam.domain.word.WordPlural
 import com.tonihacks.qalam.domain.word.WordPluralId
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
@@ -22,6 +23,8 @@ import kotlin.uuid.toKotlinUuid
 
 class ExposedWordPluralsRepository {
 
+    private val log = KotlinLogging.logger {}
+
     suspend fun findPlurals(wordId: WordId): Either<DomainError, List<WordPlural>> =
         suspendTransaction {
             try {
@@ -31,6 +34,7 @@ class ExposedWordPluralsRepository {
                     .map { it.toWordPlural() }
                     .right()
             } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                log.error(e) { "Word plurals repository operation failed" }
                 DomainError.DatabaseError.left()
             }
         }
@@ -46,6 +50,7 @@ class ExposedWordPluralsRepository {
                 }
                 plural.right()
             } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                log.error(e) { "Word plurals repository operation failed" }
                 DomainError.DatabaseError.left()
             }
         }
@@ -61,6 +66,7 @@ class ExposedWordPluralsRepository {
                     ensure(deletedCount > 0) { DomainError.NotFound("WordPlural", pluralId.toString()) }
                 }
             } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                log.error(e) { "Word plurals repository operation failed" }
                 DomainError.DatabaseError.left()
             }
         }

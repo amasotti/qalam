@@ -1,0 +1,113 @@
+package com.tonihacks.qalam.domain.wordlist
+
+import arrow.core.Either
+import arrow.core.flatMap
+import arrow.core.left
+import arrow.core.raise.either
+import arrow.core.raise.ensure
+import arrow.core.right
+import com.tonihacks.qalam.delivery.dto.PageRequest
+import com.tonihacks.qalam.delivery.dto.PaginatedResponse
+import com.tonihacks.qalam.delivery.dto.wordlist.AddWordToListRequest
+import com.tonihacks.qalam.delivery.dto.wordlist.CreateWordListRequest
+import com.tonihacks.qalam.delivery.dto.wordlist.UpdateWordListRequest
+import com.tonihacks.qalam.delivery.dto.wordlist.WordListDetailResponse
+import com.tonihacks.qalam.delivery.dto.wordlist.WordListRefResponse
+import com.tonihacks.qalam.delivery.dto.wordlist.WordListResponse
+import com.tonihacks.qalam.delivery.dto.wordlist.toDetailResponse
+import com.tonihacks.qalam.delivery.dto.wordlist.toRefResponse
+import com.tonihacks.qalam.delivery.dto.wordlist.toResponse
+import com.tonihacks.qalam.domain.error.DomainError
+import com.tonihacks.qalam.domain.word.WordId
+import java.util.UUID
+import kotlin.time.Clock
+
+class WordListService(private val repo: WordListRepository) {
+
+    suspend fun list(page: Int?, size: Int?): Either<DomainError, PaginatedResponse<WordListResponse>> =
+        repo.list(PageRequest.from(page, size)).map { p ->
+            PaginatedResponse(
+                items = p.items.map { it.toResponse() },
+                total = p.total,
+                page = p.page,
+                size = p.size,
+            )
+        }
+
+    suspend fun getById(id: String): Either<DomainError, WordListDetailResponse> = either {
+        val listId = parseId(id).bind()
+        val list = repo.findById(listId).bind()
+        val words = repo.membersOf(listId).bind()
+        list.toDetailResponse(words)
+    }
+
+    suspend fun create(req: CreateWordListRequest): Either<DomainError, WordListResponse> = either {
+        val title = req.title.trim()
+        ensure(title.isNotEmpty()) {
+            DomainError.ValidationError("title", "title must not be blank")
+        }
+        val now = Clock.System.now()
+        val list = WordList(
+            id = WordListId(UUID.randomUUID()),
+            title = title,
+            description = req.description?.trim()?.takeIf { it.isNotEmpty() },
+            createdAt = now,
+            updatedAt = now,
+        )
+        // A freshly created list has no members yet.
+        WordListSummary(repo.create(list).bind(), itemCount = 0).toResponse()
+    }
+
+    suspend fun update(id: String, req: UpdateWordListRequest): Either<DomainError, WordListResponse> = either {
+        val listId = parseId(id).bind()
+        val existing = repo.findById(listId).bind()
+
+        val newTitle = req.title?.trim()
+        ensure(newTitle == null || newTitle.isNotEmpty()) {
+            DomainError.ValidationError("title", "title must not be blank")
+        }
+
+        val updated = repo.update(
+            existing.copy(
+                title = newTitle ?: existing.title,
+                description = req.description?.trim()?.takeIf { it.isNotEmpty() } ?: existing.description,
+            ),
+        ).bind()
+        val count = repo.membersOf(listId).bind().size.toLong()
+        WordListSummary(updated, count).toResponse()
+    }
+
+    suspend fun delete(id: String): Either<DomainError, Unit> =
+        parseId(id).flatMap { repo.delete(it) }
+
+    suspend fun addWord(listId: String, req: AddWordToListRequest): Either<DomainError, Unit> = either {
+        val list = parseId(listId).bind()
+        val word = parseWordId(req.wordId).bind()
+        repo.addWord(list, word).bind()
+    }
+
+    suspend fun removeWord(listId: String, wordId: String): Either<DomainError, Unit> = either {
+        val list = parseId(listId).bind()
+        val word = parseWordId(wordId).bind()
+        repo.removeWord(list, word).bind()
+    }
+
+    suspend fun listsForWord(wordId: String): Either<DomainError, List<WordListRefResponse>> = either {
+        val word = parseWordId(wordId).bind()
+        repo.listsForWord(word).bind().map { it.toRefResponse() }
+    }
+
+    private fun parseId(id: String): Either<DomainError, WordListId> =
+        try {
+            WordListId(UUID.fromString(id)).right()
+        } catch (_: IllegalArgumentException) {
+            DomainError.InvalidInput("'$id' is not a valid UUID").left()
+        }
+
+    private fun parseWordId(id: String): Either<DomainError, WordId> =
+        try {
+            WordId(UUID.fromString(id)).right()
+        } catch (_: IllegalArgumentException) {
+            DomainError.InvalidInput("'$id' is not a valid UUID").left()
+        }
+}

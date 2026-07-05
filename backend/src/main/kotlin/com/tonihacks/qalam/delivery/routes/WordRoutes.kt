@@ -9,6 +9,7 @@ import com.tonihacks.qalam.delivery.dto.word.CreateWordRelationRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordRequest
 import com.tonihacks.qalam.delivery.dto.word.UpdateWordRequest
 import com.tonihacks.qalam.delivery.dto.word.UpsertWordMorphologyRequest
+import com.tonihacks.qalam.domain.dictionary.DictionaryLookupService
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.word.WordService
 import io.ktor.http.*
@@ -18,7 +19,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.getOrFail
 
 @Suppress("LongMethod")
-fun Route.wordRoutes(service: WordService) {
+fun Route.wordRoutes(service: WordService, dictionaryService: DictionaryLookupService) {
     route("/words") {
         get {
             val page = call.request.queryParameters["page"]?.toIntOrNull()
@@ -120,6 +121,16 @@ fun Route.wordRoutes(service: WordService) {
             service.deleteDictionaryLink(id, linkId).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.NoContent) },
+            )
+        }
+
+        get("/dictionary-lookups") {
+            val source = call.request.queryParameters["source"]
+            val query = call.request.queryParameters["query"]
+
+            dictionaryService.search(source, query).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.OK, it) },
             )
         }
 

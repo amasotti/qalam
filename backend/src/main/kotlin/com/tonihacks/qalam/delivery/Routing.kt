@@ -13,6 +13,7 @@ import com.tonihacks.qalam.delivery.routes.wordRoutes
 import com.tonihacks.qalam.domain.ai.AiInsightService
 import com.tonihacks.qalam.domain.analytics.AnalyticsService
 import com.tonihacks.qalam.domain.annotation.AnnotationService
+import com.tonihacks.qalam.domain.dictionary.DictionaryLookupService
 import com.tonihacks.qalam.domain.root.RootService
 import com.tonihacks.qalam.domain.sentence.SentenceService
 import com.tonihacks.qalam.domain.text.TextService
@@ -34,6 +35,7 @@ private data class HealthResponse(val status: String = "ok")
 fun Application.configureRouting() {
     val rootService by inject<RootService>()
     val wordService by inject<WordService>()
+    val dictionaryService by inject<DictionaryLookupService>()
     val textService by inject<TextService>()
     val sentenceService by inject<SentenceService>()
     val transliterationService by inject<TransliterationService>()
@@ -51,7 +53,7 @@ fun Application.configureRouting() {
         route("/api/v1") {
             swaggerUI(path = "swagger-ui", swaggerFile = "openapi/documentation.yaml")
             rootRoutes(rootService)
-            wordRoutes(wordService)
+            wordRoutes(wordService, dictionaryService)
             textRoutes(textService)
             sentenceRoutes(sentenceService, aiClient)
             transliterationRoutes(transliterationService)

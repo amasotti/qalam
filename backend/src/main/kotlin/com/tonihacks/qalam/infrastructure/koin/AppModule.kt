@@ -11,6 +11,9 @@ import com.tonihacks.qalam.domain.text.TextRepository
 import com.tonihacks.qalam.domain.text.TextService
 import com.tonihacks.qalam.domain.analytics.AnalyticsRepository
 import com.tonihacks.qalam.domain.analytics.AnalyticsService
+import com.tonihacks.qalam.domain.dictionary.DictionaryLookupService
+import com.tonihacks.qalam.domain.dictionary.DictionaryLookupClient
+import com.tonihacks.qalam.infrastructure.dictionary.ArabicStudentDictionaryClient
 import com.tonihacks.qalam.domain.training.TrainingRepository
 import com.tonihacks.qalam.domain.training.TrainingService
 import com.tonihacks.qalam.domain.transliteration.TransliterationService
@@ -41,6 +44,11 @@ val wordsModules = module {
     single { ExposedWordRelationsRepository() }
     single<WordRepository> { ExposedWordRepository(get(), get(), get()) }
     single { WordService(get(), get()) }
+}
+
+val dictionaryLookupModule = module {
+    single<DictionaryLookupClient> { ArabicStudentDictionaryClient() }
+    single { DictionaryLookupService(get()) }
 }
 
 val textsModule = module {
@@ -77,5 +85,15 @@ val analyticsModule = module {
 }
 
 val appModule = module {
-    includes(rootsModules, wordsModules, textsModule, sentencesModule, transliterationModule, annotationsModule, trainingModule, aiInsightModule, analyticsModule)
+    includes(
+        rootsModules,
+        wordsModules, dictionaryLookupModule,
+        textsModule,
+        sentencesModule,
+        transliterationModule,
+        annotationsModule,
+        trainingModule,
+        aiInsightModule,
+        analyticsModule
+    )
 }

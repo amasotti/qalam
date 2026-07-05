@@ -10,6 +10,7 @@ import com.tonihacks.qalam.domain.root.RootNormalizer
 // This range excludes diacritics (U+064B+) and non-Arabic characters.
 private val ARABIC_CONSONANT = Regex("^[\u0621-\u064A]$")
 private val DELIMITERS = Regex("[ \\-,_،/|]+")
+private val ARABIC_DIACRITICS = Regex("[\\u0610-\\u061A\\u064B-\\u065F\\u0670\\u06D6-\\u06DC\\u06DF-\\u06E8\\u06EA-\\u06ED]")
 
 /**
  * Checks if the string is a single Arabic consonant (U+0621–U+064A).
@@ -37,3 +38,5 @@ fun List<String>.validateConsonants(): Either<DomainError.InvalidInput, List<Str
     }
 }
 
+
+fun String.removeArabicDiacritics(): String = this.replace(ARABIC_DIACRITICS, "")

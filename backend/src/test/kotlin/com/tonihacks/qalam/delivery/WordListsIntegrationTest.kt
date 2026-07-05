@@ -31,13 +31,13 @@ class WordListsIntegrationTest : BaseIntegrationTest() {
                 }
             }
 
-            "returns 400 for a blank title" {
+            "returns 422 for a blank title" {
                 testApp { client ->
                     val response = client.post("/api/v1/word-lists") {
                         contentType(ContentType.Application.Json)
                         setBody("""{"title":"   "}""")
                     }
-                    response.status shouldBe HttpStatusCode.BadRequest
+                    response.status shouldBe HttpStatusCode.UnprocessableEntity
                 }
             }
         }

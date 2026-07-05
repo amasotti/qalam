@@ -101,6 +101,29 @@ export type WordAutocompleteResponse = {
     translation?: string | null;
 };
 
+export type DictionaryLookupResponse = {
+    source: Dictionary;
+    query: string;
+    items: Array<DictionaryLookupItemResponse>;
+};
+
+export type DictionaryLookupItemResponse = {
+    externalId: string;
+    arabicText: string;
+    transliteration?: string | null;
+    translation?: string | null;
+    plural?: DictionaryLookupPluralResponse | null;
+    /**
+     * True when the dictionary headword matches the query after Arabic diacritics are removed.
+     */
+    hasExactWordMatch: boolean;
+};
+
+export type DictionaryLookupPluralResponse = {
+    arabicText: string;
+    transliteration?: string | null;
+};
+
 export type DictionaryLinkResponse = {
     id: string;
     source: DictionarySource;
@@ -502,6 +525,8 @@ export type Dialect = 'TUNISIAN' | 'MOROCCAN' | 'EGYPTIAN' | 'GULF' | 'LEVANTINE
 export type Difficulty = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
 export type MasteryLevel = 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
+
+export type Dictionary = 'ALMANY' | 'LIVING_ARABIC' | 'DERJA_NINJA' | 'REVERSO' | 'ASD' | 'WIKTIONARY';
 
 export type DictionarySource = 'ALMANY' | 'LIVING_ARABIC' | 'DERJA_NINJA' | 'REVERSO' | 'WIKTIONARY' | 'ARABIC_STUDENT_DICTIONARY' | 'LANGENSCHEIDT' | 'CUSTOM';
 
@@ -939,6 +964,40 @@ export type GetWordByArabicResponses = {
 };
 
 export type GetWordByArabicResponse = GetWordByArabicResponses[keyof GetWordByArabicResponses];
+
+export type SearchWordDictionaryLookupsData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Dictionary source. Only ASD is currently supported for lookup.
+         */
+        source: Dictionary;
+        /**
+         * Arabic word or token to search.
+         */
+        query: string;
+    };
+    url: '/api/v1/words/dictionary-lookups';
+};
+
+export type SearchWordDictionaryLookupsErrors = {
+    /**
+     * Missing query/source or unsupported dictionary source
+     */
+    422: ErrorResponse;
+};
+
+export type SearchWordDictionaryLookupsError = SearchWordDictionaryLookupsErrors[keyof SearchWordDictionaryLookupsErrors];
+
+export type SearchWordDictionaryLookupsResponses = {
+    /**
+     * Normalized dictionary suggestions for creating or updating a word.
+     */
+    200: DictionaryLookupResponse;
+};
+
+export type SearchWordDictionaryLookupsResponse = SearchWordDictionaryLookupsResponses[keyof SearchWordDictionaryLookupsResponses];
 
 export type AnalyzeWordData = {
     body: AnalyzeWordRequest;

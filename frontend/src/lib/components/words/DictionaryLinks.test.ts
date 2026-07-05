@@ -41,9 +41,7 @@ describe('DictionaryLinks', () => {
 	});
 
 	it('renders existing links as rows', () => {
-		queryState.data = [
-			{ id: 'l1', source: 'ALMANY', url: 'https://almaany.com/test' },
-		];
+		queryState.data = [{ id: 'l1', source: 'ALMANY', url: 'https://almaany.com/test' }];
 
 		render(DictionaryLinks, {
 			props: {

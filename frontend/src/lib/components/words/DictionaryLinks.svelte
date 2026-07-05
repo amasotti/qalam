@@ -19,12 +19,12 @@ const addMutation = useAddDictionaryLink();
 const deleteMutation = useDeleteDictionaryLink();
 
 const URL_TEMPLATES: Partial<Record<DictionarySource, string>> = {
-	ALMANY: 'https://www.almaany.com/en/dict/ar-en/{word}',
-	LIVING_ARABIC: 'https://www.livingarabic.com/en/search?q={word}',
-	DERJA_NINJA: 'https://derja.ninja/search?search={word}&script=arabic',
-	REVERSO: 'https://dictionary.reverso.net/arabic-english/{word}',
-	WIKTIONARY: 'https://en.wiktionary.org/wiki/{word}',
 	ARABIC_STUDENT_DICTIONARY: 'https://www.arabicstudentsdictionary.com/search?q={word}',
+	DERJA_NINJA: 'https://derja.ninja/search?search={word}&script=arabic',
+	ALMANY: 'https://www.almaany.com/en/dict/ar-en/{word}',
+	WIKTIONARY: 'https://en.wiktionary.org/wiki/{word}',
+	LIVING_ARABIC: 'https://www.livingarabic.com/en/search?q={word}',
+	REVERSO: 'https://dictionary.reverso.net/arabic-english/{word}',
 	LANGENSCHEIDT: 'https://de.langenscheidt.com/arabisch-deutsch/{word}',
 };
 
@@ -40,12 +40,12 @@ const sourceLabels: Record<DictionarySource, string> = {
 };
 
 const sources: DictionarySource[] = [
+	'ARABIC_STUDENT_DICTIONARY',
+	'DERJA_NINJA',
 	'ALMANY',
 	'LIVING_ARABIC',
-	'DERJA_NINJA',
-	'REVERSO',
 	'WIKTIONARY',
-	'ARABIC_STUDENT_DICTIONARY',
+	'REVERSO',
 	'LANGENSCHEIDT',
 	'CUSTOM',
 ];

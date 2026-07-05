@@ -64,6 +64,7 @@ function handleDelete(pluralId: string) {
 		<!-- silent -->
 	{:else if (plurals.data ?? []).length > 0 || showForm}
 		<div class="plurals-chips">
+			<span class="morph-tag">Plurals</span>
 			{#each plurals.data ?? [] as p (p.id)}
 				<div class="plural-chip">
 					<span class="plural-chip-ar arabic-text" dir="rtl">{p.pluralForm}</span>

@@ -11,6 +11,19 @@
 }
 .ai-trigger {
 	justify-content: flex-start;
+	margin-top: 0.75rem;
+	padding-top: 0.75rem;
+	border-top: 1px solid var(--border);
+}
+.ai-insight-btn {
+	border: 1px solid var(--cerulean);
+	color: var(--cerulean);
+	background: var(--cerulean-pale);
+	padding: 0.35rem 0.875rem;
+}
+.ai-insight-btn:hover {
+	background: var(--cerulean);
+	color: white;
 }
 .ai-footer {
 	gap: 0.5rem;

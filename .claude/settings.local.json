@@ -13,7 +13,8 @@
       "Bash(jar tf *)",
       "Bash(jar xf *)",
       "Bash(just lint-frontend *)",
-      "Bash(just check-frontend *)"
+      "Bash(just check-frontend *)",
+      "Bash(xargs ls:*)"
     ],
     "deny": [
       "Bash(scp *)",

@@ -48,6 +48,46 @@ export type NormalizeResponse = {
     letterCount: number;
 };
 
+export type WordListResponse = {
+    id: string;
+    title: string;
+    description?: string | null;
+    /**
+     * Number of words in the list
+     */
+    itemCount: number;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type WordListDetailResponse = {
+    id: string;
+    title: string;
+    description?: string | null;
+    createdAt: string;
+    updatedAt: string;
+    words: Array<WordResponse>;
+};
+
+export type WordListRefResponse = {
+    id: string;
+    title: string;
+};
+
+export type CreateWordListRequest = {
+    title: string;
+    description?: string | null;
+};
+
+export type UpdateWordListRequest = {
+    title?: string | null;
+    description?: string | null;
+};
+
+export type AddWordToListRequest = {
+    wordId: string;
+};
+
 export type WordResponse = {
     id: string;
     arabicText: string;
@@ -2599,6 +2639,241 @@ export type TransliterateTextResponses = {
 };
 
 export type TransliterateTextResponse = TransliterateTextResponses[keyof TransliterateTextResponses];
+
+export type ListWordListsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number (1-based)
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        size?: number;
+    };
+    url: '/api/v1/word-lists';
+};
+
+export type ListWordListsResponses = {
+    /**
+     * Paginated list of word lists
+     */
+    200: PaginatedResponse & {
+        items?: Array<WordListResponse>;
+    };
+};
+
+export type ListWordListsResponse = ListWordListsResponses[keyof ListWordListsResponses];
+
+export type CreateWordListData = {
+    body: CreateWordListRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/word-lists';
+};
+
+export type CreateWordListErrors = {
+    /**
+     * Invalid input
+     */
+    400: ErrorResponse;
+};
+
+export type CreateWordListError = CreateWordListErrors[keyof CreateWordListErrors];
+
+export type CreateWordListResponses = {
+    /**
+     * Word list created
+     */
+    201: WordListResponse;
+};
+
+export type CreateWordListResponse = CreateWordListResponses[keyof CreateWordListResponses];
+
+export type ListsForWordData = {
+    body?: never;
+    path: {
+        wordId: string;
+    };
+    query?: never;
+    url: '/api/v1/word-lists/by-word/{wordId}';
+};
+
+export type ListsForWordErrors = {
+    /**
+     * Malformed UUID
+     */
+    400: ErrorResponse;
+};
+
+export type ListsForWordError = ListsForWordErrors[keyof ListsForWordErrors];
+
+export type ListsForWordResponses = {
+    /**
+     * Lists containing the word
+     */
+    200: Array<WordListRefResponse>;
+};
+
+export type ListsForWordResponse = ListsForWordResponses[keyof ListsForWordResponses];
+
+export type DeleteWordListData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/word-lists/{id}';
+};
+
+export type DeleteWordListErrors = {
+    /**
+     * Word list not found
+     */
+    404: ErrorResponse;
+};
+
+export type DeleteWordListError = DeleteWordListErrors[keyof DeleteWordListErrors];
+
+export type DeleteWordListResponses = {
+    /**
+     * Word list deleted
+     */
+    204: void;
+};
+
+export type DeleteWordListResponse = DeleteWordListResponses[keyof DeleteWordListResponses];
+
+export type GetWordListByIdData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/word-lists/{id}';
+};
+
+export type GetWordListByIdErrors = {
+    /**
+     * Malformed UUID
+     */
+    400: ErrorResponse;
+    /**
+     * Word list not found
+     */
+    404: ErrorResponse;
+};
+
+export type GetWordListByIdError = GetWordListByIdErrors[keyof GetWordListByIdErrors];
+
+export type GetWordListByIdResponses = {
+    /**
+     * Word list found
+     */
+    200: WordListDetailResponse;
+};
+
+export type GetWordListByIdResponse = GetWordListByIdResponses[keyof GetWordListByIdResponses];
+
+export type UpdateWordListData = {
+    body: UpdateWordListRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/word-lists/{id}';
+};
+
+export type UpdateWordListErrors = {
+    /**
+     * Invalid input
+     */
+    400: ErrorResponse;
+    /**
+     * Word list not found
+     */
+    404: ErrorResponse;
+};
+
+export type UpdateWordListError = UpdateWordListErrors[keyof UpdateWordListErrors];
+
+export type UpdateWordListResponses = {
+    /**
+     * Word list updated
+     */
+    200: WordListResponse;
+};
+
+export type UpdateWordListResponse = UpdateWordListResponses[keyof UpdateWordListResponses];
+
+export type AddWordToListData = {
+    body: AddWordToListRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/word-lists/{id}/words';
+};
+
+export type AddWordToListErrors = {
+    /**
+     * Malformed UUID
+     */
+    400: ErrorResponse;
+    /**
+     * List or word not found
+     */
+    404: ErrorResponse;
+    /**
+     * Word is already in the list
+     */
+    409: ErrorResponse;
+};
+
+export type AddWordToListError = AddWordToListErrors[keyof AddWordToListErrors];
+
+export type AddWordToListResponses = {
+    /**
+     * Word added to the list
+     */
+    204: void;
+};
+
+export type AddWordToListResponse = AddWordToListResponses[keyof AddWordToListResponses];
+
+export type RemoveWordFromListData = {
+    body?: never;
+    path: {
+        id: string;
+        wordId: string;
+    };
+    query?: never;
+    url: '/api/v1/word-lists/{id}/words/{wordId}';
+};
+
+export type RemoveWordFromListErrors = {
+    /**
+     * Malformed UUID
+     */
+    400: ErrorResponse;
+    /**
+     * Word is not in the list
+     */
+    404: ErrorResponse;
+};
+
+export type RemoveWordFromListError = RemoveWordFromListErrors[keyof RemoveWordFromListErrors];
+
+export type RemoveWordFromListResponses = {
+    /**
+     * Word removed from the list
+     */
+    204: void;
+};
+
+export type RemoveWordFromListResponse = RemoveWordFromListResponses[keyof RemoveWordFromListResponses];
 
 export type GenerateInsightData = {
     body: InsightRequest;

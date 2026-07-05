@@ -5,6 +5,7 @@ import type { UpdateWordRequest, WordResponse } from '$lib/api/types.gen';
 import AiInsightPanel from '$lib/components/ai/AiInsightPanel.svelte';
 import AnnotationBadge from '$lib/components/annotations/AnnotationBadge.svelte';
 import WordEnrichDrawer from '$lib/components/word/WordEnrichDrawer.svelte';
+import WordListMembership from '$lib/components/word/WordListMembership.svelte';
 import WordMorphologyStrip from '$lib/components/word/WordMorphologyStrip.svelte';
 import WordPluralChips from '$lib/components/word/WordPluralChips.svelte';
 import WordRelationsPanel from '$lib/components/word/WordRelationsPanel.svelte';
@@ -364,6 +365,9 @@ const masterySteps: Record<string, number> = {
 			</div>
 
 			<aside class="detail-sidebar">
+				<!-- List membership -->
+				<WordListMembership wordId={id} />
+
 				<!-- Root card -->
 				{#if word.data.rootId}
 					<div class="meta-card">

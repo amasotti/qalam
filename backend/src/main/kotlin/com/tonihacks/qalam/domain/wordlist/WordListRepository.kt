@@ -14,7 +14,7 @@ interface WordListRepository {
     suspend fun update(list: WordList): Either<DomainError, WordList>
     suspend fun delete(id: WordListId): Either<DomainError, Unit>
 
-    /** Member words, ordered by position. Fails with NotFound if the list does not exist. */
+    /** Member words, ordered by position. Empty for an unknown or empty list — callers pre-check existence. */
     suspend fun membersOf(id: WordListId): Either<DomainError, List<Word>>
 
     /** Append a word at the next position. Rejects unknown list/word and duplicates. */

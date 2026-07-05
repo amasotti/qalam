@@ -12,6 +12,7 @@ import com.tonihacks.qalam.domain.ai.InsightContext
 import com.tonihacks.qalam.domain.ai.InsightMode
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.word.Word
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -22,14 +23,23 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
 
+// Every OpenRouter call catches broadly on purpose: network, timeout, and JSON-decode
+// failures all collapse to a single degraded DomainError. The suppress keeps that intent
+// explicit while we log the real cause for diagnostics.
+@Suppress("TooGenericExceptionCaught")
 class AiClient : java.io.Closeable {
+
+    private val log = KotlinLogging.logger {}
 
     private var apiKey: String? = System.getenv("OPENROUTER_API_KEY")
 
     init {
         if (apiKey.isNullOrBlank()) {
-            println("Warning: OPENROUTER_API_KEY is not set. AI features will be unavailable.")
+            log.warn { "OPENROUTER_API_KEY is not set — AI features will be unavailable." }
         }
     }
 
@@ -77,7 +87,8 @@ class AiClient : java.io.Closeable {
 
             val examples = jsonConfig.decodeFromString<ExamplesPayload>(content)
             examples.examples.right()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            log.warn(e) { "OpenRouter generateExamples failed for '$arabicText'" }
             DomainError.InvalidInput("AI request failed").left()
         }
     }
@@ -115,7 +126,8 @@ Sentence: "$arabicText""""
 
             val payload = jsonConfig.decodeFromString<TokensPayload>(content)
             payload.tokens.right()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            log.warn(e) { "OpenRouter autoTokenize failed for '$arabicText'" }
             DomainError.InvalidInput("AI request failed").left()
         }
     }
@@ -149,7 +161,8 @@ Sentence: "$arabicText""""
 
             val payload = jsonConfig.decodeFromString<TransliterationPayload>(content)
             payload.transliteration.right()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            log.warn(e) { "OpenRouter transliterate failed for '$arabicText'" }
             DomainError.InvalidInput("AI request failed").left()
         }
     }
@@ -192,7 +205,8 @@ Sentence: "$arabicText""""
                 rootLetters = payload.rootLetters,
                 exampleSentence = payload.exampleSentence,
             ).right()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            log.warn(e) { "OpenRouter analyzeWord failed for '$arabicText'" }
             DomainError.InvalidInput("AI request failed").left()
         }
     }
@@ -240,7 +254,8 @@ Respond ONLY with this JSON structure:
                 ?: return DomainError.InvalidInput("Empty AI response").left()
 
             jsonConfig.decodeFromString<WordEnrichmentSuggestion>(content).right()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            log.warn(e) { "OpenRouter enrichWord failed for '${word.arabicText}'" }
             DomainError.InvalidInput("AI enrichment request failed").left()
         }
     }
@@ -296,8 +311,12 @@ Respond ONLY with this JSON structure:
             val content = body.choices.firstOrNull()?.message?.content
                 ?: return DomainError.InvalidInput("Empty AI response").left()
 
-            jsonConfig.decodeFromString<ListSuggestionsPayload>(content).suggestions.right()
-        } catch (_: Exception) {
+            // json_object mode guarantees valid JSON but NOT our exact shape — the model
+            // sometimes drops or renames the "suggestions" wrapper. Parse defensively so a
+            // shape mismatch degrades to an empty list, never a 400.
+            parseListSuggestions(content, jsonConfig).right()
+        } catch (e: Exception) {
+            log.warn(e) { "OpenRouter suggestWordsForList failed for '$title'" }
             DomainError.InvalidInput("AI list suggestion request failed").left()
         }
     }
@@ -326,7 +345,8 @@ Respond ONLY with this JSON structure:
                 ?: return DomainError.InvalidInput("Empty AI response").left()
 
             content.right()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            log.warn(e) { "OpenRouter generateInsight failed" }
             DomainError.InvalidInput("AI request failed").left()
         }
     }
@@ -440,8 +460,6 @@ Return a JSON object with an "examples" array. Each element must have:
     @Serializable
     private data class TransliterationPayload(val transliteration: String)
 
-    @Serializable
-    private data class ListSuggestionsPayload(val suggestions: List<AiListWordSuggestion>)
 
     private companion object {
         const val SYSTEM_PROMPT = "You are a structured assistant as companion for an Arabic language teacher. " +
@@ -459,4 +477,26 @@ Rules:
 - Do not break down every word unless it is the focus of the insight
 - Return plain text with minimal markdown — bold for key terms, no headers"""
     }
+}
+
+/**
+ * Extract word suggestions from an AI response, tolerant of shape variance.
+ *
+ * `response_format=json_object` guarantees valid JSON but not our exact schema: the model may
+ * return `{"suggestions":[...]}`, a differently-named wrapper, or a bare top-level array. This
+ * finds the first array (preferring the "suggestions" key), decodes each element leniently, and
+ * skips anything malformed — so a shape mismatch degrades to an empty list instead of throwing.
+ */
+internal fun parseListSuggestions(content: String, json: Json): List<AiListWordSuggestion> {
+    val root = runCatching { json.parseToJsonElement(content) }.getOrNull() ?: return emptyList()
+    val array: JsonArray? = when (root) {
+        is JsonArray -> root
+        is JsonObject -> (root["suggestions"] as? JsonArray)
+            ?: root.values.firstOrNull { it is JsonArray } as? JsonArray
+        else -> null
+    }
+    return array
+        ?.mapNotNull { element -> runCatching { json.decodeFromJsonElement<AiListWordSuggestion>(element) }.getOrNull() }
+        ?.filter { it.arabicText.isNotBlank() }
+        ?: emptyList()
 }

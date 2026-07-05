@@ -155,7 +155,9 @@ async function handleMoveDown(s: SentenceResponse, total: number) {
 	{#if onDone}
 		<div class="sentence-editor-inline-header">
 			<span class="helper-copy-strong">Sentence editor</span>
-			<Button size="sm" variant="ghost" onclick={onDone}>Done</Button>
+			<button class="btn btn-sm sentence-editor-done-btn" type="button" onclick={onDone}>
+				Done
+			</button>
 		</div>
 	{/if}
 

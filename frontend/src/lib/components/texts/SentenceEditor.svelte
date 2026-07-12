@@ -297,15 +297,6 @@ async function handleMoveDown(s: SentenceResponse, total: number) {
 		</div>
 	{/each}
 
-	{#if onDone}
-		<div class="sentence-editor-inline-header">
-			<span class="helper-copy-strong">Sentence editor</span>
-			<button class="btn btn-sm sentence-editor-done-btn" type="button" onclick={onDone}>
-				Done
-			</button>
-		</div>
-	{/if}
-
 	{#if !hideAdd}
 		<!-- Add new sentence -->
 		{#if addingNew}
@@ -355,5 +346,14 @@ async function handleMoveDown(s: SentenceResponse, total: number) {
 				Add sentence
 			</Button>
 		{/if}
+	{/if}
+
+	{#if onDone}
+		<div class="sentence-editor-inline-header">
+			<span class="helper-copy-strong">Sentence editor</span>
+			<button class="btn btn-sm sentence-editor-done-btn" type="button" onclick={onDone}>
+				Done
+			</button>
+		</div>
 	{/if}
 </div>

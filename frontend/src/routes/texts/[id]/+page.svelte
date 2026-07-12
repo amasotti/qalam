@@ -231,7 +231,7 @@ function formatEnum(value: string): string {
 					{/if}
 				{/each}
 				<div class="sentence-list-footer">
-					<button class="btn btn-sm" onclick={() => (editingSentences = true)}>+ Add sentence</button>
+					<button class="btn sentence-add-btn" onclick={() => (editingSentences = true)}>+ Add sentence</button>
 				</div>
 			{/if}
 

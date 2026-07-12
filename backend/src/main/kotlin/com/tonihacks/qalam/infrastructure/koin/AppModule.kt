@@ -13,6 +13,8 @@ import com.tonihacks.qalam.domain.analytics.AnalyticsRepository
 import com.tonihacks.qalam.domain.analytics.AnalyticsService
 import com.tonihacks.qalam.domain.dictionary.DictionaryLookupService
 import com.tonihacks.qalam.domain.dictionary.DictionaryLookupClient
+import com.tonihacks.qalam.domain.exercise.ExerciseRepository
+import com.tonihacks.qalam.domain.exercise.ExerciseService
 import com.tonihacks.qalam.infrastructure.dictionary.ArabicStudentDictionaryClient
 import com.tonihacks.qalam.domain.training.TrainingRepository
 import com.tonihacks.qalam.domain.training.TrainingService
@@ -27,6 +29,7 @@ import com.tonihacks.qalam.infrastructure.exposed.ExposedRootRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedSentenceRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedTextRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedAnalyticsRepository
+import com.tonihacks.qalam.infrastructure.exposed.ExposedExerciseRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedTrainingRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedWordMorphologyRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedWordPluralsRepository
@@ -83,6 +86,11 @@ val trainingModule = module {
     single { TrainingService(get(), get()) }
 }
 
+val exerciseModule = module {
+    single<ExerciseRepository> { ExposedExerciseRepository() }
+    single { ExerciseService(get(), get()) }
+}
+
 val aiInsightModule = module {
     single { AiInsightService(get(), get(), get(), get(), get()) }
 }
@@ -102,6 +110,7 @@ val appModule = module {
         transliterationModule,
         annotationsModule,
         trainingModule,
+        exerciseModule,
         aiInsightModule,
         analyticsModule
     )

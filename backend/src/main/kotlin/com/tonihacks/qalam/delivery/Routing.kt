@@ -4,6 +4,7 @@ import com.tonihacks.qalam.delivery.routes.aiInsightRoutes
 import com.tonihacks.qalam.delivery.routes.analyticsRoutes
 import com.tonihacks.qalam.delivery.routes.annotationRoutes
 import com.tonihacks.qalam.delivery.routes.annotationWordRoutes
+import com.tonihacks.qalam.delivery.routes.exerciseRoutes
 import com.tonihacks.qalam.delivery.routes.rootRoutes
 import com.tonihacks.qalam.delivery.routes.sentenceRoutes
 import com.tonihacks.qalam.delivery.routes.textRoutes
@@ -15,6 +16,7 @@ import com.tonihacks.qalam.domain.ai.AiInsightService
 import com.tonihacks.qalam.domain.analytics.AnalyticsService
 import com.tonihacks.qalam.domain.annotation.AnnotationService
 import com.tonihacks.qalam.domain.dictionary.DictionaryLookupService
+import com.tonihacks.qalam.domain.exercise.ExerciseService
 import com.tonihacks.qalam.domain.root.RootService
 import com.tonihacks.qalam.domain.sentence.SentenceService
 import com.tonihacks.qalam.domain.text.TextService
@@ -44,6 +46,7 @@ fun Application.configureRouting() {
     val annotationService by inject<AnnotationService>()
     val aiClient by inject<AiClient>()
     val trainingService by inject<TrainingService>()
+    val exerciseService by inject<ExerciseService>()
     val wordListService by inject<WordListService>()
     val aiInsightService by inject<AiInsightService>()
     val analyticsService by inject<AnalyticsService>()
@@ -63,6 +66,7 @@ fun Application.configureRouting() {
             annotationRoutes(annotationService)
             annotationWordRoutes(annotationService)
             trainingRoutes(trainingService)
+            exerciseRoutes(exerciseService)
             wordListRoutes(wordListService)
             aiInsightRoutes(aiInsightService)
             analyticsRoutes(analyticsService)

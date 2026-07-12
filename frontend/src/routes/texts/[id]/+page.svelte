@@ -202,7 +202,7 @@ function formatEnum(value: string): string {
 			{:else if sentences.isError}
 				<p class="status-text status-text-danger">Could not load sentences.</p>
 			{:else if editingSentences}
-				<SentenceEditor sentences={sentences.data ?? []} textId={id} />
+				<SentenceEditor sentences={sentences.data ?? []} textId={id} onDone={() => (editingSentences = false)} />
 			{:else if (sentences.data ?? []).length === 0}
 				<div class="empty-state-inline">
 					<p>No sentences yet.</p>
@@ -230,6 +230,9 @@ function formatEnum(value: string): string {
 						/>
 					{/if}
 				{/each}
+				<div class="sentence-list-footer">
+					<button class="btn btn-sm" onclick={() => (editingSentences = true)}>+ Add sentence</button>
+				</div>
 			{/if}
 
 			<!-- Full text panel -->

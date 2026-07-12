@@ -183,7 +183,6 @@
 	align-items: center;
 	gap: 0.5rem;
 	justify-content: flex-end;
-	margin-top: 0.5rem;
 }
 .sentence-actions .ai-trigger {
 	margin: 0;
@@ -214,6 +213,11 @@
 	border-color: var(--coral);
 	background: var(--coral-pale);
 	color: var(--coral);
+}
+
+.sentence-list-footer {
+	padding-top: 1rem;
+	border-top: 1px solid var(--border);
 }
 
 .full-text-panel {

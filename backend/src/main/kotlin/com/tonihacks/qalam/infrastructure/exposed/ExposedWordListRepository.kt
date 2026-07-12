@@ -108,7 +108,6 @@ class ExposedWordListRepository : WordListRepository {
             either {
                 val deleted = WordListsTable.deleteWhere { WordListsTable.id eq id.value.toKotlinUuid() }
                 ensure(deleted > 0) { DomainError.NotFound("WordList", id.toString()) }
-                Unit
             }
         }
 
@@ -154,7 +153,6 @@ class ExposedWordListRepository : WordListRepository {
                     it[WordListItemsTable.wordId] = kWord
                     it[position] = nextPosition
                 }
-                Unit
             }
         }
 
@@ -168,7 +166,6 @@ class ExposedWordListRepository : WordListRepository {
                 ensure(deleted > 0) {
                     DomainError.NotFound("WordListItem", "${listId}/${wordId}")
                 }
-                Unit
             }
         }
 

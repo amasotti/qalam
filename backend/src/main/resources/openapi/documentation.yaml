@@ -2086,12 +2086,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        "500":
-            description: Internal server error
-            content:
-                application/json:
-                    schema:
-                        $ref: "#/components/schemas/ErrorResponse"
 
   /api/v1/transliterate:
     post:
@@ -3399,7 +3393,7 @@ components:
           type: boolean
           nullable: true
 
-    # --- Training ---
+    # --- Exercises ---
 
     CreateExerciseSessionRequest:
       type: object
@@ -3593,6 +3587,8 @@ components:
         completedAt:
           type: string
           format: date-time
+
+    # --- Training ---
 
     CreateSessionRequest:
       type: object

@@ -2,9 +2,28 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.12.0] - 2026-07-12
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/cfa2c8e9abb6d75712dc9fbe282ef16b0da4d215..f4905f9e987a556b3841093e6ed1505dc3d7fec9)
+### 🚀 Features
+
+
+- Basis for exercise domain (evolution of training cards) ([183ac00](https://github.com/amasotti/qalam/commit/183ac001a846cd8af28bf10c93c2af9014a52988))
+
+- Exercise repository ([0cafce4](https://github.com/amasotti/qalam/commit/0cafce4ab5a7d554f545a10b2dfb35feadac2c34))
+
+- Exercise api endpoints ([725d79e](https://github.com/amasotti/qalam/commit/725d79e1e345dd1e69fc83aac783ef266142f1bd))
+
+### 🧪 Testing
+
+
+- Write integration test for new endpoints ([80c06ec](https://github.com/amasotti/qalam/commit/80c06ecba092f1ee750b49889eef183311adee4c))
+
+- Fix imports ([f4905f9](https://github.com/amasotti/qalam/commit/f4905f9e987a556b3841093e6ed1505dc3d7fec9))
+
 ## [0.11.0] - 2026-07-11
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/e4d378fd6fb60a344a7a4b8b81e92fc723d3a70c..1b3f6fe31b4a424fd0dd6507b8778bf2ceb17b82)
+[Compare with last version](https://github.com/amasotti/qalam/compare/e4d378fd6fb60a344a7a4b8b81e92fc723d3a70c..cfa2c8e9abb6d75712dc9fbe282ef16b0da4d215)
 ### 🚀 Features
 
 
@@ -66,6 +85,8 @@ All notable changes to this project will be documented in this file (created wit
 - Further improvements word page ([5d6ace4](https://github.com/amasotti/qalam/commit/5d6ace4448c7862ed63a24d761a5d88e7d0cc9ea))
 
 - Further improvements word page ([459c548](https://github.com/amasotti/qalam/commit/459c548006667d3ffd1bf47e18df4125477c2054))
+
+- Release v0.11.0 ([cfa2c8e](https://github.com/amasotti/qalam/commit/cfa2c8e9abb6d75712dc9fbe282ef16b0da4d215))
 
 ### E2e
 

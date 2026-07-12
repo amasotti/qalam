@@ -154,7 +154,7 @@ class ExposedExerciseRepository : ExerciseRepository {
 
                 baseQuery
                     .toList()
-                    .map { it.toWord() }
+                    .map { it.toExerciseWord() }
                     .filter { it.id != target.id }
                     .distinctBy { it.id }
                     .right()
@@ -261,7 +261,7 @@ private fun ResultRow.toExerciseOption() = ExerciseOption(
     isCorrect = this[ExerciseItemOptionsTable.isCorrect],
 )
 
-private fun ResultRow.toWord() = Word(
+private fun ResultRow.toExerciseWord() = Word(
     id = WordId(this[WordsTable.id].toJavaUuid()),
     arabicText = this[WordsTable.arabicText],
     transliteration = this[WordsTable.transliteration],

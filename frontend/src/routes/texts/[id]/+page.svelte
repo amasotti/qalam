@@ -49,6 +49,7 @@ const deleteText = useDeleteText();
 const autoTokenize = useAutoTokenize();
 const markValid = useMarkTokensValid();
 
+let viewMode = $state<'interlinear' | 'full'>('interlinear');
 let editingSentences = $state(false);
 let editingSentenceId = $state<string | null>(null);
 let editingInfo = $state(false);
@@ -195,48 +196,63 @@ function formatEnum(value: string): string {
 				</div>
 			{/if}
 
-			<!-- Interlinear section -->
-			<div class="sect-label">Interlinear analysis</div>
-			{#if sentences.isPending}
-				<p class="status-text status-text-muted">Loading…</p>
-			{:else if sentences.isError}
-				<p class="status-text status-text-danger">Could not load sentences.</p>
-			{:else if editingSentences}
-				<SentenceEditor sentences={sentences.data ?? []} textId={id} onDone={() => (editingSentences = false)} />
-			{:else if (sentences.data ?? []).length === 0}
-				<div class="empty-state-inline">
-					<p>No sentences yet.</p>
-					<button class="btn" onclick={() => (editingSentences = true)}>Add sentences</button>
+			<!-- View toggle -->
+			<div class="text-mode-row">
+				<div class="text-mode-toggle">
+					<button
+						class="text-mode-btn"
+						class:active={viewMode === 'interlinear'}
+						onclick={() => (viewMode = 'interlinear')}
+					>Interlinear</button>
+					<button
+						class="text-mode-btn"
+						class:active={viewMode === 'full'}
+						onclick={() => (viewMode = 'full')}
+					>Full text</button>
 				</div>
-			{:else}
-				{#each sentences.data ?? [] as sentence (sentence.id)}
-					{#if editingSentenceId === sentence.id}
-						<SentenceEditor
-							sentences={[sentence]}
-							textId={id}
-							hideAdd
-							hideOrder
-							onDone={() => (editingSentenceId = null)}
-						/>
-					{:else}
-						<InterlinearSentence
-							{sentence}
-							annotations={annotations.data ?? []}
-							onTokenClick={openVocabLookup}
-							onEdit={startSentenceEdit}
-							isPending={autoTokenize.isPending || markValid.isPending || bulkTokenizing}
-							onRetokenize={async (s) => { await autoTokenize.mutateAsync({ textId: id, id: s.id }); }}
-							onMarkValid={async (s) => { await markValid.mutateAsync({ textId: id, id: s.id, currentTokens: s.tokens }); }}
-						/>
-					{/if}
-				{/each}
-				<div class="sentence-list-footer">
-					<button class="btn sentence-add-btn" onclick={() => (editingSentences = true)}>+ Add sentence</button>
-				</div>
-			{/if}
+			</div>
 
-			<!-- Full text panel -->
-			<FullTextPanel text={text.data} />
+			{#if viewMode === 'interlinear'}
+				{#if sentences.isPending}
+					<p class="status-text status-text-muted">Loading…</p>
+				{:else if sentences.isError}
+					<p class="status-text status-text-danger">Could not load sentences.</p>
+				{:else if editingSentences}
+					<SentenceEditor sentences={sentences.data ?? []} textId={id} onDone={() => (editingSentences = false)} />
+				{:else if (sentences.data ?? []).length === 0}
+					<div class="empty-state-inline">
+						<p>No sentences yet.</p>
+						<button class="btn" onclick={() => (editingSentences = true)}>Add sentences</button>
+					</div>
+				{:else}
+					{#each sentences.data ?? [] as sentence (sentence.id)}
+						{#if editingSentenceId === sentence.id}
+							<SentenceEditor
+								sentences={[sentence]}
+								textId={id}
+								hideAdd
+								hideOrder
+								onDone={() => (editingSentenceId = null)}
+							/>
+						{:else}
+							<InterlinearSentence
+								{sentence}
+								annotations={annotations.data ?? []}
+								onTokenClick={openVocabLookup}
+								onEdit={startSentenceEdit}
+								isPending={autoTokenize.isPending || markValid.isPending || bulkTokenizing}
+								onRetokenize={async (s) => { await autoTokenize.mutateAsync({ textId: id, id: s.id }); }}
+								onMarkValid={async (s) => { await markValid.mutateAsync({ textId: id, id: s.id, currentTokens: s.tokens }); }}
+							/>
+						{/if}
+					{/each}
+					<div class="sentence-list-footer">
+						<button class="btn sentence-add-btn" onclick={() => (editingSentences = true)}>+ Add sentence</button>
+					</div>
+				{/if}
+			{:else}
+				<FullTextPanel text={text.data} />
+			{/if}
 		</div>
 
 		<aside class="detail-sidebar">

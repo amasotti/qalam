@@ -26,6 +26,8 @@ tags:
     description: Annotation management (vocabulary, grammar, cultural, structure notes)
   - name: training
     description: Flashcard training sessions and statistics
+  - name: exercises
+    description: Backend-generated exercise sessions for mobile practice
   - name: word-lists
     description: Curated topical vocabulary lists (e.g. Colors, Family)
   - name: ai
@@ -1945,6 +1947,145 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/exercise-sessions:
+    post:
+      summary: Create a new exercise session
+      operationId: createExerciseSession
+      tags: [exercises]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateExerciseSessionRequest"
+      responses:
+        "201":
+          description: Exercise session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExerciseSessionResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Not enough words/options available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/exercise-sessions/{id}:
+    get:
+      summary: Get an exercise session by ID
+      operationId: getExerciseSession
+      tags: [exercises]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Exercise session found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExerciseSessionResponse"
+        "400":
+          description: Malformed UUID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Exercise session not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/exercise-sessions/{id}/answers:
+    post:
+      summary: Submit an answer for one exercise item
+      operationId: answerExerciseItem
+      tags: [exercises]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnswerExerciseItemRequest"
+      responses:
+        "200":
+          description: Answer evaluated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnswerExerciseItemResponse"
+        "400":
+          description: Malformed UUID or selected option does not belong to item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Session or item not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Session completed or item already answered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/exercise-sessions/{id}/complete:
+    post:
+      summary: Complete an exercise session
+      operationId: completeExerciseSession
+      tags: [exercises]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Exercise session completed with summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExerciseSessionSummaryResponse"
+        "400":
+          description: Malformed UUID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Exercise session not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Session already completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
             description: Internal server error
             content:
@@ -3259,6 +3400,199 @@ components:
           nullable: true
 
     # --- Training ---
+
+    CreateExerciseSessionRequest:
+      type: object
+      required: [mode, size]
+      properties:
+        mode:
+          type: string
+          description: Mastery bucket used to draw target words
+          enum: [NEW, LEARNING, KNOWN, MIXED]
+          example: MIXED
+        size:
+          type: integer
+          description: Number of exercise items to include in the session
+          default: 15
+          minimum: 1
+          maximum: 50
+        wordListIds:
+          type: array
+          description: Optional word-list IDs that constrain the target and distractor pool.
+          items:
+            type: string
+            format: uuid
+          default: []
+        exerciseTypes:
+          type: array
+          description: Exercise types to cycle through while generating items.
+          items:
+            type: string
+            enum:
+              - MULTIPLE_CHOICE_MEANING
+              - MULTIPLE_CHOICE_ARABIC
+              - CONFUSABLE_MEANING
+              - CONFUSABLE_ARABIC
+          default: [MULTIPLE_CHOICE_MEANING]
+        optionCount:
+          type: integer
+          description: Number of options per item. Clamped by the server to 3-4.
+          default: 4
+          minimum: 3
+          maximum: 4
+
+    AnswerExerciseItemRequest:
+      type: object
+      required: [itemId, selectedOptionId]
+      properties:
+        itemId:
+          type: string
+          format: uuid
+        selectedOptionId:
+          type: string
+          format: uuid
+
+    ExercisePromptResponse:
+      type: object
+      required: [kind, text]
+      properties:
+        kind:
+          type: string
+          enum: [ARABIC_WORD, TRANSLATION]
+        text:
+          type: string
+
+    ExerciseOptionResponse:
+      type: object
+      required: [optionId, wordId, arabicText]
+      properties:
+        optionId:
+          type: string
+          format: uuid
+        wordId:
+          type: string
+          format: uuid
+        arabicText:
+          type: string
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+
+    ExerciseSessionItemResponse:
+      type: object
+      required: [itemId, wordId, type, prompt, options]
+      properties:
+        itemId:
+          type: string
+          format: uuid
+        wordId:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+            - MULTIPLE_CHOICE_MEANING
+            - MULTIPLE_CHOICE_ARABIC
+            - CONFUSABLE_MEANING
+            - CONFUSABLE_ARABIC
+        prompt:
+          $ref: "#/components/schemas/ExercisePromptResponse"
+        options:
+          type: array
+          minItems: 2
+          maxItems: 4
+          items:
+            $ref: "#/components/schemas/ExerciseOptionResponse"
+        result:
+          type: string
+          nullable: true
+          enum: [CORRECT, INCORRECT, SKIPPED]
+        selectedOptionId:
+          type: string
+          format: uuid
+          nullable: true
+        answeredAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    ExerciseSessionResponse:
+      type: object
+      required: [id, mode, status, items, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        mode:
+          type: string
+          enum: [NEW, LEARNING, KNOWN, MIXED]
+        status:
+          type: string
+          enum: [ACTIVE, COMPLETED]
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExerciseSessionItemResponse"
+        createdAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    AnswerExerciseItemResponse:
+      type: object
+      required: [itemId, wordId, result, correctOptionId]
+      properties:
+        itemId:
+          type: string
+          format: uuid
+        wordId:
+          type: string
+          format: uuid
+        result:
+          type: string
+          enum: [CORRECT, INCORRECT]
+        correctOptionId:
+          type: string
+          format: uuid
+        masteryPromotion:
+          $ref: "#/components/schemas/MasteryPromotionResponse"
+          nullable: true
+
+    ExerciseSessionSummaryResponse:
+      type: object
+      required: [sessionId, mode, totalItems, correct, incorrect, skipped, accuracy, promotions, completedAt]
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        mode:
+          type: string
+          enum: [NEW, LEARNING, KNOWN, MIXED]
+        totalItems:
+          type: integer
+        correct:
+          type: integer
+        incorrect:
+          type: integer
+        skipped:
+          type: integer
+        accuracy:
+          type: number
+          format: double
+          description: Accuracy as a ratio from 0.0 to 1.0, excluding skipped items.
+        promotions:
+          type: array
+          items:
+            $ref: "#/components/schemas/MasteryPromotionResponse"
+        completedAt:
+          type: string
+          format: date-time
 
     CreateSessionRequest:
       type: object

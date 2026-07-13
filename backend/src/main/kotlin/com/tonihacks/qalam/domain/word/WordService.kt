@@ -313,12 +313,23 @@ class WordService(
 
     suspend fun addRelation(wordId: String, req: CreateWordRelationRequest): Either<DomainError, WordRelationResponse> = either {
         log.info { "Adding word relation wordId=$wordId relatedWordId=${req.relatedWordId} type=${req.relationType}" }
+
         val id = parseWordId(wordId).bind()
         repo.findById(id).bind()
+
         val relatedId = parseWordId(req.relatedWordId).bind()
+
         if (id == relatedId) raise(DomainError.ValidationError("relatedWordId", "cannot relate a word to itself"))
+
         val relatedWord = repo.findById(relatedId).bind()
         val type = parseWordEnum("relationType", req.relationType) { RelationType.fromString(it) }.bind()
+        // findRelations queries both directions and normalises all results to wordId=id,
+        // so this single check catches both (id→relatedId) and (relatedId→id) duplicates.
+        val existing = repo.findRelations(id).bind()
+        if (existing.any { it.relatedWordId == relatedId && it.relationType == type }) {
+            raise(DomainError.Conflict("WordRelation", "${id}-${relatedId}"))
+        }
+
         val relation = WordRelation(wordId = id, relatedWordId = relatedId, relationType = type)
         repo.addRelation(relation).bind()
         relation.toResponse(relatedWord)

@@ -428,6 +428,90 @@ export type UpdateAnnotationRequest = {
     reviewFlag?: boolean | null;
 };
 
+export type CreateExerciseSessionRequest = {
+    /**
+     * Mastery bucket used to draw target words
+     */
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    /**
+     * Number of exercise items to include in the session
+     */
+    size: number;
+    /**
+     * Optional word-list IDs that constrain the target and distractor pool.
+     */
+    wordListIds?: Array<string>;
+    /**
+     * Exercise types to cycle through while generating items.
+     */
+    exerciseTypes?: Array<'MULTIPLE_CHOICE_MEANING' | 'MULTIPLE_CHOICE_ARABIC' | 'CONFUSABLE_MEANING' | 'CONFUSABLE_ARABIC'>;
+    /**
+     * Number of options per item. Clamped by the server to 3-4.
+     */
+    optionCount?: number;
+};
+
+export type AnswerExerciseItemRequest = {
+    itemId: string;
+    selectedOptionId: string;
+};
+
+export type ExercisePromptResponse = {
+    kind: 'ARABIC_WORD' | 'TRANSLATION';
+    text: string;
+};
+
+export type ExerciseOptionResponse = {
+    optionId: string;
+    wordId: string;
+    arabicText: string;
+    transliteration?: string | null;
+    translation?: string | null;
+};
+
+export type ExerciseSessionItemResponse = {
+    itemId: string;
+    wordId: string;
+    type: 'MULTIPLE_CHOICE_MEANING' | 'MULTIPLE_CHOICE_ARABIC' | 'CONFUSABLE_MEANING' | 'CONFUSABLE_ARABIC';
+    prompt: ExercisePromptResponse;
+    options: Array<ExerciseOptionResponse>;
+    result?: 'CORRECT' | 'INCORRECT' | 'SKIPPED';
+    selectedOptionId?: string | null;
+    answeredAt?: string | null;
+};
+
+export type ExerciseSessionResponse = {
+    id: string;
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    status: 'ACTIVE' | 'COMPLETED';
+    items: Array<ExerciseSessionItemResponse>;
+    createdAt: string;
+    completedAt?: string | null;
+};
+
+export type AnswerExerciseItemResponse = {
+    itemId: string;
+    wordId: string;
+    result: 'CORRECT' | 'INCORRECT';
+    correctOptionId: string;
+    masteryPromotion?: MasteryPromotionResponse;
+};
+
+export type ExerciseSessionSummaryResponse = {
+    sessionId: string;
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    totalItems: number;
+    correct: number;
+    incorrect: number;
+    skipped: number;
+    /**
+     * Accuracy as a ratio from 0.0 to 1.0, excluding skipped items.
+     */
+    accuracy: number;
+    promotions: Array<MasteryPromotionResponse>;
+    completedAt: string;
+};
+
 export type CreateSessionRequest = {
     /**
      * Training mode by mastery bucket
@@ -2616,10 +2700,6 @@ export type GetTrainingStatsErrors = {
      * Bad request
      */
     400: ErrorResponse;
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse;
 };
 
 export type GetTrainingStatsError = GetTrainingStatsErrors[keyof GetTrainingStatsErrors];
@@ -2632,6 +2712,136 @@ export type GetTrainingStatsResponses = {
 };
 
 export type GetTrainingStatsResponse = GetTrainingStatsResponses[keyof GetTrainingStatsResponses];
+
+export type CreateExerciseSessionData = {
+    body: CreateExerciseSessionRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/exercise-sessions';
+};
+
+export type CreateExerciseSessionErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse;
+    /**
+     * Not enough words/options available
+     */
+    422: ErrorResponse;
+};
+
+export type CreateExerciseSessionError = CreateExerciseSessionErrors[keyof CreateExerciseSessionErrors];
+
+export type CreateExerciseSessionResponses = {
+    /**
+     * Exercise session created
+     */
+    201: ExerciseSessionResponse;
+};
+
+export type CreateExerciseSessionResponse = CreateExerciseSessionResponses[keyof CreateExerciseSessionResponses];
+
+export type GetExerciseSessionData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/exercise-sessions/{id}';
+};
+
+export type GetExerciseSessionErrors = {
+    /**
+     * Malformed UUID
+     */
+    400: ErrorResponse;
+    /**
+     * Exercise session not found
+     */
+    404: ErrorResponse;
+};
+
+export type GetExerciseSessionError = GetExerciseSessionErrors[keyof GetExerciseSessionErrors];
+
+export type GetExerciseSessionResponses = {
+    /**
+     * Exercise session found
+     */
+    200: ExerciseSessionResponse;
+};
+
+export type GetExerciseSessionResponse = GetExerciseSessionResponses[keyof GetExerciseSessionResponses];
+
+export type AnswerExerciseItemData = {
+    body: AnswerExerciseItemRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/exercise-sessions/{id}/answers';
+};
+
+export type AnswerExerciseItemErrors = {
+    /**
+     * Malformed UUID or selected option does not belong to item
+     */
+    400: ErrorResponse;
+    /**
+     * Session or item not found
+     */
+    404: ErrorResponse;
+    /**
+     * Session completed or item already answered
+     */
+    409: ErrorResponse;
+};
+
+export type AnswerExerciseItemError = AnswerExerciseItemErrors[keyof AnswerExerciseItemErrors];
+
+export type AnswerExerciseItemResponses = {
+    /**
+     * Answer evaluated
+     */
+    200: AnswerExerciseItemResponse;
+};
+
+export type AnswerExerciseItemResponse2 = AnswerExerciseItemResponses[keyof AnswerExerciseItemResponses];
+
+export type CompleteExerciseSessionData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/exercise-sessions/{id}/complete';
+};
+
+export type CompleteExerciseSessionErrors = {
+    /**
+     * Malformed UUID
+     */
+    400: ErrorResponse;
+    /**
+     * Exercise session not found
+     */
+    404: ErrorResponse;
+    /**
+     * Session already completed
+     */
+    409: ErrorResponse;
+};
+
+export type CompleteExerciseSessionError = CompleteExerciseSessionErrors[keyof CompleteExerciseSessionErrors];
+
+export type CompleteExerciseSessionResponses = {
+    /**
+     * Exercise session completed with summary
+     */
+    200: ExerciseSessionSummaryResponse;
+};
+
+export type CompleteExerciseSessionResponse = CompleteExerciseSessionResponses[keyof CompleteExerciseSessionResponses];
 
 export type TransliterateTextData = {
     body: TransliterateRequest;

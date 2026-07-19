@@ -103,8 +103,8 @@ describe('SessionSummary', () => {
 			},
 		});
 
-		await fireEvent.click(screen.getByRole('button', { name: 'New session' }));
+		await fireEvent.click(screen.getByRole('button', { name: 'New flashcard session' }));
 
-		expect(gotoMock).toHaveBeenCalledWith('/training');
+		expect(gotoMock).toHaveBeenCalledWith('/training/flashcards');
 	});
 });

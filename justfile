@@ -100,7 +100,7 @@ format-frontend:
     pnpm --prefix frontend format
 
 test-frontend:
-    pnpm --prefix frontend test:unit:ui
+    pnpm --prefix frontend test:unit
 
 # Run check svelte with Biome (requires: just up — backend + DB must be running)
 check-frontend:

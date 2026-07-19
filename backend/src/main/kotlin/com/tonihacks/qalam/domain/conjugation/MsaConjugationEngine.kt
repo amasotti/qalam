@@ -17,6 +17,7 @@ import com.tonihacks.qalam.domain.conjugation.rules.PAST_R3_GETS_SUKUN
 import com.tonihacks.qalam.domain.conjugation.rules.PAST_SUFFIXES
 import com.tonihacks.qalam.domain.conjugation.rules.PRESENT_PREFIXES
 import com.tonihacks.qalam.domain.conjugation.rules.PRESENT_SUFFIXES_INDICATIVE
+import com.tonihacks.qalam.domain.conjugation.rules.WeakVerbRules
 import com.tonihacks.qalam.domain.word.VerbPattern
 import com.tonihacks.qalam.domain.word.WeaknessType
 
@@ -35,13 +36,13 @@ class MsaConjugationEngine : ConjugationEngine {
 
         if (verbForm == VerbPattern.I) {
             forms[ConjugationKey(Tense.PAST, Voice.ACTIVE)] =
-                conjugateFormIPast(rootLetters, pastPattern, Voice.ACTIVE)
+                conjugateFormIPast(rootLetters, pastPattern, Voice.ACTIVE, weaknessType)
             forms[ConjugationKey(Tense.PAST, Voice.PASSIVE)] =
-                conjugateFormIPast(rootLetters, pastPattern, Voice.PASSIVE)
+                conjugateFormIPast(rootLetters, pastPattern, Voice.PASSIVE, weaknessType)
             forms[ConjugationKey(Tense.PRESENT, Voice.ACTIVE)] =
-                conjugateFormIPresent(rootLetters, presentPattern, Voice.ACTIVE)
+                conjugateFormIPresent(rootLetters, presentPattern, Voice.ACTIVE, weaknessType)
             forms[ConjugationKey(Tense.PRESENT, Voice.PASSIVE)] =
-                conjugateFormIPresent(rootLetters, presentPattern, Voice.PASSIVE)
+                conjugateFormIPresent(rootLetters, presentPattern, Voice.PASSIVE, weaknessType)
         } else {
             val r1 = rootLetters[0]; val r2 = rootLetters[1]; val r3 = rootLetters[2]
 
@@ -65,24 +66,52 @@ class MsaConjugationEngine : ConjugationEngine {
         rootLetters: List<String>,
         pastPattern: String?,
         voice: Voice,
+        weaknessType: WeaknessType,
     ): List<PersonConjugation> {
-        val stem = when (voice) {
-            Voice.ACTIVE -> FormIStemBuilder.buildPastActiveStem(rootLetters, pastPattern)
-            Voice.PASSIVE -> FormIStemBuilder.buildPastPassiveStem(rootLetters)
+        val r1 = rootLetters[0]; val r2 = rootLetters[1]; val r3 = rootLetters[2]
+        return when (weaknessType) {
+            WeaknessType.HOLLOW -> Person.entries.map {
+                WeakVerbRules.conjugateHollowPast(r1, r2, r3, it, voice)
+            }
+            WeaknessType.DEFECTIVE -> Person.entries.map {
+                WeakVerbRules.conjugateDefectivePast(r1, r2, r3, it, voice, pastPattern)
+            }
+            // Assimilated past is regular — fall through to sound logic
+            else -> {
+                val stem = when (voice) {
+                    Voice.ACTIVE -> FormIStemBuilder.buildPastActiveStem(rootLetters, pastPattern)
+                    Voice.PASSIVE -> FormIStemBuilder.buildPastPassiveStem(rootLetters)
+                }
+                Person.entries.map { buildFormIPast(it, stem) }
+            }
         }
-        return Person.entries.map { buildFormIPast(it, stem) }
     }
 
     private fun conjugateFormIPresent(
         rootLetters: List<String>,
         presentPattern: String?,
         voice: Voice,
+        weaknessType: WeaknessType,
     ): List<PersonConjugation> {
-        val stem = when (voice) {
-            Voice.ACTIVE -> FormIStemBuilder.buildPresentActiveStem(rootLetters, presentPattern)
-            Voice.PASSIVE -> FormIStemBuilder.buildPresentPassiveStem(rootLetters)
+        val r1 = rootLetters[0]; val r2 = rootLetters[1]; val r3 = rootLetters[2]
+        return when (weaknessType) {
+            WeaknessType.HOLLOW -> Person.entries.map {
+                WeakVerbRules.conjugateHollowPresent(r1, r2, r3, it, voice, presentPattern)
+            }
+            WeaknessType.DEFECTIVE -> Person.entries.map {
+                WeakVerbRules.conjugateDefectivePresent(r1, r2, r3, it, voice, presentPattern)
+            }
+            WeaknessType.ASSIMILATED -> Person.entries.map {
+                WeakVerbRules.conjugateAssimilatedPresent(r1, r2, r3, it, voice, presentPattern)
+            }
+            else -> {
+                val stem = when (voice) {
+                    Voice.ACTIVE -> FormIStemBuilder.buildPresentActiveStem(rootLetters, presentPattern)
+                    Voice.PASSIVE -> FormIStemBuilder.buildPresentPassiveStem(rootLetters)
+                }
+                Person.entries.map { buildFormIPresent(it, stem, voice) }
+            }
         }
-        return Person.entries.map { buildFormIPresent(it, stem, voice) }
     }
 
     private fun buildFormIPast(person: Person, stem: StemParts): PersonConjugation {

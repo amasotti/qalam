@@ -253,6 +253,140 @@ class MsaConjugationEngineTest : FunSpec({
         }
     }
 
+    // ── Weak Verbs ───────────────────────────────────────────────────────
+
+    // قال (q-w-l) — hollow verb, R2 = و
+    context("Hollow verb قال (q-w-l) — past active") {
+        val rootQWL = listOf("ق", "و", "ل")
+        val table = engine.conjugate(rootQWL, VerbPattern.I, "fa3ala", "yaf3ulu", WeaknessType.HOLLOW)
+        val past = table.forms[ConjugationKey(Tense.PAST, Voice.ACTIVE)]!!
+
+        fun formFor(p: Person) = past.first { it.person == p }.arabic
+
+        test("3MS — قَالَ") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "قَالَ" }
+        test("3FS — قَالَتْ") { formFor(Person.THIRD_SINGULAR_FEM) shouldBe "قَالَتْ" }
+        test("1S — قُلْتُ") { formFor(Person.FIRST_SINGULAR) shouldBe "قُلْتُ" }
+        test("2SM — قُلْتَ") { formFor(Person.SECOND_SINGULAR_MASC) shouldBe "قُلْتَ" }
+        test("2SF — قُلْتِ") { formFor(Person.SECOND_SINGULAR_FEM) shouldBe "قُلْتِ" }
+        test("3DM — قَالَا") { formFor(Person.THIRD_DUAL_MASC) shouldBe "قَالَا" }
+        test("3PM — قَالُوا") { formFor(Person.THIRD_PLURAL_MASC) shouldBe "قَالُوا" }
+        test("1P — قُلْنَا") { formFor(Person.FIRST_PLURAL) shouldBe "قُلْنَا" }
+        test("3PF — قُلْنَ") { formFor(Person.THIRD_PLURAL_FEM) shouldBe "قُلْنَ" }
+    }
+
+    context("Hollow verb قال (q-w-l) — present active") {
+        val rootQWL = listOf("ق", "و", "ل")
+        val table = engine.conjugate(rootQWL, VerbPattern.I, "fa3ala", "yaf3ulu", WeaknessType.HOLLOW)
+        val pres = table.forms[ConjugationKey(Tense.PRESENT, Voice.ACTIVE)]!!
+
+        fun formFor(p: Person) = pres.first { it.person == p }.arabic
+
+        test("3SM — يَقُولُ") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "يَقُولُ" }
+        test("1S — أَقُولُ") { formFor(Person.FIRST_SINGULAR) shouldBe "أَقُولُ" }
+        test("2SF — تَقُولِينَ") { formFor(Person.SECOND_SINGULAR_FEM) shouldBe "تَقُولِينَ" }
+        test("3PM — يَقُولُونَ") { formFor(Person.THIRD_PLURAL_MASC) shouldBe "يَقُولُونَ" }
+        test("3PF contracted — يَقُلْنَ") { formFor(Person.THIRD_PLURAL_FEM) shouldBe "يَقُلْنَ" }
+    }
+
+    context("Hollow verb قال — passive") {
+        val rootQWL = listOf("ق", "و", "ل")
+        val table = engine.conjugate(rootQWL, VerbPattern.I, "fa3ala", "yaf3ulu", WeaknessType.HOLLOW)
+
+        test("past passive 3MS — قِيلَ") {
+            val pastP = table.forms[ConjugationKey(Tense.PAST, Voice.PASSIVE)]!!
+            pastP.first { it.person == Person.THIRD_SINGULAR_MASC }.arabic shouldBe "قِيلَ"
+        }
+
+        test("past passive 1S — قِلْتُ") {
+            val pastP = table.forms[ConjugationKey(Tense.PAST, Voice.PASSIVE)]!!
+            pastP.first { it.person == Person.FIRST_SINGULAR }.arabic shouldBe "قِلْتُ"
+        }
+
+        test("present passive 3SM — يُقَالُ") {
+            val presP = table.forms[ConjugationKey(Tense.PRESENT, Voice.PASSIVE)]!!
+            presP.first { it.person == Person.THIRD_SINGULAR_MASC }.arabic shouldBe "يُقَالُ"
+        }
+    }
+
+    // مشى (m-sh-y) — defective verb, R3 = ي
+    context("Defective verb مشى (m-sh-y) — past active") {
+        val rootMShY = listOf("م", "ش", "ي")
+        val table = engine.conjugate(rootMShY, VerbPattern.I, "fa3ala", "yaf3ilu", WeaknessType.DEFECTIVE)
+        val past = table.forms[ConjugationKey(Tense.PAST, Voice.ACTIVE)]!!
+
+        fun formFor(p: Person) = past.first { it.person == p }.arabic
+
+        test("3MS — مَشَى") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "مَشَى" }
+        test("3FS — مَشَتْ") { formFor(Person.THIRD_SINGULAR_FEM) shouldBe "مَشَتْ" }
+        test("1S — مَشَيْتُ") { formFor(Person.FIRST_SINGULAR) shouldBe "مَشَيْتُ" }
+        test("3DM — مَشَيَا") { formFor(Person.THIRD_DUAL_MASC) shouldBe "مَشَيَا" }
+        test("3PM — مَشَوْا") { formFor(Person.THIRD_PLURAL_MASC) shouldBe "مَشَوْا" }
+        test("3PF — مَشَيْنَ") { formFor(Person.THIRD_PLURAL_FEM) shouldBe "مَشَيْنَ" }
+    }
+
+    context("Defective verb مشى (m-sh-y) — present active") {
+        val rootMShY = listOf("م", "ش", "ي")
+        val table = engine.conjugate(rootMShY, VerbPattern.I, "fa3ala", "yaf3ilu", WeaknessType.DEFECTIVE)
+        val pres = table.forms[ConjugationKey(Tense.PRESENT, Voice.ACTIVE)]!!
+
+        fun formFor(p: Person) = pres.first { it.person == p }.arabic
+
+        test("3SM — يَمْشِي") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "يَمْشِي" }
+        test("1S — أَمْشِي") { formFor(Person.FIRST_SINGULAR) shouldBe "أَمْشِي" }
+        test("3PM — يَمْشُونَ") { formFor(Person.THIRD_PLURAL_MASC) shouldBe "يَمْشُونَ" }
+        test("2SF — تَمْشِينَ") { formFor(Person.SECOND_SINGULAR_FEM) shouldBe "تَمْشِينَ" }
+        test("3DM — تَمْشِيَانِ") {
+            // Note: 3DM uses يَ prefix
+            val form = pres.first { it.person == Person.THIRD_DUAL_MASC }
+            form.arabic shouldBe "يَمْشِيَانِ"
+        }
+    }
+
+    // وصل (w-s-l) — assimilated verb, R1 = و
+    context("Assimilated verb وصل (w-s-l) — past active (regular)") {
+        val rootWSL = listOf("و", "ص", "ل")
+        val table = engine.conjugate(rootWSL, VerbPattern.I, "fa3ala", "yaf3ilu", WeaknessType.ASSIMILATED)
+        val past = table.forms[ConjugationKey(Tense.PAST, Voice.ACTIVE)]!!
+
+        fun formFor(p: Person) = past.first { it.person == p }.arabic
+
+        test("3MS — وَصَلَ (regular past)") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "وَصَلَ" }
+        test("1S — وَصَلْتُ") { formFor(Person.FIRST_SINGULAR) shouldBe "وَصَلْتُ" }
+    }
+
+    context("Assimilated verb وصل (w-s-l) — present active (R1 drops)") {
+        val rootWSL = listOf("و", "ص", "ل")
+        val table = engine.conjugate(rootWSL, VerbPattern.I, "fa3ala", "yaf3ilu", WeaknessType.ASSIMILATED)
+        val pres = table.forms[ConjugationKey(Tense.PRESENT, Voice.ACTIVE)]!!
+
+        fun formFor(p: Person) = pres.first { it.person == p }.arabic
+
+        test("3SM — يَصِلُ (R1 wāw dropped)") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "يَصِلُ" }
+        test("1S — أَصِلُ") { formFor(Person.FIRST_SINGULAR) shouldBe "أَصِلُ" }
+        test("3PM — يَصِلُونَ") { formFor(Person.THIRD_PLURAL_MASC) shouldBe "يَصِلُونَ" }
+        test("2SF — تَصِلِينَ") { formFor(Person.SECOND_SINGULAR_FEM) shouldBe "تَصِلِينَ" }
+    }
+
+    context("Weak verb tables completeness") {
+        test("hollow verb produces 4 tables × 13 persons") {
+            val table = engine.conjugate(listOf("ق", "و", "ل"), VerbPattern.I, "fa3ala", "yaf3ulu", WeaknessType.HOLLOW)
+            table.forms.size shouldBe 4
+            table.forms.values.forEach { it.size shouldBe 13 }
+        }
+
+        test("defective verb produces 4 tables × 13 persons") {
+            val table = engine.conjugate(listOf("م", "ش", "ي"), VerbPattern.I, "fa3ala", "yaf3ilu", WeaknessType.DEFECTIVE)
+            table.forms.size shouldBe 4
+            table.forms.values.forEach { it.size shouldBe 13 }
+        }
+
+        test("assimilated verb produces 4 tables × 13 persons") {
+            val table = engine.conjugate(listOf("و", "ص", "ل"), VerbPattern.I, "fa3ala", "yaf3ilu", WeaknessType.ASSIMILATED)
+            table.forms.size shouldBe 4
+            table.forms.values.forEach { it.size shouldBe 13 }
+        }
+    }
+
     context("all forms produce 4 tables × 13 persons") {
         val root = listOf("ف", "ع", "ل")
         for (form in VerbPattern.entries) {

@@ -223,7 +223,7 @@ paths:
           schema: { type: integer, default: 20, maximum: 500 }
         - name: q
           in: query
-          description: Arabic text substring search
+          description: Arabic text substring search (ignores Arabic harakat) or translation/transliteration search
           schema: { type: string }
         - name: rootId
           in: query
@@ -305,6 +305,7 @@ paths:
         - name: q
           in: query
           required: true
+          description: Arabic search ignores harakat; translation and transliteration search remain unchanged
           schema: { type: string }
         - name: limit
           in: query

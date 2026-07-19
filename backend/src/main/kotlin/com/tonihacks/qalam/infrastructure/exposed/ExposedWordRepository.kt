@@ -9,6 +9,7 @@ import arrow.core.right
 import io.github.oshai.kotlinlogging.KotlinLogging
 import com.tonihacks.qalam.delivery.dto.PageRequest
 import com.tonihacks.qalam.delivery.dto.PaginatedResponse
+import com.tonihacks.qalam.domain.removeArabicDiacritics
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.root.RootId
 import com.tonihacks.qalam.domain.word.DictionaryLink
@@ -93,7 +94,8 @@ class ExposedWordRepository(
                     condition = condition?.and(WordsTable.masteryLevel eq m.name) ?: (WordsTable.masteryLevel eq m.name)
                 }
                 filters.q?.let { queryStr ->
-                    val qCondition = (WordsTable.arabicText ilike "%$queryStr%") or
+                    val normalizedArabicQuery = queryStr.removeArabicDiacritics()
+                    val qCondition = (WordsTable.arabicText.stripArabicDiacritics() ilike "%$normalizedArabicQuery%") or
                         (WordsTable.translation ilike "%$queryStr%") or
                         (WordsTable.transliteration ilike "%$queryStr%")
                     condition = condition?.and(qCondition) ?: qCondition
@@ -134,10 +136,11 @@ class ExposedWordRepository(
 
     override suspend fun autocomplete(query: String, limit: Int): Either<DomainError, List<Word>> =
         suspendTransaction {
+            val normalizedArabicQuery = query.removeArabicDiacritics()
             WordsTable
                 .selectAll()
                 .where {
-                    (WordsTable.arabicText ilike "%$query%") or
+                    (WordsTable.arabicText.stripArabicDiacritics() ilike "%$normalizedArabicQuery%") or
                     (WordsTable.translation ilike "%$query%") or
                     (WordsTable.transliteration ilike "%$query%")
                 }

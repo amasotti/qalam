@@ -148,6 +148,24 @@ class WordsIntegrationTest : BaseIntegrationTest() {
                     result.bodyAsText() shouldNotContain "قَرَأَ"
                 }
             }
+
+            "searches Arabic text ignoring harakat" {
+                testApp { client ->
+                    client.post("/api/v1/words") {
+                        contentType(ContentType.Application.Json)
+                        setBody(katabJson)
+                    }
+                    client.post("/api/v1/words") {
+                        contentType(ContentType.Application.Json)
+                        setBody(qaraJson)
+                    }
+
+                    val result = client.get("/api/v1/words?q=كتب")
+                    result.status shouldBe HttpStatusCode.OK
+                    result.bodyAsText() shouldContain "كَتَبَ"
+                    result.bodyAsText() shouldNotContain "قَرَأَ"
+                }
+            }
         }
 
         "GET /api/v1/words/{id}" - {

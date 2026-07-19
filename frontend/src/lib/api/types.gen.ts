@@ -512,6 +512,29 @@ export type ExerciseSessionSummaryResponse = {
     completedAt: string;
 };
 
+export type ExerciseSessionListItemResponse = {
+    id: string;
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    status: 'ACTIVE' | 'COMPLETED';
+    totalItems: number;
+    correctCount: number;
+    incorrectCount: number;
+    skippedCount: number;
+    /**
+     * Accuracy as a ratio from 0.0 to 1.0, excluding skipped items.
+     */
+    accuracy: number;
+    createdAt: string;
+    completedAt?: string | null;
+};
+
+export type PaginatedExerciseSessionsResponse = {
+    items: Array<ExerciseSessionListItemResponse>;
+    total: number;
+    page: number;
+    size: number;
+};
+
 export type CreateSessionRequest = {
     /**
      * Training mode by mastery bucket
@@ -2712,6 +2735,40 @@ export type GetTrainingStatsResponses = {
 };
 
 export type GetTrainingStatsResponse = GetTrainingStatsResponses[keyof GetTrainingStatsResponses];
+
+export type ListExerciseSessionsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number (1-based)
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        size?: number;
+    };
+    url: '/api/v1/exercise-sessions';
+};
+
+export type ListExerciseSessionsErrors = {
+    /**
+     * Invalid query parameters
+     */
+    400: ErrorResponse;
+};
+
+export type ListExerciseSessionsError = ListExerciseSessionsErrors[keyof ListExerciseSessionsErrors];
+
+export type ListExerciseSessionsResponses = {
+    /**
+     * Paginated list of exercise sessions
+     */
+    200: PaginatedExerciseSessionsResponse;
+};
+
+export type ListExerciseSessionsResponse = ListExerciseSessionsResponses[keyof ListExerciseSessionsResponses];
 
 export type CreateExerciseSessionData = {
     body: CreateExerciseSessionRequest;

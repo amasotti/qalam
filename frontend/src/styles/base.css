@@ -43,7 +43,7 @@
 
 .prose {
 	font-family: var(--font-sans);
-	font-size: 0.9rem;
+	font-size: var(--type-body);
 	line-height: 1.75;
 	color: hsl(var(--foreground));
 }

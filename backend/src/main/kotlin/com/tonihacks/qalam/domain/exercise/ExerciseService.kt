@@ -180,6 +180,20 @@ class ExerciseService(
         )
     }.logDomainFailure(log) { "Failed to complete exercise session id=$sessionIdStr: $it" }
 
+    suspend fun listSessions(
+        page: Int,
+        size: Int,
+    ): Either<DomainError, PaginatedExerciseSessionsResponse> = either {
+        log.debug { "Listing exercise sessions page=$page size=$size" }
+        val (items, total) = exerciseRepo.listSessions(page, size).bind()
+        PaginatedExerciseSessionsResponse(
+            items = items.map { it.toListItemResponse() },
+            total = total,
+            page = page,
+            size = size,
+        )
+    }.logDomainFailure(log) { "Failed to list exercise sessions page=$page size=$size: $it" }
+
     private suspend fun buildItem(
         sessionId: ExerciseSessionId,
         position: Int,
@@ -225,6 +239,22 @@ class ExerciseService(
             options           = options,
         )
     }
+}
+
+private fun ExerciseSession.toListItemResponse(): ExerciseSessionListItemResponse {
+    val answered = correctCount + incorrectCount
+    return ExerciseSessionListItemResponse(
+        id = id.value.toString(),
+        mode = mode.name,
+        status = status.name,
+        totalItems = totalItems,
+        correctCount = correctCount,
+        incorrectCount = incorrectCount,
+        skippedCount = skippedCount,
+        accuracy = if (answered == 0) 0.0 else correctCount.toDouble() / answered,
+        createdAt = createdAt.toString(),
+        completedAt = completedAt?.toString(),
+    )
 }
 
 private fun parseMode(value: String): Either<DomainError, TrainingMode> = either {

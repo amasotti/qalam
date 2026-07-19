@@ -112,6 +112,26 @@ class ExerciseIntegrationTest : BaseIntegrationTest() {
             }
         }
 
+        "GET /api/v1/exercise-sessions" - {
+            "returns paginated exercise session history" {
+                testApp { client ->
+                    seedWords(client)
+                    createExerciseSession(client)
+                    createExerciseSession(client)
+
+                    val response = client.get("/api/v1/exercise-sessions?page=1&size=1")
+
+                    response.status shouldBe HttpStatusCode.OK
+                    val body = Json.parseToJsonElement(response.bodyAsText()).jsonObject
+                    body["total"]!!.jsonPrimitive.content shouldBe "2"
+                    body["page"]!!.jsonPrimitive.content shouldBe "1"
+                    body["size"]!!.jsonPrimitive.content shouldBe "1"
+                    body.items().size shouldBe 1
+                    body.items().first().jsonObject["status"]!!.jsonPrimitive.content shouldBe "ACTIVE"
+                }
+            }
+        }
+
         "POST /api/v1/exercise-sessions/{id}/answers" - {
             "evaluates correct and wrong selected options" {
                 testApp { client ->

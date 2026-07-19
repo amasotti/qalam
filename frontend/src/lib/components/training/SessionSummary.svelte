@@ -82,6 +82,6 @@ let answered = $derived(summary.correct + summary.incorrect);
 	</section>
 
 	<div class="session-summary-actions">
-		<Button onclick={() => goto('/training')}>New session</Button>
+		<Button onclick={() => goto('/training/flashcards')}>New flashcard session</Button>
 	</div>
 </div>

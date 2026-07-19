@@ -5,8 +5,8 @@
 ## Scope and status
 
 The conjugation feature uses a pure Kotlin rule engine. It needs no AI key and produces the same
-table for the same input. The reference API and `/verbs/conjugation` page are implemented. The
-next planned feature is conjugation practice.
+table for the same input. The reference API, `/verbs/conjugation` page, and matching-session API
+are implemented. The matching UI remains the next feature.
 
 Current target scope is MSA, past and present tense, active/passive voice, and all 13 Arabic
 person/number/gender slots. Subjunctive, jussive, masdar, participles, and Tunisian rules are out
@@ -32,6 +32,11 @@ teaching aid in the reference table and feedback in future exercises.
 | GET | `/api/v1/words/{id}/verb-details` | Read persisted verb metadata |
 | PUT | `/api/v1/words/{id}/verb-details` | Create or replace persisted verb metadata |
 | DELETE | `/api/v1/words/{id}/verb-details` | Remove persisted verb metadata |
+| POST | `/api/v1/conjugation-exercise-sessions` | Create a four-form matching session |
+| GET | `/api/v1/conjugation-exercise-sessions/{id}` | Resume or review a matching session |
+| POST | `/api/v1/conjugation-exercise-sessions/{id}/answers` | Submit one board's four mappings |
+| POST | `/api/v1/conjugation-exercise-sessions/{id}/complete` | Complete a session without SRS promotion |
+| GET | `/api/v1/conjugation-exercise-sessions` | List matching-session history |
 
 The saved-word endpoint requires a VERB word, verb details, and a linked root. The ad-hoc endpoint
 accepts the same root/form/pattern/weakness inputs directly. Both return the dialect, root,

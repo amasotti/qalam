@@ -129,11 +129,13 @@ The first exercise strategy is `MULTIPLE_CHOICE_MEANING`: Arabic is shown as the
 
 Exercise answers lock immediately and show the correct option before the learner moves on. Refreshing an active exercise resumes at its first unanswered question. Completing it records unanswered questions as skipped; completed sessions remain reviewable from the paginated history. Exercise server state is managed in `frontend/src/lib/stores/exercises.ts`.
 
-### Conjugation exercises (planned)
+### Conjugation exercises
 
 Conjugation practice is a separate session family built on the deterministic MSA conjugation
 engine. It deliberately does **not** modify `word_progress` or word mastery: conjugated forms are
 generated from a lemma rather than stored vocabulary entries.
+
+The matching-session API is implemented. Its runner/composer UI is pending.
 
 The first mode is a four-form matching board. It presents four fully vocalised forms of one verb
 and four person/number/gender labels; the learner matches every form to its morphology. The

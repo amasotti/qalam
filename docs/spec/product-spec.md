@@ -121,8 +121,8 @@ Verb entries may have persisted verb metadata: form I–X, Form-I past/present p
 needed, and weakness type. A deterministic MSA engine combines this metadata with the linked root
 to generate fully vocalised past/present paradigms for all 13 person/number/gender slots, active
 and passive voice. It also returns prefix, root, pattern-vowel, and suffix segments for teaching
-visualisation. The reference UI is being completed; an ad-hoc API permits
-computing a table before a word is saved.
+visualisation. The reference UI supports saved-verb search and ad-hoc computation before a word
+is saved.
 
 ---
 

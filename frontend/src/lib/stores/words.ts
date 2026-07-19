@@ -14,6 +14,7 @@ import {
 	enrichWord,
 	generateWordExamples,
 	getAnnotationsForWord,
+	getVerbDetails,
 	getWordByArabic,
 	getWordById,
 	getWordMorphology,
@@ -25,6 +26,7 @@ import {
 	saveWordExample,
 	searchWordDictionaryLookups,
 	updateWord,
+	upsertVerbDetails,
 	upsertWordMorphology,
 } from '$lib/api/sdk.gen';
 import type {
@@ -42,7 +44,9 @@ import type {
 	MasteryLevel,
 	PartOfSpeech,
 	UpdateWordRequest,
+	UpsertVerbDetailsRequest,
 	UpsertWordMorphologyRequest,
+	VerbDetailsResponse,
 	WordAnalysisResponse,
 	WordAutocompleteResponse,
 	WordEnrichmentSuggestion,
@@ -331,6 +335,35 @@ export function useUpsertMorphology() {
 			variables: { id: string; body: UpsertWordMorphologyRequest }
 		) => {
 			qc.invalidateQueries({ queryKey: ['words', variables.id, 'morphology'] });
+		},
+	}));
+}
+
+export function useVerbDetails(id: () => string | undefined) {
+	return createQuery(() => ({
+		queryKey: ['words', id(), 'verb-details'],
+		queryFn: async () => {
+			const resolvedId = id();
+			if (!resolvedId) throw new Error('Missing word id');
+			const { data, error } = await getVerbDetails({ path: { id: resolvedId } });
+			if (error) throw error;
+			const result = requireData(data, 'getVerbDetails') as Partial<VerbDetailsResponse>;
+			return typeof result.verbForm === 'string' ? (result as VerbDetailsResponse) : null;
+		},
+		enabled: !!id(),
+	}));
+}
+
+export function useUpsertVerbDetails() {
+	const qc = useQueryClient();
+	return createMutation(() => ({
+		mutationFn: async ({ id, body }: { id: string; body: UpsertVerbDetailsRequest }) => {
+			const { data, error } = await upsertVerbDetails({ path: { id }, body });
+			if (error) throw error;
+			return requireData(data, 'upsertVerbDetails') as VerbDetailsResponse;
+		},
+		onSuccess: (_data, variables) => {
+			qc.invalidateQueries({ queryKey: ['words', variables.id, 'verb-details'] });
 		},
 	}));
 }

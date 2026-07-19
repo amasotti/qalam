@@ -274,9 +274,20 @@ export type CreateWordRelationRequest = {
 export type WordEnrichmentSuggestion = {
     notes?: string | null;
     gender?: 'MASCULINE' | 'FEMININE';
+    /**
+     * @deprecated
+     */
     verbPattern?: 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X';
+    verbDetails?: AiVerbDetailsSuggestion | null;
     plurals: Array<AiPluralSuggestion>;
     relations: Array<AiRelationSuggestion>;
+};
+
+export type AiVerbDetailsSuggestion = {
+    verbForm: 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X';
+    pastPattern?: string | null;
+    presentPattern?: string | null;
+    weaknessType: 'SOUND' | 'ASSIMILATED' | 'HOLLOW' | 'GEMINATE' | 'DEFECTIVE' | 'DOUBLY_WEAK';
 };
 
 export type AiPluralSuggestion = {

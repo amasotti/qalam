@@ -4,6 +4,7 @@ import { page } from '$app/state';
 import type { UpdateWordRequest, WordResponse } from '$lib/api/types.gen';
 import AiInsightPanel from '$lib/components/ai/AiInsightPanel.svelte';
 import AnnotationBadge from '$lib/components/annotations/AnnotationBadge.svelte';
+import VerbDetailsStrip from '$lib/components/word/VerbDetailsStrip.svelte';
 import WordEnrichDrawer from '$lib/components/word/WordEnrichDrawer.svelte';
 import WordListMembership from '$lib/components/word/WordListMembership.svelte';
 import WordMorphologyStrip from '$lib/components/word/WordMorphologyStrip.svelte';
@@ -255,7 +256,11 @@ const masterySteps: Record<string, number> = {
 								{/if}
 							</div>
 							<div class="form-col">
-								<WordMorphologyStrip wordId={id} />
+								{#if word.data.partOfSpeech === 'VERB'}
+									<VerbDetailsStrip wordId={id} />
+								{:else}
+									<WordMorphologyStrip wordId={id} />
+								{/if}
 								{#if word.data.partOfSpeech === "NOUN"}
 									<WordPluralChips wordId={id} />
 								{/if}

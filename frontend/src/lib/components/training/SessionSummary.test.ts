@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/svelte';
 import { describe, expect, it, vi } from 'vitest';
-import type { SessionSummaryResponse } from '$lib/api/types.gen';
+import type { SessionSummaryResponse, TrainingSessionWordResponse } from '$lib/api/types.gen';
 import SessionSummary from './SessionSummary.svelte';
 
 const { gotoMock } = vi.hoisted(() => ({
@@ -26,11 +26,47 @@ function buildSummary(overrides: Partial<SessionSummaryResponse> = {}): SessionS
 	};
 }
 
+function buildWords(): TrainingSessionWordResponse[] {
+	return [
+		{
+			wordId: 'word-correct',
+			arabicText: 'كتب',
+			transliteration: 'kataba',
+			translation: 'write',
+			frontSide: 'ARABIC',
+			position: 0,
+			result: 'CORRECT',
+			masteryLevel: 'LEARNING',
+		},
+		{
+			wordId: 'word-incorrect',
+			arabicText: 'قرأ',
+			transliteration: 'qaraʾa',
+			translation: 'read',
+			frontSide: 'TRANSLATION',
+			position: 1,
+			result: 'INCORRECT',
+			masteryLevel: 'LEARNING',
+		},
+		{
+			wordId: 'word-skipped',
+			arabicText: 'ذهب',
+			transliteration: null,
+			translation: 'go',
+			frontSide: 'ARABIC',
+			position: 2,
+			result: 'SKIPPED',
+			masteryLevel: 'NEW',
+		},
+	];
+}
+
 describe('SessionSummary', () => {
 	it('renders stats and promotions from summary', () => {
 		render(SessionSummary, {
 			props: {
 				summary: buildSummary(),
+				words: buildWords(),
 			},
 		});
 
@@ -38,6 +74,11 @@ describe('SessionSummary', () => {
 		expect(screen.getByText('19')).toBeInTheDocument();
 		expect(screen.getByText('MIXED')).toBeInTheDocument();
 		expect(screen.getByText('LEARNING → KNOWN')).toBeInTheDocument();
+		expect(screen.getByText('kataba')).toBeInTheDocument();
+		expect(screen.getAllByText('Correct')).toHaveLength(1);
+		expect(screen.getByText('Wrong')).toBeInTheDocument();
+		expect(screen.getByText('Skipped')).toBeInTheDocument();
+		expect(screen.getByText('كتب').closest('a')).toHaveAttribute('href', '/words/word-correct');
 	});
 
 	it('starts a new session when button clicked', async () => {
@@ -52,6 +93,7 @@ describe('SessionSummary', () => {
 					totalWords: 1,
 					promotions: [],
 				}),
+				words: [],
 			},
 		});
 

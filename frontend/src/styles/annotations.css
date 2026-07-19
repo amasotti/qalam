@@ -47,7 +47,7 @@
 }
 .item-type {
 	font-size: 0.7rem;
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 	text-transform: uppercase;
 	letter-spacing: 0.04em;
 	color: hsl(var(--muted-foreground));
@@ -264,7 +264,7 @@
 	cursor: pointer;
 }
 .drawer-field-title {
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 	margin-bottom: 0.5rem;
 }
 .drawer-textarea {
@@ -319,7 +319,7 @@
 .drawer-relation-linked {
 	color: var(--color-success, #4caf50);
 	font-size: 0.75rem;
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 }
 .drawer-relation-err {
 	color: var(--color-danger, #e53935);

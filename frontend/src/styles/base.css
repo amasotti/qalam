@@ -52,7 +52,7 @@
 .prose h2,
 .prose h3,
 .prose h4 {
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 	line-height: 1.35;
 	margin-top: 1.5em;
 	margin-bottom: 0.5em;
@@ -88,7 +88,7 @@
 }
 
 .prose strong {
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 	color: hsl(var(--foreground));
 }
 
@@ -172,5 +172,5 @@
 
 .prose th {
 	background: hsl(var(--muted));
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 }

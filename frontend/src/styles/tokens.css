@@ -133,4 +133,7 @@
 	--content-max-width: 72rem;
 	--content-padding-x: 1.5rem;
 	--sidebar-width: 220px;
+
+	/* Font settings */
+	--weight-bold: var(--weight-bold);
 }

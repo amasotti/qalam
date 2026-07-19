@@ -152,7 +152,7 @@
 }
 .wc-pos {
 	font-size: 0.55rem;
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
 	padding: 0.1rem 0.5rem;
@@ -178,7 +178,7 @@
 	font-size: 0.55rem;
 	padding: 0.1rem 0.5rem;
 	border-radius: 999px;
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
 }

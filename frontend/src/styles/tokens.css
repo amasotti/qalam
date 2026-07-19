@@ -6,9 +6,9 @@
 @theme {
 	--font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
 	--font-display: "Lora", Georgia, serif;
-	--font-arabic: "Noto Naskh Arabic", "Amiri", serif;
-	--font-arabic-display: "Amiri", "Noto Naskh Arabic", serif;
-	--font-arabic-text: "Noto Naskh Arabic", "Amiri", serif;
+	--font-arabic: "Noto Naskh Arabic", "Parastoo", serif;
+	--font-arabic-display: "Parastoo", "Noto Naskh Arabic", serif;
+	--font-arabic-text: "Noto Naskh Arabic", "Parastoo", serif;
 
 	--color-border: hsl(var(--border));
 	--color-input: hsl(var(--input));

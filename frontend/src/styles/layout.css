@@ -27,7 +27,7 @@
 	border-bottom: 1px solid var(--border);
 }
 .sb-ar {
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 3rem;
 	color: var(--olive);
 	direction: rtl;
@@ -70,7 +70,7 @@
 	transition: all 150ms;
 }
 .sb-link .ar {
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 0.95rem;
 	direction: rtl;
 	color: var(--ink-ghost);
@@ -294,7 +294,7 @@
 }
 .bc-cur {
 	color: var(--ink-mid);
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 1rem;
 	direction: rtl;
 }

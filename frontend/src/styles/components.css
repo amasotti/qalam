@@ -61,7 +61,7 @@
 	color: var(--ink-mid);
 }
 .meta-val.ar {
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 1.2rem;
 	direction: rtl;
 	color: var(--ink);

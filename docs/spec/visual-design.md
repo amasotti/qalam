@@ -112,15 +112,15 @@ Standard red `#C03030` stays for the Delete/destructive button — universal dan
 @theme {
   --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Lora', Georgia, serif;
-  --font-arabic:         'Noto Naskh Arabic', 'Lateef', 'Amiri', serif;
-  --font-arabic-display: 'Amiri', 'Noto Naskh Arabic', serif;
-  --font-arabic-text:    'Noto Naskh Arabic', 'Amiri', serif;
+  --font-arabic:         'Noto Naskh Arabic', 'Lateef', 'Parastoo', serif;
+  --font-arabic-display: 'Parastoo', 'Noto Naskh Arabic', serif;
+  --font-arabic-text:    'Noto Naskh Arabic', 'Parastoo', serif;
 }
 ```
 
 **Google Fonts import** (add to `app.html`):
 ```html
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Parastoo:ital,wght@0,400;0,700;1,400&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 ```
 
 ### Usage rules
@@ -131,8 +131,8 @@ Standard red `#C03030` stays for the Delete/destructive button — universal dan
 | Section labels | DM Sans | 0.62rem | 500 | UPPERCASE, 0.2em spacing |
 | Page titles | Lora | 1.75rem | 600 | letter-spacing: -0.01em |
 | Translation display | Lora | 1.1–1.3rem | 400 italic | |
-| Word detail hero | Amiri | 7rem | 400 | direction: rtl |
-| Root letter tiles | Amiri | 4.5rem | 400 | direction: rtl |
+| Word detail hero | Parastoo | 7rem | 400 | direction: rtl |
+| Root letter tiles | Parastoo | 4.5rem | 400 | direction: rtl |
 | Sentence Arabic | Noto Naskh Arabic | 1.75rem | 500 | line-height: 2 |
 | Token Arabic | Noto Naskh Arabic | 1.1rem | 400 | |
 | Full text Arabic | Noto Naskh Arabic | 1.5rem | 400 | line-height: 2.2 |
@@ -154,12 +154,12 @@ Standard red `#C03030` stays for the Delete/destructive button — universal dan
 
 **Sidebar** (`--sidebar-width: 220px`):
 - Background: `var(--bg-dark)` (#EEE8DC) — warm, not dark.
-- Brand: Amiri قلم at 2.875rem in `--olive`, "Qalam" in Lora SC below.
+- Brand: Parastoo قلم at 2.875rem in `--olive`, "Qalam" in Lora SC below.
 - Nav section labels (Study / Practice): 0.58rem, uppercase, `--ink-ghost`.
 - Nav links: `justify-content: space-between`; Latin label left, Arabic label right. Active state: `var(--olive-pale)` background, `--olive` text.
 - Progress strip at bottom: vocabulary mastery bar with `linear-gradient(to right, var(--olive), var(--coral))`.
 
-**Breadcrumb bar**: 46px tall, white background, 1px bottom border (`--border-thin`). Arabic current-page label uses `font-family: 'Amiri'`.
+**Breadcrumb bar**: 46px tall, white background, 1px bottom border (`--border-thin`). Arabic current-page label uses `font-family: 'Parastoo'`.
 
 ### Detail page grid (word, root, text)
 
@@ -310,7 +310,7 @@ Meta rows inside cards: label (0.58rem, uppercase, `--ink-ghost`) + value (0.82r
 ┌──────────────────────────────────────────────────────┐
 │  [ghost letter — first letter, 8rem, olive 5% opacity, right]  │
 │                                                       │
-│  كَتَبَ    ← Amiri, 7rem, ink, direction:rtl          │
+│  كَتَبَ    ← Parastoo, 7rem, ink, direction:rtl          │
 │  kataba   ← Lora italic, 1.3rem, --olive              │
 │                                                       │
 │  [Verb]olive [MSA]cerulean [Intermediate]coral [Familiar]coral  [Edit]coral [Delete]red │
@@ -318,7 +318,7 @@ Meta rows inside cards: label (0.58rem, uppercase, `--ink-ghost`) + value (0.82r
 border-bottom: 1px solid --border; padding-bottom: 2.5rem; margin-bottom: 3rem
 ```
 
-**Ghost letter**: `position: absolute`, `font-family: 'Amiri'`, `font-size: 8rem`, `color: var(--olive)`, `opacity: 0.05`, `right: -0.5rem`, `top: -1rem`, `user-select: none`.
+**Ghost letter**: `position: absolute`, `font-family: 'Parastoo'`, `font-size: 8rem`, `color: var(--olive)`, `opacity: 0.05`, `right: -0.5rem`, `top: -1rem`, `user-select: none`.
 
 ### Content sections (left column)
 
@@ -337,7 +337,7 @@ Arabic line: Noto Naskh Arabic 1.5rem, rtl. Transliteration: Lora italic 0.78rem
 
 ### Right panel cards
 
-1. **Root card** — olive-pale background, root Arabic large (`Amiri` 1.625rem), "View family →" in `--olive`.
+1. **Root card** — olive-pale background, root Arabic large (`Parastoo` 1.625rem), "View family →" in `--olive`.
 2. **Mastery gauge** — 5-step indicator, filled steps in `--coral`, label in `--coral`.
 3. **Details card** — POS, pattern, dialect, difficulty, date added.
 4. **Word family preview** — 2×2 chip grid with mastery top strips.
@@ -370,7 +370,7 @@ Arabic line: Noto Naskh Arabic 1.5rem, rtl. Transliteration: Lora italic 0.78rem
 .root-letter-tile:hover::after { left: 0; right: 0; }
 ```
 
-Arabic letter: `Amiri` 4.5rem. Transliteration below: `Lora` 0.72rem italic `--olive`.
+Arabic letter: `Parastoo` 4.5rem. Transliteration below: `Lora` 0.72rem italic `--olive`.
 
 **Ghost background**: root letters (space-separated) at ~10rem, `color: var(--olive)`, `opacity: 0.04`.
 
@@ -386,7 +386,7 @@ Arabic letter: `Amiri` 4.5rem. Transliteration below: `Lora` 0.72rem italic `--o
 
 Each card: same pattern as word detail — white bg, 1px border, mastery top strip (3px), hover raises card with `border-color: var(--coral)`.
 
-Card content (top → bottom): Arabic (`Amiri` 1.75rem) → transliteration (Lora italic 0.65rem `--olive`) → translation (DM Sans 0.68rem `--ink-light`) → POS chip → mastery chip.
+Card content (top → bottom): Arabic (`Parastoo` 1.75rem) → transliteration (Lora italic 0.65rem `--olive`) → translation (DM Sans 0.68rem `--ink-light`) → POS chip → mastery chip.
 
 ### POS chip colors (word family + token cells)
 

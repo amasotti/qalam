@@ -21,7 +21,7 @@
 
   <!-- Arabic ق — gradient-filled, centred -->
   <text x="16" y="22"
-    font-family="'Noto Naskh Arabic','Amiri','Scheherazade New','Traditional Arabic',serif"
+    font-family="'Noto Naskh Arabic','Parastoo','Scheherazade New','Traditional Arabic',serif"
     font-size="20" font-weight="700"
     text-anchor="middle"
     fill="url(#qg)"

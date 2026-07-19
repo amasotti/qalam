@@ -14,6 +14,9 @@ import com.tonihacks.qalam.domain.analytics.AnalyticsService
 import com.tonihacks.qalam.domain.conjugation.ConjugationEngine
 import com.tonihacks.qalam.domain.conjugation.ConjugationService
 import com.tonihacks.qalam.domain.conjugation.MsaConjugationEngine
+import com.tonihacks.qalam.domain.conjugationexercise.ConjugatableVerbRepository
+import com.tonihacks.qalam.domain.conjugationexercise.ConjugationExerciseRepository
+import com.tonihacks.qalam.domain.conjugationexercise.ConjugationExerciseService
 import com.tonihacks.qalam.domain.dictionary.DictionaryLookupService
 import com.tonihacks.qalam.domain.dictionary.DictionaryLookupClient
 import com.tonihacks.qalam.domain.exercise.ExerciseRepository
@@ -33,6 +36,8 @@ import com.tonihacks.qalam.infrastructure.exposed.ExposedSentenceRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedTextRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedAnalyticsRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedExerciseRepository
+import com.tonihacks.qalam.infrastructure.exposed.ExposedConjugatableVerbRepository
+import com.tonihacks.qalam.infrastructure.exposed.ExposedConjugationExerciseRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedTrainingRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedVerbDetailsRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedWordMorphologyRepository
@@ -108,6 +113,9 @@ val analyticsModule = module {
 val conjugationModule = module {
     single<ConjugationEngine> { MsaConjugationEngine() }
     single { ConjugationService(get(), get(), get(), get()) }
+    single<ConjugatableVerbRepository> { ExposedConjugatableVerbRepository() }
+    single<ConjugationExerciseRepository> { ExposedConjugationExerciseRepository() }
+    single { ConjugationExerciseService(get(), get(), get(), get(), get()) }
 }
 
 val appModule = module {

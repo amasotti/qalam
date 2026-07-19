@@ -128,11 +128,16 @@ export function useDictionaryLinks(id: () => string | undefined) {
 	}));
 }
 
-export function useWordAutocomplete(q: () => string) {
+export function useWordAutocomplete(
+	q: () => string,
+	partOfSpeech?: () => PartOfSpeech | undefined
+) {
 	return createQuery(() => ({
-		queryKey: ['words', 'autocomplete', q()],
+		queryKey: ['words', 'autocomplete', q(), partOfSpeech?.()],
 		queryFn: async () => {
-			const { data, error } = await autocompleteWords({ query: { q: q() } });
+			const { data, error } = await autocompleteWords({
+				query: { q: q(), partOfSpeech: partOfSpeech?.() },
+			});
 			if (error) throw error;
 			return requireData(data, 'autocompleteWords') as WordAutocompleteResponse[];
 		},

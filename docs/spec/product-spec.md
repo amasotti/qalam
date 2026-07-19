@@ -115,6 +115,15 @@ Vocabulary linking: the user can search the vocabulary and link any token to a m
 
 **CRUD**: Full create, read, update, delete. Available via both UI and API.
 
+### Verb conjugation
+
+Verb entries may have persisted verb metadata: form I–X, Form-I past/present patterns where
+needed, and weakness type. A deterministic MSA engine combines this metadata with the linked root
+to generate fully vocalised past/present paradigms for all 13 person/number/gender slots, active
+and passive voice. It also returns prefix, root, pattern-vowel, and suffix segments for teaching
+visualisation. The reference UI is being completed; an ad-hoc API permits
+computing a table before a word is saved.
+
 ---
 
 ### 2. Vocabulary
@@ -207,6 +216,14 @@ max 50).
 - Incorrect resets streak but does not demote level
 
 **Training statistics**: accuracy by mode, session history, mastery distribution.
+
+**Recognition exercises**: multiple-choice meaning exercises are resumable sessions with instant
+feedback. They use the same vocabulary pool and update word mastery through their existing answer
+flow.
+
+**Conjugation exercises (planned)**: matching and typed full-harakat recall use generated verb
+forms. They store session history and mistakes only; they do not promote lemma mastery or introduce
+per-form progress.
 
 **Session cleanup**: purge oldest N sessions.
 

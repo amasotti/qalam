@@ -1,6 +1,6 @@
-# Training and practice — SRS Design
+# Training and practice — SRS and exercise design
 
-> How the flashcard training system works, how sessions are structured, and how words move through mastery levels.
+> How word SRS and non-SRS practice sessions work. Only flashcards mutate word mastery.
 
 ---
 
@@ -128,6 +128,22 @@ Server state is managed via `@tanstack/svelte-query` hooks in `frontend/src/lib/
 The first exercise strategy is `MULTIPLE_CHOICE_MEANING`: Arabic is shown as the prompt and the learner selects one of four translations. The setup mirrors flashcards: all vocabulary or selected word lists, a mastery focus, and a question count.
 
 Exercise answers lock immediately and show the correct option before the learner moves on. Refreshing an active exercise resumes at its first unanswered question. Completing it records unanswered questions as skipped; completed sessions remain reviewable from the paginated history. Exercise server state is managed in `frontend/src/lib/stores/exercises.ts`.
+
+### Conjugation exercises (planned)
+
+Conjugation practice is a separate session family built on the deterministic MSA conjugation
+engine. It deliberately does **not** modify `word_progress` or word mastery: conjugated forms are
+generated from a lemma rather than stored vocabulary entries.
+
+The first mode is a four-form matching board. It presents four fully vocalised forms of one verb
+and four person/number/gender labels; the learner matches every form to its morphology. The
+follow-up `WRITE_FORM` mode prompts for a morphology description and requires typing the complete
+Arabic form, including harakat. Sessions retain the verb, generated-form snapshot, submitted
+mapping/text, and per-form correctness so mistakes can be reviewed. No per-form SRS/progression
+table is planned.
+
+See [conjugation.md](conjugation.md) and the
+[exercise implementation plan](../plans/2026-07-19-conjugation-exercises-design.md).
 
 ---
 

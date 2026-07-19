@@ -49,3 +49,13 @@ object ConjugationExercisePairsTable : Table("conjugation_exercise_pairs") {
 
     override val primaryKey = PrimaryKey(id)
 }
+
+object ConjugationExerciseAnswersTable : Table("conjugation_exercise_answers") {
+    val itemId = uuid("item_id")
+    val formId = uuid("form_id")
+    val selectedLabelId = uuid("selected_label_id").nullable()
+    val submittedText = text("submitted_text").nullable()
+    val isCorrect = bool("is_correct")
+
+    override val primaryKey = PrimaryKey(itemId, formId)
+}

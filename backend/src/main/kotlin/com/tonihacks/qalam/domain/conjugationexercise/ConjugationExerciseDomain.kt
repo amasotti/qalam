@@ -45,6 +45,7 @@ data class ConjugationExerciseItem(
     val result: TrainingResult?,
     val answeredAt: Instant?,
     val pairs: List<ConjugationExercisePair>,
+    val answers: List<ConjugationExerciseAnswer> = emptyList(),
 )
 
 /** One correct form-to-label relation. Form and label identifiers stay separate in the API. */
@@ -69,4 +70,11 @@ data class ConjugationExerciseAnswer(
     val selectedLabelId: UUID?,
     val submittedText: String?,
     val isCorrect: Boolean,
+)
+
+data class ConjugationExerciseSessionSummary(
+    val session: ConjugationExerciseSession,
+    val correct: Int,
+    val incorrect: Int,
+    val skipped: Int,
 )

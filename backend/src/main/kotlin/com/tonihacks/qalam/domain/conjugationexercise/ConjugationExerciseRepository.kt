@@ -5,12 +5,38 @@ import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.word.MasteryLevel
 import com.tonihacks.qalam.domain.word.Word
 import java.util.UUID
+import kotlin.time.Instant
 
 interface ConjugationExerciseRepository {
     suspend fun createSession(
         session: ConjugationExerciseSession,
         items: List<ConjugationExerciseItem>,
     ): Either<DomainError, ConjugationExerciseSession>
+
+    suspend fun findSessionWithItems(
+        id: ConjugationExerciseSessionId,
+    ): Either<DomainError, Pair<ConjugationExerciseSession, List<ConjugationExerciseItem>>>
+
+    suspend fun recordAnswer(
+        sessionId: ConjugationExerciseSessionId,
+        itemId: ConjugationExerciseItemId,
+        answers: List<ConjugationExerciseAnswer>,
+        result: com.tonihacks.qalam.domain.training.TrainingResult,
+        answeredAt: Instant,
+    ): Either<DomainError, Unit>
+
+    suspend fun completeSession(
+        id: ConjugationExerciseSessionId,
+        correctCount: Int,
+        incorrectCount: Int,
+        skippedCount: Int,
+        completedAt: Instant,
+    ): Either<DomainError, ConjugationExerciseSession>
+
+    suspend fun listSessions(
+        page: Int,
+        size: Int,
+    ): Either<DomainError, Pair<List<ConjugationExerciseSession>, Long>>
 }
 
 interface ConjugatableVerbRepository {

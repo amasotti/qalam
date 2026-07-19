@@ -11,6 +11,7 @@ import com.tonihacks.qalam.domain.logDomainFailure
 import com.tonihacks.qalam.domain.root.RootRepository
 import com.tonihacks.qalam.domain.training.SessionStatus
 import com.tonihacks.qalam.domain.training.TrainingMode
+import com.tonihacks.qalam.domain.training.TrainingResult
 import com.tonihacks.qalam.domain.word.MasteryLevel
 import com.tonihacks.qalam.domain.word.Word
 import com.tonihacks.qalam.infrastructure.exposed.ExposedVerbDetailsRepository
@@ -66,6 +67,97 @@ class ConjugationExerciseService(
         "Failed to create conjugation matching session mode=$mode requestedSize=$size wordListCount=${wordListIds.size}"
     }
 
+    suspend fun getSession(
+        sessionIdStr: String,
+    ): Either<DomainError, Pair<ConjugationExerciseSession, List<ConjugationExerciseItem>>> = either {
+        sessionRepo.findSessionWithItems(parseSessionId(sessionIdStr).bind()).bind()
+    }.logDomainFailure(log) { "Failed to load conjugation exercise session id=$sessionIdStr" }
+
+    suspend fun answerItem(
+        sessionIdStr: String,
+        itemIdStr: String,
+        mappings: List<ConjugationExerciseMappingRequest>,
+    ): Either<DomainError, AnswerConjugationExerciseItemResponse> = either {
+        val sessionId = parseSessionId(sessionIdStr).bind()
+        val itemId = parseItemId(itemIdStr).bind()
+        val (session, items) = sessionRepo.findSessionWithItems(sessionId).bind()
+        ensure(session.status == SessionStatus.ACTIVE) { DomainError.SessionAlreadyCompleted(sessionIdStr) }
+        val item = items.singleOrNull { it.id == itemId }
+            ?: raise(DomainError.NotFound("ConjugationExerciseItem", itemIdStr))
+        ensure(item.result == null) { DomainError.Conflict("ConjugationExerciseItem", itemIdStr) }
+        ensure(mappings.size == MATCHING_PAIR_COUNT) {
+            DomainError.InvalidInput("Exactly $MATCHING_PAIR_COUNT form-to-label mappings are required")
+        }
+
+        val parsedMappings = mappings.map { mapping ->
+            parseUuid(mapping.formId, "form ID").bind() to parseUuid(mapping.labelId, "label ID").bind()
+        }
+        ensure(parsedMappings.map { it.first }.distinct().size == MATCHING_PAIR_COUNT) {
+            DomainError.InvalidInput("Each form must occur exactly once")
+        }
+        ensure(parsedMappings.map { it.second }.distinct().size == MATCHING_PAIR_COUNT) {
+            DomainError.InvalidInput("Each label must occur exactly once")
+        }
+        val pairsByFormId = item.pairs.associateBy { it.formId }
+        ensure(parsedMappings.all { (formId, labelId) -> pairsByFormId[formId]?.labelId != null && item.pairs.any { it.labelId == labelId } }) {
+            DomainError.InvalidInput("Mappings must belong to the unanswered item")
+        }
+
+        val answers = parsedMappings.map { (formId, labelId) ->
+            ConjugationExerciseAnswer(
+                itemId = itemId,
+                formId = formId,
+                selectedLabelId = labelId,
+                submittedText = null,
+                isCorrect = pairsByFormId.getValue(formId).labelId == labelId,
+            )
+        }
+        val result = if (answers.all { it.isCorrect }) TrainingResult.CORRECT else TrainingResult.INCORRECT
+        sessionRepo.recordAnswer(sessionId, itemId, answers, result, Clock.System.now()).bind()
+
+        AnswerConjugationExerciseItemResponse(
+            itemId = itemIdStr,
+            result = result.name,
+            submittedMappings = answers.map { answer ->
+                ConjugationExerciseMappingResponse(answer.formId.toString(), answer.selectedLabelId.toString(), answer.isCorrect)
+            },
+            correctMappings = item.pairs.map { pair ->
+                ConjugationExerciseMappingResponse(pair.formId.toString(), pair.labelId.toString())
+            },
+        )
+    }.logDomainFailure(log) { "Failed to answer conjugation exercise item sessionId=$sessionIdStr itemId=$itemIdStr" }
+
+    suspend fun completeSession(
+        sessionIdStr: String,
+    ): Either<DomainError, ConjugationExerciseSessionSummaryResponse> = either {
+        val sessionId = parseSessionId(sessionIdStr).bind()
+        val (session, items) = sessionRepo.findSessionWithItems(sessionId).bind()
+        ensure(session.status == SessionStatus.ACTIVE) { DomainError.SessionAlreadyCompleted(sessionIdStr) }
+        val correct = items.count { it.result == TrainingResult.CORRECT }
+        val incorrect = items.count { it.result == TrainingResult.INCORRECT }
+        val skipped = items.size - correct - incorrect
+        val completed = sessionRepo.completeSession(sessionId, correct, incorrect, skipped, Clock.System.now()).bind()
+        val answered = correct + incorrect
+        ConjugationExerciseSessionSummaryResponse(
+            sessionId = sessionIdStr,
+            mode = session.mode.name,
+            totalItems = session.totalItems,
+            correct = correct,
+            incorrect = incorrect,
+            skipped = skipped,
+            accuracy = if (answered == 0) 0.0 else correct.toDouble() / answered,
+            completedAt = completed.completedAt.toString(),
+        )
+    }.logDomainFailure(log) { "Failed to complete conjugation exercise session id=$sessionIdStr" }
+
+    suspend fun listSessions(page: Int, size: Int): Either<DomainError, PaginatedConjugationExerciseSessionsResponse> = either {
+        ensure(page >= 1) { DomainError.InvalidInput("page must be at least 1") }
+        val (sessions, total) = sessionRepo.listSessions(page, size.coerceIn(1, 500)).bind()
+        PaginatedConjugationExerciseSessionsResponse(
+            items = sessions.map { it.toListItemResponse() }, total = total, page = page, size = size.coerceIn(1, 500),
+        )
+    }.logDomainFailure(log) { "Failed to list conjugation exercise sessions page=$page size=$size" }
+
     private suspend fun arrow.core.raise.Raise<DomainError>.buildMatchingItem(
         sessionId: ConjugationExerciseSessionId,
         position: Int,
@@ -119,6 +211,27 @@ class ConjugationExerciseService(
             },
         )
     }
+}
+
+private fun parseSessionId(value: String): Either<DomainError, ConjugationExerciseSessionId> = either {
+    ConjugationExerciseSessionId(parseUuid(value, "session ID").bind())
+}
+
+private fun parseItemId(value: String): Either<DomainError, ConjugationExerciseItemId> = either {
+    ConjugationExerciseItemId(parseUuid(value, "item ID").bind())
+}
+
+private fun parseUuid(value: String, field: String): Either<DomainError, UUID> =
+    Either.catch { UUID.fromString(value) }.mapLeft { DomainError.InvalidInput("Invalid $field: $value") }
+
+private fun ConjugationExerciseSession.toListItemResponse(): ConjugationExerciseSessionListItemResponse {
+    val answered = correctCount + incorrectCount
+    return ConjugationExerciseSessionListItemResponse(
+        id = id.value.toString(), mode = mode.name, status = status.name, tense = tense.name, voice = voice.name,
+        totalItems = totalItems, correctCount = correctCount, incorrectCount = incorrectCount, skippedCount = skippedCount,
+        accuracy = if (answered == 0) 0.0 else correctCount.toDouble() / answered,
+        createdAt = createdAt.toString(), completedAt = completedAt?.toString(),
+    )
 }
 
 private const val MIN_SESSION_SIZE = 3

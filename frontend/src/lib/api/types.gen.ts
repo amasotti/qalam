@@ -1153,6 +1153,10 @@ export type AutocompleteWordsData = {
          */
         q: string;
         limit?: number;
+        /**
+         * Restrict results to one part of speech
+         */
+        partOfSpeech?: PartOfSpeech;
     };
     url: '/api/v1/words/autocomplete';
 };

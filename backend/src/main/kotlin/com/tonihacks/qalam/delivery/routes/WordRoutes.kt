@@ -43,8 +43,9 @@ fun Route.wordRoutes(service: WordService, dictionaryService: DictionaryLookupSe
         get("/autocomplete") {
             val q = call.request.queryParameters["q"] ?: ""
             val limit = call.request.queryParameters["limit"]?.toIntOrNull()
+            val partOfSpeech = call.request.queryParameters["partOfSpeech"]
 
-            service.autocomplete(q, limit).fold(
+            service.autocomplete(q, limit, partOfSpeech).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.OK, it) },
             )

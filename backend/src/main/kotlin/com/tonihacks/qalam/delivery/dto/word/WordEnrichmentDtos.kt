@@ -49,9 +49,18 @@ data class CreateWordRelationRequest(
 data class WordEnrichmentSuggestion(
     val notes: String?,
     val gender: String?,
-    val verbPattern: String?,
+    val verbPattern: String? = null,
+    val verbDetails: AiVerbDetailsSuggestion? = null,
     val plurals: List<AiPluralSuggestion>,
     val relations: List<AiRelationSuggestion>,
+)
+
+@Serializable
+data class AiVerbDetailsSuggestion(
+    val verbForm: String,
+    val pastPattern: String? = null,
+    val presentPattern: String? = null,
+    val weaknessType: String = "SOUND",
 )
 
 @Serializable

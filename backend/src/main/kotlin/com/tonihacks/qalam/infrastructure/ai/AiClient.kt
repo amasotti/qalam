@@ -236,7 +236,7 @@ Sentence: "$arabicText""""
 
 Provide:
 - gender (MASCULINE/FEMININE, nouns only, null for others)
-- verbPattern (Roman numeral I-X, verbs only, null for others)
+- verbDetails (verbs only, null for others): verbForm (Roman numeral I-X), pastPattern and presentPattern (Form I only: fa3ala/fa3ila/fa3ula and yaf3ulu/yaf3ilu/yaf3alu), weaknessType (SOUND/ASSIMILATED/HOLLOW/GEMINATE/DEFECTIVE/DOUBLY_WEAK)
 - plurals: list of plural forms with types (SOUND_MASC/SOUND_FEM/BROKEN/PAUCAL/COLLECTIVE/OTHER)
 - relations: 2–4 high-value entries — near-synonyms with register/nuance difference, strong antonyms, or words from the same semantic field. Avoid generic filler. Each entry: arabicText (unvoweled), transliteration (practical chat-style), translation (concise English gloss), relationType (SYNONYM/ANTONYM/RELATED)
 - notes: brief mnemonic or usage note in English, focusing on common learner confusions, collocations, or register constraints (null if nothing genuinely useful)
@@ -244,7 +244,7 @@ Provide:
 Respond ONLY with this JSON structure:
 {
   "gender": "MASCULINE" | "FEMININE" | null,
-  "verbPattern": "I" | "II" | "III" | "IV" | "V" | "VI" | "VII" | "VIII" | "IX" | "X" | null,
+  "verbDetails": {"verbForm": "I", "pastPattern": "fa3ala", "presentPattern": "yaf3ulu", "weaknessType": "SOUND"} | null,
   "plurals": [{"pluralForm": "...", "pluralType": "BROKEN"}],
   "relations": [{"arabicText": "...", "transliteration": "...", "translation": "...", "relationType": "SYNONYM"}],
   "notes": "..." | null

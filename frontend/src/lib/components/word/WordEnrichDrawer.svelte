@@ -13,6 +13,7 @@ import {
 	useLookupWordByArabic,
 	useUpdateWord,
 	useUpsertMorphology,
+	useUpsertVerbDetails,
 } from '$lib/stores/words';
 
 interface Props {
@@ -26,6 +27,7 @@ const { wordId, open, onClose, onAiUnavailable }: Props = $props();
 
 const enrichMutation = useEnrichWord();
 const upsertMorphology = useUpsertMorphology();
+const upsertVerbDetails = useUpsertVerbDetails();
 const addPlural = useAddWordPlural();
 const updateWord = useUpdateWord();
 const addRelation = useAddWordRelation();
@@ -41,7 +43,7 @@ let isAiNotConfigured = $state(false);
 let acceptNotes = $state(true);
 let editedNotes = $state('');
 let acceptGender = $state(true);
-let acceptVerbPattern = $state(true);
+let acceptVerbDetails = $state(true);
 let acceptedPlurals = $state<boolean[]>([]);
 
 let saving = $state(false);
@@ -62,7 +64,7 @@ function runEnrichment() {
 			editedNotes = data.notes ?? '';
 			acceptNotes = !!data.notes;
 			acceptGender = !!data.gender;
-			acceptVerbPattern = !!data.verbPattern;
+			acceptVerbDetails = !!data.verbDetails;
 			acceptedPlurals = data.plurals.map(() => true);
 			relStates = data.relations.map(() => ({ status: 'idle' as const }));
 			// Kick off existence checks immediately (fire-and-forget, errors handled inside)
@@ -149,17 +151,17 @@ async function handleSave() {
 			await updateWord.mutateAsync({ id: wordId, body: { notes: editedNotes.trim() } });
 		}
 
-		// Morphology (gender + verbPattern together)
+		// Noun/adjective morphology
 		const hasGender = acceptGender && suggestion.gender;
-		const hasPattern = acceptVerbPattern && suggestion.verbPattern;
-		if (hasGender || hasPattern) {
+		if (hasGender) {
 			await upsertMorphology.mutateAsync({
 				id: wordId,
-				body: {
-					...(hasGender ? { gender: suggestion.gender } : {}),
-					...(hasPattern ? { verbPattern: suggestion.verbPattern } : {}),
-				},
+				body: { gender: suggestion.gender },
 			});
+		}
+
+		if (acceptVerbDetails && suggestion.verbDetails) {
+			await upsertVerbDetails.mutateAsync({ id: wordId, body: suggestion.verbDetails });
 		}
 
 		// Plurals
@@ -242,12 +244,16 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 								</div>
 							{/if}
 
-							{#if suggestion.verbPattern}
+							{#if suggestion.verbDetails}
 								<div class="form-field">
 									<label class="drawer-field-label">
-										<input type="checkbox" bind:checked={acceptVerbPattern} />
-										Verb form: <strong>Form {suggestion.verbPattern}</strong>
+										<input type="checkbox" bind:checked={acceptVerbDetails} />
+										Verb: <strong>Form {suggestion.verbDetails.verbForm}</strong>
+										· {suggestion.verbDetails.weaknessType.toLowerCase().replace('_', ' ')}
 									</label>
+									{#if suggestion.verbDetails.pastPattern || suggestion.verbDetails.presentPattern}
+										<div class="form-hint">{suggestion.verbDetails.pastPattern ?? '—'} · {suggestion.verbDetails.presentPattern ?? '—'}</div>
+									{/if}
 								</div>
 							{/if}
 
@@ -264,7 +270,7 @@ const pluralTypeLabels: Record<AiPluralSuggestion['pluralType'], string> = {
 								</div>
 							{/if}
 
-							{#if !suggestion.gender && !suggestion.verbPattern && suggestion.plurals.length === 0}
+							{#if !suggestion.gender && !suggestion.verbDetails && suggestion.plurals.length === 0}
 								<p class="annot-empty">No morphology suggestions.</p>
 							{/if}
 						</div>

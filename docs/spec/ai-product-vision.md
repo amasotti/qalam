@@ -62,8 +62,8 @@ the annotation-drawer pattern.
 one click away, in context, is enormously useful. No existing tool integrates this at the
 sentence level with your own corpus.
 
-**Status:** Verb metadata and the rule-based conjugation engine are implemented; the reference UI
-is in progress. This must stay rule-based, deterministic, and available without an AI key. The
+**Status:** Verb metadata, the rule-based conjugation engine, and the reference UI are
+implemented. This must stay rule-based, deterministic, and available without an AI key. The
 remaining contextual integration is a UI/navigation feature, not an AI request.
 
 ---

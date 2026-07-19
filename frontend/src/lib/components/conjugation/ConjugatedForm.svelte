@@ -17,6 +17,6 @@ const { arabic, segments }: Props = $props();
 </script>
 
 <div class="conj-form-cell">
-	<span class="conj-form-word">{arabic}</span>
 	<span class="conj-form-segments">{#each segments as seg}<span class={SEGMENT_CLASS[seg.type] ?? ''}>{seg.text}</span>{/each}</span>
+	<span class="conj-form-word">{arabic}</span>
 </div>

@@ -186,21 +186,21 @@
 	display: flex;
 	flex-direction: row-reverse;
 	align-items: baseline;
-	gap: 0.75rem;
+	gap: 3rem;
 }
 
 .conj-form-word {
 	font-family: var(--font-arabic);
-	font-size: 1.6rem;
+	font-size: 1.5rem;
 	line-height: 2.4;
 	direction: rtl;
-	color: var(--ink);
+	color: var(--ink-mid);
 }
 
 .conj-form-segments {
 	direction: rtl;
 	font-family: var(--font-arabic);
-	font-size: 1.6rem;
+	font-size: 1.5rem;
 	line-height: 2.4;
 	opacity: 0.8;
 }

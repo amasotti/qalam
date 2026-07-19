@@ -32,7 +32,7 @@ $effect(() => {
 	if (!session.data || initializedSessionId === session.data.id) return;
 
 	initializedSessionId = session.data.id;
-	currentIndex = session.data.items.findIndex((item) => item.result === undefined);
+	currentIndex = session.data.items.findIndex((item) => item.result == null);
 	selectedOptionId = null;
 	feedback = null;
 	summary = session.data.status === 'COMPLETED' ? summaryFromCompletedExercise(session.data) : null;

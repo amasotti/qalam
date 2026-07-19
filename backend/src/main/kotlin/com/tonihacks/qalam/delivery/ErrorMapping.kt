@@ -29,6 +29,11 @@ fun DomainError.toHttpResponse(): Pair<HttpStatusCode, ErrorResponse> = when (th
             "Not enough words for training: requested $requested, available $available",
             "NOT_ENOUGH_WORDS"
         )
+    is DomainError.NotEnoughConjugatableVerbs ->
+        HttpStatusCode.UnprocessableEntity to ErrorResponse(
+            "Not enough conjugatable verbs: requested $requested, available $available",
+            "NOT_ENOUGH_CONJUGATABLE_VERBS"
+        )
     is DomainError.SessionAlreadyCompleted ->
         HttpStatusCode.Conflict to ErrorResponse(
             "Session '$sessionId' is already completed",

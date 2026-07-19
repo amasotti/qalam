@@ -2292,7 +2292,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AnswerConjugationExerciseItemResponse"
-        "400": { description: Invalid, incomplete, duplicate, or foreign mapping }
+        "400": { description: "Invalid, incomplete, duplicate, or foreign mapping" }
         "404": { description: Session or item not found }
         "409": { description: Session completed or item already answered }
 
@@ -3335,9 +3335,10 @@ components:
           deprecated: true
           enum: [I, II, III, IV, V, VI, VII, VIII, IX, X]
         verbDetails:
+          type: object
+          nullable: true
           allOf:
             - $ref: "#/components/schemas/AiVerbDetailsSuggestion"
-          nullable: true
         plurals:
           type: array
           items:

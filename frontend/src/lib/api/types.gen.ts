@@ -3326,7 +3326,7 @@ export type AnswerConjugationExerciseItemData = {
 
 export type AnswerConjugationExerciseItemErrors = {
     /**
-     * Invalid
+     * Invalid, incomplete, duplicate, or foreign mapping
      */
     400: unknown;
     /**

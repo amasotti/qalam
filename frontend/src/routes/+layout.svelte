@@ -29,17 +29,17 @@ function isActive(href: string): boolean {
 				<a href="/words" class="sb-link" class:active={isActive('/words')}>
 					Words <span class="ar">كلمات</span>
 				</a>
+				<a href="/word-lists" class="sb-link sb-sublink" class:active={isActive('/word-lists')}>
+					Lists <span class="ar">قوائم</span>
+				</a>
+				<a href="/verbs/conjugation" class="sb-link sb-sublink" class:active={isActive('/verbs')}>
+					Conjugation <span class="ar">تصريف</span>
+				</a>
 				<a href="/roots" class="sb-link" class:active={isActive('/roots')}>
 					Roots <span class="ar">جذور</span>
 				</a>
 				<a href="/texts" class="sb-link" class:active={isActive('/texts')}>
 					Texts <span class="ar">نصوص</span>
-				</a>
-				<a href="/word-lists" class="sb-link" class:active={isActive('/word-lists')}>
-					Lists <span class="ar">قوائم</span>
-				</a>
-				<a href="/verbs/conjugation" class="sb-link" class:active={isActive('/verbs')}>
-					Conjugation <span class="ar">تصريف</span>
 				</a>
 				<span class="sb-section">Practice</span>
 				<a href="/training" class="sb-link" class:active={isActive('/training')}>

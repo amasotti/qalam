@@ -198,7 +198,7 @@ class WordServiceTest : FunSpec({
 
     context("autocomplete") {
         test("delegates to repo and maps to lightweight response") {
-            coEvery { repo.autocomplete("كتب", 10) } returns listOf(sampleWord).right()
+            coEvery { repo.autocomplete("كتب", 10, null) } returns listOf(sampleWord).right()
 
             val result = service.autocomplete("كتب", null)
 

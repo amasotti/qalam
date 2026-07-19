@@ -572,6 +572,130 @@ export type PaginatedExerciseSessionsResponse = {
     size: number;
 };
 
+export type CreateConjugationExerciseSessionRequest = {
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    size?: number;
+    wordListIds?: Array<string>;
+    tense?: 'PAST' | 'PRESENT';
+    voice?: 'ACTIVE' | 'PASSIVE';
+};
+
+export type ConjugationExerciseSegmentResponse = {
+    text: string;
+    type: 'PREFIX' | 'ROOT' | 'PATTERN_VOWEL' | 'SUFFIX';
+};
+
+export type ConjugationExerciseFormResponse = {
+    formId: string;
+    arabic: string;
+    segments: Array<ConjugationExerciseSegmentResponse>;
+};
+
+export type ConjugationExerciseLabelResponse = {
+    labelId: string;
+    person: '1S' | '2SM' | '2SF' | '3SM' | '3SF' | '2D' | '3DM' | '3DF' | '1P' | '2PM' | '2PF' | '3PM' | '3PF';
+    label: string;
+};
+
+export type ConjugationExerciseMappingRequest = {
+    formId: string;
+    labelId: string;
+};
+
+export type ConjugationExerciseMappingResponse = ConjugationExerciseMappingRequest & {
+    isCorrect?: boolean | null;
+};
+
+export type AnswerConjugationExerciseItemRequest = {
+    itemId: string;
+    mappings: [
+        ConjugationExerciseMappingRequest,
+        ConjugationExerciseMappingRequest,
+        ConjugationExerciseMappingRequest,
+        ConjugationExerciseMappingRequest
+    ];
+};
+
+export type AnswerConjugationExerciseItemResponse = {
+    itemId: string;
+    result: 'CORRECT' | 'INCORRECT';
+    submittedMappings: Array<ConjugationExerciseMappingResponse>;
+    correctMappings: Array<ConjugationExerciseMappingResponse>;
+};
+
+export type ConjugationExerciseItemResponse = {
+    itemId: string;
+    wordId: string;
+    lemma: string;
+    translation?: string | null;
+    verbForm: string;
+    tense: 'PAST' | 'PRESENT';
+    voice: 'ACTIVE' | 'PASSIVE';
+    forms: [
+        ConjugationExerciseFormResponse,
+        ConjugationExerciseFormResponse,
+        ConjugationExerciseFormResponse,
+        ConjugationExerciseFormResponse
+    ];
+    labels: [
+        ConjugationExerciseLabelResponse,
+        ConjugationExerciseLabelResponse,
+        ConjugationExerciseLabelResponse,
+        ConjugationExerciseLabelResponse
+    ];
+    result?: 'CORRECT' | 'INCORRECT' | 'SKIPPED';
+    /**
+     * Omitted until this item has been answered.
+     */
+    submittedMappings?: Array<ConjugationExerciseMappingResponse> | null;
+    /**
+     * Omitted until this item has been answered.
+     */
+    correctMappings?: Array<ConjugationExerciseMappingResponse> | null;
+};
+
+export type ConjugationExerciseSessionResponse = {
+    id: string;
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    status: 'ACTIVE' | 'COMPLETED';
+    items: Array<ConjugationExerciseItemResponse>;
+    createdAt: string;
+    completedAt?: string | null;
+};
+
+export type ConjugationExerciseSessionSummaryResponse = {
+    sessionId: string;
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    totalItems: number;
+    correct: number;
+    incorrect: number;
+    skipped: number;
+    accuracy: number;
+    completedAt: string;
+};
+
+export type ConjugationExerciseSessionListItemResponse = {
+    id: string;
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    status: 'ACTIVE' | 'COMPLETED';
+    tense: 'PAST' | 'PRESENT';
+    voice: 'ACTIVE' | 'PASSIVE';
+    totalItems: number;
+    correctCount: number;
+    incorrectCount: number;
+    skippedCount: number;
+    accuracy: number;
+    createdAt: string;
+    completedAt?: string | null;
+};
+
+export type PaginatedConjugationExerciseSessionsResponse = {
+    items: Array<ConjugationExerciseSessionListItemResponse>;
+    total: number;
+    page: number;
+    size: number;
+};
+
 export type CreateSessionRequest = {
     /**
      * Training mode by mastery bucket
@@ -894,6 +1018,8 @@ export type AdHocConjugationRequest = {
     weaknessType?: 'SOUND' | 'ASSIMILATED' | 'HOLLOW' | 'GEMINATE' | 'DEFECTIVE' | 'DOUBLY_WEAK';
     dialect?: string;
 };
+
+export type UuidPathId = string;
 
 export type ListRootsData = {
     body?: never;
@@ -3074,6 +3200,147 @@ export type CompleteExerciseSessionResponses = {
 };
 
 export type CompleteExerciseSessionResponse = CompleteExerciseSessionResponses[keyof CompleteExerciseSessionResponses];
+
+export type ListConjugationExerciseSessionsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        size?: number;
+    };
+    url: '/api/v1/conjugation-exercise-sessions';
+};
+
+export type ListConjugationExerciseSessionsResponses = {
+    /**
+     * Paginated conjugation exercise history
+     */
+    200: PaginatedConjugationExerciseSessionsResponse;
+};
+
+export type ListConjugationExerciseSessionsResponse = ListConjugationExerciseSessionsResponses[keyof ListConjugationExerciseSessionsResponses];
+
+export type CreateConjugationExerciseSessionData = {
+    body: CreateConjugationExerciseSessionRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/conjugation-exercise-sessions';
+};
+
+export type CreateConjugationExerciseSessionErrors = {
+    /**
+     * Invalid request
+     */
+    400: unknown;
+    /**
+     * Not enough conjugatable verbs
+     */
+    422: unknown;
+};
+
+export type CreateConjugationExerciseSessionResponses = {
+    /**
+     * Conjugation exercise session created
+     */
+    201: ConjugationExerciseSessionResponse;
+};
+
+export type CreateConjugationExerciseSessionResponse = CreateConjugationExerciseSessionResponses[keyof CreateConjugationExerciseSessionResponses];
+
+export type GetConjugationExerciseSessionData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/conjugation-exercise-sessions/{id}';
+};
+
+export type GetConjugationExerciseSessionErrors = {
+    /**
+     * Malformed UUID
+     */
+    400: unknown;
+    /**
+     * Session not found
+     */
+    404: unknown;
+};
+
+export type GetConjugationExerciseSessionResponses = {
+    /**
+     * Conjugation exercise session found
+     */
+    200: ConjugationExerciseSessionResponse;
+};
+
+export type GetConjugationExerciseSessionResponse = GetConjugationExerciseSessionResponses[keyof GetConjugationExerciseSessionResponses];
+
+export type AnswerConjugationExerciseItemData = {
+    body: AnswerConjugationExerciseItemRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/conjugation-exercise-sessions/{id}/answers';
+};
+
+export type AnswerConjugationExerciseItemErrors = {
+    /**
+     * Invalid
+     */
+    400: unknown;
+    /**
+     * Session or item not found
+     */
+    404: unknown;
+    /**
+     * Session completed or item already answered
+     */
+    409: unknown;
+};
+
+export type AnswerConjugationExerciseItemResponses = {
+    /**
+     * Submitted mappings evaluated; correct mappings are now revealed
+     */
+    200: AnswerConjugationExerciseItemResponse;
+};
+
+export type AnswerConjugationExerciseItemResponse2 = AnswerConjugationExerciseItemResponses[keyof AnswerConjugationExerciseItemResponses];
+
+export type CompleteConjugationExerciseSessionData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/conjugation-exercise-sessions/{id}/complete';
+};
+
+export type CompleteConjugationExerciseSessionErrors = {
+    /**
+     * Malformed UUID
+     */
+    400: unknown;
+    /**
+     * Session not found
+     */
+    404: unknown;
+    /**
+     * Session already completed
+     */
+    409: unknown;
+};
+
+export type CompleteConjugationExerciseSessionResponses = {
+    /**
+     * Conjugation exercise session completed with summary
+     */
+    200: ConjugationExerciseSessionSummaryResponse;
+};
+
+export type CompleteConjugationExerciseSessionResponse = CompleteConjugationExerciseSessionResponses[keyof CompleteConjugationExerciseSessionResponses];
 
 export type TransliterateTextData = {
     body: TransliterateRequest;

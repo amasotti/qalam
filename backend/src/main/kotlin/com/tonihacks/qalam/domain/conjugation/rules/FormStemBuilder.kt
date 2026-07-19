@@ -46,26 +46,26 @@ object FormStemBuilder {
         val pastSegs = if (!isPassive) {
             listOf(
                 Segment(r1, SegmentType.ROOT), Segment(FATHA, SegmentType.PATTERN_VOWEL),
-                Segment(r2, SegmentType.ROOT), Segment("$SHADDA$FATHA", SegmentType.PATTERN_VOWEL),
+                Segment(r2, SegmentType.ROOT), Segment("$FATHA$SHADDA", SegmentType.PATTERN_VOWEL),
                 Segment(r3, SegmentType.ROOT),
             )
         } else {
             listOf(
                 Segment(r1, SegmentType.ROOT), Segment(DAMMA, SegmentType.PATTERN_VOWEL),
-                Segment(r2, SegmentType.ROOT), Segment("$SHADDA$KASRA", SegmentType.PATTERN_VOWEL),
+                Segment(r2, SegmentType.ROOT), Segment("$KASRA$SHADDA", SegmentType.PATTERN_VOWEL),
                 Segment(r3, SegmentType.ROOT),
             )
         }
         val presSegs = if (!isPassive) {
             listOf(
                 Segment(r1, SegmentType.ROOT), Segment(FATHA, SegmentType.PATTERN_VOWEL),
-                Segment(r2, SegmentType.ROOT), Segment("$SHADDA$KASRA", SegmentType.PATTERN_VOWEL),
+                Segment(r2, SegmentType.ROOT), Segment("$KASRA$SHADDA", SegmentType.PATTERN_VOWEL),
                 Segment(r3, SegmentType.ROOT),
             )
         } else {
             listOf(
                 Segment(r1, SegmentType.ROOT), Segment(FATHA, SegmentType.PATTERN_VOWEL),
-                Segment(r2, SegmentType.ROOT), Segment("$SHADDA$FATHA", SegmentType.PATTERN_VOWEL),
+                Segment(r2, SegmentType.ROOT), Segment("$FATHA$SHADDA", SegmentType.PATTERN_VOWEL),
                 Segment(r3, SegmentType.ROOT),
             )
         }
@@ -154,14 +154,14 @@ object FormStemBuilder {
             listOf(
                 Segment("تَ", SegmentType.PATTERN_VOWEL),
                 Segment(r1, SegmentType.ROOT), Segment(FATHA, SegmentType.PATTERN_VOWEL),
-                Segment(r2, SegmentType.ROOT), Segment("$SHADDA$FATHA", SegmentType.PATTERN_VOWEL),
+                Segment(r2, SegmentType.ROOT), Segment("$FATHA$SHADDA", SegmentType.PATTERN_VOWEL),
                 Segment(r3, SegmentType.ROOT),
             )
         } else {
             listOf(
                 Segment("تُ", SegmentType.PATTERN_VOWEL),
                 Segment(r1, SegmentType.ROOT), Segment(DAMMA, SegmentType.PATTERN_VOWEL),
-                Segment(r2, SegmentType.ROOT), Segment("$SHADDA$KASRA", SegmentType.PATTERN_VOWEL),
+                Segment(r2, SegmentType.ROOT), Segment("$KASRA$SHADDA", SegmentType.PATTERN_VOWEL),
                 Segment(r3, SegmentType.ROOT),
             )
         }
@@ -169,14 +169,14 @@ object FormStemBuilder {
             listOf(
                 Segment("تَ", SegmentType.PATTERN_VOWEL),
                 Segment(r1, SegmentType.ROOT), Segment(FATHA, SegmentType.PATTERN_VOWEL),
-                Segment(r2, SegmentType.ROOT), Segment("$SHADDA$FATHA", SegmentType.PATTERN_VOWEL),
+                Segment(r2, SegmentType.ROOT), Segment("$FATHA$SHADDA", SegmentType.PATTERN_VOWEL),
                 Segment(r3, SegmentType.ROOT),
             )
         } else {
             listOf(
                 Segment("تُ", SegmentType.PATTERN_VOWEL),
                 Segment(r1, SegmentType.ROOT), Segment(DAMMA, SegmentType.PATTERN_VOWEL),
-                Segment(r2, SegmentType.ROOT), Segment("$SHADDA$FATHA", SegmentType.PATTERN_VOWEL),
+                Segment(r2, SegmentType.ROOT), Segment("$FATHA$SHADDA", SegmentType.PATTERN_VOWEL),
                 Segment(r3, SegmentType.ROOT),
             )
         }
@@ -226,7 +226,7 @@ object FormStemBuilder {
     // Past active: اِنْ + R1+fatḥa + R2+fatḥa + R3
     // Present active: نْ + R1+fatḥa + R2+kasra + R3 (prefix: fatḥa, so يَ)
     // No passive for Form VII (already passive in meaning)
-    private fun buildFormVII(r1: String, r2: String, r3: String, isPassive: Boolean): FormStem {
+    private fun buildFormVII(r1: String, r2: String, r3: String, @Suppress("UnusedParameter") isPassive: Boolean): FormStem {
         val pastSegs = listOf(
             Segment("ا${KASRA}نْ", SegmentType.PATTERN_VOWEL),
             Segment(r1, SegmentType.ROOT), Segment(FATHA, SegmentType.PATTERN_VOWEL),

@@ -146,9 +146,7 @@ Arabic form, including harakat. Sessions retain the verb, generated-form snapsho
 mapping/text, and per-form correctness so mistakes can be reviewed. No per-form SRS/progression
 table is planned.
 
-See [conjugation.md](conjugation.md) and the
-[exercise implementation plan](../plans/2026-07-19-conjugation-exercises-design.md).
-
+See [conjugation.md](conjugation.md)
 ---
 
 ## API endpoints

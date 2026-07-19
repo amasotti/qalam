@@ -53,6 +53,7 @@ class ExposedConjugationExerciseRepository : ConjugationExerciseRepository {
                 ConjugationExerciseSessionsTable.insert {
                     it[id] = session.id.value.toKotlinUuid()
                     it[mode] = session.mode.name
+                    it[exerciseType] = session.exerciseType.name
                     it[status] = session.status.name
                     it[tense] = session.tense.name
                     it[voice] = session.voice.name
@@ -207,6 +208,7 @@ class ExposedConjugationExerciseRepository : ConjugationExerciseRepository {
 private fun ResultRow.toSession() = ConjugationExerciseSession(
     id = ConjugationExerciseSessionId(this[ConjugationExerciseSessionsTable.id].toJavaUuid()),
     mode = TrainingMode.valueOf(this[ConjugationExerciseSessionsTable.mode]),
+    exerciseType = com.tonihacks.qalam.domain.conjugationexercise.ConjugationExerciseType.valueOf(this[ConjugationExerciseSessionsTable.exerciseType]),
     status = SessionStatus.valueOf(this[ConjugationExerciseSessionsTable.status]),
     tense = Tense.valueOf(this[ConjugationExerciseSessionsTable.tense]),
     voice = Voice.valueOf(this[ConjugationExerciseSessionsTable.voice]),

@@ -9,6 +9,7 @@ data class CreateConjugationExerciseSessionRequest(
     val wordListIds: List<String> = emptyList(),
     val tense: String = "PRESENT",
     val voice: String = "ACTIVE",
+    val exerciseType: String = "MATCH_FORM",
 )
 
 @Serializable
@@ -40,6 +41,7 @@ data class ConjugationExerciseItemResponse(
     val verbForm: String,
     val tense: String,
     val voice: String,
+    val exerciseType: String,
     val forms: List<ConjugationExerciseFormResponse>,
     val labels: List<ConjugationExerciseLabelResponse>,
     val result: String?,
@@ -53,7 +55,8 @@ data class ConjugationExerciseMappingRequest(val formId: String, val labelId: St
 @Serializable
 data class AnswerConjugationExerciseItemRequest(
     val itemId: String,
-    val mappings: List<ConjugationExerciseMappingRequest>,
+    val mappings: List<ConjugationExerciseMappingRequest> = emptyList(),
+    val submittedText: String? = null,
 )
 
 @Serializable
@@ -69,6 +72,8 @@ data class AnswerConjugationExerciseItemResponse(
     val result: String,
     val submittedMappings: List<ConjugationExerciseMappingResponse>,
     val correctMappings: List<ConjugationExerciseMappingResponse>,
+    val expectedArabic: String? = null,
+    val submittedText: String? = null,
 )
 
 @Serializable
@@ -76,6 +81,7 @@ data class ConjugationExerciseSessionResponse(
     val id: String,
     val mode: String,
     val status: String,
+    val exerciseType: String,
     val items: List<ConjugationExerciseItemResponse>,
     val createdAt: String,
     val completedAt: String?,

@@ -34,6 +34,7 @@ class ConjugationExerciseService(
         wordListIds: Set<UUID>,
         tense: Tense,
         voice: Voice,
+        exerciseType: ConjugationExerciseType = ConjugationExerciseType.MATCH_FORM,
     ): Either<DomainError, Pair<ConjugationExerciseSession, List<ConjugationExerciseItem>>> = either {
         val requestedSize = size.coerceIn(MIN_SESSION_SIZE, MAX_SESSION_SIZE)
         val candidates = candidateRepo.findForTraining(mode.toMasteryFilter(), wordListIds, requestedSize).bind()
@@ -45,6 +46,7 @@ class ConjugationExerciseService(
         val session = ConjugationExerciseSession(
             id = ConjugationExerciseSessionId(UUID.randomUUID()),
             mode = mode,
+            exerciseType = exerciseType,
             status = SessionStatus.ACTIVE,
             tense = tense,
             voice = voice,
@@ -57,7 +59,7 @@ class ConjugationExerciseService(
         )
         val items = buildList {
             candidates.take(requestedSize).forEachIndexed { position, word ->
-                add(buildMatchingItem(session.id, position, word, tense, voice))
+                add(buildMatchingItem(session.id, position, word, tense, voice, exerciseType))
             }
         }
 
@@ -86,6 +88,7 @@ class ConjugationExerciseService(
         sessionIdStr: String,
         itemIdStr: String,
         mappings: List<ConjugationExerciseMappingRequest>,
+        submittedText: String? = null,
     ): Either<DomainError, AnswerConjugationExerciseItemResponse> = either {
         val sessionId = parseSessionId(sessionIdStr).bind()
         val itemId = parseItemId(itemIdStr).bind()
@@ -94,6 +97,14 @@ class ConjugationExerciseService(
         val item = items.singleOrNull { it.id == itemId }
             ?: raise(DomainError.NotFound("ConjugationExerciseItem", itemIdStr))
         ensure(item.result == null) { DomainError.Conflict("ConjugationExerciseItem", itemIdStr) }
+        if (session.exerciseType == ConjugationExerciseType.WRITE_FORM) {
+            val pair = item.pairs.single()
+            val answer = submittedText ?: raise(DomainError.InvalidInput("A fully vocalised Arabic answer is required"))
+            val isCorrect = normalizeArabicExerciseAnswer(answer) == normalizeArabicExerciseAnswer(pair.arabic)
+            val result = if (isCorrect) TrainingResult.CORRECT else TrainingResult.INCORRECT
+            sessionRepo.recordAnswer(sessionId, itemId, listOf(ConjugationExerciseAnswer(itemId, pair.formId, null, answer, isCorrect)), result, Clock.System.now()).bind()
+            return@either AnswerConjugationExerciseItemResponse(itemIdStr, result.name, emptyList(), emptyList(), pair.arabic, answer)
+        }
         ensure(mappings.size == MATCHING_PAIR_COUNT) {
             DomainError.InvalidInput("Exactly $MATCHING_PAIR_COUNT form-to-label mappings are required")
         }
@@ -173,6 +184,7 @@ class ConjugationExerciseService(
         word: Word,
         tense: Tense,
         voice: Voice,
+        exerciseType: ConjugationExerciseType,
     ): ConjugationExerciseItem {
         val details = verbDetailsRepo.find(word.id).bind()
             ?: raise(DomainError.NotEnoughConjugatableVerbs(MATCHING_PAIR_COUNT, 0))
@@ -185,13 +197,14 @@ class ConjugationExerciseService(
             details.presentPattern,
             details.weaknessType,
         ).matchingForms(tense, voice)
-        ensure(forms.size == MATCHING_PAIR_COUNT) {
+        ensure(forms.size >= MATCHING_PAIR_COUNT) {
             DomainError.NotEnoughConjugatableVerbs(MATCHING_PAIR_COUNT, forms.size)
         }
 
         val itemId = ConjugationExerciseItemId(UUID.randomUUID())
-        val formPositions = forms.indices.shuffled()
-        val labelPositions = forms.indices.shuffled()
+        val selectedForms = if (exerciseType == ConjugationExerciseType.WRITE_FORM) listOf(forms.random()) else forms
+        val formPositions = selectedForms.indices.shuffled()
+        val labelPositions = selectedForms.indices.shuffled()
         return ConjugationExerciseItem(
             id = itemId,
             sessionId = sessionId,
@@ -202,7 +215,7 @@ class ConjugationExerciseService(
             verbFormSnapshot = details.verbForm.name,
             result = null,
             answeredAt = null,
-            pairs = forms.mapIndexed { pairPosition, form ->
+            pairs = selectedForms.mapIndexed { pairPosition, form ->
                 ConjugationExercisePair(
                     id = ConjugationExercisePairId(UUID.randomUUID()),
                     itemId = itemId,

@@ -23,7 +23,8 @@ class WordServiceTest : FunSpec({
 
     val repo = mockk<WordRepository>()
     val aiClient = mockk<AiClient>()
-    val service = WordService(repo, aiClient)
+    val verbDetailsRepo = mockk<com.tonihacks.qalam.infrastructure.exposed.ExposedVerbDetailsRepository>()
+    val service = WordService(repo, aiClient, verbDetailsRepo)
 
     beforeTest { clearMocks(repo) }
 

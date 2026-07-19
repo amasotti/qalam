@@ -6,6 +6,7 @@ import org.jetbrains.exposed.v1.datetime.timestamp
 object ConjugationExerciseSessionsTable : Table("conjugation_exercise_sessions") {
     val id = uuid("id")
     val mode = varchar("mode", 20)
+    val exerciseType = varchar("exercise_type", 20)
     val status = varchar("status", 20)
     val tense = varchar("tense", 20)
     val voice = varchar("voice", 20)

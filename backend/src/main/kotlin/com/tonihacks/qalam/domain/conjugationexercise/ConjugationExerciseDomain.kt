@@ -20,9 +20,12 @@ value class ConjugationExerciseItemId(val value: UUID)
 @JvmInline
 value class ConjugationExercisePairId(val value: UUID)
 
+enum class ConjugationExerciseType { MATCH_FORM, WRITE_FORM }
+
 data class ConjugationExerciseSession(
     val id: ConjugationExerciseSessionId,
     val mode: TrainingMode,
+    val exerciseType: ConjugationExerciseType,
     val status: SessionStatus,
     val tense: Tense,
     val voice: Voice,

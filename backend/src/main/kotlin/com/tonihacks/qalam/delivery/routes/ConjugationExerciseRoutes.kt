@@ -10,6 +10,7 @@ import com.tonihacks.qalam.domain.conjugationexercise.ConjugationExerciseLabelRe
 import com.tonihacks.qalam.domain.conjugationexercise.ConjugationExerciseMappingResponse
 import com.tonihacks.qalam.domain.conjugationexercise.ConjugationExerciseSegmentResponse
 import com.tonihacks.qalam.domain.conjugationexercise.ConjugationExerciseService
+import com.tonihacks.qalam.domain.conjugationexercise.ConjugationExerciseType
 import com.tonihacks.qalam.domain.conjugationexercise.ConjugationExerciseSessionResponse
 import com.tonihacks.qalam.domain.conjugationexercise.AnswerConjugationExerciseItemRequest
 import com.tonihacks.qalam.domain.conjugationexercise.CreateConjugationExerciseSessionRequest
@@ -25,6 +26,7 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.util.getOrFail
 
+@Suppress("LongMethod")
 fun Route.conjugationExerciseRoutes(service: ConjugationExerciseService) {
 	route("/conjugation-exercise-sessions") {
 		get("/eligibility") { call.respondConjugationExerciseEligibility(service) }
@@ -46,13 +48,18 @@ fun Route.conjugationExerciseRoutes(service: ConjugationExerciseService) {
                 call.respondError(DomainError.InvalidInput("Invalid voice: ${request.voice}"))
                 return@post
             }
+            val exerciseType = parseExerciseType(request.exerciseType)
+            if (exerciseType == null) {
+                call.respondError(DomainError.InvalidInput("Invalid exercise type: ${request.exerciseType}"))
+                return@post
+            }
             val wordListIds = request.wordListIds.map { raw ->
                 runCatching { java.util.UUID.fromString(raw) }.getOrElse {
                     call.respondError(DomainError.InvalidInput("Invalid word-list ID: $raw"))
                     return@post
                 }
             }.toSet()
-            service.createMatchingSession(mode, request.size, wordListIds, tense, voice).fold(
+            service.createMatchingSession(mode, request.size, wordListIds, tense, voice, exerciseType).fold(
                 { call.respondError(it) },
                 { (session, items) -> call.respond(HttpStatusCode.Created, session.toResponse(items)) },
             )
@@ -74,7 +81,7 @@ fun Route.conjugationExerciseRoutes(service: ConjugationExerciseService) {
 
         post("/{id}/answers") {
             val request = call.receive<AnswerConjugationExerciseItemRequest>()
-            service.answerItem(call.pathParameters.getOrFail("id"), request.itemId, request.mappings).fold(
+            service.answerItem(call.pathParameters.getOrFail("id"), request.itemId, request.mappings, request.submittedText).fold(
                 { call.respondError(it) }, { call.respond(HttpStatusCode.OK, it) },
             )
         }
@@ -115,21 +122,25 @@ private fun parseTense(value: String): Tense? =
 private fun parseVoice(value: String): Voice? =
     runCatching { Voice.valueOf(value.uppercase()) }.getOrNull()
 
+private fun parseExerciseType(value: String): ConjugationExerciseType? =
+    runCatching { ConjugationExerciseType.valueOf(value.uppercase()) }.getOrNull()
+
 private fun com.tonihacks.qalam.domain.conjugationexercise.ConjugationExerciseSession.toResponse(
     items: List<ConjugationExerciseItem>,
 ) = ConjugationExerciseSessionResponse(
-    id = id.value.toString(), mode = mode.name, status = status.name, createdAt = createdAt.toString(), completedAt = completedAt?.toString(),
+    id = id.value.toString(), mode = mode.name, status = status.name, exerciseType = exerciseType.name, createdAt = createdAt.toString(), completedAt = completedAt?.toString(),
     items = items.map { item ->
         ConjugationExerciseItemResponse(
             itemId = item.id.value.toString(), wordId = item.wordId.toString(), lemma = item.lemmaSnapshot,
             translation = item.translationSnapshot, verbForm = item.verbFormSnapshot,
             tense = tense.name, voice = voice.name,
-            forms = item.pairs.sortedBy { it.formPosition }.map { pair ->
+            exerciseType = exerciseType.name,
+            forms = item.pairs.takeIf { exerciseType == ConjugationExerciseType.MATCH_FORM || item.result != null }?.sortedBy { it.formPosition }?.map { pair ->
                 ConjugationExerciseFormResponse(
                     pair.formId.toString(), pair.arabic,
                     pair.segments.map { ConjugationExerciseSegmentResponse(it.text, it.type.name) },
                 )
-            },
+            } ?: emptyList(),
             labels = item.pairs.sortedBy { it.labelPosition }.map { pair -> ConjugationExerciseLabelResponse(pair.labelId.toString(), pair.person.code, pair.person.exerciseLabel()) },
             result = item.result?.name,
             submittedMappings = item.answers.takeIf { item.result != null }?.map { answer ->

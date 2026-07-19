@@ -29,11 +29,11 @@ fun Route.conjugationExerciseRoutes(service: ConjugationExerciseService) {
     route("/conjugation-exercise-sessions") {
         post {
             val request = call.receive<CreateConjugationExerciseSessionRequest>()
-            val mode = parseEnum<TrainingMode>(request.mode, "mode") ?: return@post
+            val mode = parseEnum<TrainingMode>(request.mode) ?: return@post
                 call.respondError(DomainError.InvalidInput("Invalid mode: ${request.mode}"))
-            val tense = parseEnum<Tense>(request.tense, "tense") ?: return@post
+            val tense = parseEnum<Tense>(request.tense) ?: return@post
                 call.respondError(DomainError.InvalidInput("Invalid tense: ${request.tense}"))
-            val voice = parseEnum<Voice>(request.voice, "voice") ?: return@post
+            val voice = parseEnum<Voice>(request.voice) ?: return@post
                 call.respondError(DomainError.InvalidInput("Invalid voice: ${request.voice}"))
             val wordListIds = request.wordListIds.map { raw ->
                 runCatching { java.util.UUID.fromString(raw) }.getOrElse {
@@ -76,7 +76,7 @@ fun Route.conjugationExerciseRoutes(service: ConjugationExerciseService) {
     }
 }
 
-private inline fun <reified T : Enum<T>> parseEnum(value: String, field: String): T? =
+private inline fun <reified T : Enum<T>> parseEnum(value: String): T? =
     enumValues<T>().firstOrNull { it.name.equals(value, ignoreCase = true) }
 
 private fun com.tonihacks.qalam.domain.conjugationexercise.ConjugationExerciseSession.toResponse(

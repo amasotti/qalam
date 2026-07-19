@@ -238,7 +238,7 @@ Provide:
 - gender (MASCULINE/FEMININE, nouns only, null for others)
 - verbDetails (verbs only, null for others): verbForm (Roman numeral I-X), pastPattern and presentPattern (Form I only: fa3ala/fa3ila/fa3ula and yaf3ulu/yaf3ilu/yaf3alu), weaknessType (SOUND/ASSIMILATED/HOLLOW/GEMINATE/DEFECTIVE/DOUBLY_WEAK)
 - plurals: list of plural forms with types (SOUND_MASC/SOUND_FEM/BROKEN/PAUCAL/COLLECTIVE/OTHER)
-- relations: 2–4 high-value entries — near-synonyms with register/nuance difference, strong antonyms, or words from the same semantic field. Avoid generic filler. Each entry: arabicText (unvoweled), transliteration (practical chat-style), translation (concise English gloss), relationType (SYNONYM/ANTONYM/RELATED)
+- relations: up to 5 high-value entries — synonyms with register/nuance difference, strong antonyms, or words from the same semantic field. Avoid generic filler. Each entry: arabicText (fully vocalized), transliteration (practical chat-style), translation (concise English gloss), relationType (SYNONYM/ANTONYM/RELATED)
 - notes: brief mnemonic or usage note in English, focusing on common learner confusions, collocations, or register constraints (null if nothing genuinely useful)
 
 Respond ONLY with this JSON structure:
@@ -295,7 +295,7 @@ List title: $title$descriptionClause$existingClause
 
 Each suggestion must fit the theme and must not duplicate an existing word. Prefer common, useful words.
 For each word provide:
-- arabicText: the word in Arabic script, unvoweled
+- arabicText: the word in Arabic script, fully vocalized
 - transliteration: practical chat-alphabet style
 - translation: concise English gloss
 - partOfSpeech: one of NOUN, VERB, ADJECTIVE, ADVERB, PREPOSITION, PARTICLE, INTERJECTION, CONJUNCTION, PRONOUN, UNKNOWN

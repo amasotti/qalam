@@ -40,7 +40,7 @@ function isActive(href: string): boolean {
 				</a>
 				<span class="sb-section">Practice</span>
 				<a href="/training" class="sb-link" class:active={isActive('/training')}>
-					Training <span class="ar">تدريب</span>
+					Practice <span class="ar">تدريب</span>
 				</a>
 				<a href="/analytics" class="sb-link" class:active={isActive('/analytics')}>
 					Analytics <span class="ar">إحصاء</span>

@@ -51,8 +51,8 @@ const sections = [
 		id: 'training',
 		href: '/training',
 		arabic: 'تدريب',
-		label: 'Training',
-		desc: 'Spaced repetition — surface what you need to review.',
+		label: 'Practice',
+		desc: 'Choose flashcards or guided recognition exercises.',
 		icon: Dumbbell,
 	},
 	{

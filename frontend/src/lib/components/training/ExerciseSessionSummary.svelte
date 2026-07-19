@@ -1,12 +1,23 @@
 <script lang="ts">
-import type { ExerciseSessionSummaryResponse } from '$lib/api/types.gen';
+import type {
+	ExerciseSessionItemResponse,
+	ExerciseSessionSummaryResponse,
+} from '$lib/api/types.gen';
 import { Button } from '$lib/components/ui/button';
+import { exerciseItemWord } from '$lib/exercises/presentation';
 
 interface Props {
 	summary: ExerciseSessionSummaryResponse;
+	items: ExerciseSessionItemResponse[];
 }
 
-let { summary }: Props = $props();
+const STATUS_MAP = {
+	CORRECT: 'Correct',
+	INCORRECT: 'Wrong',
+	SKIPPED: 'Skipped',
+} as const;
+
+let { summary, items }: Props = $props();
 const accuracyPercent = $derived(Math.round(summary.accuracy * 100));
 const answered = $derived(summary.correct + summary.incorrect);
 </script>
@@ -43,7 +54,41 @@ const answered = $derived(summary.correct + summary.incorrect);
 			<h2 id="exercise-promotions-heading" class="promotions-heading">Mastery promotions</h2>
 			<ul class="promotions-list">
 				{#each summary.promotions as promotion (promotion.wordId)}
-					<li class="promotion-item">{promotion.from} → {promotion.to}</li>
+					{@const item = items.find((candidate) => candidate.wordId === promotion.wordId)}
+					{@const word = item ? exerciseItemWord(item) : null}
+					<li class="promotion-item">
+						<a href={`/words/${promotion.wordId}`}>
+							{#if word}
+								<span class="promotion-word-arabic arabic" lang="ar">{word.arabicText}</span>
+								<span>{word.translation ?? 'No translation'}</span>
+							{/if}
+							<span class="promotion-levels">{promotion.from} → {promotion.to}</span>
+						</a>
+					</li>
+				{/each}
+			</ul>
+		</section>
+	{/if}
+
+	{#if items.length > 0}
+		<section class="session-word-results" aria-labelledby="exercise-word-results-heading">
+			<div class="session-word-results-title-row">
+				<h2 id="exercise-word-results-heading" class="session-word-results-heading">Words reviewed</h2>
+				<span>{items.length}</span>
+			</div>
+			<ul class="session-word-results-list">
+				{#each items as item (item.itemId)}
+					{@const word = exerciseItemWord(item)}
+					<li class="session-word-result">
+						<a class="session-word-link" href={`/words/${item.wordId}`}>
+							<span class="session-word-arabic arabic" lang="ar">{word.arabicText}</span>
+							<span class="session-word-transliteration">{word.transliteration ?? ''}</span>
+							<span class="session-word-translation">{word.translation ?? 'No translation'}</span>
+						</a>
+						{#if item.result}
+							<span class="session-word-result-status" class:correct={item.result === 'CORRECT'} class:incorrect={item.result === 'INCORRECT'} class:skipped={item.result === 'SKIPPED'}>{STATUS_MAP[item.result]}</span>
+						{/if}
+					</li>
 				{/each}
 			</ul>
 		</section>

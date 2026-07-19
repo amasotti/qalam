@@ -2,9 +2,67 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [0.13.0] - 2026-07-19
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/55bf9d7c95e5b774c10769503331023982df4024..95205a7bef277e46ee4cf6a76883546cfcc084bf)
+### 🚀 Features
+
+
+- List of trained words after training ([759fa36](https://github.com/amasotti/qalam/commit/759fa36a857541839991d8e08b4b1c496e24a372))
+
+- Allow refetching a terminated session ([7171b79](https://github.com/amasotti/qalam/commit/7171b796f6dbdca08a8a4714bd71447c6ea10b63))
+
+- List sessions endpoint ([738eb1d](https://github.com/amasotti/qalam/commit/738eb1d9612f79582ceb4608d089e7fae33527e4))
+
+- Generate openapi types ([4f38498](https://github.com/amasotti/qalam/commit/4f38498d753ba8522237bcd95c6f46b7470646bb))
+
+- New practice hub frontend ([703dae7](https://github.com/amasotti/qalam/commit/703dae727356ca1458d53ed0eb6ef7595460d1de))
+
+- New exercise (mult choice) frontend pages ([821b845](https://github.com/amasotti/qalam/commit/821b845353438b0604e6c423ee1f89374b4f8bf6))
+
+- Summary from completed lesson ([81de699](https://github.com/amasotti/qalam/commit/81de6992d03ba1a81d38f8178784216cb5f30a4c))
+
+- Better post session summary ([9f78a27](https://github.com/amasotti/qalam/commit/9f78a272780a5b7999940d1db99cc0fc18387594))
+
+### 🐛 Bug Fixes
+
+
+- Minor frontend hiccups ([0328683](https://github.com/amasotti/qalam/commit/0328683ac062dfc5b49d06e43fa1f97c64f67938))
+
+- Text view improvements ([be74fc1](https://github.com/amasotti/qalam/commit/be74fc1173818b82db17cf84a3a088dc61a012bc))
+
+- Text view improvements ([cb045ba](https://github.com/amasotti/qalam/commit/cb045ba4f2fe476214d5906ccf7651ff9689cb79))
+
+- Prevent double way relation uniqueness violation ([255dd6f](https://github.com/amasotti/qalam/commit/255dd6ff7475bbb25584b5f6f82e6791b66fe9b9))
+
+- Allow change arabic word in arabic ([a61fcf8](https://github.com/amasotti/qalam/commit/a61fcf89e6d06babf5f2b816d41ef92d29e2f48c))
+
+- Failing session summary test ([95205a7](https://github.com/amasotti/qalam/commit/95205a7bef277e46ee4cf6a76883546cfcc084bf))
+
+### 🚜 Refactor
+
+
+- Extract domain to fe mapping into a utility file ([8c6a3fe](https://github.com/amasotti/qalam/commit/8c6a3fe008f7b5e07458f8e62ee5735a78f0c08d))
+
+- Accuracy donut & UI refinement ([1f42dd1](https://github.com/amasotti/qalam/commit/1f42dd1d1e07cec70930c7c28e3c292ece91388e))
+
+- Separation of concerns ([ec43125](https://github.com/amasotti/qalam/commit/ec43125c404b5f1343ef2f407c9c74d5337be171))
+
+### 🎨 Styling
+
+
+- Replace Amiri with Parastoo ([b97a980](https://github.com/amasotti/qalam/commit/b97a980d560b64d11fbe4bf8ca3579b1a9499552))
+
+- Rubik as DM Sans replacement ([9bd307d](https://github.com/amasotti/qalam/commit/9bd307df61fc183a5cab50a78850176ed2fa88d5))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Open api types generation ([b432022](https://github.com/amasotti/qalam/commit/b43202299d478376aaaadb212e865d3a2c630834))
+
 ## [0.12.0] - 2026-07-12
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/cfa2c8e9abb6d75712dc9fbe282ef16b0da4d215..f4905f9e987a556b3841093e6ed1505dc3d7fec9)
+[Compare with last version](https://github.com/amasotti/qalam/compare/cfa2c8e9abb6d75712dc9fbe282ef16b0da4d215..55bf9d7c95e5b774c10769503331023982df4024)
 ### 🚀 Features
 
 
@@ -20,6 +78,11 @@ All notable changes to this project will be documented in this file (created wit
 - Write integration test for new endpoints ([80c06ec](https://github.com/amasotti/qalam/commit/80c06ecba092f1ee750b49889eef183311adee4c))
 
 - Fix imports ([f4905f9](https://github.com/amasotti/qalam/commit/f4905f9e987a556b3841093e6ed1505dc3d7fec9))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Release v0.12.0 ([55bf9d7](https://github.com/amasotti/qalam/commit/55bf9d7c95e5b774c10769503331023982df4024))
 
 ## [0.11.0] - 2026-07-11
 

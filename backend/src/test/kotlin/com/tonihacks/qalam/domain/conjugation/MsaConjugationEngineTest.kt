@@ -142,4 +142,125 @@ class MsaConjugationEngineTest : FunSpec({
             presentActive.first { it.person == Person.THIRD_SINGULAR_MASC }.arabic shouldBe "يَفْهَمُ"
         }
     }
+
+    // ── Forms II–X ──────────────────────────────────────────────────────
+
+    context("Form II — درّس (d-r-s, to teach)") {
+        val rootDRS = listOf("د", "ر", "س")
+        val table = engine.conjugate(rootDRS, VerbPattern.II, null, null, WeaknessType.SOUND)
+
+        context("past active") {
+            val past = table.forms[ConjugationKey(Tense.PAST, Voice.ACTIVE)]!!
+            fun formFor(p: Person) = past.first { it.person == p }.arabic
+
+            test("3MS — دَرَّسَ") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "دَرَّسَ" }
+            test("1S — دَرَّسْتُ") { formFor(Person.FIRST_SINGULAR) shouldBe "دَرَّسْتُ" }
+            test("3FS — دَرَّسَتْ") { formFor(Person.THIRD_SINGULAR_FEM) shouldBe "دَرَّسَتْ" }
+            test("3PM — دَرَّسُوا") { formFor(Person.THIRD_PLURAL_MASC) shouldBe "دَرَّسُوا" }
+            test("2SF — دَرَّسْتِ") { formFor(Person.SECOND_SINGULAR_FEM) shouldBe "دَرَّسْتِ" }
+        }
+
+        context("present active") {
+            val pres = table.forms[ConjugationKey(Tense.PRESENT, Voice.ACTIVE)]!!
+            fun formFor(p: Person) = pres.first { it.person == p }.arabic
+
+            test("3SM — يُدَرِّسُ") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "يُدَرِّسُ" }
+            test("1S — أُدَرِّسُ") { formFor(Person.FIRST_SINGULAR) shouldBe "أُدَرِّسُ" }
+            test("3PM — يُدَرِّسُونَ") { formFor(Person.THIRD_PLURAL_MASC) shouldBe "يُدَرِّسُونَ" }
+        }
+
+        context("passive") {
+            test("past passive 3MS — دُرِّسَ") {
+                val pastP = table.forms[ConjugationKey(Tense.PAST, Voice.PASSIVE)]!!
+                pastP.first { it.person == Person.THIRD_SINGULAR_MASC }.arabic shouldBe "دُرِّسَ"
+            }
+
+            test("present passive 3SM — يُدَرَّسُ") {
+                val presP = table.forms[ConjugationKey(Tense.PRESENT, Voice.PASSIVE)]!!
+                presP.first { it.person == Person.THIRD_SINGULAR_MASC }.arabic shouldBe "يُدَرَّسُ"
+            }
+        }
+    }
+
+    context("Form V — تعلّم (3-l-m, to learn)") {
+        val rootALM = listOf("ع", "ل", "م")
+        val table = engine.conjugate(rootALM, VerbPattern.V, null, null, WeaknessType.SOUND)
+
+        context("past active") {
+            val past = table.forms[ConjugationKey(Tense.PAST, Voice.ACTIVE)]!!
+            fun formFor(p: Person) = past.first { it.person == p }.arabic
+
+            test("3MS — تَعَلَّمَ") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "تَعَلَّمَ" }
+            test("1S — تَعَلَّمْتُ") { formFor(Person.FIRST_SINGULAR) shouldBe "تَعَلَّمْتُ" }
+            test("3PM — تَعَلَّمُوا") { formFor(Person.THIRD_PLURAL_MASC) shouldBe "تَعَلَّمُوا" }
+        }
+
+        context("present active") {
+            val pres = table.forms[ConjugationKey(Tense.PRESENT, Voice.ACTIVE)]!!
+            fun formFor(p: Person) = pres.first { it.person == p }.arabic
+
+            test("3SM — يَتَعَلَّمُ") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "يَتَعَلَّمُ" }
+            test("1S — أَتَعَلَّمُ") { formFor(Person.FIRST_SINGULAR) shouldBe "أَتَعَلَّمُ" }
+        }
+    }
+
+    context("Form X — استخدم (خ-د-م, to use)") {
+        val rootKhDM = listOf("خ", "د", "م")
+        val table = engine.conjugate(rootKhDM, VerbPattern.X, null, null, WeaknessType.SOUND)
+
+        context("past active") {
+            val past = table.forms[ConjugationKey(Tense.PAST, Voice.ACTIVE)]!!
+            fun formFor(p: Person) = past.first { it.person == p }.arabic
+
+            test("3MS — اِسْتَخْدَمَ") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "ا${'\u0650'}سْتَخْدَمَ" }
+            test("1S — اِسْتَخْدَمْتُ") { formFor(Person.FIRST_SINGULAR) shouldBe "ا${'\u0650'}سْتَخْدَمْتُ" }
+            test("3PM — اِسْتَخْدَمُوا") { formFor(Person.THIRD_PLURAL_MASC) shouldBe "ا${'\u0650'}سْتَخْدَمُوا" }
+        }
+
+        context("present active") {
+            val pres = table.forms[ConjugationKey(Tense.PRESENT, Voice.ACTIVE)]!!
+            fun formFor(p: Person) = pres.first { it.person == p }.arabic
+
+            test("3SM — يَسْتَخْدِمُ") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "يَسْتَخْدِمُ" }
+            test("1S — أَسْتَخْدِمُ") { formFor(Person.FIRST_SINGULAR) shouldBe "أَسْتَخْدِمُ" }
+        }
+
+        context("passive") {
+            test("past passive 3MS — اُسْتُخْدِمَ") {
+                val pastP = table.forms[ConjugationKey(Tense.PAST, Voice.PASSIVE)]!!
+                pastP.first { it.person == Person.THIRD_SINGULAR_MASC }.arabic shouldBe "ا${'\u064F'}سْتُخْدِمَ"
+            }
+
+            test("present passive 3SM — يُسْتَخْدَمُ") {
+                val presP = table.forms[ConjugationKey(Tense.PRESENT, Voice.PASSIVE)]!!
+                presP.first { it.person == Person.THIRD_SINGULAR_MASC }.arabic shouldBe "يُسْتَخْدَمُ"
+            }
+        }
+    }
+
+    context("Form IV — أفعل (أرسل, to send)") {
+        val rootRSL = listOf("ر", "س", "ل")
+        val table = engine.conjugate(rootRSL, VerbPattern.IV, null, null, WeaknessType.SOUND)
+
+        test("past active 3MS — أَرْسَلَ") {
+            val past = table.forms[ConjugationKey(Tense.PAST, Voice.ACTIVE)]!!
+            past.first { it.person == Person.THIRD_SINGULAR_MASC }.arabic shouldBe "أَرْسَلَ"
+        }
+
+        test("present active 3SM — يُرْسِلُ") {
+            val pres = table.forms[ConjugationKey(Tense.PRESENT, Voice.ACTIVE)]!!
+            pres.first { it.person == Person.THIRD_SINGULAR_MASC }.arabic shouldBe "يُرْسِلُ"
+        }
+    }
+
+    context("all forms produce 4 tables × 13 persons") {
+        val root = listOf("ف", "ع", "ل")
+        for (form in VerbPattern.entries) {
+            test("Form ${form.name} produces complete table") {
+                val table = engine.conjugate(root, form, "fa3ala", "yaf3ulu", WeaknessType.SOUND)
+                table.forms.size shouldBe 4
+                table.forms.values.forEach { it.size shouldBe 13 }
+            }
+        }
+    }
 })

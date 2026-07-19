@@ -5,7 +5,10 @@ import org.jetbrains.exposed.v1.core.CustomFunction
 import org.jetbrains.exposed.v1.core.Expression
 import org.jetbrains.exposed.v1.core.Op
 import org.jetbrains.exposed.v1.core.TextColumnType
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.core.stringParam
+import org.postgresql.util.PGobject
 
 /**
  * PostgreSQL ILIKE — case-insensitive LIKE.
@@ -20,3 +23,18 @@ infix fun <T : String?> Expression<T>.ilike(pattern: String): Op<Boolean> {
 /** PostgreSQL function backed by an immutable expression index for harakat-insensitive search. */
 fun Expression<String>.stripArabicDiacritics(): Expression<String> =
     CustomFunction("remove_arabic_diacritics", TextColumnType(), this)
+
+private class JsonbColumnType : TextColumnType() {
+    override fun sqlType(): String = "JSONB"
+
+    override fun notNullValueToDB(value: String): Any =
+        PGobject().apply {
+            type = "jsonb"
+            this.value = value
+        }
+
+    override fun valueFromDB(value: Any): String =
+        if (value is PGobject) value.value.orEmpty() else super.valueFromDB(value)
+}
+
+fun Table.jsonb(name: String): Column<String> = registerColumn(name, JsonbColumnType())

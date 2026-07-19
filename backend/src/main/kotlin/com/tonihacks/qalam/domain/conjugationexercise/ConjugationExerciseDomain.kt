@@ -52,6 +52,8 @@ data class ConjugationExercisePair(
     val id: ConjugationExercisePairId,
     val itemId: ConjugationExerciseItemId,
     val position: Int,
+    val formPosition: Int,
+    val labelPosition: Int,
     val formId: UUID,
     val labelId: UUID,
     val arabic: String,

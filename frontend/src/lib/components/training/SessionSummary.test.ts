@@ -75,9 +75,15 @@ describe('SessionSummary', () => {
 		expect(screen.getByText('MIXED')).toBeInTheDocument();
 		expect(screen.getByText('LEARNING → KNOWN')).toBeInTheDocument();
 		expect(screen.getByText('kataba')).toBeInTheDocument();
-		expect(screen.getAllByText('Correct')).toHaveLength(1);
-		expect(screen.getByText('Wrong')).toBeInTheDocument();
-		expect(screen.getByText('Skipped')).toBeInTheDocument();
+		expect(document.querySelector('.session-word-result-status.correct')).toHaveTextContent(
+			'Correct'
+		);
+		expect(document.querySelector('.session-word-result-status.incorrect')).toHaveTextContent(
+			'Wrong'
+		);
+		expect(document.querySelector('.session-word-result-status.skipped')).toHaveTextContent(
+			'Skipped'
+		);
 		expect(screen.getByText('كتب').closest('a')).toHaveAttribute('href', '/words/word-correct');
 	});
 

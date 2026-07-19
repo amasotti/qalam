@@ -18,12 +18,39 @@ let isPending = $state(false);
 // Snapshot unanswered words once on load — never re-derive from server state mid-session.
 // Re-deriving causes the array to shrink on each background refetch, which breaks currentIndex.
 let localWords = $state<TrainingSessionWordResponse[]>([]);
+let loadedSessionId = $state<string | null>(null);
+
+function summaryFromCompletedSession(
+	completedSession: NonNullable<typeof session.data>
+): SessionSummaryResponse {
+	const words = completedSession.words ?? [];
+	const correct = words.filter((word) => word.result === 'CORRECT').length;
+	const incorrect = words.filter((word) => word.result === 'INCORRECT').length;
+	const skipped = words.filter((word) => word.result === 'SKIPPED').length;
+	const answered = correct + incorrect;
+
+	return {
+		sessionId: completedSession.id,
+		mode: completedSession.mode,
+		totalWords: words.length,
+		correct,
+		incorrect,
+		skipped,
+		accuracy: answered === 0 ? 0 : correct / answered,
+		promotions: [],
+		completedAt: completedSession.completedAt ?? completedSession.createdAt,
+	};
+}
 
 $effect(() => {
-	if (session.data && localWords.length === 0) {
+	if (session.data && loadedSessionId !== session.data.id) {
+		loadedSessionId = session.data.id;
+		currentIndex = 0;
 		localWords = (session.data.words ?? []).filter(
 			(w) => w.result === null || w.result === undefined
 		);
+		summary =
+			session.data.status === 'COMPLETED' ? summaryFromCompletedSession(session.data) : null;
 	}
 });
 

@@ -7,8 +7,10 @@ import com.tonihacks.qalam.delivery.dto.PaginatedResponse
 import com.tonihacks.qalam.delivery.dto.word.CreateDictionaryLinkRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordRequest
 import com.tonihacks.qalam.delivery.dto.word.UpdateWordRequest
+import com.tonihacks.qalam.delivery.dto.word.UpsertVerbDetailsRequest
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.infrastructure.ai.AiClient
+import com.tonihacks.qalam.infrastructure.exposed.ExposedVerbDetailsRepository
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -23,10 +25,10 @@ class WordServiceTest : FunSpec({
 
     val repo = mockk<WordRepository>()
     val aiClient = mockk<AiClient>()
-    val verbDetailsRepo = mockk<com.tonihacks.qalam.infrastructure.exposed.ExposedVerbDetailsRepository>()
+    val verbDetailsRepo = mockk<ExposedVerbDetailsRepository>()
     val service = WordService(repo, aiClient, verbDetailsRepo)
 
-    beforeTest { clearMocks(repo) }
+    beforeTest { clearMocks(repo, verbDetailsRepo) }
 
     val sampleId = UUID.randomUUID()
     val sampleLinkId = UUID.randomUUID()
@@ -202,6 +204,105 @@ class WordServiceTest : FunSpec({
 
             result.isRight() shouldBe true
             result.getOrNull()!!.first().arabicText shouldBe "كَتَبَ"
+        }
+    }
+
+    val sampleNoun = sampleWord.copy(
+        id = WordId(UUID.randomUUID()),
+        arabicText = "كِتَاب",
+        partOfSpeech = PartOfSpeech.NOUN,
+    )
+    val sampleVerbDetails = VerbDetails(
+        wordId = WordId(sampleId),
+        verbForm = VerbPattern.I,
+        pastPattern = "fa3ala",
+        presentPattern = "yaf3ulu",
+        weaknessType = WeaknessType.SOUND,
+        createdAt = Instant.fromEpochMilliseconds(0),
+        updatedAt = Instant.fromEpochMilliseconds(0),
+    )
+
+    context("verb details") {
+        test("getVerbDetails returns details for a verb") {
+            coEvery { repo.findById(WordId(sampleId)) } returns sampleWord.right()
+            coEvery { verbDetailsRepo.find(WordId(sampleId)) } returns sampleVerbDetails.right()
+
+            val result = service.getVerbDetails(sampleId.toString())
+
+            result.isRight() shouldBe true
+            result.getOrNull()!!.verbForm shouldBe "I"
+            result.getOrNull()!!.pastPattern shouldBe "fa3ala"
+        }
+
+        test("getVerbDetails rejects non-verb") {
+            coEvery { repo.findById(sampleNoun.id) } returns sampleNoun.right()
+
+            val result = service.getVerbDetails(sampleNoun.id.toString())
+
+            result.isLeft() shouldBe true
+            val error = result.leftOrNull()!!
+            error.shouldBeInstanceOf<DomainError.ValidationError>()
+            (error as DomainError.ValidationError).field shouldBe "partOfSpeech"
+        }
+
+        test("upsertVerbDetails saves for a verb") {
+            coEvery { repo.findById(WordId(sampleId)) } returns sampleWord.right()
+            coEvery { verbDetailsRepo.find(WordId(sampleId)) } returns null.right()
+            coEvery { verbDetailsRepo.upsert(any()) } answers { firstArg<VerbDetails>().right() }
+
+            val result = service.upsertVerbDetails(
+                sampleId.toString(),
+                UpsertVerbDetailsRequest(verbForm = "I", pastPattern = "fa3ala", presentPattern = "yaf3ulu"),
+            )
+
+            result.isRight() shouldBe true
+            result.getOrNull()!!.verbForm shouldBe "I"
+            coVerify(exactly = 1) { verbDetailsRepo.upsert(any()) }
+        }
+
+        test("upsertVerbDetails rejects non-verb") {
+            coEvery { repo.findById(sampleNoun.id) } returns sampleNoun.right()
+
+            val result = service.upsertVerbDetails(
+                sampleNoun.id.toString(),
+                UpsertVerbDetailsRequest(verbForm = "I"),
+            )
+
+            result.isLeft() shouldBe true
+            result.leftOrNull()!!.shouldBeInstanceOf<DomainError.ValidationError>()
+            coVerify(exactly = 0) { verbDetailsRepo.upsert(any()) }
+        }
+
+        test("deleteVerbDetails rejects non-verb") {
+            coEvery { repo.findById(sampleNoun.id) } returns sampleNoun.right()
+
+            val result = service.deleteVerbDetails(sampleNoun.id.toString())
+
+            result.isLeft() shouldBe true
+            result.leftOrNull()!!.shouldBeInstanceOf<DomainError.ValidationError>()
+            coVerify(exactly = 0) { verbDetailsRepo.delete(any()) }
+        }
+
+        test("upsertVerbDetails with invalid verbForm returns ValidationError") {
+            coEvery { repo.findById(WordId(sampleId)) } returns sampleWord.right()
+
+            val result = service.upsertVerbDetails(
+                sampleId.toString(),
+                UpsertVerbDetailsRequest(verbForm = "XI"),
+            )
+
+            result shouldBe DomainError.ValidationError("verbForm", "Unknown value: XI").left()
+        }
+
+        test("upsertVerbDetails with invalid weaknessType returns ValidationError") {
+            coEvery { repo.findById(WordId(sampleId)) } returns sampleWord.right()
+
+            val result = service.upsertVerbDetails(
+                sampleId.toString(),
+                UpsertVerbDetailsRequest(verbForm = "I", weaknessType = "BROKEN"),
+            )
+
+            result shouldBe DomainError.ValidationError("weaknessType", "Unknown value: BROKEN").left()
         }
     }
 

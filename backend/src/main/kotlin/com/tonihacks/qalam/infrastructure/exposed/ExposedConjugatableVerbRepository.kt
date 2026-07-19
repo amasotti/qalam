@@ -76,4 +76,9 @@ class ExposedConjugatableVerbRepository : ConjugatableVerbRepository {
                 DomainError.DatabaseError.left()
             }
         }
+
+    override suspend fun countForTraining(
+        masteryLevel: MasteryLevel?,
+        wordListIds: Set<UUID>,
+    ): Either<DomainError, Int> = findForTraining(masteryLevel, wordListIds, Int.MAX_VALUE).map { it.size }
 }

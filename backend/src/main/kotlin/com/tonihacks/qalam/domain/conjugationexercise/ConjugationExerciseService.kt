@@ -73,6 +73,15 @@ class ConjugationExerciseService(
         sessionRepo.findSessionWithItems(parseSessionId(sessionIdStr).bind()).bind()
     }.logDomainFailure(log) { "Failed to load conjugation exercise session id=$sessionIdStr" }
 
+    suspend fun eligibleVerbCount(
+        mode: TrainingMode,
+        wordListIds: Set<UUID>,
+    ): Either<DomainError, ConjugationExerciseEligibilityResponse> = either {
+        ConjugationExerciseEligibilityResponse(
+            candidateRepo.countForTraining(mode.toMasteryFilter(), wordListIds).bind()
+        )
+    }.logDomainFailure(log) { "Failed to count eligible conjugation exercise verbs" }
+
     suspend fun answerItem(
         sessionIdStr: String,
         itemIdStr: String,

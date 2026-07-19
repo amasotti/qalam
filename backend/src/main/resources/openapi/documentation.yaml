@@ -2231,6 +2231,30 @@ paths:
               schema:
                 $ref: "#/components/schemas/PaginatedConjugationExerciseSessionsResponse"
 
+  /api/v1/conjugation-exercise-sessions/eligibility:
+    get:
+      summary: Count eligible verbs for a conjugation exercise
+      operationId: getConjugationExerciseEligibility
+      tags: [conjugation-exercises]
+      parameters:
+        - name: mode
+          in: query
+          schema: { type: string, enum: [NEW, LEARNING, KNOWN, MIXED], default: MIXED }
+        - name: wordListId
+          in: query
+          description: Repeat to constrain eligible verbs to selected lists.
+          schema:
+            type: array
+            items: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Count for current composer filters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConjugationExerciseEligibilityResponse"
+        "400": { description: Invalid filter }
+
   /api/v1/conjugation-exercise-sessions/{id}:
     get:
       summary: Get a conjugation exercise session by ID
@@ -3983,6 +4007,12 @@ components:
           default: []
         tense: { type: string, enum: [PAST, PRESENT], default: PRESENT }
         voice: { type: string, enum: [ACTIVE, PASSIVE], default: ACTIVE }
+
+    ConjugationExerciseEligibilityResponse:
+      type: object
+      required: [availableVerbs]
+      properties:
+        availableVerbs: { type: integer, minimum: 0 }
 
     ConjugationExerciseSegmentResponse:
       type: object

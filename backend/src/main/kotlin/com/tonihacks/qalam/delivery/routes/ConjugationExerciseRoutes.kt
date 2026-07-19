@@ -26,8 +26,10 @@ import io.ktor.server.routing.route
 import io.ktor.server.util.getOrFail
 
 fun Route.conjugationExerciseRoutes(service: ConjugationExerciseService) {
-    route("/conjugation-exercise-sessions") {
-        post {
+	route("/conjugation-exercise-sessions") {
+		get("/eligibility") { call.respondConjugationExerciseEligibility(service) }
+
+		post {
             val request = call.receive<CreateConjugationExerciseSessionRequest>()
             val mode = parseTrainingMode(request.mode)
             if (mode == null) {
@@ -83,6 +85,25 @@ fun Route.conjugationExerciseRoutes(service: ConjugationExerciseService) {
             )
         }
     }
+}
+
+private suspend fun io.ktor.server.application.ApplicationCall.respondConjugationExerciseEligibility(
+	service: ConjugationExerciseService,
+) {
+	val mode = parseTrainingMode(request.queryParameters["mode"] ?: "MIXED")
+	if (mode == null) {
+		respondError(DomainError.InvalidInput("Invalid mode"))
+		return
+	}
+	val wordListIds = request.queryParameters.getAll("wordListId")?.map { raw ->
+		runCatching { java.util.UUID.fromString(raw) }.getOrElse {
+			respondError(DomainError.InvalidInput("Invalid word-list ID: $raw"))
+			return
+		}
+	}?.toSet() ?: emptySet()
+	service.eligibleVerbCount(mode, wordListIds).fold(
+		{ respondError(it) }, { respond(HttpStatusCode.OK, it) },
+	)
 }
 
 private fun parseTrainingMode(value: String): TrainingMode? =

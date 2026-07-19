@@ -118,6 +118,8 @@ Key observations:
 | `/training/[id]` | Active session — one `FlashCard` at a time |
 | `/training/exercises/multiple-choice` | Multiple-choice exercise setup and paginated exercise history |
 | `/training/exercises/[id]` | Resumable multiple-choice exercise and completed review |
+| `/training/exercises/conjugation` | Conjugation matching setup and paginated history |
+| `/training/conjugation-exercises/[id]` | Resumable conjugation matching session and review |
 
 `FlashCard.svelte` shows the question side, reveals the answer on Space/Enter, then accepts 1/2/3 (or numpad) for correct/incorrect/skip. After the last card the route renders `SessionSummary.svelte` with accuracy and any promotions.
 
@@ -135,7 +137,7 @@ Conjugation practice is a separate session family built on the deterministic MSA
 engine. It deliberately does **not** modify `word_progress` or word mastery: conjugated forms are
 generated from a lemma rather than stored vocabulary entries.
 
-The matching-session API is implemented. Its runner/composer UI is pending.
+The matching-session API, composer, history, and accessible click-to-pair runner are implemented.
 
 The first mode is a four-form matching board. It presents four fully vocalised forms of one verb
 and four person/number/gender labels; the learner matches every form to its morphology. The

@@ -33,6 +33,7 @@ teaching aid in the reference table and feedback in future exercises.
 | PUT | `/api/v1/words/{id}/verb-details` | Create or replace persisted verb metadata |
 | DELETE | `/api/v1/words/{id}/verb-details` | Remove persisted verb metadata |
 | POST | `/api/v1/conjugation-exercise-sessions` | Create a four-form matching session |
+| GET | `/api/v1/conjugation-exercise-sessions/eligibility` | Count eligible verbs for composer filters |
 | GET | `/api/v1/conjugation-exercise-sessions/{id}` | Resume or review a matching session |
 | POST | `/api/v1/conjugation-exercise-sessions/{id}/answers` | Submit one board's four mappings |
 | POST | `/api/v1/conjugation-exercise-sessions/{id}/complete` | Complete a session without SRS promotion |

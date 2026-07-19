@@ -12,6 +12,9 @@ data class CreateConjugationExerciseSessionRequest(
 )
 
 @Serializable
+data class ConjugationExerciseEligibilityResponse(val availableVerbs: Int)
+
+@Serializable
 data class ConjugationExerciseFormResponse(
     val formId: String,
     val arabic: String,

@@ -580,6 +580,10 @@ export type CreateConjugationExerciseSessionRequest = {
     voice?: 'ACTIVE' | 'PASSIVE';
 };
 
+export type ConjugationExerciseEligibilityResponse = {
+    availableVerbs: number;
+};
+
 export type ConjugationExerciseSegmentResponse = {
     text: string;
     type: 'PREFIX' | 'ROOT' | 'PATTERN_VOWEL' | 'SUFFIX';
@@ -3246,6 +3250,35 @@ export type CreateConjugationExerciseSessionResponses = {
 };
 
 export type CreateConjugationExerciseSessionResponse = CreateConjugationExerciseSessionResponses[keyof CreateConjugationExerciseSessionResponses];
+
+export type GetConjugationExerciseEligibilityData = {
+    body?: never;
+    path?: never;
+    query?: {
+        mode?: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+        /**
+         * Repeat to constrain eligible verbs to selected lists.
+         */
+        wordListId?: Array<string>;
+    };
+    url: '/api/v1/conjugation-exercise-sessions/eligibility';
+};
+
+export type GetConjugationExerciseEligibilityErrors = {
+    /**
+     * Invalid filter
+     */
+    400: unknown;
+};
+
+export type GetConjugationExerciseEligibilityResponses = {
+    /**
+     * Count for current composer filters
+     */
+    200: ConjugationExerciseEligibilityResponse;
+};
+
+export type GetConjugationExerciseEligibilityResponse = GetConjugationExerciseEligibilityResponses[keyof GetConjugationExerciseEligibilityResponses];
 
 export type GetConjugationExerciseSessionData = {
     body?: never;

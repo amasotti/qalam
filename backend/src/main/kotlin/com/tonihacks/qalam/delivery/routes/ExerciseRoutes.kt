@@ -35,6 +35,15 @@ fun Route.exerciseRoutes(service: ExerciseService) {
             )
         }
 
+        get {
+            val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
+            val size = call.request.queryParameters["size"]?.toIntOrNull() ?: 20
+            service.listSessions(page, size).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.OK, it) },
+            )
+        }
+
         get("/{id}") {
             val id = call.pathParameters.getOrFail<String>("id")
             service.getSession(id).fold(

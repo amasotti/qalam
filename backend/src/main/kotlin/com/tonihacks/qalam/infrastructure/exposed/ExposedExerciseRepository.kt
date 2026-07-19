@@ -29,6 +29,7 @@ import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
 import org.jetbrains.exposed.v1.core.JoinType
 import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
@@ -216,6 +217,26 @@ class ExposedExerciseRepository : ExerciseRepository {
                     .right()
             } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
                 log.error(e) { "Exercise repository completeSession failed id=$id" }
+                DomainError.DatabaseError.left()
+            }
+        }
+
+    override suspend fun listSessions(
+        page: Int,
+        size: Int,
+    ): Either<DomainError, Pair<List<ExerciseSession>, Long>> =
+        suspendTransaction {
+            try {
+                val total = ExerciseSessionsTable.selectAll().count()
+                val items = ExerciseSessionsTable
+                    .selectAll()
+                    .orderBy(ExerciseSessionsTable.createdAt to SortOrder.DESC)
+                    .limit(size)
+                    .offset(((page - 1) * size).toLong())
+                    .map { it.toExerciseSession() }
+                (items to total).right()
+            } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+                log.error(e) { "Exercise repository listSessions failed" }
                 DomainError.DatabaseError.left()
             }
         }

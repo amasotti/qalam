@@ -39,4 +39,9 @@ interface ExerciseRepository {
         skippedCount: Int,
         completedAt: Instant,
     ): Either<DomainError, ExerciseSession>
+
+    suspend fun listSessions(
+        page: Int,
+        size: Int,
+    ): Either<DomainError, Pair<List<ExerciseSession>, Long>>
 }

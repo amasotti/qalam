@@ -76,3 +76,25 @@ data class ExerciseSessionSummaryResponse(
     val promotions: List<MasteryPromotionResponse>,
     val completedAt: String,
 )
+
+@Serializable
+data class ExerciseSessionListItemResponse(
+    val id: String,
+    val mode: String,
+    val status: String,
+    val totalItems: Int,
+    val correctCount: Int,
+    val incorrectCount: Int,
+    val skippedCount: Int,
+    val accuracy: Double,
+    val createdAt: String,
+    val completedAt: String?,
+)
+
+@Serializable
+data class PaginatedExerciseSessionsResponse(
+    val items: List<ExerciseSessionListItemResponse>,
+    val total: Long,
+    val page: Int,
+    val size: Int,
+)

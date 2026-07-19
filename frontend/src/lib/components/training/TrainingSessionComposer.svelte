@@ -26,7 +26,23 @@ const createSession = useCreateSession();
 let selectedMode = $state<Mode>('MIXED');
 let sessionSize = $state(15);
 let selectedWordListIds = $state<string[]>([]);
+let scope = $state<'ALL' | 'LISTS'>('ALL');
+let listSearch = $state('');
+let listPicker = $state<HTMLDialogElement | null>(null);
 const selectedListCount = $derived(selectedWordListIds.length);
+const matchingWordLists = $derived(
+	wordLists.filter((list) =>
+		list.title.toLocaleLowerCase().includes(listSearch.trim().toLocaleLowerCase())
+	)
+);
+const scopeSummary = $derived(
+	scope === 'ALL'
+		? 'All vocabulary'
+		: selectedListCount === 0
+			? 'Choose lists'
+			: `${selectedListCount} list${selectedListCount === 1 ? '' : 's'} selected`
+);
+const canStart = $derived(scope === 'ALL' || selectedListCount > 0);
 
 function toggleWordList(id: string) {
 	selectedWordListIds = selectedWordListIds.includes(id)
@@ -35,10 +51,28 @@ function toggleWordList(id: string) {
 }
 
 function start() {
+	if (!canStart) return;
 	createSession.mutate(
-		{ mode: selectedMode, size: sessionSize, wordListIds: selectedWordListIds },
+		{
+			mode: selectedMode,
+			size: sessionSize,
+			wordListIds: scope === 'ALL' ? [] : selectedWordListIds,
+		},
 		{ onSuccess: (session) => goto(`/training/${session.id}`) }
 	);
+}
+
+function selectAllVocabulary() {
+	scope = 'ALL';
+}
+
+function openListPicker() {
+	scope = 'LISTS';
+	listPicker?.showModal();
+}
+
+function closeListPicker() {
+	listPicker?.close();
 }
 </script>
 
@@ -51,7 +85,7 @@ function start() {
 	<div class="training-form-section">
 		<div class="training-field-heading">
 			<span class="training-field-label">What should you review?</span>
-			<span>{selectedListCount === 0 ? 'All vocabulary' : `${selectedListCount} list${selectedListCount === 1 ? '' : 's'} selected`}</span>
+			<span>{scopeSummary}</span>
 		</div>
 		{#if isLoadingLists}
 			<p class="training-muted">Loading word lists…</p>
@@ -59,10 +93,8 @@ function start() {
 			<p class="form-error-msg">Could not load word lists.</p>
 		{:else if wordLists.length > 0}
 			<div class="training-scope-options">
-				<button type="button" class="training-scope-option" class:selected={selectedListCount === 0} onclick={() => (selectedWordListIds = [])}><span>All vocabulary</span><small>{totalVocabulary} words</small></button>
-				{#each wordLists as list}
-					<button type="button" class="training-scope-option" class:selected={selectedWordListIds.includes(list.id)} disabled={list.itemCount === 0} onclick={() => toggleWordList(list.id)}><span>{list.title}</span><small>{list.itemCount} words</small></button>
-				{/each}
+				<button type="button" class="training-scope-option" class:selected={scope === 'ALL'} onclick={selectAllVocabulary}><span>All vocabulary</span><small>{totalVocabulary} words</small></button>
+				<button type="button" class="training-scope-option" class:selected={scope === 'LISTS'} onclick={openListPicker}><span>Specific lists</span><small>{selectedListCount === 0 ? 'Choose lists' : `${selectedListCount} selected`}</small></button>
 			</div>
 		{:else}
 			<p class="training-muted">No word lists yet. This session will use all vocabulary.</p>
@@ -87,6 +119,28 @@ function start() {
 		</div>
 	</div>
 
+	{#if scope === 'LISTS' && selectedListCount === 0}<p class="form-error-msg">Choose at least one list, or use all vocabulary.</p>{/if}
 	{#if createSession.error}<p class="form-error-msg">{createSession.error.message}</p>{/if}
-	<Button size="lg" onclick={start} disabled={createSession.isPending}>{createSession.isPending ? 'Preparing session…' : 'Start flashcards'}</Button>
+	<Button size="lg" onclick={start} disabled={createSession.isPending || !canStart}>{createSession.isPending ? 'Preparing session…' : 'Start flashcards'}</Button>
 </section>
+
+<dialog class="training-list-picker" bind:this={listPicker} onclose={() => (listSearch = '')} aria-labelledby="training-list-picker-title">
+	<div class="training-list-picker-header">
+		<div><p class="training-home-kicker">Training scope</p><h2 id="training-list-picker-title">Choose word lists</h2><p>Select one or more lists. Their words are combined for this session.</p></div>
+		<button class="training-list-picker-close" type="button" onclick={closeListPicker} aria-label="Close list picker">×</button>
+	</div>
+	<label class="training-list-search"><span>Search lists</span><input type="search" bind:value={listSearch} placeholder="Filter by name" /></label>
+	<div class="training-list-picker-results">
+		{#if matchingWordLists.length === 0}
+			<p class="training-muted">No lists match “{listSearch}”.</p>
+		{:else}
+			{#each matchingWordLists as list}
+				<label class="training-list-picker-option" class:selected={selectedWordListIds.includes(list.id)} class:disabled={list.itemCount === 0}>
+					<input type="checkbox" checked={selectedWordListIds.includes(list.id)} disabled={list.itemCount === 0} onchange={() => toggleWordList(list.id)} />
+					<span>{list.title}<small>{list.itemCount} words</small></span>
+				</label>
+			{/each}
+		{/if}
+	</div>
+	<div class="training-list-picker-actions"><span>{selectedListCount} selected</span><Button onclick={closeListPicker}>Done</Button></div>
+</dialog>

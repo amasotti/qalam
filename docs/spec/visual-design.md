@@ -110,7 +110,7 @@ Standard red `#C03030` stays for the Delete/destructive button — universal dan
 
 ```css
 @theme {
-  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Rubik', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Lora', Georgia, serif;
   --font-arabic:         'Noto Naskh Arabic', 'Lateef', 'Parastoo', serif;
   --font-arabic-display: 'Parastoo', 'Noto Naskh Arabic', serif;
@@ -127,8 +127,8 @@ Standard red `#C03030` stays for the Delete/destructive button — universal dan
 
 | Context | Font | Size | Weight | Notes |
 |---------|------|------|--------|-------|
-| Body / UI copy | DM Sans | 14–15px | 400 | Default |
-| Section labels | DM Sans | 0.62rem | 500 | UPPERCASE, 0.2em spacing |
+| Body / UI copy | Rubik | 14–15px | 400 | Default |
+| Section labels | Rubik | 0.62rem | 500 | UPPERCASE, 0.2em spacing |
 | Page titles | Lora | 1.75rem | 600 | letter-spacing: -0.01em |
 | Translation display | Lora | 1.1–1.3rem | 400 italic | |
 | Word detail hero | Parastoo | 7rem | 400 | direction: rtl |
@@ -137,7 +137,7 @@ Standard red `#C03030` stays for the Delete/destructive button — universal dan
 | Token Arabic | Noto Naskh Arabic | 1.1rem | 400 | |
 | Full text Arabic | Noto Naskh Arabic | 1.5rem | 400 | line-height: 2.2 |
 | Transliterations | Lora | 0.8–0.875rem | 400 italic | color: var(--olive) |
-| Metadata keys | DM Sans | 0.58–0.62rem | 500 | UPPERCASE, 0.15em spacing |
+| Metadata keys | Rubik | 0.58–0.62rem | 500 | UPPERCASE, 0.15em spacing |
 
 ---
 

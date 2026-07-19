@@ -121,6 +121,12 @@
 	--m-new-bg: #eee8dc;
 
 	/* Arabic typography tokens */
+	--type-page: clamp(1.75rem, 3vw, 2.25rem);
+	--type-section: 1.125rem;
+	--type-body: 0.875rem;
+	--type-label: 0.8125rem;
+	--type-meta: 0.75rem;
+	--type-hint: 0.7rem;
 	--arabic-font-size-body: 1.125rem;
 	--arabic-font-size-ui: 1rem;
 	--arabic-font-line-height: 1.5;

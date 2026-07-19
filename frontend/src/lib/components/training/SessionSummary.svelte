@@ -1,21 +1,20 @@
 <script lang="ts">
-    import {goto} from '$app/navigation';
-    import type {SessionSummaryResponse, TrainingSessionWordResponse} from '$lib/api/types.gen';
-    import {Button} from '$lib/components/ui/button';
+import { goto } from '$app/navigation';
+import type { SessionSummaryResponse, TrainingSessionWordResponse } from '$lib/api/types.gen';
+import { Button } from '$lib/components/ui/button';
 
-    interface Props {
-        summary: SessionSummaryResponse;
-        words: TrainingSessionWordResponse[];
-    }
+interface Props {
+	summary: SessionSummaryResponse;
+	words: TrainingSessionWordResponse[];
+}
 
-    const STATUS_MAP = {
-        CORRECT: 'Correct',
-        INCORRECT: 'Wrong',
-        SKIPPED: 'Skipped'
-    } as const;
-    let {summary, words}: Props = $props();
-    let accuracyPercent = $derived(Math.round(summary.accuracy * 100));
-
+const STATUS_MAP = {
+	CORRECT: 'Correct',
+	INCORRECT: 'Wrong',
+	SKIPPED: 'Skipped',
+} as const;
+let { summary, words }: Props = $props();
+let accuracyPercent = $derived(Math.round(summary.accuracy * 100));
 </script>
 
 <div class="session-summary">

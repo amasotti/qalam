@@ -578,6 +578,7 @@ export type CreateConjugationExerciseSessionRequest = {
     wordListIds?: Array<string>;
     tense?: 'PAST' | 'PRESENT';
     voice?: 'ACTIVE' | 'PASSIVE';
+    exerciseType?: 'MATCH_FORM' | 'WRITE_FORM';
 };
 
 export type ConjugationExerciseEligibilityResponse = {
@@ -618,6 +619,7 @@ export type AnswerConjugationExerciseItemRequest = {
         ConjugationExerciseMappingRequest,
         ConjugationExerciseMappingRequest
     ];
+    submittedText?: string | null;
 };
 
 export type AnswerConjugationExerciseItemResponse = {
@@ -625,6 +627,8 @@ export type AnswerConjugationExerciseItemResponse = {
     result: 'CORRECT' | 'INCORRECT';
     submittedMappings: Array<ConjugationExerciseMappingResponse>;
     correctMappings: Array<ConjugationExerciseMappingResponse>;
+    expectedArabic?: string | null;
+    submittedText?: string | null;
 };
 
 export type ConjugationExerciseItemResponse = {
@@ -635,6 +639,7 @@ export type ConjugationExerciseItemResponse = {
     verbForm: string;
     tense: 'PAST' | 'PRESENT';
     voice: 'ACTIVE' | 'PASSIVE';
+    exerciseType?: 'MATCH_FORM' | 'WRITE_FORM';
     forms: [
         ConjugationExerciseFormResponse,
         ConjugationExerciseFormResponse,
@@ -662,6 +667,7 @@ export type ConjugationExerciseSessionResponse = {
     id: string;
     mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
     status: 'ACTIVE' | 'COMPLETED';
+    exerciseType?: 'MATCH_FORM' | 'WRITE_FORM';
     items: Array<ConjugationExerciseItemResponse>;
     createdAt: string;
     completedAt?: string | null;

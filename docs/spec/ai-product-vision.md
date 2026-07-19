@@ -51,18 +51,20 @@ picks it. Pure frontend, no AI needed beyond what's already there.
 
 ---
 
-### 3. AI Grammar Tables On Demand
+### 3. Contextual Grammar Tables
 
-**What:** Click a verb anywhere in a text → AI returns full conjugation table (past/present/future,
-all persons). Click a noun → declension table (nominative/accusative/genitive, singular/dual/plural).
-Displayed in a slide-in drawer, same pattern as the annotation drawer.
+**What:** Click a verb anywhere in a text → show its deterministic MSA conjugation table
+(past/present, active/passive, all persons). Click a noun → eventually show a declension table
+(nominative/accusative/genitive, singular/dual/plural). Display it in a slide-in drawer, following
+the annotation-drawer pattern.
 
 **Why it matters:** Arabic morphology is the hardest part for learners. Having the full paradigm
 one click away, in context, is enormously useful. No existing tool integrates this at the
 sentence level with your own corpus.
 
-**Note:** Verb pattern (I–X) is already being stored via word enrichment. The conjugation table
-is the natural next step.
+**Status:** Verb metadata and the rule-based conjugation engine are implemented; the reference UI
+is in progress. This must stay rule-based, deterministic, and available without an AI key. The
+remaining contextual integration is a UI/navigation feature, not an AI request.
 
 ---
 

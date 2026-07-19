@@ -20,7 +20,7 @@
 ---
 
 *Qalam* (قلم — "pen") manages Arabic texts with interlinear glosses, a root-linked vocabulary
-graph, and SRS flashcard drills. 
+graph, deterministic verb conjugation, and practice drills.
 
 **Why I built it**: I love to learn languages and I am currently focused on Arabic, but all available (few) resources
 were missing something: some had good vocabulary management, but not in-depth enough, other were missing the interlinear glosses, 
@@ -94,8 +94,17 @@ additional examples on demand; it is disabled cleanly when no API key is configu
 ### تدريب — Training
 
 Session-based SRS flashcard drills. Each session surfaces words due for review based on mastery
-level. A correct answer promotes the word; an incorrect one holds it at the current level. No
-external SRS library — the scheduling logic is intentionally simple and fully owned.
+level. A correct answer promotes the word; an incorrect one holds it at the current level.
+Multiple-choice meaning exercises provide a quicker recognition mode with resumable session
+history. No external SRS library — the scheduling logic is intentionally simple and fully owned.
+
+### أفعال — Verb conjugation
+
+An MSA conjugation engine generates fully vocalised paradigms from a saved verb's root, form,
+patterns, and weakness type. It exposes past/present, active/passive forms and the 13
+person/number/gender slots, with prefix/root/vowel/suffix segmentation for visual explanation.
+The reference page is being completed; matching and typed-recall conjugation exercises are the
+next planned practice modes. The engine is deterministic and works without an AI key.
 
 ### إحصاءات — Statistics
 

@@ -1,8 +1,10 @@
 package com.tonihacks.qalam.infrastructure.exposed
 
 import org.jetbrains.exposed.v1.core.ComparisonOp
+import org.jetbrains.exposed.v1.core.CustomFunction
 import org.jetbrains.exposed.v1.core.Expression
 import org.jetbrains.exposed.v1.core.Op
+import org.jetbrains.exposed.v1.core.TextColumnType
 import org.jetbrains.exposed.v1.core.stringParam
 
 /**
@@ -14,3 +16,7 @@ infix fun <T : String?> Expression<T>.ilike(pattern: String): Op<Boolean> {
     val col = this
     return object : ComparisonOp(col, stringParam(pattern), "ILIKE") {}
 }
+
+/** PostgreSQL function backed by an immutable expression index for harakat-insensitive search. */
+fun Expression<String>.stripArabicDiacritics(): Expression<String> =
+    CustomFunction("remove_arabic_diacritics", TextColumnType(), this)

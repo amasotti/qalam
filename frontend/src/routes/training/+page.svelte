@@ -19,5 +19,12 @@
 			<p>Choose the right meaning from a focused set of plausible answers.</p>
 			<span class="practice-strategy-cta">Start an exercise <span aria-hidden="true">→</span></span>
 		</a>
+
+		<a class="practice-strategy-card practice-strategy-card-conjugation" href="/training/exercises/conjugation">
+			<p class="practice-strategy-kicker">Morphology</p>
+			<h2>Conjugation matching</h2>
+			<p>Match fully vocalised verb forms to their person, number, and gender.</p>
+			<span class="practice-strategy-cta">Practise verbs <span aria-hidden="true">→</span></span>
+		</a>
 	</div>
 </div>

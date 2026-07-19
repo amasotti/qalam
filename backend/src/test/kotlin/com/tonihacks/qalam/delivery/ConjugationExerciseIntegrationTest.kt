@@ -32,6 +32,9 @@ class ConjugationExerciseIntegrationTest : BaseIntegrationTest() {
             "create, load, answer, complete, and list without leaking mappings before answer" {
                 testApp { client ->
                     seedConjugatableVerbs(client)
+                    val eligibility = client.get("/api/v1/conjugation-exercise-sessions/eligibility?mode=MIXED")
+                    eligibility.status shouldBe HttpStatusCode.OK
+                    eligibility.json()["availableVerbs"]!!.jsonPrimitive.content.toInt() shouldBe 3
                     val created = client.post("/api/v1/conjugation-exercise-sessions") {
                         contentType(ContentType.Application.Json)
                         setBody("""{"mode":"MIXED","size":3,"tense":"PRESENT","voice":"ACTIVE"}""")

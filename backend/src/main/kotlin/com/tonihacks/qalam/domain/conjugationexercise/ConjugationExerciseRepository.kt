@@ -46,4 +46,9 @@ interface ConjugatableVerbRepository {
         wordListIds: Set<UUID>,
         limit: Int,
     ): Either<DomainError, List<Word>>
+
+    suspend fun countForTraining(
+        masteryLevel: MasteryLevel?,
+        wordListIds: Set<UUID>,
+    ): Either<DomainError, Int>
 }

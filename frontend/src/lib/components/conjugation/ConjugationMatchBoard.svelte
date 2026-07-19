@@ -16,7 +16,7 @@ let { item, isSubmitting, onsubmit }: Props = $props();
 let selectedFormId = $state<string | null>(null);
 let mappings = $state<Record<string, string>>({});
 let initializedItemId = $state<string | null>(null);
-const isAnswered = $derived(item.result !== undefined);
+const isAnswered = $derived(item.result != null);
 const allMapped = $derived(Object.keys(mappings).length === item.forms.length);
 const correctByForm = $derived(
 	new Map((item.correctMappings ?? []).map((mapping) => [mapping.formId, mapping.labelId]))

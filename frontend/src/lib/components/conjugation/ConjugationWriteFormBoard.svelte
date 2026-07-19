@@ -27,7 +27,7 @@ let { item, answer, isSubmitting, onsubmit }: Props = $props();
 let input = $state<HTMLInputElement>();
 let submittedText = $state('');
 let initializedItemId = $state<string | null>(null);
-const isAnswered = $derived(item.result !== undefined);
+const isAnswered = $derived(item.result != null);
 const prompt = $derived(item.labels[0]?.label ?? 'Selected form');
 
 $effect(() => {

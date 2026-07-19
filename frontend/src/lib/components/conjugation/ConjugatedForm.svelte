@@ -9,10 +9,14 @@ const SEGMENT_CLASS: Record<string, string> = {
 };
 
 interface Props {
+	arabic: string;
 	segments: SegmentDto[];
 }
 
-const { segments }: Props = $props();
+const { arabic, segments }: Props = $props();
 </script>
 
-<span class="conj-form" dir="rtl">{#each segments as seg}<span class={SEGMENT_CLASS[seg.type] ?? ''}>{seg.text}</span>{/each}</span>
+<div class="conj-form-cell">
+	<span class="conj-form-word">{arabic}</span>
+	<span class="conj-form-segments">{#each segments as seg}<span class={SEGMENT_CLASS[seg.type] ?? ''}>{seg.text}</span>{/each}</span>
+</div>

@@ -49,7 +49,7 @@ const formsByCode = $derived(new Map(forms.map((f) => [f.person, f])));
 					</th>
 					<td>
 						{#if form}
-							<ConjugatedForm segments={form.segments} />
+							<ConjugatedForm arabic={form.arabic} segments={form.segments} />
 						{:else}
 							—
 						{/if}

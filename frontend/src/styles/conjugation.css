@@ -5,20 +5,20 @@
 /* ── Segment colors (4-color morphological decomposition) ── */
 
 .seg-prefix {
-	color: var(--cerulean);
+	color: #2563eb; /* blue-600 */
 }
 
 .seg-root {
-	color: var(--ink);
+	color: #111;
 	font-weight: 700;
 }
 
 .seg-vowel {
-	color: var(--amber);
+	color: #dc2626; /* red-600 */
 }
 
 .seg-suffix {
-	color: var(--sage);
+	color: #16a34a; /* green-600 */
 }
 
 /* ── Conjugation page layout ── */
@@ -168,16 +168,41 @@
 }
 
 .conj-legend-swatch--prefix {
-	background: var(--cerulean);
+	background: #2563eb;
 }
 .conj-legend-swatch--root {
-	background: var(--ink);
+	background: #111;
 }
 .conj-legend-swatch--vowel {
-	background: var(--amber);
+	background: #dc2626;
 }
 .conj-legend-swatch--suffix {
-	background: var(--sage);
+	background: #16a34a;
+}
+
+/* ── Conjugated form: word + colored decomposition ── */
+
+.conj-form-cell {
+	display: flex;
+	flex-direction: row-reverse;
+	align-items: baseline;
+	gap: 0.75rem;
+}
+
+.conj-form-word {
+	font-family: var(--font-arabic);
+	font-size: 1.35rem;
+	line-height: 1.8;
+	direction: rtl;
+	color: var(--ink);
+}
+
+.conj-form-segments {
+	direction: rtl;
+	font-family: var(--font-arabic);
+	font-size: 0.85rem;
+	line-height: 1.4;
+	opacity: 0.8;
 }
 
 /* ── Ad-hoc input form ── */

@@ -45,10 +45,10 @@ const isPending = $derived(wordId ? wordQuery.isPending : adHocMutation.isPendin
 const error = $derived(wordId ? wordQuery.error : adHocMutation.error);
 
 const TABLE_KEYS: { key: string; title: string }[] = [
-	{ key: 'past_active', title: 'Past Active' },
-	{ key: 'past_passive', title: 'Past Passive' },
 	{ key: 'present_active', title: 'Present Active' },
+	{ key: 'past_active', title: 'Past Active' },
 	{ key: 'present_passive', title: 'Present Passive' },
+	{ key: 'past_passive', title: 'Past Passive' },
 ];
 
 const VERB_FORMS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];

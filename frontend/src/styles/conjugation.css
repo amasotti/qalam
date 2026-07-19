@@ -1,0 +1,261 @@
+/* ============================================================
+   conjugation.css — Verb conjugation tables and segment colors
+   ============================================================ */
+
+/* ── Segment colors (4-color morphological decomposition) ── */
+
+.seg-prefix {
+	color: var(--cerulean);
+}
+
+.seg-root {
+	color: var(--ink);
+	font-weight: 700;
+}
+
+.seg-vowel {
+	color: var(--amber);
+}
+
+.seg-suffix {
+	color: var(--sage);
+}
+
+/* ── Conjugation page layout ── */
+
+.conj-page {
+	max-width: var(--content-max-width);
+	padding: var(--content-padding-x);
+}
+
+.conj-page-title {
+	font-size: var(--type-page);
+	font-weight: 700;
+	margin-bottom: 1.5rem;
+}
+
+.conj-header {
+	margin-bottom: 2rem;
+}
+
+.conj-meta {
+	display: flex;
+	gap: 1rem;
+	flex-wrap: wrap;
+	align-items: center;
+	margin-top: 0.5rem;
+}
+
+.conj-meta-badge {
+	font-size: var(--type-meta);
+	background: var(--bg-dark);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-sm);
+	padding: 0.2rem 0.5rem;
+	color: var(--ink-mid);
+}
+
+.conj-root-display {
+	font-family: var(--font-arabic-display);
+	font-size: var(--arabic-font-size-display);
+	direction: rtl;
+	color: var(--ink);
+	letter-spacing: 0.15em;
+}
+
+/* ── Tables grid (2×2: past/present × active/passive) ── */
+
+.conj-tables-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+	.conj-tables-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* ── Single conjugation table ── */
+
+.conj-table-card {
+	background: var(--white);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-lg);
+	overflow: hidden;
+}
+
+.conj-table-head {
+	background: var(--bg-dark);
+	padding: 0.5rem 0.75rem;
+	font-size: var(--type-label);
+	font-weight: 600;
+	color: var(--ink-mid);
+	border-bottom: 1px solid var(--border-color);
+	text-transform: capitalize;
+}
+
+.conj-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.conj-table th,
+.conj-table td {
+	padding: 0.35rem 0.5rem;
+	border-bottom: 1px solid var(--border-thin);
+	font-size: var(--type-body);
+	vertical-align: middle;
+}
+
+.conj-table th {
+	text-align: left;
+	color: var(--ink-light);
+	font-weight: 500;
+	width: 5.5rem;
+}
+
+.conj-table-person-ar {
+	font-family: var(--font-arabic);
+	font-size: var(--arabic-font-size-ui);
+	direction: rtl;
+	color: var(--ink-light);
+}
+
+.conj-table td {
+	text-align: right;
+	direction: rtl;
+	font-family: var(--font-arabic);
+	font-size: var(--arabic-font-size-body);
+	line-height: var(--arabic-line-height-body);
+}
+
+.conj-table tr:last-child th,
+.conj-table tr:last-child td {
+	border-bottom: none;
+}
+
+/* ── Number group separators ── */
+
+.conj-table tr.conj-group-sep th,
+.conj-table tr.conj-group-sep td {
+	border-top: 2px solid var(--border-color);
+}
+
+/* ── Segment legend ── */
+
+.conj-legend {
+	display: flex;
+	gap: 1rem;
+	flex-wrap: wrap;
+	margin-bottom: 1rem;
+	font-size: var(--type-meta);
+	color: var(--ink-mid);
+}
+
+.conj-legend-item {
+	display: flex;
+	align-items: center;
+	gap: 0.3rem;
+}
+
+.conj-legend-swatch {
+	display: inline-block;
+	width: 0.7rem;
+	height: 0.7rem;
+	border-radius: 2px;
+}
+
+.conj-legend-swatch--prefix {
+	background: var(--cerulean);
+}
+.conj-legend-swatch--root {
+	background: var(--ink);
+}
+.conj-legend-swatch--vowel {
+	background: var(--amber);
+}
+.conj-legend-swatch--suffix {
+	background: var(--sage);
+}
+
+/* ── Ad-hoc input form ── */
+
+.conj-adhoc-form {
+	background: var(--white);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-lg);
+	padding: 1rem;
+	margin-bottom: 1.5rem;
+}
+
+.conj-adhoc-row {
+	display: flex;
+	gap: 1rem;
+	flex-wrap: wrap;
+	margin-bottom: 0.75rem;
+}
+
+.conj-adhoc-field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	min-width: 8rem;
+	flex: 1;
+}
+
+.conj-adhoc-label {
+	font-size: var(--type-meta);
+	color: var(--ink-mid);
+	font-weight: 500;
+}
+
+.conj-adhoc-hint {
+	font-size: var(--type-hint);
+	color: var(--ink-ghost);
+}
+
+.conj-adhoc-input,
+.conj-adhoc-select {
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-sm);
+	padding: 0.35rem 0.5rem;
+	font-size: var(--type-body);
+	background: var(--bg);
+}
+
+.conj-adhoc-input:focus,
+.conj-adhoc-select:focus {
+	outline: 2px solid var(--olive-soft);
+	outline-offset: 1px;
+}
+
+.conj-adhoc-btn {
+	background: var(--olive);
+	color: var(--white);
+	border: none;
+	border-radius: var(--radius-sm);
+	padding: 0.4rem 1.2rem;
+	font-size: var(--type-body);
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.conj-adhoc-btn:hover:not(:disabled) {
+	background: var(--olive-soft);
+}
+
+.conj-adhoc-btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* ── Loading / empty states ── */
+
+.conj-empty {
+	text-align: center;
+	padding: 3rem 1rem;
+	color: var(--ink-light);
+	font-size: var(--type-body);
+}

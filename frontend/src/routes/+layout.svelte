@@ -38,6 +38,9 @@ function isActive(href: string): boolean {
 				<a href="/word-lists" class="sb-link" class:active={isActive('/word-lists')}>
 					Lists <span class="ar">قوائم</span>
 				</a>
+				<a href="/verbs/conjugation" class="sb-link" class:active={isActive('/verbs')}>
+					Conjugation <span class="ar">تصريف</span>
+				</a>
 				<span class="sb-section">Practice</span>
 				<a href="/training" class="sb-link" class:active={isActive('/training')}>
 					Practice <span class="ar">تدريب</span>

@@ -18,6 +18,7 @@
 @import "./styles/components.css";
 @import "./styles/utilities.css";
 @import "./styles/word.css";
+@import "./styles/conjugation.css";
 @import "./styles/root.css";
 @import "./styles/text.css";
 @import "./styles/lists.css";

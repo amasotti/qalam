@@ -9,17 +9,46 @@ const session: TrainingSessionResponse = {
 	createdAt: '2026-07-18T10:00:00Z',
 	completedAt: '2026-07-18T10:15:00Z',
 	words: [
-		{ wordId: 'word-1', arabicText: 'كتب', translation: 'write', frontSide: 'ARABIC', position: 0, masteryLevel: 'LEARNING', result: 'CORRECT' },
-		{ wordId: 'word-2', arabicText: 'قرأ', translation: 'read', frontSide: 'ARABIC', position: 1, masteryLevel: 'LEARNING', result: 'INCORRECT' },
-		{ wordId: 'word-3', arabicText: 'ذهب', translation: 'go', frontSide: 'ARABIC', position: 2, masteryLevel: 'NEW', result: 'SKIPPED' },
+		{
+			wordId: 'word-1',
+			arabicText: 'كتب',
+			translation: 'write',
+			frontSide: 'ARABIC',
+			position: 0,
+			masteryLevel: 'LEARNING',
+			result: 'CORRECT',
+		},
+		{
+			wordId: 'word-2',
+			arabicText: 'قرأ',
+			translation: 'read',
+			frontSide: 'ARABIC',
+			position: 1,
+			masteryLevel: 'LEARNING',
+			result: 'INCORRECT',
+		},
+		{
+			wordId: 'word-3',
+			arabicText: 'ذهب',
+			translation: 'go',
+			frontSide: 'ARABIC',
+			position: 2,
+			masteryLevel: 'NEW',
+			result: 'SKIPPED',
+		},
 	],
 };
 
 describe('summaryFromCompletedSession', () => {
 	it('derives durable review statistics from recorded word results', () => {
 		expect(summaryFromCompletedSession(session)).toMatchObject({
-			sessionId: 'session-1', correct: 1, incorrect: 1, skipped: 1,
-			accuracy: 0.5, promotions: [], completedAt: '2026-07-18T10:15:00Z',
+			sessionId: 'session-1',
+			correct: 1,
+			incorrect: 1,
+			skipped: 1,
+			accuracy: 0.5,
+			promotions: [],
+			completedAt: '2026-07-18T10:15:00Z',
 		});
 	});
 

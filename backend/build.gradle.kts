@@ -12,7 +12,7 @@ repositories {
 }
 
 group = "com.tonihacks"
-version = "0.13.0"
+version = "1.0.0"
 
 application {
     mainClass = "io.ktor.server.netty.EngineMain"

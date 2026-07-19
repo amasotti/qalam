@@ -1,59 +1,96 @@
 ## [unreleased]
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/55bf9d7c95e5b774c10769503331023982df4024..95205a7bef277e46ee4cf6a76883546cfcc084bf)
+[Compare with last version](https://github.com/amasotti/qalam/compare/64f74bdfb7b6373902a30a9ad591e23767558a6c..5b1de8e823ad1dc4f1cf084881bcce0d225e7b77)
 ### 🚀 Features
 
 
-- List of trained words after training ([759fa36](https://github.com/amasotti/qalam/commit/759fa36a857541839991d8e08b4b1c496e24a372))
+- Prepare migrations to new table verb_details ([2d1e85e](https://github.com/amasotti/qalam/commit/2d1e85eb284167396a481cfcae2eaf7efd1c9953))
 
-- Allow refetching a terminated session ([7171b79](https://github.com/amasotti/qalam/commit/7171b796f6dbdca08a8a4714bd71447c6ea10b63))
+- Verb routes ([1c978c8](https://github.com/amasotti/qalam/commit/1c978c83f2a1e4c49bd95edfbcdca3b406a86ca5))
 
-- List sessions endpoint ([738eb1d](https://github.com/amasotti/qalam/commit/738eb1d9612f79582ceb4608d089e7fae33527e4))
+- Conjugation engine for MSA ([197d1ed](https://github.com/amasotti/qalam/commit/197d1edce1827083b6c6c069f492e6b93a7a294f))
 
-- Generate openapi types ([4f38498](https://github.com/amasotti/qalam/commit/4f38498d753ba8522237bcd95c6f46b7470646bb))
+- [**breaking**] Search without diacritics ([d910356](https://github.com/amasotti/qalam/commit/d9103562ad9acf414613c23f4b4303e23a0a5e47))
 
-- New practice hub frontend ([703dae7](https://github.com/amasotti/qalam/commit/703dae727356ca1458d53ed0eb6ef7595460d1de))
+- Stem and form builder ([504dcc6](https://github.com/amasotti/qalam/commit/504dcc658ecbf3a64ce2ae7315fa3f3f59635fce))
 
-- New exercise (mult choice) frontend pages ([821b845](https://github.com/amasotti/qalam/commit/821b845353438b0604e6c423ee1f89374b4f8bf6))
+- Weak form I verbs ([62eac9a](https://github.com/amasotti/qalam/commit/62eac9af068d2df8514e8d048b423f1c358f3315))
 
-- Summary from completed lesson ([81de699](https://github.com/amasotti/qalam/commit/81de6992d03ba1a81d38f8178784216cb5f30a4c))
+- Conjugation DTO ([5c5bdef](https://github.com/amasotti/qalam/commit/5c5bdef2e6cc6b19f39d2fbaa004fecf080b844b))
 
-- Better post session summary ([9f78a27](https://github.com/amasotti/qalam/commit/9f78a272780a5b7999940d1db99cc0fc18387594))
+- Conjugation routes ([ecc87fa](https://github.com/amasotti/qalam/commit/ecc87fab96cac3ccd37715b9b89b551a8b290be3))
+
+- Add conjugation exercise table creation ([eb023f8](https://github.com/amasotti/qalam/commit/eb023f878b00a632043264988d3903f0f832be26))
+
+- Conjugation page frontend ([0a4a0dd](https://github.com/amasotti/qalam/commit/0a4a0dd09857c8d54017bc2c15a9325d7aa2e00b))
+
+- Conjugation exercise domain and repository ([6e8a2fb](https://github.com/amasotti/qalam/commit/6e8a2fb1b40a685749986069658cb7c076d049e2))
+
+- Conjugation exercise table and error handling ([2e01c66](https://github.com/amasotti/qalam/commit/2e01c6684659144eb68ae39db5d4e23e4b6756ff))
+
+- Verb picker basis ([885c79c](https://github.com/amasotti/qalam/commit/885c79c82a6baadb73ee1d0fac63d3441e6da720))
+
+- Verb picker service and frontend stub ([e95c7db](https://github.com/amasotti/qalam/commit/e95c7dbcd21c85c47bac05acdbdd38af54d8388a))
+
+- Verb details strip component ([05b6630](https://github.com/amasotti/qalam/commit/05b663081d2adc932cf123ac0d76bdf522939a28))
+
+- Allow edit verb information ([b254ae4](https://github.com/amasotti/qalam/commit/b254ae43cdbd312452d40fa878f5c5e91d908357))
+
+- Exercise conjugation routes ([7d8d2ec](https://github.com/amasotti/qalam/commit/7d8d2ec55c721798bebdb467084a554ec815c5d8))
+
+- Complete http contract for conjugation exercise ([8b9c411](https://github.com/amasotti/qalam/commit/8b9c4115882a38be10cfe1f2caa80dd503da9cad))
+
+- Frontend implementation conjugation exercise ([4a52586](https://github.com/amasotti/qalam/commit/4a525868dd6a0e8e5d2c2a701c1ede0f570b2c56))
+
+- Prepare write form exercise ([68f8478](https://github.com/amasotti/qalam/commit/68f84786fd991dc83d58514819addc1d4dd9ec13))
+
+- Conjugation typed form component ([312e0e0](https://github.com/amasotti/qalam/commit/312e0e04b1aed0ee9a7b25e7c980b99fd18ab447))
 
 ### 🐛 Bug Fixes
 
 
-- Minor frontend hiccups ([0328683](https://github.com/amasotti/qalam/commit/0328683ac062dfc5b49d06e43fa1f97c64f67938))
+- Nfc ordering fatha, shadda ([6b6135e](https://github.com/amasotti/qalam/commit/6b6135e00bda63328f6ee5c5b24a956b4f0533bc))
 
-- Text view improvements ([be74fc1](https://github.com/amasotti/qalam/commit/be74fc1173818b82db17cf84a3a088dc61a012bc))
+- Add PoS condition in repository for autocompletion ([10a702f](https://github.com/amasotti/qalam/commit/10a702f2b2675cdce5996540521ca355f167363d))
 
-- Text view improvements ([cb045ba](https://github.com/amasotti/qalam/commit/cb045ba4f2fe476214d5906ccf7651ff9689cb79))
+- Complete error mapping ([ecaf710](https://github.com/amasotti/qalam/commit/ecaf710b9e7a117dc8335cdc5549f23ffea55500))
 
-- Prevent double way relation uniqueness violation ([255dd6f](https://github.com/amasotti/qalam/commit/255dd6ff7475bbb25584b5f6f82e6791b66fe9b9))
+- Conjugation match recognition of answered questions ([ed1acb8](https://github.com/amasotti/qalam/commit/ed1acb8c45ab12c11c963a967409d2c11e9d4517))
 
-- Allow change arabic word in arabic ([a61fcf8](https://github.com/amasotti/qalam/commit/a61fcf89e6d06babf5f2b816d41ef92d29e2f48c))
+- Conjugation css ([b483c95](https://github.com/amasotti/qalam/commit/b483c95eafa6adc36b66a5566aab938b3035e137))
 
-- Failing session summary test ([95205a7](https://github.com/amasotti/qalam/commit/95205a7bef277e46ee4cf6a76883546cfcc084bf))
+- Open api spec ([5b1de8e](https://github.com/amasotti/qalam/commit/5b1de8e823ad1dc4f1cf084881bcce0d225e7b77))
 
 ### 🚜 Refactor
 
 
-- Extract domain to fe mapping into a utility file ([8c6a3fe](https://github.com/amasotti/qalam/commit/8c6a3fe008f7b5e07458f8e62ee5735a78f0c08d))
+- Migrate verb pattern to new entity, remove from word ([b8c2b52](https://github.com/amasotti/qalam/commit/b8c2b528c4cd7c1464007565a11fdde8b9e9f964))
 
-- Accuracy donut & UI refinement ([1f42dd1](https://github.com/amasotti/qalam/commit/1f42dd1d1e07cec70930c7c28e3c292ece91388e))
-
-- Separation of concerns ([ec43125](https://github.com/amasotti/qalam/commit/ec43125c404b5f1343ef2f407c9c74d5337be171))
-
-### 🎨 Styling
+### 🧪 Testing
 
 
-- Replace Amiri with Parastoo ([b97a980](https://github.com/amasotti/qalam/commit/b97a980d560b64d11fbe4bf8ca3579b1a9499552))
+- Word and verb tests ([4b2672d](https://github.com/amasotti/qalam/commit/4b2672de8bdf3f04836b5b75e1d504063149c820))
 
-- Rubik as DM Sans replacement ([9bd307d](https://github.com/amasotti/qalam/commit/9bd307df61fc183a5cab50a78850176ed2fa88d5))
+- Regular form tests ([a48b056](https://github.com/amasotti/qalam/commit/a48b056ee85aac4aef572215baee5a7bbf138796))
+
+- ConjugationExerciseIntegrationTest ([c7ff2bf](https://github.com/amasotti/qalam/commit/c7ff2bf87105443c50ac99a91a3a09294a10238b))
 
 ### ⚙️ Miscellaneous Tasks
 
 
-- Open api types generation ([b432022](https://github.com/amasotti/qalam/commit/b43202299d478376aaaadb212e865d3a2c630834))
+- Pass changelog file to git-cliff ([b81efc0](https://github.com/amasotti/qalam/commit/b81efc08d1dbd6687e8ab07d857ed6a1bf631163))
+
+- Generate openapi types ([e458237](https://github.com/amasotti/qalam/commit/e458237c26edb5f65075d31921899d6bcc4b60ad))
+
+- Style of decomposed forms ([d6444ba](https://github.com/amasotti/qalam/commit/d6444bafb4b1cbdf00ca16cb1696b73e8f4f3ea6))
+
+- Navigation style ([7cdb417](https://github.com/amasotti/qalam/commit/7cdb4172a02046ea2a06865a0ef6291b245001f9))
+
+- Generate types ([fd5b55e](https://github.com/amasotti/qalam/commit/fd5b55ef534bd2a02b6cf8a0af794f994a3fe74c))
+
+### Enhancement
+
+
+- Conjugation page adjustments ([4f3836d](https://github.com/amasotti/qalam/commit/4f3836d5605227c357e7dccb2071cc09d05b5c00))
 
 <!-- generated by git-cliff -->

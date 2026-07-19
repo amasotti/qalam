@@ -191,8 +191,8 @@
 
 .conj-form-word {
 	font-family: var(--font-arabic);
-	font-size: 1.35rem;
-	line-height: 1.8;
+	font-size: 1.6rem;
+	line-height: 2.4;
 	direction: rtl;
 	color: var(--ink);
 }
@@ -200,8 +200,8 @@
 .conj-form-segments {
 	direction: rtl;
 	font-family: var(--font-arabic);
-	font-size: 0.85rem;
-	line-height: 1.4;
+	font-size: 1.6rem;
+	line-height: 2.4;
 	opacity: 0.8;
 }
 

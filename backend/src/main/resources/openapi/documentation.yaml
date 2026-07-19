@@ -312,6 +312,11 @@ paths:
         - name: limit
           in: query
           schema: { type: integer, default: 10, maximum: 50 }
+        - name: partOfSpeech
+          in: query
+          description: Restrict results to one part of speech
+          schema:
+            $ref: "#/components/schemas/PartOfSpeech"
       responses:
         "200":
           description: Matching words (id + arabicText + translation only)

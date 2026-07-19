@@ -164,10 +164,14 @@ class WordService(
         parseWordId(id).flatMap { repo.delete(it) }
             .logDomainFailure(log) { "Failed to delete word id=$id: $it" }
 
-    suspend fun autocomplete(query: String, limit: Int?): Either<DomainError, List<WordAutocompleteResponse>> =
-        repo.autocomplete(query, limit?.coerceIn(1, 50) ?: 10)
-            .map { words -> words.map { it.toAutocompleteResponse() } }
-            .logDomainFailure(log) { "Failed to autocomplete words queryLength=${query.length} limit=$limit: $it" }
+    suspend fun autocomplete(
+        query: String,
+        limit: Int?,
+        partOfSpeech: String? = null,
+    ): Either<DomainError, List<WordAutocompleteResponse>> = either {
+        val pos = partOfSpeech?.let { parseWordEnum("partOfSpeech", it) { value -> PartOfSpeech.fromString(value) }.bind() }
+        repo.autocomplete(query, limit?.coerceIn(1, 50) ?: 10, pos).bind().map { it.toAutocompleteResponse() }
+    }.logDomainFailure(log) { "Failed to autocomplete words queryLength=${query.length} limit=$limit: $it" }
 
     suspend fun getDictionaryLinks(wordId: String): Either<DomainError, List<DictionaryLinkResponse>> =
         parseWordId(wordId)

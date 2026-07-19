@@ -134,7 +134,7 @@ class ExposedWordRepository(
             word.right()
         }
 
-    override suspend fun autocomplete(query: String, limit: Int): Either<DomainError, List<Word>> =
+    override suspend fun autocomplete(query: String, limit: Int, partOfSpeech: PartOfSpeech?): Either<DomainError, List<Word>> =
         suspendTransaction {
             val normalizedArabicQuery = query.removeArabicDiacritics()
             WordsTable
@@ -143,6 +143,8 @@ class ExposedWordRepository(
                     (WordsTable.arabicText.stripArabicDiacritics() ilike "%$normalizedArabicQuery%") or
                     (WordsTable.translation ilike "%$query%") or
                     (WordsTable.transliteration ilike "%$query%")
+                }.let { search ->
+                    partOfSpeech?.let { search and (WordsTable.partOfSpeech eq it.name) } ?: search
                 }
                 .limit(limit)
                 .map { it.toWord() }

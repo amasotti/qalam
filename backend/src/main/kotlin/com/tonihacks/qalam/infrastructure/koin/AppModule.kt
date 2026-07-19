@@ -31,6 +31,7 @@ import com.tonihacks.qalam.infrastructure.exposed.ExposedTextRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedAnalyticsRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedExerciseRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedTrainingRepository
+import com.tonihacks.qalam.infrastructure.exposed.ExposedVerbDetailsRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedWordMorphologyRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedWordPluralsRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedWordListRepository
@@ -48,6 +49,7 @@ val wordsModules = module {
     single { ExposedWordMorphologyRepository() }
     single { ExposedWordPluralsRepository() }
     single { ExposedWordRelationsRepository() }
+    single { ExposedVerbDetailsRepository() }
     single<WordRepository> { ExposedWordRepository(get(), get(), get()) }
     single { WordService(get(), get()) }
 }

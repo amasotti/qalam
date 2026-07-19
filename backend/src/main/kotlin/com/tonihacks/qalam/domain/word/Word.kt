@@ -53,7 +53,6 @@ value class WordPluralId(val value: UUID) {
 data class WordMorphology(
     val wordId: WordId,
     val gender: Gender?,
-    val verbPattern: VerbPattern?,
 )
 
 data class WordPlural(

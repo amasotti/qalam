@@ -118,15 +118,15 @@ equivalent.
 ### Arabic / RTL
 
 Arabic font stack follows Busatan:
-- **Body Arabic**: Noto Naskh Arabic, Amiri
-- **Display Arabic**: Amiri, Noto Naskh Arabic
-- **Text Arabic**: Noto Naskh Arabic, Amiri
+- **Body Arabic**: Noto Naskh Arabic, Parastoo
+- **Display Arabic**: Parastoo, Noto Naskh Arabic
+- **Text Arabic**: Noto Naskh Arabic, Parastoo
 
 These fonts are part of Busatan and are not swapped ad hoc per page or component.
 
 ```css
 .arabic {
-    font-family: 'Noto Naskh Arabic', 'Amiri', serif;
+    font-family: 'Noto Naskh Arabic', 'Parastoo', serif;
     direction: rtl;
     text-align: right;
 }

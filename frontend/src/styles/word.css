@@ -148,7 +148,7 @@
 	position: absolute;
 	top: -1rem;
 	right: -0.5rem;
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 8rem;
 	color: var(--olive);
 	opacity: 0.05;
@@ -632,7 +632,7 @@
 	box-shadow: 0 2px 8px rgba(74, 98, 40, 0.1);
 }
 .root-link-ar {
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 1.625rem;
 	direction: rtl;
 	color: var(--ink);

@@ -69,7 +69,7 @@
 	line-height: 1.6;
 }
 .form-input.ar-input {
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 1.25rem;
 	direction: rtl;
 	text-align: right;

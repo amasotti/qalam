@@ -81,7 +81,7 @@
 
   <!-- Pass 1: glow (olive, blurred) -->
   <text x="425" y="232"
-    font-family="'Amiri','Noto Naskh Arabic','Scheherazade New','Traditional Arabic',serif"
+    font-family="'Parastoo','Noto Naskh Arabic','Scheherazade New','Traditional Arabic',serif"
     font-size="212" font-weight="400"
     text-anchor="middle"
     fill="#4A6228" opacity="0.14"
@@ -90,7 +90,7 @@
 
   <!-- Pass 2: crisp, solid olive -->
   <text x="425" y="232"
-    font-family="'Amiri','Noto Naskh Arabic','Scheherazade New','Traditional Arabic',serif"
+    font-family="'Parastoo','Noto Naskh Arabic','Scheherazade New','Traditional Arabic',serif"
     font-size="212" font-weight="400"
     text-anchor="middle"
     fill="#4A6228"

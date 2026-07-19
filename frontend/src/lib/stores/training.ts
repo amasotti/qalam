@@ -94,11 +94,13 @@ export function useTrainingStats() {
 	}));
 }
 
-export function useListSessions() {
+export function useListSessions(page: () => number, size: () => number) {
 	return createQuery(() => ({
-		queryKey: ['training', 'sessions'],
+		queryKey: ['training', 'sessions', page(), size()],
 		queryFn: async () => {
-			const { data, error } = await listTrainingSessions();
+			const { data, error } = await listTrainingSessions({
+				query: { page: page(), size: size() },
+			});
 			if (error) throw error;
 			const result = requireData(data, 'listTrainingSessions') as PaginatedSessionsResponse;
 			return {

@@ -110,7 +110,7 @@
 	transform: translateY(-1px);
 }
 .word-card-ar {
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 1.75rem;
 	direction: rtl;
 	text-align: right;
@@ -180,7 +180,7 @@
 	transform: translateY(-1px);
 }
 .root-card-ar {
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 2rem;
 	line-height: 1.4;
 	direction: rtl;
@@ -476,7 +476,7 @@
 	gap: 1rem;
 }
 .list-empty-icon {
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 4rem;
 	direction: rtl;
 	opacity: 0.2;

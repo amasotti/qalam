@@ -3,7 +3,7 @@
    ============================================================ */
 
 .root-letter-ar {
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 4.5rem;
 	color: var(--ink);
 	line-height: 1;
@@ -24,7 +24,7 @@
 	position: absolute;
 	right: -1rem;
 	top: -1.5rem;
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 10rem;
 	color: var(--olive);
 	opacity: 0.04;
@@ -40,7 +40,7 @@
 	gap: 0.75rem;
 }
 .root-normalized {
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 1.1rem;
 	color: var(--ink-light);
 	direction: rtl;
@@ -133,7 +133,7 @@
 	background: var(--border);
 }
 .wc-ar {
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 1.75rem;
 	direction: rtl;
 	color: var(--ink);
@@ -291,7 +291,7 @@
 	background: var(--olive-pale);
 }
 .ql-ar {
-	font-family: "Amiri", serif;
+	font-family: var(--font-arabic-display);
 	font-size: 1.25rem;
 	color: var(--ink);
 	direction: rtl;

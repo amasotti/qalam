@@ -46,7 +46,7 @@
 	background: var(--white);
 	color: var(--ink);
 	font-size: 0.875rem;
-	font-family: "DM Sans", sans-serif;
+	font-family: "Rubik", sans-serif;
 	transition:
 		border-color 150ms,
 		box-shadow 150ms;
@@ -63,7 +63,7 @@
 	background: var(--white);
 	color: var(--ink);
 	font-size: 0.8rem;
-	font-family: "DM Sans", sans-serif;
+	font-family: "Rubik", sans-serif;
 	cursor: pointer;
 }
 .filter-select:focus {

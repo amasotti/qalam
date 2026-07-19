@@ -63,10 +63,12 @@ async function next() {
 	}
 
 	summary = await completeSession.mutateAsync(sessionId);
+	await session.refetch();
 }
 
 async function finishEarly() {
 	summary = await completeSession.mutateAsync(sessionId);
+	await session.refetch();
 }
 </script>
 
@@ -75,7 +77,7 @@ async function finishEarly() {
 {:else if session.isError}
 	<div class="exercise-state"><h1>Exercise unavailable</h1><p>{session.error.message}</p><Button href="/training/exercises/multiple-choice" variant="outline">Back to exercises</Button></div>
 {:else if summary}
-	<ExerciseSessionSummary {summary} />
+	<ExerciseSessionSummary {summary} items={session.data?.items ?? []} />
 {:else if currentItem}
 	<main class="exercise-runner">
 		<header class="exercise-progress-header">

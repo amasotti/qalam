@@ -1,12 +1,19 @@
 <script lang="ts">
+import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import type { ConjugationResponse } from '$lib/api/types.gen';
 import ConjugationTable from '$lib/components/conjugation/ConjugationTable.svelte';
+import VerbPicker from '$lib/components/conjugation/VerbPicker.svelte';
 import { useAdHocConjugation, useConjugation } from '$lib/stores/conjugation';
 
 // If a wordId is passed as query param, load conjugation for that word
 const wordId = $derived(page.url.searchParams.get('wordId'));
 const wordQuery = useConjugation(() => wordId);
+let mode = $state<'saved' | 'adhoc'>('adhoc');
+
+$effect(() => {
+	if (wordId) mode = 'saved';
+});
 
 // Ad-hoc conjugation state
 let rootInput = $state('');
@@ -37,6 +44,16 @@ function handleCompute() {
 	});
 }
 
+function selectSavedVerb(word: { id: string }) {
+	mode = 'saved';
+	void goto(`/verbs/conjugation?wordId=${word.id}`);
+}
+
+function selectMode(nextMode: 'saved' | 'adhoc') {
+	mode = nextMode;
+	if (nextMode === 'adhoc') void goto('/verbs/conjugation');
+}
+
 // Determine which result to display
 const result: ConjugationResponse | undefined = $derived(
 	wordId ? wordQuery.data : adHocMutation.data
@@ -59,8 +76,16 @@ const PRESENT_PATTERNS = ['yaf3ulu', 'yaf3ilu', 'yaf3alu'];
 
 <div class="conj-page">
 	<h1 class="conj-page-title">Verb Conjugation</h1>
+	<div class="conj-mode-toggle" role="group" aria-label="Conjugation source">
+		<button class:active={mode === 'saved'} type="button" onclick={() => selectMode('saved')}>Saved verb</button>
+		<button class:active={mode === 'adhoc'} type="button" onclick={() => selectMode('adhoc')}>Ad-hoc root</button>
+	</div>
 
-	{#if !wordId}
+	{#if mode === 'saved'}
+		<div class="conj-header">
+			<VerbPicker onselect={selectSavedVerb} />
+		</div>
+	{:else}
 		<!-- Ad-hoc input form -->
 		<div class="conj-header">
 			<form class="conj-adhoc-form" onsubmit={(e) => { e.preventDefault(); handleCompute(); }}>

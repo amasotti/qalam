@@ -8,6 +8,7 @@ After ANY edit to backend Kotlin, frontend Svelte/TS/CSS, or the OpenAPI spec, r
 just check          # backend: detekt + compile (Gradle check)
 just gtypes         # regenerate TS types from OpenAPI spec
 just check-frontend # frontend: svelte-check type safety (zero errors, zero warnings)
+just test-frontend  # frontend: unit tests (zero errors, all passed)
 ```
 
 ## Rules

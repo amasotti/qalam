@@ -250,16 +250,15 @@ class WordService(
         repo.findById(id).bind()
         val morphology = repo.findMorphology(id).bind()
         val plurals = repo.findPlurals(id).bind()
-        morphology?.toResponse(plurals) ?: WordMorphologyResponse(gender = null, verbPattern = null, plurals = plurals.map { it.toResponse() })
+        morphology?.toResponse(plurals) ?: WordMorphologyResponse(gender = null, plurals = plurals.map { it.toResponse() })
     }.logDomainFailure(log) { "Failed to load morphology wordId=$wordId: $it" }
 
     suspend fun upsertMorphology(wordId: String, req: UpsertWordMorphologyRequest): Either<DomainError, WordMorphologyResponse> = either {
-        log.info { "Upserting word morphology wordId=$wordId gender=${req.gender} verbPattern=${req.verbPattern}" }
+        log.info { "Upserting word morphology wordId=$wordId gender=${req.gender}" }
         val id = parseWordId(wordId).bind()
         repo.findById(id).bind()
         val gender = req.gender?.let { parseWordEnum("gender", it) { s -> Gender.fromString(s) }.bind() }
-        val verbPattern = req.verbPattern?.let { parseWordEnum("verbPattern", it) { s -> VerbPattern.fromString(s) }.bind() }
-        val morphology = WordMorphology(wordId = id, gender = gender, verbPattern = verbPattern)
+        val morphology = WordMorphology(wordId = id, gender = gender)
         repo.upsertMorphology(morphology).bind()
         val plurals = repo.findPlurals(id).bind()
         morphology.toResponse(plurals)

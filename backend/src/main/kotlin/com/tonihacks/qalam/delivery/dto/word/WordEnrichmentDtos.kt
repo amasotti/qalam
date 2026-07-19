@@ -9,7 +9,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class WordMorphologyResponse(
     val gender: String?,
-    val verbPattern: String?,
     val plurals: List<WordPluralResponse>,
 )
 
@@ -29,7 +28,6 @@ data class CreateWordPluralRequest(
 @Serializable
 data class UpsertWordMorphologyRequest(
     val gender: String? = null,
-    val verbPattern: String? = null,
 )
 
 @Serializable
@@ -72,7 +70,6 @@ data class AiRelationSuggestion(
 
 fun WordMorphology.toResponse(plurals: List<WordPlural>) = WordMorphologyResponse(
     gender = gender?.name,
-    verbPattern = verbPattern?.name,
     plurals = plurals.map { it.toResponse() },
 )
 

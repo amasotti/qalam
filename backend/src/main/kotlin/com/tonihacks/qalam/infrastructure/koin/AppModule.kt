@@ -11,6 +11,9 @@ import com.tonihacks.qalam.domain.text.TextRepository
 import com.tonihacks.qalam.domain.text.TextService
 import com.tonihacks.qalam.domain.analytics.AnalyticsRepository
 import com.tonihacks.qalam.domain.analytics.AnalyticsService
+import com.tonihacks.qalam.domain.conjugation.ConjugationEngine
+import com.tonihacks.qalam.domain.conjugation.ConjugationService
+import com.tonihacks.qalam.domain.conjugation.MsaConjugationEngine
 import com.tonihacks.qalam.domain.dictionary.DictionaryLookupService
 import com.tonihacks.qalam.domain.dictionary.DictionaryLookupClient
 import com.tonihacks.qalam.domain.exercise.ExerciseRepository
@@ -102,6 +105,11 @@ val analyticsModule = module {
     single { AnalyticsService(get()) }
 }
 
+val conjugationModule = module {
+    single<ConjugationEngine> { MsaConjugationEngine() }
+    single { ConjugationService(get(), get(), get(), get()) }
+}
+
 val appModule = module {
     includes(
         rootsModules,
@@ -114,6 +122,7 @@ val appModule = module {
         trainingModule,
         exerciseModule,
         aiInsightModule,
-        analyticsModule
+        analyticsModule,
+        conjugationModule,
     )
 }

@@ -34,6 +34,8 @@ tags:
     description: AI-powered linguistic analysis
   - name: analytics
     description: Aggregated statistics across all domains
+  - name: conjugation
+    description: Verb conjugation engine (rule-based, on-the-fly computation)
   - name: system
     description: Health and API introspection
 
@@ -2527,6 +2529,67 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  # ── Conjugation ──────────────────────────────────────────────────────
+
+  /api/v1/conjugation/{wordId}:
+    get:
+      tags:
+        - conjugation
+      summary: Conjugate a saved verb (word must have verb details + linked root)
+      operationId: conjugateWord
+      parameters:
+        - name: wordId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Full conjugation table
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConjugationResponse'
+        '404':
+          description: Word or verb details not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Word is not a verb or has no root
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/conjugation/compute:
+    post:
+      tags:
+        - conjugation
+      summary: Compute conjugation from ad-hoc root letters and verb metadata
+      operationId: computeConjugation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdHocConjugationRequest'
+      responses:
+        '200':
+          description: Full conjugation table
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConjugationResponse'
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 security: []
 
 components:
@@ -4217,3 +4280,114 @@ components:
           format: double
         mode:
           type: string
+
+    # ── Conjugation schemas ──────────────────────────────────────────────
+
+    ConjugationResponse:
+      type: object
+      required: [verbDetails, root, dialect, conjugations]
+      properties:
+        word:
+          $ref: '#/components/schemas/ConjugationWordSummary'
+        verbDetails:
+          $ref: '#/components/schemas/ConjugationVerbDetailsSummary'
+        root:
+          $ref: '#/components/schemas/ConjugationRootSummary'
+        dialect:
+          type: string
+        conjugations:
+          type: object
+          description: "Keys: past_active, past_passive, present_active, present_passive"
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/PersonConjugationDto'
+
+    ConjugationWordSummary:
+      type: object
+      required: [id, arabicText]
+      properties:
+        id:
+          type: string
+          format: uuid
+        arabicText:
+          type: string
+        translation:
+          type: string
+          nullable: true
+
+    ConjugationVerbDetailsSummary:
+      type: object
+      required: [verbForm, weaknessType]
+      properties:
+        verbForm:
+          type: string
+          enum: [I, II, III, IV, V, VI, VII, VIII, IX, X]
+        pastPattern:
+          type: string
+          nullable: true
+        presentPattern:
+          type: string
+          nullable: true
+        weaknessType:
+          type: string
+          enum: [SOUND, ASSIMILATED, HOLLOW, GEMINATE, DEFECTIVE, DOUBLY_WEAK]
+
+    ConjugationRootSummary:
+      type: object
+      required: [letters]
+      properties:
+        letters:
+          type: array
+          items:
+            type: string
+
+    PersonConjugationDto:
+      type: object
+      required: [person, arabic, segments]
+      properties:
+        person:
+          type: string
+          enum: [1S, 2SM, 2SF, 3SM, 3SF, 2D, 3DM, 3DF, 1P, 2PM, 2PF, 3PM, 3PF]
+        arabic:
+          type: string
+        segments:
+          type: array
+          items:
+            $ref: '#/components/schemas/SegmentDto'
+
+    SegmentDto:
+      type: object
+      required: [text, type]
+      properties:
+        text:
+          type: string
+        type:
+          type: string
+          enum: [PREFIX, ROOT, PATTERN_VOWEL, SUFFIX]
+
+    AdHocConjugationRequest:
+      type: object
+      required: [rootLetters, verbForm]
+      properties:
+        rootLetters:
+          type: array
+          items:
+            type: string
+          minItems: 3
+        verbForm:
+          type: string
+          enum: [I, II, III, IV, V, VI, VII, VIII, IX, X]
+        pastPattern:
+          type: string
+          nullable: true
+        presentPattern:
+          type: string
+          nullable: true
+        weaknessType:
+          type: string
+          enum: [SOUND, ASSIMILATED, HOLLOW, GEMINATE, DEFECTIVE, DOUBLY_WEAK]
+          default: SOUND
+        dialect:
+          type: string
+          default: MSA

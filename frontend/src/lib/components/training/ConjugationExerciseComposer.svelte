@@ -13,11 +13,13 @@ interface Props {
 	isListError: boolean;
 }
 const modes = ['MIXED', 'NEW', 'LEARNING', 'KNOWN'] as const;
+const exerciseTypes = ['MATCH_FORM', 'WRITE_FORM'] as const;
 const sizes = [3, 5, 7, 10];
 const tenses = ['PRESENT', 'PAST'] as const;
 let { wordLists = [], isLoadingLists, isListError }: Props = $props();
 const createSession = useCreateConjugationExerciseSession();
 let mode = $state<(typeof modes)[number]>('MIXED');
+let exerciseType = $state<(typeof exerciseTypes)[number]>('MATCH_FORM');
 let size = $state(5);
 let tense = $state<'PAST' | 'PRESENT'>('PRESENT');
 let selectedListIds = $state<string[]>([]);
@@ -40,14 +42,22 @@ function toggleList(id: string) {
 function start() {
 	if (scope === 'LISTS' && selectedCount === 0) return;
 	createSession.mutate(
-		{ mode, size, wordListIds: scope === 'ALL' ? [] : selectedListIds, tense, voice: 'ACTIVE' },
+		{
+			mode,
+			size,
+			wordListIds: scope === 'ALL' ? [] : selectedListIds,
+			tense,
+			voice: 'ACTIVE',
+			exerciseType,
+		},
 		{ onSuccess: (session) => goto(`/training/conjugation-exercises/${session.id}`) }
 	);
 }
 </script>
 
 <section class="training-composer" aria-labelledby="conjugation-composer-heading">
-	<div class="training-section-heading"><div><h2 id="conjugation-composer-heading">New conjugation exercise</h2><p>Match four vocalised forms to their person labels.</p></div><span class="training-card-count">{size} boards</span></div>
+	<div class="training-section-heading"><div><h2 id="conjugation-composer-heading">New conjugation exercise</h2><p>{exerciseType === 'MATCH_FORM' ? 'Match four vocalised forms to their person labels.' : 'Write fully vocalised forms from their person labels.'}</p></div><span class="training-card-count">{size} boards</span></div>
+	<div class="training-form-section"><div class="training-field-heading"><span class="training-field-label">Exercise type</span></div><div class="training-size-options" role="radiogroup" aria-label="Exercise type">{#each exerciseTypes as candidate}<button type="button" class="training-size-option" class:selected={exerciseType === candidate} role="radio" aria-checked={exerciseType === candidate} onclick={() => (exerciseType = candidate)}>{candidate === 'MATCH_FORM' ? 'Match forms' : 'Write forms'}</button>{/each}</div></div>
 	<div class="training-form-section"><div class="training-field-heading"><span class="training-field-label">Verbs to practise</span></div>
 		{#if isLoadingLists}<p class="training-muted">Loading word lists…</p>
 		{:else if isListError}<p class="form-error-msg">Could not load word lists.</p>
@@ -64,5 +74,5 @@ function start() {
 	{:else if notEnoughVerbs}<p class="form-error-msg">{availableVerbs} eligible verb{availableVerbs === 1 ? '' : 's'} available. Add at least {3 - availableVerbs} more to start.</p>
 	{:else}<p class="training-muted">{availableVerbs} eligible verbs available.</p>{/if}
 	{#if createSession.error}<p class="form-error-msg">{createSession.error.message}</p>{/if}
-	<Button size="lg" onclick={start} disabled={createSession.isPending || eligibility.isPending || eligibility.isError || notEnoughVerbs || (scope === 'LISTS' && selectedCount === 0)}>{createSession.isPending ? 'Preparing boards…' : 'Start matching'}</Button>
+	<Button size="lg" onclick={start} disabled={createSession.isPending || eligibility.isPending || eligibility.isError || notEnoughVerbs || (scope === 'LISTS' && selectedCount === 0)}>{createSession.isPending ? 'Preparing boards…' : exerciseType === 'MATCH_FORM' ? 'Start matching' : 'Start writing'}</Button>
 </section>

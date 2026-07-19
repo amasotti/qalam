@@ -4007,6 +4007,7 @@ components:
           default: []
         tense: { type: string, enum: [PAST, PRESENT], default: PRESENT }
         voice: { type: string, enum: [ACTIVE, PASSIVE], default: ACTIVE }
+        exerciseType: { type: string, enum: [MATCH_FORM, WRITE_FORM], default: MATCH_FORM }
 
     ConjugationExerciseEligibilityResponse:
       type: object
@@ -4063,6 +4064,7 @@ components:
           minItems: 4
           maxItems: 4
           items: { $ref: "#/components/schemas/ConjugationExerciseMappingRequest" }
+        submittedText: { type: string, nullable: true }
 
     AnswerConjugationExerciseItemResponse:
       type: object
@@ -4076,6 +4078,8 @@ components:
         correctMappings:
           type: array
           items: { $ref: "#/components/schemas/ConjugationExerciseMappingResponse" }
+        expectedArabic: { type: string, nullable: true }
+        submittedText: { type: string, nullable: true }
 
     ConjugationExerciseItemResponse:
       type: object
@@ -4088,6 +4092,7 @@ components:
         verbForm: { type: string }
         tense: { type: string, enum: [PAST, PRESENT] }
         voice: { type: string, enum: [ACTIVE, PASSIVE] }
+        exerciseType: { type: string, enum: [MATCH_FORM, WRITE_FORM] }
         forms:
           type: array
           minItems: 4
@@ -4117,6 +4122,7 @@ components:
         id: { type: string, format: uuid }
         mode: { type: string, enum: [NEW, LEARNING, KNOWN, MIXED] }
         status: { type: string, enum: [ACTIVE, COMPLETED] }
+        exerciseType: { type: string, enum: [MATCH_FORM, WRITE_FORM] }
         items:
           type: array
           items: { $ref: "#/components/schemas/ConjugationExerciseItemResponse" }

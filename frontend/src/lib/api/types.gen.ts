@@ -834,6 +834,56 @@ export type SessionAccuracyPoint = {
     mode: string;
 };
 
+export type ConjugationResponse = {
+    word?: ConjugationWordSummary;
+    verbDetails: ConjugationVerbDetailsSummary;
+    root: ConjugationRootSummary;
+    dialect: string;
+    /**
+     * Keys: past_active, past_passive, present_active, present_passive
+     */
+    conjugations: {
+        [key: string]: Array<PersonConjugationDto>;
+    };
+};
+
+export type ConjugationWordSummary = {
+    id: string;
+    arabicText: string;
+    translation?: string | null;
+};
+
+export type ConjugationVerbDetailsSummary = {
+    verbForm: 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X';
+    pastPattern?: string | null;
+    presentPattern?: string | null;
+    weaknessType: 'SOUND' | 'ASSIMILATED' | 'HOLLOW' | 'GEMINATE' | 'DEFECTIVE' | 'DOUBLY_WEAK';
+};
+
+export type ConjugationRootSummary = {
+    letters: Array<string>;
+};
+
+export type PersonConjugationDto = {
+    person: '1S' | '2SM' | '2SF' | '3SM' | '3SF' | '2D' | '3DM' | '3DF' | '1P' | '2PM' | '2PF' | '3PM' | '3PF';
+    arabic: string;
+    segments: Array<SegmentDto>;
+};
+
+export type SegmentDto = {
+    text: string;
+    type: 'PREFIX' | 'ROOT' | 'PATTERN_VOWEL' | 'SUFFIX';
+};
+
+export type AdHocConjugationRequest = {
+    rootLetters: Array<string>;
+    verbForm: 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X';
+    pastPattern?: string | null;
+    presentPattern?: string | null;
+    weaknessType?: 'SOUND' | 'ASSIMILATED' | 'HOLLOW' | 'GEMINATE' | 'DEFECTIVE' | 'DOUBLY_WEAK';
+    dialect?: string;
+};
+
 export type ListRootsData = {
     body?: never;
     path?: never;
@@ -1026,7 +1076,7 @@ export type ListWordsData = {
          */
         size?: number;
         /**
-         * Arabic text substring search
+         * Arabic text substring search (ignores Arabic harakat) or translation/transliteration search
          */
         q?: string;
         /**
@@ -1098,6 +1148,9 @@ export type AutocompleteWordsData = {
     body?: never;
     path?: never;
     query: {
+        /**
+         * Arabic search ignores harakat; translation and transliteration search remain unchanged
+         */
         q: string;
         limit?: number;
     };
@@ -3357,3 +3410,59 @@ export type GetAnalyticsOverviewResponses = {
 };
 
 export type GetAnalyticsOverviewResponse = GetAnalyticsOverviewResponses[keyof GetAnalyticsOverviewResponses];
+
+export type ConjugateWordData = {
+    body?: never;
+    path: {
+        wordId: string;
+    };
+    query?: never;
+    url: '/api/v1/conjugation/{wordId}';
+};
+
+export type ConjugateWordErrors = {
+    /**
+     * Word or verb details not found
+     */
+    404: ErrorResponse;
+    /**
+     * Word is not a verb or has no root
+     */
+    422: ErrorResponse;
+};
+
+export type ConjugateWordError = ConjugateWordErrors[keyof ConjugateWordErrors];
+
+export type ConjugateWordResponses = {
+    /**
+     * Full conjugation table
+     */
+    200: ConjugationResponse;
+};
+
+export type ConjugateWordResponse = ConjugateWordResponses[keyof ConjugateWordResponses];
+
+export type ComputeConjugationData = {
+    body: AdHocConjugationRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/conjugation/compute';
+};
+
+export type ComputeConjugationErrors = {
+    /**
+     * Invalid input
+     */
+    422: ErrorResponse;
+};
+
+export type ComputeConjugationError = ComputeConjugationErrors[keyof ComputeConjugationErrors];
+
+export type ComputeConjugationResponses = {
+    /**
+     * Full conjugation table
+     */
+    200: ConjugationResponse;
+};
+
+export type ComputeConjugationResponse = ComputeConjugationResponses[keyof ComputeConjugationResponses];

@@ -123,6 +123,7 @@
 	/* Arabic typography tokens */
 	--arabic-font-size-body: 1.125rem;
 	--arabic-font-size-ui: 1rem;
+	--arabic-font-line-height: 1.5;
 	--arabic-font-size-display: 2.25rem;
 	--arabic-font-size-xl: 3rem;
 	--arabic-line-height-body: 1.9;

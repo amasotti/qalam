@@ -70,9 +70,9 @@ describe('SessionSummary', () => {
 			},
 		});
 
-		expect(screen.getByText('76%')).toBeInTheDocument();
+		expect(screen.getByLabelText('76% accuracy')).toBeInTheDocument();
 		expect(screen.getByText('19')).toBeInTheDocument();
-		expect(screen.getByText('MIXED')).toBeInTheDocument();
+		expect(screen.getByText('Flashcards · MIXED')).toBeInTheDocument();
 		expect(screen.getByText('LEARNING → KNOWN')).toBeInTheDocument();
 		expect(screen.getByText('kataba')).toBeInTheDocument();
 		expect(document.querySelector('.session-word-result-status.correct')).toHaveTextContent(

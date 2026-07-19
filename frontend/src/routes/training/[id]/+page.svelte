@@ -3,8 +3,8 @@ import { page } from '$app/state';
 import type { SessionSummaryResponse, TrainingSessionWordResponse } from '$lib/api/types.gen';
 import FlashCard from '$lib/components/training/FlashCard.svelte';
 import SessionSummary from '$lib/components/training/SessionSummary.svelte';
-import { summaryFromCompletedSession } from '$lib/training/sessionSummary';
 import { useCompleteSession, useRecordResult, useSession } from '$lib/stores/training';
+import { summaryFromCompletedSession } from '$lib/training/sessionSummary';
 
 const sessionId = $derived(page.params.id);
 

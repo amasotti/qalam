@@ -1457,7 +1457,16 @@
 	background: var(--olive-pale);
 }
 .conj-exercise-form.paired {
-	border-color: var(--cerulean);
+	border-color: var(--border-color);
+	background: var(--bg-dark);
+	box-shadow: none;
+	transform: none;
+}
+.conj-exercise-form.paired:hover:not(:disabled) {
+	border-color: var(--border-color);
+	background: var(--bg-dark);
+	box-shadow: none;
+	transform: none;
 }
 .conj-exercise-form.correct {
 	border-color: var(--sage);

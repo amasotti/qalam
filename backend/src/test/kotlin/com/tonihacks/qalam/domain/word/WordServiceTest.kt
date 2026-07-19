@@ -125,6 +125,24 @@ class WordServiceTest : FunSpec({
             result.getOrNull()!!.translation shouldBe "to write (updated)"
         }
 
+        test("updates Arabic text") {
+            coEvery { repo.findById(WordId(sampleId)) } returns sampleWord.right()
+            coEvery { repo.update(any()) } answers { firstArg<Word>().right() }
+
+            val result = service.update(sampleId.toString(), UpdateWordRequest(arabicText = "كَتَبَ"))
+
+            result.isRight() shouldBe true
+            result.getOrNull()!!.arabicText shouldBe "كَتَبَ"
+        }
+
+        test("blank Arabic text returns ValidationError") {
+            coEvery { repo.findById(WordId(sampleId)) } returns sampleWord.right()
+
+            val result = service.update(sampleId.toString(), UpdateWordRequest(arabicText = "   "))
+
+            result shouldBe DomainError.ValidationError("arabicText", "Arabic text must not be blank").left()
+        }
+
         test("not found propagates") {
             coEvery { repo.findById(WordId(sampleId)) } returns
                 DomainError.NotFound("Word", sampleId.toString()).left()

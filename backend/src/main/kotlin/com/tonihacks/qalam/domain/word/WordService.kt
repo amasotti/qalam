@@ -123,6 +123,9 @@ class WordService(
         log.info { "Updating word id=$id" }
         val wordId = parseWordId(id).bind()
         val existing = repo.findById(wordId).bind()
+        if (req.arabicText?.isBlank() == true) {
+            raise(DomainError.ValidationError("arabicText", "Arabic text must not be blank"))
+        }
 
         val pos = req.partOfSpeech?.let { parseWordEnum("partOfSpeech", it) { s -> PartOfSpeech.fromString(s) }.bind() }
             ?: existing.partOfSpeech

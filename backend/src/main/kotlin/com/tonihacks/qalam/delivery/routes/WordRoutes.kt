@@ -8,6 +8,7 @@ import com.tonihacks.qalam.delivery.dto.word.CreateWordPluralRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordRelationRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordRequest
 import com.tonihacks.qalam.delivery.dto.word.UpdateWordRequest
+import com.tonihacks.qalam.delivery.dto.word.UpsertVerbDetailsRequest
 import com.tonihacks.qalam.delivery.dto.word.UpsertWordMorphologyRequest
 import com.tonihacks.qalam.domain.dictionary.DictionaryLookupService
 import com.tonihacks.qalam.domain.error.DomainError
@@ -176,6 +177,35 @@ fun Route.wordRoutes(service: WordService, dictionaryService: DictionaryLookupSe
             service.generateExamples(id).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.OK, it) },
+            )
+        }
+
+        // Verb details sub-resource
+        get("/{id}/verb-details") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            service.getVerbDetails(id).fold(
+                { call.respondError(it) },
+                { details ->
+                    if (details != null) call.respond(HttpStatusCode.OK, details)
+                    else call.respond(HttpStatusCode.OK, emptyMap<String, String>())
+                },
+            )
+        }
+
+        put("/{id}/verb-details") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            val req = call.receive<UpsertVerbDetailsRequest>()
+            service.upsertVerbDetails(id, req).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.OK, it) },
+            )
+        }
+
+        delete("/{id}/verb-details") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            service.deleteVerbDetails(id).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.NoContent) },
             )
         }
 

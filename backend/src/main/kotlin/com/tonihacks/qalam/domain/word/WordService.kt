@@ -16,7 +16,9 @@ import com.tonihacks.qalam.delivery.dto.word.CreateWordRelationRequest
 import com.tonihacks.qalam.delivery.dto.word.CreateWordRequest
 import com.tonihacks.qalam.delivery.dto.word.DictionaryLinkResponse
 import com.tonihacks.qalam.delivery.dto.word.UpdateWordRequest
+import com.tonihacks.qalam.delivery.dto.word.UpsertVerbDetailsRequest
 import com.tonihacks.qalam.delivery.dto.word.UpsertWordMorphologyRequest
+import com.tonihacks.qalam.delivery.dto.word.VerbDetailsResponse
 import com.tonihacks.qalam.delivery.dto.word.WordAutocompleteResponse
 import com.tonihacks.qalam.delivery.dto.word.WordEnrichmentSuggestion
 import com.tonihacks.qalam.delivery.dto.word.WordExampleResponse
@@ -26,6 +28,7 @@ import com.tonihacks.qalam.delivery.dto.word.WordRelationResponse
 import com.tonihacks.qalam.delivery.dto.word.WordResponse
 import com.tonihacks.qalam.delivery.dto.word.toAutocompleteResponse
 import com.tonihacks.qalam.delivery.dto.word.toResponse
+import com.tonihacks.qalam.infrastructure.exposed.ExposedVerbDetailsRepository
 import com.tonihacks.qalam.domain.logDomainFailure
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.root.RootId
@@ -34,9 +37,11 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.UUID
 import kotlin.time.Clock
 
+@Suppress("TooManyFunctions") // Will be split when noun_details extracts morphology (Slice 11)
 class WordService(
     private val repo: WordRepository,
     private val aiClient: AiClient,
+    private val verbDetailsRepo: ExposedVerbDetailsRepository,
 ) {
     private val log = KotlinLogging.logger {}
 
@@ -347,6 +352,53 @@ class WordService(
         val relationType = parseWordEnum("relationType", type) { RelationType.fromString(it) }.bind()
         repo.deleteRelation(wId, rId, relationType).bind()
     }.logDomainFailure(log) { "Failed to delete relation wordId=$wordId relatedWordId=$relatedWordId type=$type: $it" }
+
+    // --- Verb Details ---
+
+    suspend fun getVerbDetails(wordId: String): Either<DomainError, VerbDetailsResponse?> = either {
+        log.debug { "Loading verb details wordId=$wordId" }
+        val id = parseWordId(wordId).bind()
+        requireVerb(id).bind()
+        verbDetailsRepo.find(id).bind()?.toResponse()
+    }.logDomainFailure(log) { "Failed to load verb details wordId=$wordId: $it" }
+
+    suspend fun upsertVerbDetails(wordId: String, req: UpsertVerbDetailsRequest): Either<DomainError, VerbDetailsResponse> = either {
+        log.info { "Upserting verb details wordId=$wordId verbForm=${req.verbForm}" }
+        val id = parseWordId(wordId).bind()
+        requireVerb(id).bind()
+        val verbForm = parseWordEnum("verbForm", req.verbForm) { s -> VerbPattern.fromString(s) }.bind()
+        val weaknessType = parseWordEnum("weaknessType", req.weaknessType) { s -> WeaknessType.fromString(s) }.bind()
+        val now = Clock.System.now()
+        val existing = verbDetailsRepo.find(id).bind()
+        val details = VerbDetails(
+            wordId = id,
+            verbForm = verbForm,
+            pastPattern = req.pastPattern?.trim()?.takeIf { it.isNotEmpty() },
+            presentPattern = req.presentPattern?.trim()?.takeIf { it.isNotEmpty() },
+            weaknessType = weaknessType,
+            createdAt = existing?.createdAt ?: now,
+            updatedAt = now,
+        )
+        verbDetailsRepo.upsert(details).bind().toResponse()
+    }.logDomainFailure(log) { "Failed to upsert verb details wordId=$wordId: $it" }
+
+    suspend fun deleteVerbDetails(wordId: String): Either<DomainError, Unit> = either {
+        log.info { "Deleting verb details wordId=$wordId" }
+        val id = parseWordId(wordId).bind()
+        requireVerb(id).bind()
+        verbDetailsRepo.delete(id).bind()
+    }.logDomainFailure(log) { "Failed to delete verb details wordId=$wordId: $it" }
+
+    private suspend fun requireVerb(id: WordId): Either<DomainError, Word> {
+        val word = repo.findById(id).fold({ return it.left() }, { it })
+        if (word.partOfSpeech != PartOfSpeech.VERB) {
+            return DomainError.ValidationError(
+                "partOfSpeech",
+                "Verb details require partOfSpeech=VERB, got ${word.partOfSpeech}"
+            ).left()
+        }
+        return word.right()
+    }
 
     // --- AI Enrichment (preview only — never auto-saved) ---
 

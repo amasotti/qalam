@@ -213,7 +213,6 @@ export type AiExamplesResponse = {
 
 export type WordMorphologyResponse = {
     gender?: 'MASCULINE' | 'FEMININE';
-    verbPattern?: 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X';
     plurals: Array<WordPluralResponse>;
 };
 
@@ -230,7 +229,34 @@ export type CreateWordPluralRequest = {
 
 export type UpsertWordMorphologyRequest = {
     gender?: 'MASCULINE' | 'FEMININE';
-    verbPattern?: 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X';
+};
+
+export type VerbDetailsResponse = {
+    verbForm: 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X';
+    /**
+     * Form I vowel pattern, e.g. fa3ala, fa3ila, fa3ula
+     */
+    pastPattern?: string | null;
+    /**
+     * Form I vowel pattern, e.g. yaf3ulu, yaf3ilu, yaf3alu
+     */
+    presentPattern?: string | null;
+    weaknessType: 'SOUND' | 'ASSIMILATED' | 'HOLLOW' | 'GEMINATE' | 'DEFECTIVE' | 'DOUBLY_WEAK';
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type UpsertVerbDetailsRequest = {
+    verbForm: 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X';
+    /**
+     * Form I vowel pattern, e.g. fa3ala, fa3ila, fa3ula
+     */
+    pastPattern?: string | null;
+    /**
+     * Form I vowel pattern, e.g. yaf3ulu, yaf3ilu, yaf3alu
+     */
+    presentPattern?: string | null;
+    weaknessType?: 'SOUND' | 'ASSIMILATED' | 'HOLLOW' | 'GEMINATE' | 'DEFECTIVE' | 'DOUBLY_WEAK';
 };
 
 export type WordRelationResponse = {
@@ -1484,6 +1510,87 @@ export type GenerateWordExamplesResponses = {
 };
 
 export type GenerateWordExamplesResponse = GenerateWordExamplesResponses[keyof GenerateWordExamplesResponses];
+
+export type DeleteVerbDetailsData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/verb-details';
+};
+
+export type DeleteVerbDetailsErrors = {
+    /**
+     * Word not found
+     */
+    404: ErrorResponse;
+};
+
+export type DeleteVerbDetailsError = DeleteVerbDetailsErrors[keyof DeleteVerbDetailsErrors];
+
+export type DeleteVerbDetailsResponses = {
+    /**
+     * Deleted
+     */
+    204: void;
+};
+
+export type DeleteVerbDetailsResponse = DeleteVerbDetailsResponses[keyof DeleteVerbDetailsResponses];
+
+export type GetVerbDetailsData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/verb-details';
+};
+
+export type GetVerbDetailsErrors = {
+    /**
+     * Word not found
+     */
+    404: ErrorResponse;
+};
+
+export type GetVerbDetailsError = GetVerbDetailsErrors[keyof GetVerbDetailsErrors];
+
+export type GetVerbDetailsResponses = {
+    /**
+     * Verb details (empty object if none)
+     */
+    200: VerbDetailsResponse;
+};
+
+export type GetVerbDetailsResponse = GetVerbDetailsResponses[keyof GetVerbDetailsResponses];
+
+export type UpsertVerbDetailsData = {
+    body: UpsertVerbDetailsRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/words/{id}/verb-details';
+};
+
+export type UpsertVerbDetailsErrors = {
+    /**
+     * Word not found
+     */
+    404: ErrorResponse;
+};
+
+export type UpsertVerbDetailsError = UpsertVerbDetailsErrors[keyof UpsertVerbDetailsErrors];
+
+export type UpsertVerbDetailsResponses = {
+    /**
+     * Updated verb details
+     */
+    200: VerbDetailsResponse;
+};
+
+export type UpsertVerbDetailsResponse = UpsertVerbDetailsResponses[keyof UpsertVerbDetailsResponses];
 
 export type GetWordMorphologyData = {
     body?: never;

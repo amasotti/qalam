@@ -29,12 +29,21 @@ fun Route.conjugationExerciseRoutes(service: ConjugationExerciseService) {
     route("/conjugation-exercise-sessions") {
         post {
             val request = call.receive<CreateConjugationExerciseSessionRequest>()
-            val mode = parseEnum<TrainingMode>(request.mode) ?: return@post
+            val mode = parseTrainingMode(request.mode)
+            if (mode == null) {
                 call.respondError(DomainError.InvalidInput("Invalid mode: ${request.mode}"))
-            val tense = parseEnum<Tense>(request.tense) ?: return@post
+                return@post
+            }
+            val tense = parseTense(request.tense)
+            if (tense == null) {
                 call.respondError(DomainError.InvalidInput("Invalid tense: ${request.tense}"))
-            val voice = parseEnum<Voice>(request.voice) ?: return@post
+                return@post
+            }
+            val voice = parseVoice(request.voice)
+            if (voice == null) {
                 call.respondError(DomainError.InvalidInput("Invalid voice: ${request.voice}"))
+                return@post
+            }
             val wordListIds = request.wordListIds.map { raw ->
                 runCatching { java.util.UUID.fromString(raw) }.getOrElse {
                     call.respondError(DomainError.InvalidInput("Invalid word-list ID: $raw"))
@@ -76,8 +85,14 @@ fun Route.conjugationExerciseRoutes(service: ConjugationExerciseService) {
     }
 }
 
-private inline fun <reified T : Enum<T>> parseEnum(value: String): T? =
-    enumValues<T>().firstOrNull { it.name.equals(value, ignoreCase = true) }
+private fun parseTrainingMode(value: String): TrainingMode? =
+    runCatching { TrainingMode.valueOf(value.uppercase()) }.getOrNull()
+
+private fun parseTense(value: String): Tense? =
+    runCatching { Tense.valueOf(value.uppercase()) }.getOrNull()
+
+private fun parseVoice(value: String): Voice? =
+    runCatching { Voice.valueOf(value.uppercase()) }.getOrNull()
 
 private fun com.tonihacks.qalam.domain.conjugationexercise.ConjugationExerciseSession.toResponse(
     items: List<ConjugationExerciseItem>,

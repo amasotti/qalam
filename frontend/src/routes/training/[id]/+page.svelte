@@ -40,7 +40,9 @@ async function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
 			body: { wordId: currentWord.wordId, result },
 		});
 		if (currentIndex + 1 >= localWords.length) {
-			summary = await complete.mutateAsync(sid);
+			const completedSummary = await complete.mutateAsync(sid);
+			await session.refetch();
+			summary = completedSummary;
 		} else {
 			currentIndex += 1;
 		}
@@ -55,7 +57,7 @@ async function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
 {:else if session.isError}
   <p>Error loading session.</p>
 {:else if summary}
-  <SessionSummary {summary} />
+  <SessionSummary summary={summary} words={session.data?.words ?? []} />
 {:else if currentWord}
   <FlashCard
     word={currentWord}
@@ -68,4 +70,3 @@ async function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
 {:else if isFinished}
   <p>All words answered. Completing session…</p>
 {/if}
-

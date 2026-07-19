@@ -605,7 +605,7 @@
 }
 .sect-sublabel {
 	font-size: 0.78rem;
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 	color: var(--ink-light);
 	margin-bottom: 0.625rem;
 	text-transform: uppercase;

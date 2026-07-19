@@ -49,7 +49,7 @@
 .token-editor-title,
 .new-sentence-heading {
 	font-size: 0.8125rem;
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 }
 .token-editor-close,
 .order-btn,
@@ -99,7 +99,7 @@
 .token-col-label {
 	padding: 0.25rem 0.5rem;
 	font-size: 0.6875rem;
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
 	color: hsl(var(--muted-foreground));
@@ -216,7 +216,7 @@
 }
 .sentence-label {
 	font-size: 0.7rem;
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
 	color: hsl(var(--muted-foreground));

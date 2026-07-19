@@ -18,7 +18,7 @@
 .form-page-title {
 	font-family: var(--font-display);
 	font-size: 1.5rem;
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 	color: var(--ink);
 	letter-spacing: -0.02em;
 }
@@ -34,7 +34,7 @@
 }
 .form-label {
 	font-size: 0.8rem;
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 	color: var(--ink);
 }
 .form-hint {

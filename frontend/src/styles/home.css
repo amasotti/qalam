@@ -146,7 +146,7 @@
 }
 .home-nav-card-label {
 	font-size: 0.7rem;
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 	text-transform: uppercase;
 	letter-spacing: 0.07em;
 	color: var(--ink-ghost);
@@ -158,7 +158,7 @@
 }
 .home-nav-card-cta {
 	font-size: 0.75rem;
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 	color: var(--olive);
 	margin-top: auto;
 }
@@ -203,7 +203,7 @@
 }
 .home-resources-label {
 	font-size: 0.68rem;
-	font-weight: 600;
+	font-weight: var(--weight-bold);
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
 	color: var(--ink-ghost);

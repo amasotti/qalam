@@ -13,11 +13,11 @@
 			<span class="practice-strategy-cta">Start flashcards <span aria-hidden="true">→</span></span>
 		</a>
 
-		<div class="practice-strategy-card practice-strategy-card-exercise practice-strategy-card-pending">
+		<a class="practice-strategy-card practice-strategy-card-exercise" href="/training/exercises/multiple-choice">
 			<p class="practice-strategy-kicker">Recognition</p>
 			<h2>Multiple choice</h2>
 			<p>Choose the right meaning from a focused set of plausible answers.</p>
-			<span class="practice-strategy-cta">Coming in the next slice</span>
-		</div>
+			<span class="practice-strategy-cta">Start an exercise <span aria-hidden="true">→</span></span>
+		</a>
 	</div>
 </div>

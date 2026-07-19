@@ -1,4 +1,4 @@
-# Training — SRS Design
+# Training and practice — SRS Design
 
 > How the flashcard training system works, how sessions are structured, and how words move through mastery levels.
 
@@ -113,12 +113,21 @@ Key observations:
 
 | Route | Purpose |
 |---|---|
-| `/training` | Session setup (choose mode + size) |
+| `/training` | Practice-strategy hub |
+| `/training/flashcards` | Flashcard session setup (scope, focus, and batch size) |
 | `/training/[id]` | Active session — one `FlashCard` at a time |
+| `/training/exercises/multiple-choice` | Multiple-choice exercise setup and paginated exercise history |
+| `/training/exercises/[id]` | Resumable multiple-choice exercise and completed review |
 
 `FlashCard.svelte` shows the question side, reveals the answer on Space/Enter, then accepts 1/2/3 (or numpad) for correct/incorrect/skip. After the last card the route renders `SessionSummary.svelte` with accuracy and any promotions.
 
 Server state is managed via `@tanstack/svelte-query` hooks in `frontend/src/lib/stores/training.ts`.
+
+### Multiple-choice exercises
+
+The first exercise strategy is `MULTIPLE_CHOICE_MEANING`: Arabic is shown as the prompt and the learner selects one of four translations. The setup mirrors flashcards: all vocabulary or selected word lists, a mastery focus, and a question count.
+
+Exercise answers lock immediately and show the correct option before the learner moves on. Refreshing an active exercise resumes at its first unanswered question. Completing it records unanswered questions as skipped; completed sessions remain reviewable from the paginated history. Exercise server state is managed in `frontend/src/lib/stores/exercises.ts`.
 
 ---
 
@@ -132,3 +141,8 @@ Server state is managed via `@tanstack/svelte-query` hooks in `frontend/src/lib/
 | POST | `/api/v1/training/sessions/{id}/results` | Record one answer |
 | POST | `/api/v1/training/sessions/{id}/complete` | Finalize session |
 | GET | `/api/v1/training/stats` | Mastery distribution + recent sessions |
+| POST | `/api/v1/exercise-sessions` | Create an exercise session |
+| GET | `/api/v1/exercise-sessions` | List exercise sessions (paginated) |
+| GET | `/api/v1/exercise-sessions/{id}` | Fetch an exercise session and its items |
+| POST | `/api/v1/exercise-sessions/{id}/answers` | Submit a multiple-choice answer |
+| POST | `/api/v1/exercise-sessions/{id}/complete` | Finalize an exercise session |

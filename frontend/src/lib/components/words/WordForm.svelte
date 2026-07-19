@@ -151,7 +151,9 @@ async function handleSubmit(e: SubmitEvent) {
 	submitError = null;
 	try {
 		if (isEdit) {
+			if (!arabicText.trim()) return;
 			await onSubmit({
+				arabicText: arabicText.trim(),
 				transliteration: transliteration.trim() || null,
 				translation: translation.trim() || null,
 				partOfSpeech,
@@ -183,27 +185,22 @@ async function handleSubmit(e: SubmitEvent) {
 
 <form class="form-shell" onsubmit={handleSubmit} novalidate>
 	<!-- Arabic text -->
-	{#if isEdit}
-		<div class="form-field">
-			<p class="form-label">Arabic</p>
-			<p class="arabic-display">{arabicText}</p>
-		</div>
-	{:else}
-		<div class="form-field">
-			<label class="form-label" for="word-arabic">Arabic *</label>
-			<div class="form-input-row">
-				<input
-						id="word-arabic"
-						class="form-input ar-input"
-						type="text"
-						placeholder="أدخل الكلمة بالعربية"
-						bind:value={arabicText}
-						autocomplete="off"
-						spellcheck="false"
-						disabled={isPending}
-						required
-						dir="rtl"
-				/>
+	<div class="form-field">
+		<label class="form-label" for="word-arabic">Arabic *</label>
+		<div class="form-input-row">
+			<input
+				id="word-arabic"
+				class="form-input ar-input"
+				type="text"
+				placeholder="أدخل الكلمة بالعربية"
+				bind:value={arabicText}
+				autocomplete="off"
+				spellcheck="false"
+				disabled={isPending}
+				required
+				dir="rtl"
+			/>
+			{#if !isEdit}
 				<Button
 						variant="outline"
 						type="button"
@@ -212,8 +209,10 @@ async function handleSubmit(e: SubmitEvent) {
 				>
 					{dictionaryLookup.isPending ? 'Looking…' : 'Lookup ASD'}
 				</Button>
-			</div>
+			{/if}
+		</div>
 
+		{#if !isEdit}
 			{#if lookupError}
 				<p class="form-error">{lookupError}</p>
 			{/if}
@@ -245,8 +244,8 @@ async function handleSubmit(e: SubmitEvent) {
 					{/each}
 				</div>
 			{/if}
-		</div>
-	{/if}
+		{/if}
+	</div>
 
 	<!-- Transliteration -->
 	<div class="form-field">
@@ -434,7 +433,7 @@ async function handleSubmit(e: SubmitEvent) {
 
 	<div class="form-actions">
 		<Button variant="outline" type="button" onclick={onCancel} disabled={isPending}>Cancel</Button>
-		<Button type="submit" disabled={isPending || (!isEdit && !arabicText.trim())}>
+		<Button type="submit" disabled={isPending || !arabicText.trim()}>
 			{isPending ? 'Saving…' : isEdit ? 'Update word' : 'Create word'}
 		</Button>
 	</div>

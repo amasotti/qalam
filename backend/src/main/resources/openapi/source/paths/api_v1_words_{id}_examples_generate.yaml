@@ -3,6 +3,7 @@ post:
   operationId: generateWordExamples
   tags:
     - words
+    - ai
   parameters:
     - name: id
       in: path

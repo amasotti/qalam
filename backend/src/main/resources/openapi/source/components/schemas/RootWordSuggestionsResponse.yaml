@@ -1,0 +1,10 @@
+type: object
+required:
+  - suggestions
+properties:
+  suggestions:
+    type: array
+    minItems: 2
+    maxItems: 5
+    items:
+      $ref: ./AiRootWordSuggestion.yaml

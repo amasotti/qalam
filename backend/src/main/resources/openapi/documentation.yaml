@@ -11,10 +11,14 @@ servers:
     description: Local development
 security: []
 tags:
+  - name: ai
+    description: AI-powered linguistic analysis
   - name: roots
     description: Arabic root management
   - name: words
     description: Vocabulary word management
+  - name: word-lists
+    description: Curated topical vocabulary lists (e.g. Colors, Family)
   - name: texts
     description: Arabic text management
   - name: sentences
@@ -27,10 +31,6 @@ tags:
     description: Flashcard training sessions and statistics
   - name: exercises
     description: Backend-generated exercise sessions for mobile practice
-  - name: word-lists
-    description: Curated topical vocabulary lists (e.g. Colors, Family)
-  - name: ai
-    description: AI-powered linguistic analysis
   - name: analytics
     description: Aggregated statistics across all domains
   - name: conjugation
@@ -147,12 +147,7 @@ paths:
       tags:
         - roots
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: '#/components/parameters/UuidPathId'
       responses:
         '200':
           description: Root found
@@ -178,12 +173,7 @@ paths:
       tags:
         - roots
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: '#/components/parameters/UuidPathId'
       requestBody:
         required: true
         content:
@@ -209,17 +199,46 @@ paths:
       tags:
         - roots
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: '#/components/parameters/UuidPathId'
       responses:
         '204':
           description: Root deleted
         '404':
           description: Root not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/v1/roots/{id}/suggest-words:
+    post:
+      summary: AI-suggest 2–5 root-family words (ephemeral preview, never auto-saved)
+      operationId: suggestWordsForRoot
+      tags:
+        - roots
+        - ai
+      parameters:
+        - $ref: '#/components/parameters/UuidPathId'
+      responses:
+        '200':
+          description: Root-family word suggestions generated via AI
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RootWordSuggestionsResponse'
+        '400':
+          description: Malformed UUID or invalid AI response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Root not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: AI not configured
           content:
             application/json:
               schema:
@@ -443,6 +462,7 @@ paths:
       operationId: analyzeWord
       tags:
         - words
+        - ai
       requestBody:
         required: true
         content:
@@ -750,6 +770,7 @@ paths:
       operationId: generateWordExamples
       tags:
         - words
+        - ai
       parameters:
         - name: id
           in: path
@@ -1106,6 +1127,7 @@ paths:
       operationId: enrichWord
       tags:
         - words
+        - ai
       parameters:
         - name: id
           in: path
@@ -1674,6 +1696,7 @@ paths:
       operationId: autoTokenize
       tags:
         - sentences
+        - ai
       parameters:
         - name: textId
           in: path
@@ -1712,6 +1735,7 @@ paths:
       operationId: transliterateSentence
       tags:
         - sentences
+        - ai
       parameters:
         - name: textId
           in: path
@@ -2847,6 +2871,7 @@ paths:
       operationId: suggestWordsForList
       tags:
         - word-lists
+        - ai
       parameters:
         - name: id
           in: path
@@ -3113,6 +3138,19 @@ components:
         analysis:
           type: string
           nullable: true
+    PartOfSpeech:
+      type: string
+      enum:
+        - UNKNOWN
+        - NOUN
+        - VERB
+        - ADJECTIVE
+        - ADVERB
+        - PREPOSITION
+        - PARTICLE
+        - INTERJECTION
+        - CONJUNCTION
+        - PRONOUN
     Dialect:
       type: string
       enum:
@@ -3129,19 +3167,42 @@ components:
         - BEGINNER
         - INTERMEDIATE
         - ADVANCED
-    PartOfSpeech:
-      type: string
-      enum:
-        - UNKNOWN
-        - NOUN
-        - VERB
-        - ADJECTIVE
-        - ADVERB
-        - PREPOSITION
-        - PARTICLE
-        - INTERJECTION
-        - CONJUNCTION
-        - PRONOUN
+    AiRootWordSuggestion:
+      type: object
+      required:
+        - arabicText
+        - translation
+        - transliteration
+        - partOfSpeech
+        - dialect
+      properties:
+        arabicText:
+          type: string
+          example: عَرَبِية
+          description: Fully vocalized Arabic dictionary headword.
+        transliteration:
+          type: string
+          example: 3arabiya
+        translation:
+          type: string
+          example: arabic
+        partOfSpeech:
+          $ref: '#/components/schemas/PartOfSpeech'
+        dialect:
+          $ref: '#/components/schemas/Dialect'
+        difficulty:
+          $ref: '#/components/schemas/Difficulty'
+    RootWordSuggestionsResponse:
+      type: object
+      required:
+        - suggestions
+      properties:
+        suggestions:
+          type: array
+          minItems: 2
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/AiRootWordSuggestion'
     MasteryLevel:
       type: string
       enum:

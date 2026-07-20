@@ -45,5 +45,4 @@ get:
       content:
         application/json:
           schema:
-            $ref: >-
-              ../components/schemas/PaginatedConjugationExerciseSessionsResponse.yaml
+            $ref: ../components/schemas/PaginatedConjugationExerciseSessionsResponse.yaml

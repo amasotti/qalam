@@ -1,31 +1,26 @@
 post:
-  summary: AI-suggest 5–10 new words for a list (ephemeral preview, never auto-saved)
-  operationId: suggestWordsForList
+  summary: AI-suggest 2–5 root-family words (ephemeral preview, never auto-saved)
+  operationId: suggestWordsForRoot
   tags:
-    - word-lists
+    - roots
     - ai
   parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
+    - $ref: ../components/parameters/UuidPathId.yaml
   responses:
     '200':
-      description: Suggested words
+      description: Root-family word suggestions generated via AI
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/WordListSuggestionsResponse.yaml
+            $ref: ../components/schemas/RootWordSuggestionsResponse.yaml
     '400':
-      description: Malformed UUID or empty AI response
+      description: Malformed UUID or invalid AI response
       content:
         application/json:
           schema:
             $ref: ../components/schemas/ErrorResponse.yaml
     '404':
-      description: Word list not found
+      description: Root not found
       content:
         application/json:
           schema:

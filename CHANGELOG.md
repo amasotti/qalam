@@ -2,9 +2,36 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [1.0.1] - 2026-07-20
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/e27269a6ed2e0bee75a7e7d4849e887bc2a7470a..17ae7735f2a1e9adcf6511f515df70169762e18f)
+### 🐛 Bug Fixes
+
+
+- Shuffle forms ([c81ade1](https://github.com/amasotti/qalam/commit/c81ade13c0200a64a335986c357c7c98a9206dd3))
+
+- Visual feedback in exercises ([b53707f](https://github.com/amasotti/qalam/commit/b53707f5caf804eddf3e98825455e1db5594dabc))
+
+- Handling of geminates ([75990a0](https://github.com/amasotti/qalam/commit/75990a097e4c1c1ef420d50f3ecc9d05b2ec23ea))
+
+- Justfile and kotlin detekt warnings ([7db460c](https://github.com/amasotti/qalam/commit/7db460ca04bcb3bb2d0f4b717c7ca33e558737cd))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Delete completed plans ([d11ca6e](https://github.com/amasotti/qalam/commit/d11ca6ee32839cebc3734a041fc6507a5bdf826b))
+
+- Minor css improvements ([8e7bd11](https://github.com/amasotti/qalam/commit/8e7bd11d0291df383747aad686f5b262ac24ba44))
+
+- Format frontend ([03d9a44](https://github.com/amasotti/qalam/commit/03d9a44605995773a86288fa9def95462067e77b))
+
+- Fix import ([274b6c3](https://github.com/amasotti/qalam/commit/274b6c3d99bcbcba152ad04643f59a4d03f740fc))
+
+- Suppress output for git-cliff action in release PR workflow ([17ae773](https://github.com/amasotti/qalam/commit/17ae7735f2a1e9adcf6511f515df70169762e18f))
+
 ## [1.0.0] - 2026-07-19
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/64f74bdfb7b6373902a30a9ad591e23767558a6c..5b1de8e823ad1dc4f1cf084881bcce0d225e7b77)
+[Compare with last version](https://github.com/amasotti/qalam/compare/64f74bdfb7b6373902a30a9ad591e23767558a6c..e27269a6ed2e0bee75a7e7d4849e887bc2a7470a)
 ### 🚀 Features
 
 
@@ -91,6 +118,8 @@ All notable changes to this project will be documented in this file (created wit
 - Navigation style ([7cdb417](https://github.com/amasotti/qalam/commit/7cdb4172a02046ea2a06865a0ef6291b245001f9))
 
 - Generate types ([fd5b55e](https://github.com/amasotti/qalam/commit/fd5b55ef534bd2a02b6cf8a0af794f994a3fe74c))
+
+- Release v1.0.0 ([e27269a](https://github.com/amasotti/qalam/commit/e27269a6ed2e0bee75a7e7d4849e887bc2a7470a))
 
 ### Enhancement
 

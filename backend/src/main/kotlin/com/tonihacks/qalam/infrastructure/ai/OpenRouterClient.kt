@@ -25,8 +25,8 @@ internal class OpenRouterClient : AutoCloseable {
     private val apiKey = System.getenv("OPENROUTER_API_KEY")
     private val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
 
-    private val requestTimeoutMs = REQUEST_TIMEOUT_MS
-    private val connectTimeoutMs = CONNECT_TIMEOUT_MS
+    private val requestTimeoutMs = positiveLongEnv("OPENROUTER_REQUEST_TIMEOUT_MS") ?: REQUEST_TIMEOUT_MS
+    private val connectTimeoutMs = positiveLongEnv("OPENROUTER_CONNECT_TIMEOUT_MS") ?: CONNECT_TIMEOUT_MS
 
     private val lazyHttpClient = lazy {
         HttpClient(CIO) {
@@ -70,22 +70,25 @@ internal class OpenRouterClient : AutoCloseable {
                             OpenRouterMessage("user", req.userPrompt),
                         ),
                         responseFormat = req.responseFormat,
-                        provider = req.provider
-                    )
+                        provider = req.provider,
+                    ),
                 )
             }
             val content = res.body<OpenRouterResponse>()
-                .choices.firstOrNull()?.message?.content ?: return DomainError.InvalidInput("Empty AI Response").left()
+                .choices.firstOrNull()?.message?.content ?: return DomainError.InvalidInput("Empty AI response").left()
             content.right()
-        } catch (e: Exception) {
-            DomainError.InvalidInput("AI Request failed").left()
-                .also { log.error { e } }
+        } catch (error: Exception) {
+            log.warn(error) { "OpenRouter completion failed" }
+            DomainError.InvalidInput("AI request failed").left()
         }
     }
 
     override fun close() {
         if (lazyHttpClient.isInitialized()) lazyHttpClient.value.close()
     }
+
+    private fun positiveLongEnv(name: String): Long? =
+        System.getenv(name)?.toLongOrNull()?.takeIf { it > 0 }
 }
 
 internal data class OpenRouterCompletionRequest(

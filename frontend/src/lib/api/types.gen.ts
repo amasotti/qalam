@@ -916,6 +916,7 @@ export type AiListWordSuggestion = {
     translation?: string | null;
     partOfSpeech?: string | null;
     difficulty?: string | null;
+    dialect: Dialect;
 };
 
 export type WordListSuggestionsResponse = {

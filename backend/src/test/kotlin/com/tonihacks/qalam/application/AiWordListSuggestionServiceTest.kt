@@ -106,6 +106,16 @@ class AiWordListSuggestionServiceTest: FunSpec({
         coVerify(exactly = 0) { vocabularyClient.suggestWordsForList(any()) }
     }
 
+    test("rejects a list without a description before calling vocabulary client") {
+        coEvery { repository.findById(listId) } returns list.copy(description = null).right()
+        coEvery { repository.membersOf(listId) } returns emptyList<Word>().right()
+
+        service.suggestWords(listId.toString()) shouldBe
+                DomainError.ValidationError("description", "description is required for AI word suggestions").left()
+
+        coVerify(exactly = 0) { vocabularyClient.suggestWordsForList(any()) }
+    }
+
     test("propagates AI_NOT_CONFIGURED") {
         coEvery { repository.findById(listId) } returns list.right()
         coEvery { repository.membersOf(listId) } returns emptyList<Word>().right()

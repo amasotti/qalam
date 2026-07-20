@@ -1,74 +1,74 @@
 <script lang="ts">
-    import type {ConjugationExerciseItemResponse, ConjugationExerciseMappingResponse,} from '$lib/api/types.gen';
-    import ConjugatedForm from '$lib/components/conjugation/ConjugatedForm.svelte';
-    import {Button} from '$lib/components/ui/button';
+import type {
+	ConjugationExerciseItemResponse,
+	ConjugationExerciseMappingResponse,
+} from '$lib/api/types.gen';
+import ConjugatedForm from '$lib/components/conjugation/ConjugatedForm.svelte';
+import { Button } from '$lib/components/ui/button';
 
-    interface Props {
-        item: ConjugationExerciseItemResponse;
-        isSubmitting: boolean;
-        onsubmit: (mappings: ConjugationExerciseMappingResponse[]) => void;
-    }
+interface Props {
+	item: ConjugationExerciseItemResponse;
+	isSubmitting: boolean;
+	onsubmit: (mappings: ConjugationExerciseMappingResponse[]) => void;
+}
 
-    let {item, isSubmitting, onsubmit}: Props = $props();
-    let selectedFormId = $state<string | null>(null);
-    let mappings = $state<Record<string, string>>({});
-    let initializedItemId = $state<string | null>(null);
-    const isAnswered = $derived(item.result != null);
-    const allMapped = $derived(Object.keys(mappings).length === item.forms.length);
-    const correctByForm = $derived(
-        new Map((item.correctMappings ?? []).map((mapping) => [mapping.formId, mapping.labelId]))
-    );
-    const submittedByLabel = $derived(
-        new Map((item.submittedMappings ?? []).map((m) => [m.labelId, m.formId]))
-    );
-    const labelCorrectness = $derived(
-        new Map(
-            Array.from(submittedByLabel.entries()).map(([labelId, formId]) => {
-                return [
-                    labelId,
-                    correctByForm.get(formId) === labelId,
-                ];
-            })
-        )
-    );
+let { item, isSubmitting, onsubmit }: Props = $props();
+let selectedFormId = $state<string | null>(null);
+let mappings = $state<Record<string, string>>({});
+let initializedItemId = $state<string | null>(null);
+const isAnswered = $derived(item.result != null);
+const allMapped = $derived(Object.keys(mappings).length === item.forms.length);
+const correctByForm = $derived(
+	new Map((item.correctMappings ?? []).map((mapping) => [mapping.formId, mapping.labelId]))
+);
+const submittedByLabel = $derived(
+	new Map((item.submittedMappings ?? []).map((m) => [m.labelId, m.formId]))
+);
+const labelCorrectness = $derived(
+	new Map(
+		Array.from(submittedByLabel.entries()).map(([labelId, formId]) => {
+			return [labelId, correctByForm.get(formId) === labelId];
+		})
+	)
+);
 
-    $effect(() => {
-        if (initializedItemId === item.itemId) return;
-        initializedItemId = item.itemId;
-        selectedFormId = null;
-        mappings = Object.fromEntries(
-            (item.submittedMappings ?? []).map((mapping) => [mapping.formId, mapping.labelId])
-        );
-    });
+$effect(() => {
+	if (initializedItemId === item.itemId) return;
+	initializedItemId = item.itemId;
+	selectedFormId = null;
+	mappings = Object.fromEntries(
+		(item.submittedMappings ?? []).map((mapping) => [mapping.formId, mapping.labelId])
+	);
+});
 
-    function selectForm(formId: string) {
-        if (isAnswered || isSubmitting) return;
-        selectedFormId = selectedFormId === formId ? null : formId;
-    }
+function selectForm(formId: string) {
+	if (isAnswered || isSubmitting) return;
+	selectedFormId = selectedFormId === formId ? null : formId;
+}
 
-    function selectLabel(labelId: string) {
-        if (!selectedFormId || isAnswered || isSubmitting) return;
-        mappings = {
-            ...Object.fromEntries(
-                Object.entries(mappings).filter(([formId, pairedLabelId]) =>
-                    formId === selectedFormId ? true : pairedLabelId !== labelId
-                )
-            ),
-            [selectedFormId]: labelId,
-        };
-        selectedFormId = null;
-    }
+function selectLabel(labelId: string) {
+	if (!selectedFormId || isAnswered || isSubmitting) return;
+	mappings = {
+		...Object.fromEntries(
+			Object.entries(mappings).filter(([formId, pairedLabelId]) =>
+				formId === selectedFormId ? true : pairedLabelId !== labelId
+			)
+		),
+		[selectedFormId]: labelId,
+	};
+	selectedFormId = null;
+}
 
-    function clearPair(formId: string) {
-        if (isAnswered || isSubmitting) return;
-        const {[formId]: _, ...remaining} = mappings;
-        mappings = remaining;
-    }
+function clearPair(formId: string) {
+	if (isAnswered || isSubmitting) return;
+	const { [formId]: _, ...remaining } = mappings;
+	mappings = remaining;
+}
 
-    function submit() {
-        if (!allMapped || isAnswered) return;
-        onsubmit(Object.entries(mappings).map(([formId, labelId]) => ({formId, labelId})));
-    }
+function submit() {
+	if (!allMapped || isAnswered) return;
+	onsubmit(Object.entries(mappings).map(([formId, labelId]) => ({ formId, labelId })));
+}
 </script>
 
 <section class="conj-exercise-board" aria-labelledby="conj-exercise-lemma">

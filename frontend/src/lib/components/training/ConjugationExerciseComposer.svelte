@@ -1,60 +1,63 @@
 <script lang="ts">
-    import {goto} from '$app/navigation';
-    import type {WordListResponse} from '$lib/api/types.gen';
-    import {Button} from '$lib/components/ui/button';
-    import {
-        useConjugationExerciseEligibility,
-        useCreateConjugationExerciseSession,
-    } from '$lib/stores/conjugationExercises';
+import { goto } from '$app/navigation';
+import type { ConjugationExerciseSessionResponse, WordListResponse } from '$lib/api/types.gen';
+import { Button } from '$lib/components/ui/button';
+import {
+	useConjugationExerciseEligibility,
+	useCreateConjugationExerciseSession,
+} from '$lib/stores/conjugationExercises';
 
-    interface Props {
-        wordLists?: WordListResponse[];
-        isLoadingLists: boolean;
-        isListError: boolean;
-    }
+interface Props {
+	wordLists?: WordListResponse[];
+	isLoadingLists: boolean;
+	isListError: boolean;
+}
 
-    const modes = ['MIXED', 'NEW', 'LEARNING', 'KNOWN'] as const;
-    const exerciseTypes = ['MATCH_FORM', 'WRITE_FORM'] as const;
-    const sizes = [3, 5, 7, 10];
-    const tenses = ['PRESENT', 'PAST'] as const;
-    let {wordLists = [], isLoadingLists, isListError}: Props = $props();
-    const createSession = useCreateConjugationExerciseSession();
-    let mode = $state<(typeof modes)[number]>('MIXED');
-    let exerciseType = $state<(typeof exerciseTypes)[number]>('MATCH_FORM');
-    let size = $state(5);
-    let tense = $state<'PAST' | 'PRESENT'>('PRESENT');
-    let selectedListIds = $state<string[]>([]);
-    let scope = $state<'ALL' | 'LISTS'>('ALL');
-    const selectedCount = $derived(selectedListIds.length);
-    const eligibility = useConjugationExerciseEligibility(
-        () => mode,
-        () => (scope === 'ALL' ? [] : selectedListIds)
-    );
-    const availableVerbs = $derived(eligibility.data?.availableVerbs ?? 0);
-    const notEnoughVerbs = $derived(
-        !eligibility.isPending && !eligibility.isError && availableVerbs < 3
-    );
+const modes = ['MIXED', 'NEW', 'LEARNING', 'KNOWN'] as const;
+const exerciseTypes = ['MATCH_FORM', 'WRITE_FORM'] as const;
+const sizes = [3, 5, 7, 10];
+const tenses = ['PRESENT', 'PAST'] as const;
+let { wordLists = [], isLoadingLists, isListError }: Props = $props();
+const createSession = useCreateConjugationExerciseSession();
+let mode = $state<(typeof modes)[number]>('MIXED');
+let exerciseType = $state<(typeof exerciseTypes)[number]>('MATCH_FORM');
+let size = $state(5);
+let tense = $state<'PAST' | 'PRESENT'>('PRESENT');
+let selectedListIds = $state<string[]>([]);
+let scope = $state<'ALL' | 'LISTS'>('ALL');
+const selectedCount = $derived(selectedListIds.length);
+const eligibility = useConjugationExerciseEligibility(
+	() => mode,
+	() => (scope === 'ALL' ? [] : selectedListIds)
+);
+const availableVerbs = $derived(eligibility.data?.availableVerbs ?? 0);
+const notEnoughVerbs = $derived(
+	!eligibility.isPending && !eligibility.isError && availableVerbs < 3
+);
 
-    function toggleList(id: string) {
-        selectedListIds = selectedListIds.includes(id)
-            ? selectedListIds.filter((value) => value !== id)
-            : [...selectedListIds, id];
-    }
+function toggleList(id: string) {
+	selectedListIds = selectedListIds.includes(id)
+		? selectedListIds.filter((value) => value !== id)
+		: [...selectedListIds, id];
+}
 
-    function start() {
-        if (scope === 'LISTS' && selectedCount === 0) return;
-        createSession.mutate(
-            {
-                mode,
-                size,
-                wordListIds: scope === 'ALL' ? [] : selectedListIds,
-                tense,
-                voice: 'ACTIVE',
-                exerciseType,
-            },
-            {onSuccess: (session) => goto(`/training/conjugation-exercises/${session.id}`)}
-        );
-    }
+function start() {
+	if (scope === 'LISTS' && selectedCount === 0) return;
+	createSession.mutate(
+		{
+			mode,
+			size,
+			wordListIds: scope === 'ALL' ? [] : selectedListIds,
+			tense,
+			voice: 'ACTIVE',
+			exerciseType,
+		},
+		{
+			onSuccess: (session: ConjugationExerciseSessionResponse) =>
+				goto(`/training/conjugation-exercises/${session.id}`),
+		}
+	);
+}
 </script>
 
 <section class="training-composer" aria-labelledby="conjugation-composer-heading">

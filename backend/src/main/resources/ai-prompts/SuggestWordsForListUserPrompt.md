@@ -15,8 +15,9 @@ sentence token.
 - difficulty: one of <difficultyValues>
 - dialect: one of <dialectValues>
 
-Prefer MSA for most suggestions. Include a non-MSA form only when it is genuinely common and
-useful for the list; always label it with its actual supported dialect.
+Prefer MSA for most (but not all!) suggestions, but keep in mind that the user is extremely curious about arabic
+culture and its dialects. Try to have always 1-3 suggestions from other dialects, if possible, but do not force it.
+Always label it with its actual supported dialect.
 
 Respond only with the structured result. Do not add commentary.
 {

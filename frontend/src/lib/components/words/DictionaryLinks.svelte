@@ -1,11 +1,16 @@
 <script lang="ts">
 import { ExternalLink, Plus, X } from 'lucide-svelte';
-import type { CreateDictionaryLinkRequest, DictionarySource } from '$lib/api/types.gen';
+import type {
+	CreateDictionaryLinkRequest,
+	DictionaryLinkResponse,
+	DictionarySource,
+} from '$lib/api/types.gen';
 import {
 	useAddDictionaryLink,
 	useDeleteDictionaryLink,
 	useDictionaryLinks,
 } from '$lib/stores/words';
+import { removeArabicDiacritics } from '$lib/utils/arabicUtils';
 
 interface Props {
 	wordId: string;
@@ -55,7 +60,7 @@ let selectedSource = $state<DictionarySource>('ALMANY');
 let urlInput = $state('');
 let addError = $state('');
 
-const links = $derived(linksQuery.data ?? []);
+const links = $derived<DictionaryLinkResponse[]>(linksQuery.data ?? []);
 const existingSources = $derived(new Set(links.map((l) => l.source)));
 
 // Auto-fill URL when source changes in custom add form
@@ -71,7 +76,10 @@ $effect(() => {
 
 function buildTemplateUrl(source: DictionarySource): string {
 	const template = URL_TEMPLATES[source];
-	return template ? template.replace('{word}', encodeURIComponent(arabicText)) : '';
+	if (template === undefined) return '';
+
+	const normalizedArabic = removeArabicDiacritics(arabicText);
+	return template.replace('{word}', encodeURIComponent(normalizedArabic));
 }
 
 async function handleQuickAdd(source: DictionarySource) {

@@ -26,7 +26,7 @@ $effect(() => {
 		loadedSessionId = session.data.id;
 		currentIndex = 0;
 		localWords = (session.data.words ?? []).filter(
-			(w) => w.result === null || w.result === undefined
+			(w: TrainingSessionWordResponse) => w.result === null || w.result === undefined
 		);
 		summary =
 			session.data.status === 'COMPLETED' ? summaryFromCompletedSession(session.data) : null;

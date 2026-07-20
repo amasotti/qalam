@@ -1457,23 +1457,27 @@
 	border-color: var(--olive);
 	background: var(--olive-pale);
 }
-.conj-exercise-form.paired {
+.conj-exercise-form.paired,
+.conj-exercise-label.paired {
 	border-color: var(--border-color);
 	background: var(--bg-dark);
 	box-shadow: none;
 	transform: none;
 }
-.conj-exercise-form.paired:hover:not(:disabled) {
+.conj-exercise-form.paired:hover:not(:disabled),
+.conj-exercise-label.paired:hover:not(:disabled) {
 	border-color: var(--border-color);
 	background: var(--bg-dark);
 	box-shadow: none;
 	transform: none;
 }
-.conj-exercise-form.correct {
+.conj-exercise-form.correct,
+.conj-exercise-label.correct {
 	border-color: var(--sage);
 	background: var(--sage-pale);
 }
-.conj-exercise-form.incorrect {
+.conj-exercise-form.incorrect,
+.conj-exercise-label.incorrect {
 	border-color: var(--coral);
 	background: var(--coral-pale);
 }
@@ -1486,7 +1490,7 @@
 	text-align: left;
 	font-size: var(--type-label);
 }
-.conj-exercise-label:disabled:not(.selected) {
+.conj-exercise-label:disabled:not(.correct):not(.incorrect) {
 	opacity: 0.5;
 	cursor: not-allowed;
 }

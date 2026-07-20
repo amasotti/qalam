@@ -47,7 +47,7 @@ class MsaConjugationEngine : ConjugationEngine {
         } else {
             val r1 = rootLetters[0]; val r2 = rootLetters[1]; val r3 = rootLetters[2]
             val contract: (PersonConjugation) -> PersonConjugation =
-                if (weaknessType == WeaknessType.GEMINATE) ::applyGeminateContraction else { it -> it }
+                if (weaknessType == WeaknessType.GEMINATE) ::applyGeminateContraction else { c: PersonConjugation -> c }
 
             for (voice in Voice.entries) {
                 val isPassive = voice == Voice.PASSIVE

@@ -14,7 +14,10 @@
       "Bash(jar xf *)",
       "Bash(just lint-frontend *)",
       "Bash(just check-frontend *)",
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(./backend/gradlew -p backend detekt --no-daemon)",
+      "Bash(./backend/gradlew -p backend test --no-daemon)",
+      "Bash(./backend/gradlew -p backend test --no-daemon --stacktrace)"
     ],
     "deny": [
       "Bash(scp *)",

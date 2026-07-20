@@ -51,7 +51,7 @@
 	background: var(--white);
 	color: var(--ink);
 	font-size: 0.875rem;
-	font-family: "Rubik", sans-serif;
+	font-family: var(--font-sans);
 	transition:
 		border-color 150ms,
 		box-shadow 150ms;

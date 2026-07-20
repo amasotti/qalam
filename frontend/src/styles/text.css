@@ -197,7 +197,7 @@
 	color: var(--olive);
 	margin-right: 0.5rem;
 	font-style: normal;
-	font-family: "Rubik", sans-serif;
+	font-family: var(--font-sans);
 }
 .sentence-notes {
 	font-size: 0.8rem;

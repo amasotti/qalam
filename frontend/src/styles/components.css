@@ -71,7 +71,7 @@
 .btn {
 	padding: 0.45rem 1.1rem;
 	border-radius: 6px;
-	font-family: "Rubik", sans-serif;
+	font-family: var(--font-sans);
 	font-size: 0.78rem;
 	font-weight: 500;
 	cursor: pointer;

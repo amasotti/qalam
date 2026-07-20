@@ -71,19 +71,19 @@ docker-compose.yml  full dev stack (postgres, backend, frontend)
 2. Every feature reachable via `curl`
 3. AI features degrade gracefully to 503 `AI_NOT_CONFIGURED` without `OPENROUTER_API_KEY`
 4. No `any` in TypeScript, as few nullable values as possible in Kotlin — enforced by linters and code review
-5. `doppler run -- just up` starts the full Docker stack; local backend dev uses `just dev-backend`
+5. `just up` starts the full Docker stack; local backend dev uses `just dev-backend`
 6. Frontend checks must always pass before committing any `.svelte` or CSS file:
    - `just lint-frontend` — Biome lint (zero errors, zero warnings)
    - `just format-frontend` — Biome format (run, stage any auto-fixes, re-lint)
    - `just check-frontend` — svelte-check type safety (zero errors, zero warnings)
-7. the `superpowers` skill MUST be used and loaded in every new session
-8. the `caveman ultra` skill MUST be used and loaded in every new session
+8. the `caveman lite` skill MUST be used and loaded in every new session
 
 ## Working style with Tony
 
 - One task at a time, stop and share after each logical unit, allow the user to give feedback, correct and implement himself
 - Sketch approach in words before writing real code for non-trivial things
 - Pause at design forks: present options briefly, let Tony choose
-- Update `docs/` when behaviour/API/data model changes — proactively, not when asked
+- Update `docs/` when behaviour/API/data model changes — proactively, not when asked. Ignore files in .scratch/ or .pairing/
 - **Any change to a backend endpoint (new param, changed response, new route) MUST update `backend/src/main/resources/openapi/documentation.yaml` in the same step — it is the source of truth for frontend types**
+  Read however `backend/src/main/resources/openapi/README.md` about how to edit the openapi spec.
 - Tony is an experienced developer — don't over-explain, don't pad responses, and co-operate with him, do not replace him

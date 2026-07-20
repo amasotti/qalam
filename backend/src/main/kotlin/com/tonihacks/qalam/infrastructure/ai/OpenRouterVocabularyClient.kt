@@ -33,10 +33,10 @@ internal class OpenRouterVocabularyClient(
         val existingWords = if (context.existingWords.isEmpty()) {
             "The list is currently empty."
         } else {
-            "Words already in the list (do NOT suggest these or close variants):\n" +
-                    context.existingWords.joinToString("\n") { w ->
-                        "- ${w.arabicText}${w.translation?.let { " — $it" } ?: ""}"
-                    }
+            val existingWordsList = context.existingWords
+                .filter { w -> w.translation != null }
+                .joinToString("\n") { w -> "- ${w.arabicText} (${w.translation})" }
+            "Words already in the list (do NOT suggest these or close variants):\n$existingWordsList"
         }
 
         val prompt = PromptLoader.loadPrompt(

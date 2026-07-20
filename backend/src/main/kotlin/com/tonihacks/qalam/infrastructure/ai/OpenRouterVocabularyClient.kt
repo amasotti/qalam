@@ -1,7 +1,8 @@
 package com.tonihacks.qalam.infrastructure.ai
 
 import arrow.core.Either
-import arrow.core.mapLeft
+import arrow.core.left
+import arrow.core.right
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.word.Dialect
 import com.tonihacks.qalam.domain.word.Difficulty
@@ -51,7 +52,7 @@ internal class OpenRouterVocabularyClient(
         )
         val systemPrompt = PromptLoader.loadPrompt("ai-prompts/VocabularyExpertSystemPrompt.md")
 
-        return openRouter.complete(
+        val result = openRouter.complete(
             OpenRouterCompletionRequest(
                 systemPrompt = systemPrompt,
                 userPrompt = prompt,
@@ -66,10 +67,14 @@ internal class OpenRouterVocabularyClient(
                 provider = OpenRouterProviderPreferences(requireParameters = true),
             ),
         ).map { parseWordListSuggestions(it, json) }
-            .mapLeft { error ->
+
+        return result.fold(
+            { error ->
                 log.warn { "OpenRouter suggestWordsForList failed titleLength=${context.title.length}: $error" }
-                if (error == DomainError.AiNotConfigured) error
-                else DomainError.InvalidInput("AI list suggestion request failed")
-            }
+                if (error == DomainError.AiNotConfigured) error.left()
+                else DomainError.InvalidInput("AI list suggestion request failed").left()
+            },
+            { suggestions -> suggestions.right() },
+        )
     }
 }

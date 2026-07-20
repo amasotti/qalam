@@ -1,0 +1,43 @@
+post:
+  summary: Submit an answer for one exercise item
+  operationId: answerExerciseItem
+  tags:
+    - exercises
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/AnswerExerciseItemRequest.yaml
+  responses:
+    '200':
+      description: Answer evaluated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/AnswerExerciseItemResponse.yaml
+    '400':
+      description: Malformed UUID or selected option does not belong to item
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '404':
+      description: Session or item not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '409':
+      description: Session completed or item already answered
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

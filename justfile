@@ -86,9 +86,13 @@ e2e-ui:
 check:
     ./backend/gradlew -p backend check --no-daemon
 
-# Lint the OpenAPI spec
+# Bundle modular OpenAPI sources for Ktor Swagger UI, smoke tests, and frontend type generation.
+bundle-api:
+    docker run --rm -v $PWD:/spec -w /spec redocly/cli:2.37.0 bundle backend/src/main/resources/openapi/source/openapi.yaml --output backend/src/main/resources/openapi/documentation.yaml
+
+# Lint the modular OpenAPI source of truth.
 lint-api:
-    docker run --rm -v $PWD:/spec redocly/cli lint /spec/backend/src/main/resources/openapi/documentation.yaml
+    docker run --rm -v $PWD:/spec -w /spec redocly/cli:2.37.0 lint backend/src/main/resources/openapi/source/openapi.yaml
 
 # Lint frontend with Biome
 lint-frontend:
@@ -108,6 +112,7 @@ check-frontend:
 
 # Generate frontend TS types from the OpenAPI spec (backend must be running)
 gtypes:
+    just bundle-api
     pnpm --prefix frontend generate:types
 
 # ── Local dev mode (no Docker — for rapid iteration) ─────────────────────────

@@ -1,0 +1,64 @@
+get:
+  summary: List semantic relations for a word (synonyms, antonyms, related)
+  operationId: getWordRelations
+  tags:
+    - words
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: List of word relations
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/WordRelationResponse.yaml
+    '404':
+      description: Word not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+post:
+  summary: Add a semantic relation to a word
+  operationId: addWordRelation
+  tags:
+    - words
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateWordRelationRequest.yaml
+  responses:
+    '201':
+      description: Relation added
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/WordRelationResponse.yaml
+    '409':
+      description: Relation already exists
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '422':
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

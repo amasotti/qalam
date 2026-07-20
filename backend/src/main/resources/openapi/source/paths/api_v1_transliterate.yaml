@@ -1,0 +1,20 @@
+post:
+  summary: Transliterate Arabic text to Latin/chat-alphabet
+  operationId: transliterateText
+  tags:
+    - transliteration
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/TransliterateRequest.yaml
+  responses:
+    '200':
+      description: Transliteration result
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/TransliterateResponse.yaml
+    '422':
+      description: Validation error

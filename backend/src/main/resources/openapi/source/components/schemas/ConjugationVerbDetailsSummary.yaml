@@ -1,0 +1,33 @@
+type: object
+required:
+  - verbForm
+  - weaknessType
+properties:
+  verbForm:
+    type: string
+    enum:
+      - I
+      - II
+      - III
+      - IV
+      - V
+      - VI
+      - VII
+      - VIII
+      - IX
+      - X
+  pastPattern:
+    type: string
+    nullable: true
+  presentPattern:
+    type: string
+    nullable: true
+  weaknessType:
+    type: string
+    enum:
+      - SOUND
+      - ASSIMILATED
+      - HOLLOW
+      - GEMINATE
+      - DEFECTIVE
+      - DOUBLY_WEAK

@@ -1,0 +1,64 @@
+get:
+  summary: List annotations for a text
+  operationId: listAnnotations
+  tags:
+    - annotations
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: List of annotations
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/AnnotationResponse.yaml
+    '400':
+      description: Malformed UUID
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+post:
+  summary: Create an annotation for a text
+  operationId: createAnnotation
+  tags:
+    - annotations
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateAnnotationRequest.yaml
+  responses:
+    '201':
+      description: Annotation created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/AnnotationResponse.yaml
+    '404':
+      description: Text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '422':
+      description: Validation error (blank anchor, unknown type)
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

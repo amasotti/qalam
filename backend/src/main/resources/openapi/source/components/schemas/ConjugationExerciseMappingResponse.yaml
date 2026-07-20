@@ -1,0 +1,7 @@
+allOf:
+  - $ref: ./ConjugationExerciseMappingRequest.yaml
+  - type: object
+    properties:
+      isCorrect:
+        type: boolean
+        nullable: true

@@ -1,0 +1,12 @@
+type: object
+required:
+  - arabic
+  - transliteration
+  - translation
+properties:
+  arabic:
+    type: string
+  transliteration:
+    type: string
+  translation:
+    type: string

@@ -1,0 +1,27 @@
+delete:
+  summary: Delete a plural form from a word
+  operationId: deleteWordPlural
+  tags:
+    - words
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: pluralId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '204':
+      description: Plural form deleted
+    '404':
+      description: Word or plural not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

@@ -249,7 +249,9 @@ Response shape:
 
 ### OpenAPI
 
-The spec is **hand-written** in `backend/src/main/resources/openapi/documentation.yaml`.
+The modular spec is **hand-written** under
+`backend/src/main/resources/openapi/source/`; `source/openapi.yaml` is its entry point.
+`documentation.yaml` is the checked-in bundle generated from that source.
 Two Ktor plugins serve it at startup — they are not redundant, they do different things:
 
 | Plugin                | Endpoint               | Purpose                                                         |
@@ -257,8 +259,10 @@ Two Ktor plugins serve it at startup — they are not redundant, they do differe
 | `ktor-server-openapi` | `/api/v1/openapi.json` | Serves the raw spec (used by Postman and `pnpm generate:types`) |
 | `ktor-server-swagger` | `/api/v1/swagger-ui`   | Serves the interactive Swagger UI                               |
 
-**Maintenance rule**: whenever a route is added or changed, update `documentation.yaml` in the
-same commit. The YAML is the API contract — keeping it stale defeats its purpose.
+**Maintenance rule**: whenever a route is added or changed, update the relevant file under
+`source/`, run `just lint-api`, then run `just bundle-api` and include the updated
+`documentation.yaml` in the same commit. The YAML is the API contract — keeping its
+runtime bundle stale defeats its purpose.
 
 `pnpm generate:types` (frontend) fetches `/api/v1/openapi.json` from a running backend to
 regenerate the typed client. Run it after any API change.

@@ -1,0 +1,8 @@
+type: object
+required:
+  - examples
+properties:
+  examples:
+    type: array
+    items:
+      $ref: ./AiExampleSentence.yaml

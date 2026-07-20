@@ -1,0 +1,8 @@
+type: object
+required:
+  - letters
+properties:
+  letters:
+    type: array
+    items:
+      type: string

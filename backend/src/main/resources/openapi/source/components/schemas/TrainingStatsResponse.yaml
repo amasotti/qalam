@@ -1,0 +1,21 @@
+type: object
+required:
+  - masteryDistribution
+  - totalSessions
+  - recentSessions
+properties:
+  masteryDistribution:
+    type: object
+    additionalProperties:
+      type: integer
+    description: >-
+      Count of words at each mastery level (e.g., {NEW: 5, LEARNING: 10, KNOWN:
+      8, MASTERED: 12})
+  totalSessions:
+    type: integer
+    description: Total number of training sessions completed
+  recentSessions:
+    type: array
+    items:
+      $ref: ./TrainingSessionListItemResponse.yaml
+    description: Recently completed sessions (up to 10)

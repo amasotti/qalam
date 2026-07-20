@@ -1,0 +1,31 @@
+get:
+  summary: Get a training session by ID
+  operationId: getTrainingSession
+  tags:
+    - training
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Training session found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/TrainingSessionResponse.yaml
+    '400':
+      description: Malformed UUID
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '404':
+      description: Training session not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

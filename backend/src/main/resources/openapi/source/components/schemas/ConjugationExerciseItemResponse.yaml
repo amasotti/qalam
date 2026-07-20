@@ -1,0 +1,70 @@
+type: object
+required:
+  - itemId
+  - wordId
+  - lemma
+  - verbForm
+  - tense
+  - voice
+  - forms
+  - labels
+properties:
+  itemId:
+    type: string
+    format: uuid
+  wordId:
+    type: string
+    format: uuid
+  lemma:
+    type: string
+  translation:
+    type: string
+    nullable: true
+  verbForm:
+    type: string
+  tense:
+    type: string
+    enum:
+      - PAST
+      - PRESENT
+  voice:
+    type: string
+    enum:
+      - ACTIVE
+      - PASSIVE
+  exerciseType:
+    type: string
+    enum:
+      - MATCH_FORM
+      - WRITE_FORM
+  forms:
+    type: array
+    minItems: 4
+    maxItems: 4
+    items:
+      $ref: ./ConjugationExerciseFormResponse.yaml
+  labels:
+    type: array
+    minItems: 4
+    maxItems: 4
+    items:
+      $ref: ./ConjugationExerciseLabelResponse.yaml
+  result:
+    type: string
+    nullable: true
+    enum:
+      - CORRECT
+      - INCORRECT
+      - SKIPPED
+  submittedMappings:
+    type: array
+    nullable: true
+    description: Omitted until this item has been answered.
+    items:
+      $ref: ./ConjugationExerciseMappingResponse.yaml
+  correctMappings:
+    type: array
+    nullable: true
+    description: Omitted until this item has been answered.
+    items:
+      $ref: ./ConjugationExerciseMappingResponse.yaml

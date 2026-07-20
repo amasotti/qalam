@@ -1,0 +1,28 @@
+type: object
+required:
+  - person
+  - arabic
+  - segments
+properties:
+  person:
+    type: string
+    enum:
+      - 1S
+      - 2SM
+      - 2SF
+      - 3SM
+      - 3SF
+      - 2D
+      - 3DM
+      - 3DF
+      - 1P
+      - 2PM
+      - 2PF
+      - 3PM
+      - 3PF
+  arabic:
+    type: string
+  segments:
+    type: array
+    items:
+      $ref: ./SegmentDto.yaml

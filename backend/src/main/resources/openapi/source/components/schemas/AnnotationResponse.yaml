@@ -1,0 +1,51 @@
+type: object
+required:
+  - id
+  - textId
+  - anchor
+  - type
+  - reviewFlag
+  - linkedWordIds
+  - createdAt
+  - updatedAt
+properties:
+  id:
+    type: string
+    format: uuid
+  textId:
+    type: string
+    format: uuid
+  anchor:
+    type: string
+    description: The anchored text fragment this annotation refers to
+  type:
+    type: string
+    enum:
+      - VOCABULARY
+      - GRAMMAR
+      - CULTURAL
+      - OTHER
+  content:
+    type: string
+    nullable: true
+  masteryLevel:
+    type: string
+    nullable: true
+    enum:
+      - NEW
+      - LEARNING
+      - KNOWN
+      - MASTERED
+  reviewFlag:
+    type: boolean
+  linkedWordIds:
+    type: array
+    items:
+      type: string
+      format: uuid
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time

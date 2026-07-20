@@ -1,0 +1,24 @@
+post:
+  tags:
+    - conjugation
+  summary: Compute conjugation from ad-hoc root letters and verb metadata
+  operationId: computeConjugation
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/AdHocConjugationRequest.yaml
+  responses:
+    '200':
+      description: Full conjugation table
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ConjugationResponse.yaml
+    '422':
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

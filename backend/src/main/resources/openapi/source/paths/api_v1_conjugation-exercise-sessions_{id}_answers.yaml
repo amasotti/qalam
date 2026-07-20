@@ -1,0 +1,26 @@
+post:
+  summary: Submit all four mappings for one conjugation exercise item
+  operationId: answerConjugationExerciseItem
+  tags:
+    - conjugation-exercises
+  parameters:
+    - $ref: ../components/parameters/UuidPathId.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/AnswerConjugationExerciseItemRequest.yaml
+  responses:
+    '200':
+      description: Submitted mappings evaluated; correct mappings are now revealed
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/AnswerConjugationExerciseItemResponse.yaml
+    '400':
+      description: Invalid, incomplete, duplicate, or foreign mapping
+    '404':
+      description: Session or item not found
+    '409':
+      description: Session completed or item already answered

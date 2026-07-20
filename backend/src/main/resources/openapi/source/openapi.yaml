@@ -1,0 +1,166 @@
+openapi: 3.0.3
+info:
+  title: Qalam API
+  description: Personal Arabic learning tool — backend API
+  version: 0.1.0
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: http://localhost:8085
+    description: Local development
+tags:
+  - name: roots
+    description: Arabic root management
+  - name: words
+    description: Vocabulary word management
+  - name: texts
+    description: Arabic text management
+  - name: sentences
+    description: Sentence and alignment token management
+  - name: transliteration
+    description: Arabic text transliteration
+  - name: annotations
+    description: Annotation management (vocabulary, grammar, cultural, structure notes)
+  - name: training
+    description: Flashcard training sessions and statistics
+  - name: exercises
+    description: Backend-generated exercise sessions for mobile practice
+  - name: word-lists
+    description: Curated topical vocabulary lists (e.g. Colors, Family)
+  - name: ai
+    description: AI-powered linguistic analysis
+  - name: analytics
+    description: Aggregated statistics across all domains
+  - name: conjugation
+    description: Verb conjugation engine (rule-based, on-the-fly computation)
+  - name: system
+    description: Health and API introspection
+paths:
+  /api/v1/roots:
+    $ref: paths/api_v1_roots.yaml
+  /api/v1/roots/normalize:
+    $ref: paths/api_v1_roots_normalize.yaml
+  /api/v1/roots/{id}:
+    $ref: paths/api_v1_roots_{id}.yaml
+  /api/v1/words:
+    $ref: paths/api_v1_words.yaml
+  /api/v1/words/autocomplete:
+    $ref: paths/api_v1_words_autocomplete.yaml
+  /api/v1/words/by-arabic:
+    $ref: paths/api_v1_words_by-arabic.yaml
+  /api/v1/words/dictionary-lookups:
+    $ref: paths/api_v1_words_dictionary-lookups.yaml
+  /api/v1/words/analyze:
+    $ref: paths/api_v1_words_analyze.yaml
+  /api/v1/words/{id}:
+    $ref: paths/api_v1_words_{id}.yaml
+  /api/v1/words/{id}/dictionary-links:
+    $ref: paths/api_v1_words_{id}_dictionary-links.yaml
+  /api/v1/words/{id}/dictionary-links/{linkId}:
+    $ref: paths/api_v1_words_{id}_dictionary-links_{linkId}.yaml
+  /api/v1/words/{id}/examples:
+    $ref: paths/api_v1_words_{id}_examples.yaml
+  /api/v1/words/{id}/examples/{exampleId}:
+    $ref: paths/api_v1_words_{id}_examples_{exampleId}.yaml
+  /api/v1/words/{id}/examples/generate:
+    $ref: paths/api_v1_words_{id}_examples_generate.yaml
+  /api/v1/words/{id}/verb-details:
+    $ref: paths/api_v1_words_{id}_verb-details.yaml
+  /api/v1/words/{id}/morphology:
+    $ref: paths/api_v1_words_{id}_morphology.yaml
+  /api/v1/words/{id}/plurals:
+    $ref: paths/api_v1_words_{id}_plurals.yaml
+  /api/v1/words/{id}/plurals/{pluralId}:
+    $ref: paths/api_v1_words_{id}_plurals_{pluralId}.yaml
+  /api/v1/words/{id}/relations:
+    $ref: paths/api_v1_words_{id}_relations.yaml
+  /api/v1/words/{id}/relations/{relatedWordId}/{type}:
+    $ref: paths/api_v1_words_{id}_relations_{relatedWordId}_{type}.yaml
+  /api/v1/words/{id}/enrich:
+    $ref: paths/api_v1_words_{id}_enrich.yaml
+  /api/v1/texts:
+    $ref: paths/api_v1_texts.yaml
+  /api/v1/texts/{id}:
+    $ref: paths/api_v1_texts_{id}.yaml
+  /api/v1/texts/{id}/sync:
+    $ref: paths/api_v1_texts_{id}_sync.yaml
+  /api/v1/texts/{id}/print:
+    $ref: paths/api_v1_texts_{id}_print.yaml
+  /api/v1/texts/{textId}/sentences:
+    $ref: paths/api_v1_texts_{textId}_sentences.yaml
+  /api/v1/texts/{textId}/sentences/reorder:
+    $ref: paths/api_v1_texts_{textId}_sentences_reorder.yaml
+  /api/v1/texts/{textId}/sentences/{id}:
+    $ref: paths/api_v1_texts_{textId}_sentences_{id}.yaml
+  /api/v1/texts/{textId}/sentences/{id}/tokens:
+    $ref: paths/api_v1_texts_{textId}_sentences_{id}_tokens.yaml
+  /api/v1/texts/{textId}/sentences/{id}/auto-tokenize:
+    $ref: paths/api_v1_texts_{textId}_sentences_{id}_auto-tokenize.yaml
+  /api/v1/texts/{textId}/sentences/{id}/transliterate:
+    $ref: paths/api_v1_texts_{textId}_sentences_{id}_transliterate.yaml
+  /api/v1/texts/{textId}/annotations:
+    $ref: paths/api_v1_texts_{textId}_annotations.yaml
+  /api/v1/texts/{textId}/annotations/{id}:
+    $ref: paths/api_v1_texts_{textId}_annotations_{id}.yaml
+  /api/v1/texts/{textId}/annotations/{id}/words:
+    $ref: paths/api_v1_texts_{textId}_annotations_{id}_words.yaml
+  /api/v1/texts/{textId}/annotations/{id}/words/{wordId}:
+    $ref: paths/api_v1_texts_{textId}_annotations_{id}_words_{wordId}.yaml
+  /api/v1/words/{wordId}/annotations:
+    $ref: paths/api_v1_words_{wordId}_annotations.yaml
+  /health:
+    $ref: paths/health.yaml
+  /api/v1/swagger-ui:
+    $ref: paths/api_v1_swagger-ui.yaml
+  /api/v1/training/sessions:
+    $ref: paths/api_v1_training_sessions.yaml
+  /api/v1/training/sessions/{id}:
+    $ref: paths/api_v1_training_sessions_{id}.yaml
+  /api/v1/training/sessions/{id}/results:
+    $ref: paths/api_v1_training_sessions_{id}_results.yaml
+  /api/v1/training/sessions/{id}/complete:
+    $ref: paths/api_v1_training_sessions_{id}_complete.yaml
+  /api/v1/training/stats:
+    $ref: paths/api_v1_training_stats.yaml
+  /api/v1/exercise-sessions:
+    $ref: paths/api_v1_exercise-sessions.yaml
+  /api/v1/exercise-sessions/{id}:
+    $ref: paths/api_v1_exercise-sessions_{id}.yaml
+  /api/v1/exercise-sessions/{id}/answers:
+    $ref: paths/api_v1_exercise-sessions_{id}_answers.yaml
+  /api/v1/exercise-sessions/{id}/complete:
+    $ref: paths/api_v1_exercise-sessions_{id}_complete.yaml
+  /api/v1/conjugation-exercise-sessions:
+    $ref: paths/api_v1_conjugation-exercise-sessions.yaml
+  /api/v1/conjugation-exercise-sessions/eligibility:
+    $ref: paths/api_v1_conjugation-exercise-sessions_eligibility.yaml
+  /api/v1/conjugation-exercise-sessions/{id}:
+    $ref: paths/api_v1_conjugation-exercise-sessions_{id}.yaml
+  /api/v1/conjugation-exercise-sessions/{id}/answers:
+    $ref: paths/api_v1_conjugation-exercise-sessions_{id}_answers.yaml
+  /api/v1/conjugation-exercise-sessions/{id}/complete:
+    $ref: paths/api_v1_conjugation-exercise-sessions_{id}_complete.yaml
+  /api/v1/transliterate:
+    $ref: paths/api_v1_transliterate.yaml
+  /api/v1/word-lists:
+    $ref: paths/api_v1_word-lists.yaml
+  /api/v1/word-lists/by-word/{wordId}:
+    $ref: paths/api_v1_word-lists_by-word_{wordId}.yaml
+  /api/v1/word-lists/{id}:
+    $ref: paths/api_v1_word-lists_{id}.yaml
+  /api/v1/word-lists/{id}/words:
+    $ref: paths/api_v1_word-lists_{id}_words.yaml
+  /api/v1/word-lists/{id}/words/{wordId}:
+    $ref: paths/api_v1_word-lists_{id}_words_{wordId}.yaml
+  /api/v1/word-lists/{id}/suggest:
+    $ref: paths/api_v1_word-lists_{id}_suggest.yaml
+  /api/v1/ai/insight:
+    $ref: paths/api_v1_ai_insight.yaml
+  /api/v1/analytics/overview:
+    $ref: paths/api_v1_analytics_overview.yaml
+  /api/v1/conjugation/{wordId}:
+    $ref: paths/api_v1_conjugation_{wordId}.yaml
+  /api/v1/conjugation/compute:
+    $ref: paths/api_v1_conjugation_compute.yaml
+security: []

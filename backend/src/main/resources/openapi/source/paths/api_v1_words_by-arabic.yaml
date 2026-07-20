@@ -1,0 +1,31 @@
+get:
+  summary: Look up a word by exact Arabic text
+  operationId: getWordByArabic
+  tags:
+    - words
+  parameters:
+    - name: q
+      in: query
+      required: true
+      schema:
+        type: string
+      description: Exact Arabic text to match
+  responses:
+    '200':
+      description: Word found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/WordResponse.yaml
+    '404':
+      description: No word with that exact Arabic text
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '422':
+      description: Missing required query parameter `q`
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

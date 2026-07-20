@@ -1,0 +1,20 @@
+type: object
+required:
+  - optionId
+  - wordId
+  - arabicText
+properties:
+  optionId:
+    type: string
+    format: uuid
+  wordId:
+    type: string
+    format: uuid
+  arabicText:
+    type: string
+  transliteration:
+    type: string
+    nullable: true
+  translation:
+    type: string
+    nullable: true

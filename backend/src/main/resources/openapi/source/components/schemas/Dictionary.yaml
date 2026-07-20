@@ -1,0 +1,8 @@
+type: string
+enum:
+  - ALMANY
+  - LIVING_ARABIC
+  - DERJA_NINJA
+  - REVERSO
+  - ASD
+  - WIKTIONARY

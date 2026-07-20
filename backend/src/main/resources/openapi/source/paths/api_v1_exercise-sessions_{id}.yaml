@@ -1,0 +1,31 @@
+get:
+  summary: Get an exercise session by ID
+  operationId: getExerciseSession
+  tags:
+    - exercises
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Exercise session found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ExerciseSessionResponse.yaml
+    '400':
+      description: Malformed UUID
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '404':
+      description: Exercise session not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

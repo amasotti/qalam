@@ -1,0 +1,57 @@
+get:
+  summary: List curated word lists (paginated, with member counts)
+  operationId: listWordLists
+  tags:
+    - word-lists
+  parameters:
+    - name: page
+      in: query
+      description: Page number (1-based)
+      schema:
+        type: integer
+        default: 1
+    - name: size
+      in: query
+      description: Number of items per page
+      schema:
+        type: integer
+        default: 20
+        maximum: 500
+  responses:
+    '200':
+      description: Paginated list of word lists
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../components/schemas/PaginatedResponse.yaml
+              - type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/WordListResponse.yaml
+post:
+  summary: Create a new word list
+  operationId: createWordList
+  tags:
+    - word-lists
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateWordListRequest.yaml
+  responses:
+    '201':
+      description: Word list created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/WordListResponse.yaml
+    '422':
+      description: Validation error (e.g. blank title)
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

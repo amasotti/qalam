@@ -1,0 +1,46 @@
+type: object
+description: All fields optional — only provided fields are updated
+properties:
+  arabicText:
+    type: string
+    nullable: true
+  transliteration:
+    type: string
+    nullable: true
+  translation:
+    type: string
+    nullable: true
+  partOfSpeech:
+    type: string
+    nullable: true
+    allOf:
+      - $ref: ./PartOfSpeech.yaml
+  dialect:
+    type: string
+    nullable: true
+    allOf:
+      - $ref: ./Dialect.yaml
+  difficulty:
+    type: string
+    nullable: true
+    allOf:
+      - $ref: ./Difficulty.yaml
+  masteryLevel:
+    type: string
+    nullable: true
+    allOf:
+      - $ref: ./MasteryLevel.yaml
+  pronunciationUrl:
+    type: string
+    nullable: true
+  rootId:
+    type: string
+    format: uuid
+    nullable: true
+  derivedFromId:
+    type: string
+    format: uuid
+    nullable: true
+  notes:
+    type: string
+    nullable: true

@@ -1,0 +1,20 @@
+type: object
+required:
+  - id
+  - pluralForm
+  - pluralType
+properties:
+  id:
+    type: string
+    format: uuid
+  pluralForm:
+    type: string
+  pluralType:
+    type: string
+    enum:
+      - SOUND_MASC
+      - SOUND_FEM
+      - BROKEN
+      - PAUCAL
+      - COLLECTIVE
+      - OTHER

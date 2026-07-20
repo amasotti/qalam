@@ -1,0 +1,43 @@
+type: object
+required:
+  - id
+  - title
+  - body
+  - difficulty
+  - dialect
+  - tags
+  - createdAt
+  - updatedAt
+properties:
+  id:
+    type: string
+    format: uuid
+  title:
+    type: string
+  body:
+    type: string
+    description: Arabic body content
+  transliteration:
+    type: string
+    nullable: true
+  translation:
+    type: string
+    nullable: true
+  difficulty:
+    $ref: ./Difficulty.yaml
+  dialect:
+    $ref: ./Dialect.yaml
+  comments:
+    type: string
+    nullable: true
+    description: Freetext notes about the text
+  tags:
+    type: array
+    items:
+      type: string
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time

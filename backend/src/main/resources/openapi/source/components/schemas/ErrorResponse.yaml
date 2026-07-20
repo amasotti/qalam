@@ -1,0 +1,11 @@
+type: object
+required:
+  - error
+  - code
+properties:
+  error:
+    type: string
+    description: Human-readable error message
+  code:
+    type: string
+    description: Machine-readable error code

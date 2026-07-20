@@ -1,0 +1,26 @@
+type: object
+required:
+  - total
+  - byDialect
+  - byDifficulty
+  - byMastery
+  - byPartOfSpeech
+properties:
+  total:
+    type: integer
+  byDialect:
+    type: object
+    additionalProperties:
+      type: integer
+  byDifficulty:
+    type: object
+    additionalProperties:
+      type: integer
+  byMastery:
+    type: object
+    additionalProperties:
+      type: integer
+  byPartOfSpeech:
+    type: object
+    additionalProperties:
+      type: integer

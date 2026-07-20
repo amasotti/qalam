@@ -1,0 +1,21 @@
+type: object
+required:
+  - relatedWordId
+  - relatedWordArabic
+  - relationType
+properties:
+  relatedWordId:
+    type: string
+    format: uuid
+  relatedWordArabic:
+    type: string
+  relatedWordTranslation:
+    type: string
+    nullable: true
+  relationType:
+    type: string
+    description: Relation type (SYNONYM, ANTONYM, RELATED, etc.)
+    enum:
+      - SYNONYM
+      - ANTONYM
+      - RELATED

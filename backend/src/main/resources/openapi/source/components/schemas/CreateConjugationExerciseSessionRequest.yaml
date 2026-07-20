@@ -1,0 +1,40 @@
+type: object
+required:
+  - mode
+properties:
+  mode:
+    type: string
+    enum:
+      - NEW
+      - LEARNING
+      - KNOWN
+      - MIXED
+  size:
+    type: integer
+    default: 5
+    minimum: 3
+    maximum: 10
+  wordListIds:
+    type: array
+    items:
+      type: string
+      format: uuid
+    default: []
+  tense:
+    type: string
+    enum:
+      - PAST
+      - PRESENT
+    default: PRESENT
+  voice:
+    type: string
+    enum:
+      - ACTIVE
+      - PASSIVE
+    default: ACTIVE
+  exerciseType:
+    type: string
+    enum:
+      - MATCH_FORM
+      - WRITE_FORM
+    default: MATCH_FORM

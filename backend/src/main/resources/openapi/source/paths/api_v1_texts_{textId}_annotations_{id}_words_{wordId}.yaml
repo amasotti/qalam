@@ -1,0 +1,37 @@
+delete:
+  summary: Remove a word link from an annotation
+  operationId: removeWordLink
+  tags:
+    - annotations
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: wordId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Word link removed, returns updated annotation
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/AnnotationResponse.yaml
+    '404':
+      description: Annotation or word not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

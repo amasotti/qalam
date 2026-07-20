@@ -1,0 +1,13 @@
+type: object
+required:
+  - root
+properties:
+  root:
+    type: string
+    description: 'Letters in any format: space/dash/comma-separated or concatenated'
+  meaning:
+    type: string
+    nullable: true
+  analysis:
+    type: string
+    nullable: true

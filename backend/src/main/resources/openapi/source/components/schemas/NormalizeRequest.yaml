@@ -1,0 +1,9 @@
+type: object
+required:
+  - input
+properties:
+  input:
+    type: string
+    description: >-
+      Letters in any supported format: space-separated, dash-separated,
+      comma-separated, or concatenated

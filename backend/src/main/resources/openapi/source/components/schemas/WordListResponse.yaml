@@ -1,0 +1,26 @@
+type: object
+required:
+  - id
+  - title
+  - itemCount
+  - createdAt
+  - updatedAt
+properties:
+  id:
+    type: string
+    format: uuid
+  title:
+    type: string
+  description:
+    type: string
+    nullable: true
+  itemCount:
+    type: integer
+    format: int64
+    description: Number of words in the list
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time

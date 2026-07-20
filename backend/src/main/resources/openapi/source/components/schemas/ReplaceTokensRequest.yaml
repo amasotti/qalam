@@ -1,0 +1,26 @@
+type: object
+required:
+  - tokens
+properties:
+  tokens:
+    type: array
+    items:
+      type: object
+      required:
+        - position
+        - arabic
+      properties:
+        position:
+          type: integer
+        arabic:
+          type: string
+        transliteration:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+        wordId:
+          type: string
+          format: uuid
+          nullable: true

@@ -1,0 +1,15 @@
+type: object
+required:
+  - source
+  - query
+  - items
+properties:
+  source:
+    $ref: ./Dictionary.yaml
+  query:
+    type: string
+    example: بناية
+  items:
+    type: array
+    items:
+      $ref: ./DictionaryLookupItemResponse.yaml

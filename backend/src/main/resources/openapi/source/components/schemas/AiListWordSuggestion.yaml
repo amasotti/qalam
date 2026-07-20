@@ -1,0 +1,18 @@
+type: object
+required:
+  - arabicText
+properties:
+  arabicText:
+    type: string
+  transliteration:
+    type: string
+    nullable: true
+  translation:
+    type: string
+    nullable: true
+  partOfSpeech:
+    type: string
+    nullable: true
+  difficulty:
+    type: string
+    nullable: true

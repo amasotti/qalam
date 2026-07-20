@@ -1,0 +1,13 @@
+type: object
+required:
+  - date
+  - accuracy
+  - mode
+properties:
+  date:
+    type: string
+  accuracy:
+    type: number
+    format: double
+  mode:
+    type: string

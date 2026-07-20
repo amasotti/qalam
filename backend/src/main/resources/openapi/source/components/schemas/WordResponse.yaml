@@ -1,0 +1,50 @@
+type: object
+required:
+  - id
+  - arabicText
+  - partOfSpeech
+  - dialect
+  - difficulty
+  - masteryLevel
+  - createdAt
+  - updatedAt
+properties:
+  id:
+    type: string
+    format: uuid
+  arabicText:
+    type: string
+  transliteration:
+    type: string
+    nullable: true
+  translation:
+    type: string
+    nullable: true
+  partOfSpeech:
+    $ref: ./PartOfSpeech.yaml
+  dialect:
+    $ref: ./Dialect.yaml
+  difficulty:
+    $ref: ./Difficulty.yaml
+  masteryLevel:
+    $ref: ./MasteryLevel.yaml
+  pronunciationUrl:
+    type: string
+    nullable: true
+  rootId:
+    type: string
+    format: uuid
+    nullable: true
+  derivedFromId:
+    type: string
+    format: uuid
+    nullable: true
+  notes:
+    type: string
+    nullable: true
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time

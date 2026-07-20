@@ -1,0 +1,29 @@
+type: object
+required:
+  - itemId
+  - result
+  - submittedMappings
+  - correctMappings
+properties:
+  itemId:
+    type: string
+    format: uuid
+  result:
+    type: string
+    enum:
+      - CORRECT
+      - INCORRECT
+  submittedMappings:
+    type: array
+    items:
+      $ref: ./ConjugationExerciseMappingResponse.yaml
+  correctMappings:
+    type: array
+    items:
+      $ref: ./ConjugationExerciseMappingResponse.yaml
+  expectedArabic:
+    type: string
+    nullable: true
+  submittedText:
+    type: string
+    nullable: true

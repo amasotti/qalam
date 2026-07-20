@@ -1,0 +1,37 @@
+post:
+  summary: Mark a training session as complete
+  operationId: completeTrainingSession
+  tags:
+    - training
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Session completed with summary
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/SessionSummaryResponse.yaml
+    '400':
+      description: Malformed UUID
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '404':
+      description: Session not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '409':
+      description: Session already completed
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

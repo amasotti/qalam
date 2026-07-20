@@ -1,0 +1,43 @@
+post:
+  summary: Link a word to an annotation
+  operationId: addWordLink
+  tags:
+    - annotations
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - wordId
+          properties:
+            wordId:
+              type: string
+              format: uuid
+  responses:
+    '200':
+      description: Word linked, returns updated annotation
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/AnnotationResponse.yaml
+    '404':
+      description: Annotation or word not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

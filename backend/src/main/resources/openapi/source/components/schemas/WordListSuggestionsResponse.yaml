@@ -1,0 +1,8 @@
+type: object
+required:
+  - suggestions
+properties:
+  suggestions:
+    type: array
+    items:
+      $ref: ./AiListWordSuggestion.yaml

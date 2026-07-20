@@ -1,0 +1,21 @@
+type: object
+required:
+  - arabicText
+properties:
+  arabicText:
+    type: string
+  transliteration:
+    type: string
+    nullable: true
+  translation:
+    type: string
+    nullable: true
+  partOfSpeech:
+    type: string
+    nullable: true
+  rootLetters:
+    type: string
+    nullable: true
+  exampleSentence:
+    $ref: ./AiExampleSentence.yaml
+    nullable: true

@@ -1,0 +1,89 @@
+get:
+  summary: Get a text by ID
+  operationId: getTextById
+  tags:
+    - texts
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Text found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/TextResponse.yaml
+    '400':
+      description: Malformed UUID
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '404':
+      description: Text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+put:
+  summary: Update a text (all fields optional — only provided fields change)
+  operationId: updateText
+  tags:
+    - texts
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/UpdateTextRequest.yaml
+  responses:
+    '200':
+      description: Text updated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/TextResponse.yaml
+    '404':
+      description: Text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '422':
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+delete:
+  summary: Delete a text
+  operationId: deleteText
+  tags:
+    - texts
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '204':
+      description: Text deleted
+    '404':
+      description: Text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

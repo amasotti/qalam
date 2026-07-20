@@ -1,0 +1,14 @@
+type: object
+required:
+  - id
+  - source
+  - url
+properties:
+  id:
+    type: string
+    format: uuid
+  source:
+    $ref: ./DictionarySource.yaml
+  url:
+    type: string
+    format: uri

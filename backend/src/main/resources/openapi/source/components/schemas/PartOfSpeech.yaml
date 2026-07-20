@@ -1,0 +1,12 @@
+type: string
+enum:
+  - UNKNOWN
+  - NOUN
+  - VERB
+  - ADJECTIVE
+  - ADVERB
+  - PREPOSITION
+  - PARTICLE
+  - INTERJECTION
+  - CONJUNCTION
+  - PRONOUN

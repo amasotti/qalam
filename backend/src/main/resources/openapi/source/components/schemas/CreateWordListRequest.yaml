@@ -1,0 +1,9 @@
+type: object
+required:
+  - title
+properties:
+  title:
+    type: string
+  description:
+    type: string
+    nullable: true

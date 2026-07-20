@@ -1,0 +1,30 @@
+type: object
+required:
+  - externalId
+  - arabicText
+  - hasExactWordMatch
+properties:
+  externalId:
+    type: string
+    format: uuid
+  arabicText:
+    type: string
+    example: بِنايَة
+  transliteration:
+    type: string
+    nullable: true
+    example: bināya
+  translation:
+    type: string
+    nullable: true
+    example: building, structure, edifice
+  plural:
+    type: object
+    nullable: true
+    allOf:
+      - $ref: ./DictionaryLookupPluralResponse.yaml
+  hasExactWordMatch:
+    type: boolean
+    description: >-
+      True when the dictionary headword matches the query after Arabic
+      diacritics are removed.

@@ -4,8 +4,22 @@ export type ClientOptions = {
     baseUrl: 'http://localhost:8085' | (string & {});
 };
 
-export type HealthResponse = {
-    status: string;
+export type PaginatedResponse = {
+    items: Array<{
+        [key: string]: unknown;
+    }>;
+    /**
+     * Total number of matching records
+     */
+    total: number;
+    /**
+     * Current page (1-based)
+     */
+    page: number;
+    /**
+     * Page size requested
+     */
+    size: number;
 };
 
 export type RootResponse = {
@@ -20,16 +34,22 @@ export type RootResponse = {
     updatedAt: string;
 };
 
+export type ErrorResponse = {
+    /**
+     * Human-readable error message
+     */
+    error: string;
+    /**
+     * Machine-readable error code
+     */
+    code: string;
+};
+
 export type CreateRootRequest = {
     /**
      * Letters in any format: space/dash/comma-separated or concatenated
      */
     root: string;
-    meaning?: string | null;
-    analysis?: string | null;
-};
-
-export type UpdateRootRequest = {
     meaning?: string | null;
     analysis?: string | null;
 };
@@ -48,57 +68,18 @@ export type NormalizeResponse = {
     letterCount: number;
 };
 
-export type WordListResponse = {
-    id: string;
-    title: string;
-    description?: string | null;
-    /**
-     * Number of words in the list
-     */
-    itemCount: number;
-    createdAt: string;
-    updatedAt: string;
+export type UpdateRootRequest = {
+    meaning?: string | null;
+    analysis?: string | null;
 };
 
-export type WordListDetailResponse = {
-    id: string;
-    title: string;
-    description?: string | null;
-    createdAt: string;
-    updatedAt: string;
-    words: Array<WordResponse>;
-};
+export type Dialect = 'TUNISIAN' | 'MOROCCAN' | 'EGYPTIAN' | 'GULF' | 'LEVANTINE' | 'MSA' | 'IRAQI';
 
-export type WordListRefResponse = {
-    id: string;
-    title: string;
-};
+export type Difficulty = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
-export type CreateWordListRequest = {
-    title: string;
-    description?: string | null;
-};
+export type PartOfSpeech = 'UNKNOWN' | 'NOUN' | 'VERB' | 'ADJECTIVE' | 'ADVERB' | 'PREPOSITION' | 'PARTICLE' | 'INTERJECTION' | 'CONJUNCTION' | 'PRONOUN';
 
-export type UpdateWordListRequest = {
-    title?: string | null;
-    description?: string | null;
-};
-
-export type AddWordToListRequest = {
-    wordId: string;
-};
-
-export type AiListWordSuggestion = {
-    arabicText: string;
-    transliteration?: string | null;
-    translation?: string | null;
-    partOfSpeech?: string | null;
-    difficulty?: string | null;
-};
-
-export type WordListSuggestionsResponse = {
-    suggestions: Array<AiListWordSuggestion>;
-};
+export type MasteryLevel = 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
 
 export type WordResponse = {
     id: string;
@@ -130,6 +111,56 @@ export type CreateWordRequest = {
     notes?: string | null;
 };
 
+export type WordAutocompleteResponse = {
+    id: string;
+    arabicText: string;
+    translation?: string | null;
+};
+
+export type Dictionary = 'ALMANY' | 'LIVING_ARABIC' | 'DERJA_NINJA' | 'REVERSO' | 'ASD' | 'WIKTIONARY';
+
+export type DictionaryLookupPluralResponse = {
+    arabicText: string;
+    transliteration?: string | null;
+};
+
+export type DictionaryLookupItemResponse = {
+    externalId: string;
+    arabicText: string;
+    transliteration?: string | null;
+    translation?: string | null;
+    plural?: DictionaryLookupPluralResponse | null;
+    /**
+     * True when the dictionary headword matches the query after Arabic diacritics are removed.
+     */
+    hasExactWordMatch: boolean;
+};
+
+export type DictionaryLookupResponse = {
+    source: Dictionary;
+    query: string;
+    items: Array<DictionaryLookupItemResponse>;
+};
+
+export type AnalyzeWordRequest = {
+    arabicText: string;
+};
+
+export type AiExampleSentence = {
+    arabic: string;
+    transliteration: string;
+    translation: string;
+};
+
+export type WordAnalysisResponse = {
+    arabicText: string;
+    transliteration?: string | null;
+    translation?: string | null;
+    partOfSpeech?: string | null;
+    rootLetters?: string | null;
+    exampleSentence?: AiExampleSentence;
+};
+
 /**
  * All fields optional — only provided fields are updated
  */
@@ -147,34 +178,7 @@ export type UpdateWordRequest = {
     notes?: string | null;
 };
 
-export type WordAutocompleteResponse = {
-    id: string;
-    arabicText: string;
-    translation?: string | null;
-};
-
-export type DictionaryLookupResponse = {
-    source: Dictionary;
-    query: string;
-    items: Array<DictionaryLookupItemResponse>;
-};
-
-export type DictionaryLookupItemResponse = {
-    externalId: string;
-    arabicText: string;
-    transliteration?: string | null;
-    translation?: string | null;
-    plural?: DictionaryLookupPluralResponse | null;
-    /**
-     * True when the dictionary headword matches the query after Arabic diacritics are removed.
-     */
-    hasExactWordMatch: boolean;
-};
-
-export type DictionaryLookupPluralResponse = {
-    arabicText: string;
-    transliteration?: string | null;
-};
+export type DictionarySource = 'ALMANY' | 'LIVING_ARABIC' | 'DERJA_NINJA' | 'REVERSO' | 'WIKTIONARY' | 'ARABIC_STUDENT_DICTIONARY' | 'LANGENSCHEIDT' | 'CUSTOM';
 
 export type DictionaryLinkResponse = {
     id: string;
@@ -201,34 +205,8 @@ export type CreateWordExampleRequest = {
     translation?: string | null;
 };
 
-export type AiExampleSentence = {
-    arabic: string;
-    transliteration: string;
-    translation: string;
-};
-
 export type AiExamplesResponse = {
     examples: Array<AiExampleSentence>;
-};
-
-export type WordMorphologyResponse = {
-    gender?: 'MASCULINE' | 'FEMININE';
-    plurals: Array<WordPluralResponse>;
-};
-
-export type WordPluralResponse = {
-    id: string;
-    pluralForm: string;
-    pluralType: 'SOUND_MASC' | 'SOUND_FEM' | 'BROKEN' | 'PAUCAL' | 'COLLECTIVE' | 'OTHER';
-};
-
-export type CreateWordPluralRequest = {
-    pluralForm: string;
-    pluralType?: 'SOUND_MASC' | 'SOUND_FEM' | 'BROKEN' | 'PAUCAL' | 'COLLECTIVE' | 'OTHER';
-};
-
-export type UpsertWordMorphologyRequest = {
-    gender?: 'MASCULINE' | 'FEMININE';
 };
 
 export type VerbDetailsResponse = {
@@ -259,6 +237,26 @@ export type UpsertVerbDetailsRequest = {
     weaknessType?: 'SOUND' | 'ASSIMILATED' | 'HOLLOW' | 'GEMINATE' | 'DEFECTIVE' | 'DOUBLY_WEAK';
 };
 
+export type WordPluralResponse = {
+    id: string;
+    pluralForm: string;
+    pluralType: 'SOUND_MASC' | 'SOUND_FEM' | 'BROKEN' | 'PAUCAL' | 'COLLECTIVE' | 'OTHER';
+};
+
+export type WordMorphologyResponse = {
+    gender?: 'MASCULINE' | 'FEMININE';
+    plurals: Array<WordPluralResponse>;
+};
+
+export type UpsertWordMorphologyRequest = {
+    gender?: 'MASCULINE' | 'FEMININE';
+};
+
+export type CreateWordPluralRequest = {
+    pluralForm: string;
+    pluralType?: 'SOUND_MASC' | 'SOUND_FEM' | 'BROKEN' | 'PAUCAL' | 'COLLECTIVE' | 'OTHER';
+};
+
 export type WordRelationResponse = {
     relatedWordId: string;
     relatedWordArabic: string;
@@ -269,18 +267,6 @@ export type WordRelationResponse = {
 export type CreateWordRelationRequest = {
     relatedWordId: string;
     relationType: 'SYNONYM' | 'ANTONYM' | 'RELATED';
-};
-
-export type WordEnrichmentSuggestion = {
-    notes?: string | null;
-    gender?: 'MASCULINE' | 'FEMININE';
-    /**
-     * @deprecated
-     */
-    verbPattern?: 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X';
-    verbDetails?: AiVerbDetailsSuggestion | null;
-    plurals: Array<AiPluralSuggestion>;
-    relations: Array<AiRelationSuggestion>;
 };
 
 export type AiVerbDetailsSuggestion = {
@@ -302,17 +288,16 @@ export type AiRelationSuggestion = {
     translation?: string | null;
 };
 
-export type AnalyzeWordRequest = {
-    arabicText: string;
-};
-
-export type WordAnalysisResponse = {
-    arabicText: string;
-    transliteration?: string | null;
-    translation?: string | null;
-    partOfSpeech?: string | null;
-    rootLetters?: string | null;
-    exampleSentence?: AiExampleSentence;
+export type WordEnrichmentSuggestion = {
+    notes?: string | null;
+    gender?: 'MASCULINE' | 'FEMININE';
+    /**
+     * @deprecated
+     */
+    verbPattern?: 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X';
+    verbDetails?: AiVerbDetailsSuggestion | null;
+    plurals: Array<AiPluralSuggestion>;
+    relations: Array<AiRelationSuggestion>;
 };
 
 export type TextResponse = {
@@ -404,6 +389,10 @@ export type CreateSentenceRequest = {
     notes?: string | null;
 };
 
+export type ReorderSentencesRequest = {
+    orderedIds: Array<string>;
+};
+
 /**
  * All fields optional — only provided fields are updated
  */
@@ -413,10 +402,6 @@ export type UpdateSentenceRequest = {
     transliteration?: string | null;
     freeTranslation?: string | null;
     notes?: string | null;
-};
-
-export type ReorderSentencesRequest = {
-    orderedIds: Array<string>;
 };
 
 export type ReplaceTokensRequest = {
@@ -465,232 +450,15 @@ export type UpdateAnnotationRequest = {
     reviewFlag?: boolean | null;
 };
 
-export type CreateExerciseSessionRequest = {
-    /**
-     * Mastery bucket used to draw target words
-     */
-    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
-    /**
-     * Number of exercise items to include in the session
-     */
-    size: number;
-    /**
-     * Optional word-list IDs that constrain the target and distractor pool.
-     */
-    wordListIds?: Array<string>;
-    /**
-     * Exercise types to cycle through while generating items.
-     */
-    exerciseTypes?: Array<'MULTIPLE_CHOICE_MEANING' | 'MULTIPLE_CHOICE_ARABIC' | 'CONFUSABLE_MEANING' | 'CONFUSABLE_ARABIC'>;
-    /**
-     * Number of options per item. Clamped by the server to 3-4.
-     */
-    optionCount?: number;
+export type HealthResponse = {
+    status: string;
 };
 
-export type AnswerExerciseItemRequest = {
-    itemId: string;
-    selectedOptionId: string;
-};
-
-export type ExercisePromptResponse = {
-    kind: 'ARABIC_WORD' | 'TRANSLATION';
-    text: string;
-};
-
-export type ExerciseOptionResponse = {
-    optionId: string;
-    wordId: string;
-    arabicText: string;
-    transliteration?: string | null;
-    translation?: string | null;
-};
-
-export type ExerciseSessionItemResponse = {
-    itemId: string;
-    wordId: string;
-    type: 'MULTIPLE_CHOICE_MEANING' | 'MULTIPLE_CHOICE_ARABIC' | 'CONFUSABLE_MEANING' | 'CONFUSABLE_ARABIC';
-    prompt: ExercisePromptResponse;
-    options: Array<ExerciseOptionResponse>;
-    result?: 'CORRECT' | 'INCORRECT' | 'SKIPPED';
-    selectedOptionId?: string | null;
-    answeredAt?: string | null;
-};
-
-export type ExerciseSessionResponse = {
+export type TrainingSessionListItemResponse = {
     id: string;
-    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    mode: string;
     status: 'ACTIVE' | 'COMPLETED';
-    items: Array<ExerciseSessionItemResponse>;
-    createdAt: string;
-    completedAt?: string | null;
-};
-
-export type AnswerExerciseItemResponse = {
-    itemId: string;
-    wordId: string;
-    result: 'CORRECT' | 'INCORRECT';
-    correctOptionId: string;
-    masteryPromotion?: MasteryPromotionResponse;
-};
-
-export type ExerciseSessionSummaryResponse = {
-    sessionId: string;
-    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
-    totalItems: number;
-    correct: number;
-    incorrect: number;
-    skipped: number;
-    /**
-     * Accuracy as a ratio from 0.0 to 1.0, excluding skipped items.
-     */
-    accuracy: number;
-    promotions: Array<MasteryPromotionResponse>;
-    completedAt: string;
-};
-
-export type ExerciseSessionListItemResponse = {
-    id: string;
-    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
-    status: 'ACTIVE' | 'COMPLETED';
-    totalItems: number;
-    correctCount: number;
-    incorrectCount: number;
-    skippedCount: number;
-    /**
-     * Accuracy as a ratio from 0.0 to 1.0, excluding skipped items.
-     */
-    accuracy: number;
-    createdAt: string;
-    completedAt?: string | null;
-};
-
-export type PaginatedExerciseSessionsResponse = {
-    items: Array<ExerciseSessionListItemResponse>;
-    total: number;
-    page: number;
-    size: number;
-};
-
-export type CreateConjugationExerciseSessionRequest = {
-    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
-    size?: number;
-    wordListIds?: Array<string>;
-    tense?: 'PAST' | 'PRESENT';
-    voice?: 'ACTIVE' | 'PASSIVE';
-    exerciseType?: 'MATCH_FORM' | 'WRITE_FORM';
-};
-
-export type ConjugationExerciseEligibilityResponse = {
-    availableVerbs: number;
-};
-
-export type ConjugationExerciseSegmentResponse = {
-    text: string;
-    type: 'PREFIX' | 'ROOT' | 'PATTERN_VOWEL' | 'SUFFIX';
-};
-
-export type ConjugationExerciseFormResponse = {
-    formId: string;
-    arabic: string;
-    segments: Array<ConjugationExerciseSegmentResponse>;
-};
-
-export type ConjugationExerciseLabelResponse = {
-    labelId: string;
-    person: '1S' | '2SM' | '2SF' | '3SM' | '3SF' | '2D' | '3DM' | '3DF' | '1P' | '2PM' | '2PF' | '3PM' | '3PF';
-    label: string;
-};
-
-export type ConjugationExerciseMappingRequest = {
-    formId: string;
-    labelId: string;
-};
-
-export type ConjugationExerciseMappingResponse = ConjugationExerciseMappingRequest & {
-    isCorrect?: boolean | null;
-};
-
-export type AnswerConjugationExerciseItemRequest = {
-    itemId: string;
-    mappings: [
-        ConjugationExerciseMappingRequest,
-        ConjugationExerciseMappingRequest,
-        ConjugationExerciseMappingRequest,
-        ConjugationExerciseMappingRequest
-    ];
-    submittedText?: string | null;
-};
-
-export type AnswerConjugationExerciseItemResponse = {
-    itemId: string;
-    result: 'CORRECT' | 'INCORRECT';
-    submittedMappings: Array<ConjugationExerciseMappingResponse>;
-    correctMappings: Array<ConjugationExerciseMappingResponse>;
-    expectedArabic?: string | null;
-    submittedText?: string | null;
-};
-
-export type ConjugationExerciseItemResponse = {
-    itemId: string;
-    wordId: string;
-    lemma: string;
-    translation?: string | null;
-    verbForm: string;
-    tense: 'PAST' | 'PRESENT';
-    voice: 'ACTIVE' | 'PASSIVE';
-    exerciseType?: 'MATCH_FORM' | 'WRITE_FORM';
-    forms: [
-        ConjugationExerciseFormResponse,
-        ConjugationExerciseFormResponse,
-        ConjugationExerciseFormResponse,
-        ConjugationExerciseFormResponse
-    ];
-    labels: [
-        ConjugationExerciseLabelResponse,
-        ConjugationExerciseLabelResponse,
-        ConjugationExerciseLabelResponse,
-        ConjugationExerciseLabelResponse
-    ];
-    result?: 'CORRECT' | 'INCORRECT' | 'SKIPPED';
-    /**
-     * Omitted until this item has been answered.
-     */
-    submittedMappings?: Array<ConjugationExerciseMappingResponse> | null;
-    /**
-     * Omitted until this item has been answered.
-     */
-    correctMappings?: Array<ConjugationExerciseMappingResponse> | null;
-};
-
-export type ConjugationExerciseSessionResponse = {
-    id: string;
-    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
-    status: 'ACTIVE' | 'COMPLETED';
-    exerciseType?: 'MATCH_FORM' | 'WRITE_FORM';
-    items: Array<ConjugationExerciseItemResponse>;
-    createdAt: string;
-    completedAt?: string | null;
-};
-
-export type ConjugationExerciseSessionSummaryResponse = {
-    sessionId: string;
-    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
-    totalItems: number;
-    correct: number;
-    incorrect: number;
-    skipped: number;
-    accuracy: number;
-    completedAt: string;
-};
-
-export type ConjugationExerciseSessionListItemResponse = {
-    id: string;
-    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
-    status: 'ACTIVE' | 'COMPLETED';
-    tense: 'PAST' | 'PRESENT';
-    voice: 'ACTIVE' | 'PASSIVE';
-    totalItems: number;
+    totalWords: number;
     correctCount: number;
     incorrectCount: number;
     skippedCount: number;
@@ -699,8 +467,8 @@ export type ConjugationExerciseSessionListItemResponse = {
     completedAt?: string | null;
 };
 
-export type PaginatedConjugationExerciseSessionsResponse = {
-    items: Array<ConjugationExerciseSessionListItemResponse>;
+export type PaginatedSessionsResponse = {
+    items: Array<TrainingSessionListItemResponse>;
     total: number;
     page: number;
     size: number;
@@ -817,26 +585,6 @@ export type SessionSummaryResponse = {
     completedAt: string;
 };
 
-export type TrainingSessionListItemResponse = {
-    id: string;
-    mode: string;
-    status: 'ACTIVE' | 'COMPLETED';
-    totalWords: number;
-    correctCount: number;
-    incorrectCount: number;
-    skippedCount: number;
-    accuracy: number;
-    createdAt: string;
-    completedAt?: string | null;
-};
-
-export type PaginatedSessionsResponse = {
-    items: Array<TrainingSessionListItemResponse>;
-    total: number;
-    page: number;
-    size: number;
-};
-
 export type TrainingStatsResponse = {
     /**
      * Count of words at each mastery level (e.g., {NEW: 5, LEARNING: 10, KNOWN: 8, MASTERED: 12})
@@ -854,45 +602,245 @@ export type TrainingStatsResponse = {
     recentSessions: Array<TrainingSessionListItemResponse>;
 };
 
-export type PartOfSpeech = 'UNKNOWN' | 'NOUN' | 'VERB' | 'ADJECTIVE' | 'ADVERB' | 'PREPOSITION' | 'PARTICLE' | 'INTERJECTION' | 'CONJUNCTION' | 'PRONOUN';
-
-export type Dialect = 'TUNISIAN' | 'MOROCCAN' | 'EGYPTIAN' | 'GULF' | 'LEVANTINE' | 'MSA' | 'IRAQI';
-
-export type Difficulty = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
-
-export type MasteryLevel = 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
-
-export type Dictionary = 'ALMANY' | 'LIVING_ARABIC' | 'DERJA_NINJA' | 'REVERSO' | 'ASD' | 'WIKTIONARY';
-
-export type DictionarySource = 'ALMANY' | 'LIVING_ARABIC' | 'DERJA_NINJA' | 'REVERSO' | 'WIKTIONARY' | 'ARABIC_STUDENT_DICTIONARY' | 'LANGENSCHEIDT' | 'CUSTOM';
-
-export type ErrorResponse = {
+export type ExerciseSessionListItemResponse = {
+    id: string;
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    status: 'ACTIVE' | 'COMPLETED';
+    totalItems: number;
+    correctCount: number;
+    incorrectCount: number;
+    skippedCount: number;
     /**
-     * Human-readable error message
+     * Accuracy as a ratio from 0.0 to 1.0, excluding skipped items.
      */
-    error: string;
-    /**
-     * Machine-readable error code
-     */
-    code: string;
+    accuracy: number;
+    createdAt: string;
+    completedAt?: string | null;
 };
 
-export type PaginatedResponse = {
-    items: Array<{
-        [key: string]: unknown;
-    }>;
-    /**
-     * Total number of matching records
-     */
+export type PaginatedExerciseSessionsResponse = {
+    items: Array<ExerciseSessionListItemResponse>;
     total: number;
-    /**
-     * Current page (1-based)
-     */
     page: number;
+    size: number;
+};
+
+export type CreateExerciseSessionRequest = {
     /**
-     * Page size requested
+     * Mastery bucket used to draw target words
+     */
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    /**
+     * Number of exercise items to include in the session
      */
     size: number;
+    /**
+     * Optional word-list IDs that constrain the target and distractor pool.
+     */
+    wordListIds?: Array<string>;
+    /**
+     * Exercise types to cycle through while generating items.
+     */
+    exerciseTypes?: Array<'MULTIPLE_CHOICE_MEANING' | 'MULTIPLE_CHOICE_ARABIC' | 'CONFUSABLE_MEANING' | 'CONFUSABLE_ARABIC'>;
+    /**
+     * Number of options per item. Clamped by the server to 3-4.
+     */
+    optionCount?: number;
+};
+
+export type ExercisePromptResponse = {
+    kind: 'ARABIC_WORD' | 'TRANSLATION';
+    text: string;
+};
+
+export type ExerciseOptionResponse = {
+    optionId: string;
+    wordId: string;
+    arabicText: string;
+    transliteration?: string | null;
+    translation?: string | null;
+};
+
+export type ExerciseSessionItemResponse = {
+    itemId: string;
+    wordId: string;
+    type: 'MULTIPLE_CHOICE_MEANING' | 'MULTIPLE_CHOICE_ARABIC' | 'CONFUSABLE_MEANING' | 'CONFUSABLE_ARABIC';
+    prompt: ExercisePromptResponse;
+    options: Array<ExerciseOptionResponse>;
+    result?: 'CORRECT' | 'INCORRECT' | 'SKIPPED';
+    selectedOptionId?: string | null;
+    answeredAt?: string | null;
+};
+
+export type ExerciseSessionResponse = {
+    id: string;
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    status: 'ACTIVE' | 'COMPLETED';
+    items: Array<ExerciseSessionItemResponse>;
+    createdAt: string;
+    completedAt?: string | null;
+};
+
+export type AnswerExerciseItemRequest = {
+    itemId: string;
+    selectedOptionId: string;
+};
+
+export type AnswerExerciseItemResponse = {
+    itemId: string;
+    wordId: string;
+    result: 'CORRECT' | 'INCORRECT';
+    correctOptionId: string;
+    masteryPromotion?: MasteryPromotionResponse;
+};
+
+export type ExerciseSessionSummaryResponse = {
+    sessionId: string;
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    totalItems: number;
+    correct: number;
+    incorrect: number;
+    skipped: number;
+    /**
+     * Accuracy as a ratio from 0.0 to 1.0, excluding skipped items.
+     */
+    accuracy: number;
+    promotions: Array<MasteryPromotionResponse>;
+    completedAt: string;
+};
+
+export type ConjugationExerciseSessionListItemResponse = {
+    id: string;
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    status: 'ACTIVE' | 'COMPLETED';
+    tense: 'PAST' | 'PRESENT';
+    voice: 'ACTIVE' | 'PASSIVE';
+    totalItems: number;
+    correctCount: number;
+    incorrectCount: number;
+    skippedCount: number;
+    accuracy: number;
+    createdAt: string;
+    completedAt?: string | null;
+};
+
+export type PaginatedConjugationExerciseSessionsResponse = {
+    items: Array<ConjugationExerciseSessionListItemResponse>;
+    total: number;
+    page: number;
+    size: number;
+};
+
+export type CreateConjugationExerciseSessionRequest = {
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    size?: number;
+    wordListIds?: Array<string>;
+    tense?: 'PAST' | 'PRESENT';
+    voice?: 'ACTIVE' | 'PASSIVE';
+    exerciseType?: 'MATCH_FORM' | 'WRITE_FORM';
+};
+
+export type ConjugationExerciseSegmentResponse = {
+    text: string;
+    type: 'PREFIX' | 'ROOT' | 'PATTERN_VOWEL' | 'SUFFIX';
+};
+
+export type ConjugationExerciseFormResponse = {
+    formId: string;
+    arabic: string;
+    segments: Array<ConjugationExerciseSegmentResponse>;
+};
+
+export type ConjugationExerciseLabelResponse = {
+    labelId: string;
+    person: '1S' | '2SM' | '2SF' | '3SM' | '3SF' | '2D' | '3DM' | '3DF' | '1P' | '2PM' | '2PF' | '3PM' | '3PF';
+    label: string;
+};
+
+export type ConjugationExerciseMappingRequest = {
+    formId: string;
+    labelId: string;
+};
+
+export type ConjugationExerciseMappingResponse = ConjugationExerciseMappingRequest & {
+    isCorrect?: boolean | null;
+};
+
+export type ConjugationExerciseItemResponse = {
+    itemId: string;
+    wordId: string;
+    lemma: string;
+    translation?: string | null;
+    verbForm: string;
+    tense: 'PAST' | 'PRESENT';
+    voice: 'ACTIVE' | 'PASSIVE';
+    exerciseType?: 'MATCH_FORM' | 'WRITE_FORM';
+    forms: [
+        ConjugationExerciseFormResponse,
+        ConjugationExerciseFormResponse,
+        ConjugationExerciseFormResponse,
+        ConjugationExerciseFormResponse
+    ];
+    labels: [
+        ConjugationExerciseLabelResponse,
+        ConjugationExerciseLabelResponse,
+        ConjugationExerciseLabelResponse,
+        ConjugationExerciseLabelResponse
+    ];
+    result?: 'CORRECT' | 'INCORRECT' | 'SKIPPED';
+    /**
+     * Omitted until this item has been answered.
+     */
+    submittedMappings?: Array<ConjugationExerciseMappingResponse> | null;
+    /**
+     * Omitted until this item has been answered.
+     */
+    correctMappings?: Array<ConjugationExerciseMappingResponse> | null;
+};
+
+export type ConjugationExerciseSessionResponse = {
+    id: string;
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    status: 'ACTIVE' | 'COMPLETED';
+    exerciseType?: 'MATCH_FORM' | 'WRITE_FORM';
+    items: Array<ConjugationExerciseItemResponse>;
+    createdAt: string;
+    completedAt?: string | null;
+};
+
+export type ConjugationExerciseEligibilityResponse = {
+    availableVerbs: number;
+};
+
+export type AnswerConjugationExerciseItemRequest = {
+    itemId: string;
+    mappings: [
+        ConjugationExerciseMappingRequest,
+        ConjugationExerciseMappingRequest,
+        ConjugationExerciseMappingRequest,
+        ConjugationExerciseMappingRequest
+    ];
+    submittedText?: string | null;
+};
+
+export type AnswerConjugationExerciseItemResponse = {
+    itemId: string;
+    result: 'CORRECT' | 'INCORRECT';
+    submittedMappings: Array<ConjugationExerciseMappingResponse>;
+    correctMappings: Array<ConjugationExerciseMappingResponse>;
+    expectedArabic?: string | null;
+    submittedText?: string | null;
+};
+
+export type ConjugationExerciseSessionSummaryResponse = {
+    sessionId: string;
+    mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
+    totalItems: number;
+    correct: number;
+    incorrect: number;
+    skipped: number;
+    accuracy: number;
+    completedAt: string;
 };
 
 export type TransliterateRequest = {
@@ -904,6 +852,58 @@ export type TransliterateRequest = {
 
 export type TransliterateResponse = {
     transliteration?: string;
+};
+
+export type WordListResponse = {
+    id: string;
+    title: string;
+    description?: string | null;
+    /**
+     * Number of words in the list
+     */
+    itemCount: number;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type CreateWordListRequest = {
+    title: string;
+    description?: string | null;
+};
+
+export type WordListRefResponse = {
+    id: string;
+    title: string;
+};
+
+export type WordListDetailResponse = {
+    id: string;
+    title: string;
+    description?: string | null;
+    createdAt: string;
+    updatedAt: string;
+    words: Array<WordResponse>;
+};
+
+export type UpdateWordListRequest = {
+    title?: string | null;
+    description?: string | null;
+};
+
+export type AddWordToListRequest = {
+    wordId: string;
+};
+
+export type AiListWordSuggestion = {
+    arabicText: string;
+    transliteration?: string | null;
+    translation?: string | null;
+    partOfSpeech?: string | null;
+    difficulty?: string | null;
+};
+
+export type WordListSuggestionsResponse = {
+    suggestions: Array<AiListWordSuggestion>;
 };
 
 export type InsightRequest = {
@@ -926,13 +926,6 @@ export type InsightResponse = {
      * Plain-text linguistic analysis from the AI teacher
      */
     insight: string;
-};
-
-export type AnalyticsOverviewResponse = {
-    words: WordStats;
-    texts: TextStats;
-    roots: RootStats;
-    training: TrainingAnalytics;
 };
 
 export type WordStats = {
@@ -965,6 +958,12 @@ export type RootStats = {
     total: number;
 };
 
+export type SessionAccuracyPoint = {
+    date: string;
+    accuracy: number;
+    mode: string;
+};
+
 export type TrainingAnalytics = {
     totalSessions: number;
     completedSessions: number;
@@ -973,23 +972,11 @@ export type TrainingAnalytics = {
     recentSessions: Array<SessionAccuracyPoint>;
 };
 
-export type SessionAccuracyPoint = {
-    date: string;
-    accuracy: number;
-    mode: string;
-};
-
-export type ConjugationResponse = {
-    word?: ConjugationWordSummary;
-    verbDetails: ConjugationVerbDetailsSummary;
-    root: ConjugationRootSummary;
-    dialect: string;
-    /**
-     * Keys: past_active, past_passive, present_active, present_passive
-     */
-    conjugations: {
-        [key: string]: Array<PersonConjugationDto>;
-    };
+export type AnalyticsOverviewResponse = {
+    words: WordStats;
+    texts: TextStats;
+    roots: RootStats;
+    training: TrainingAnalytics;
 };
 
 export type ConjugationWordSummary = {
@@ -1009,15 +996,28 @@ export type ConjugationRootSummary = {
     letters: Array<string>;
 };
 
+export type SegmentDto = {
+    text: string;
+    type: 'PREFIX' | 'ROOT' | 'PATTERN_VOWEL' | 'SUFFIX';
+};
+
 export type PersonConjugationDto = {
     person: '1S' | '2SM' | '2SF' | '3SM' | '3SF' | '2D' | '3DM' | '3DF' | '1P' | '2PM' | '2PF' | '3PM' | '3PF';
     arabic: string;
     segments: Array<SegmentDto>;
 };
 
-export type SegmentDto = {
-    text: string;
-    type: 'PREFIX' | 'ROOT' | 'PATTERN_VOWEL' | 'SUFFIX';
+export type ConjugationResponse = {
+    word?: ConjugationWordSummary;
+    verbDetails: ConjugationVerbDetailsSummary;
+    root: ConjugationRootSummary;
+    dialect: string;
+    /**
+     * Keys: past_active, past_passive, present_active, present_passive
+     */
+    conjugations: {
+        [key: string]: Array<PersonConjugationDto>;
+    };
 };
 
 export type AdHocConjugationRequest = {

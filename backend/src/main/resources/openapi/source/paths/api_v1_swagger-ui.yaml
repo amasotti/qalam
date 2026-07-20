@@ -1,0 +1,10 @@
+get:
+  summary: Swagger UI
+  operationId: getSwaggerUi
+  tags:
+    - system
+  responses:
+    '200':
+      description: Swagger UI HTML
+    '400':
+      description: Bad request

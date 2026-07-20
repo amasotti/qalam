@@ -1,0 +1,32 @@
+type: object
+required:
+  - title
+  - body
+properties:
+  title:
+    type: string
+  body:
+    type: string
+    description: Arabic body content
+  transliteration:
+    type: string
+    nullable: true
+  translation:
+    type: string
+    nullable: true
+  difficulty:
+    allOf:
+      - $ref: ./Difficulty.yaml
+    default: BEGINNER
+  dialect:
+    allOf:
+      - $ref: ./Dialect.yaml
+    default: MSA
+  comments:
+    type: string
+    nullable: true
+  tags:
+    type: array
+    items:
+      type: string
+    default: []

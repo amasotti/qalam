@@ -1,0 +1,82 @@
+put:
+  summary: Replace all alignment tokens for a sentence
+  operationId: replaceTokens
+  tags:
+    - sentences
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/ReplaceTokensRequest.yaml
+  responses:
+    '200':
+      description: Tokens replaced
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/SentenceResponse.yaml
+    '404':
+      description: Sentence or text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+delete:
+  summary: Clear all alignment tokens for a sentence
+  operationId: clearTokens
+  tags:
+    - sentences
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: confirm
+      in: query
+      required: true
+      description: Must be set to "true" to confirm clearing tokens
+      schema:
+        type: string
+        enum:
+          - 'true'
+  responses:
+    '200':
+      description: Tokens cleared
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/SentenceResponse.yaml
+    '400':
+      description: Missing or invalid confirm parameter
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '404':
+      description: Sentence or text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

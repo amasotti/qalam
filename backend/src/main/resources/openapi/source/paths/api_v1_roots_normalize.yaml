@@ -1,0 +1,24 @@
+post:
+  summary: Normalize an Arabic root input without persisting it
+  operationId: normalizeRoot
+  tags:
+    - roots
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/NormalizeRequest.yaml
+  responses:
+    '200':
+      description: Normalized form
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/NormalizeResponse.yaml
+    '400':
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

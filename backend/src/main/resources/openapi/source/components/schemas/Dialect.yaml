@@ -1,0 +1,9 @@
+type: string
+enum:
+  - TUNISIAN
+  - MOROCCAN
+  - EGYPTIAN
+  - GULF
+  - LEVANTINE
+  - MSA
+  - IRAQI

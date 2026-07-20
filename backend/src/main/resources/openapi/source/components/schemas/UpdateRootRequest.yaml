@@ -1,0 +1,8 @@
+type: object
+properties:
+  meaning:
+    type: string
+    nullable: true
+  analysis:
+    type: string
+    nullable: true

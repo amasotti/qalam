@@ -1,0 +1,31 @@
+post:
+  summary: AI-powered word enrichment suggestions (ephemeral — does not persist)
+  operationId: enrichWord
+  tags:
+    - words
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: AI enrichment suggestions (gender, verb pattern, plurals, relations)
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/WordEnrichmentSuggestion.yaml
+    '404':
+      description: Word not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '503':
+      description: AI not configured (OPENROUTER_API_KEY missing)
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

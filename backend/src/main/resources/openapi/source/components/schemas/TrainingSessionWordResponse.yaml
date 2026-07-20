@@ -1,0 +1,63 @@
+type: object
+required:
+  - wordId
+  - arabicText
+  - translation
+  - frontSide
+  - position
+  - masteryLevel
+properties:
+  wordId:
+    type: string
+    format: uuid
+  arabicText:
+    type: string
+  transliteration:
+    type: string
+    nullable: true
+  translation:
+    type: string
+    nullable: true
+  frontSide:
+    type: string
+    description: What is shown on the front of the card (ARABIC or TRANSLATION)
+    enum:
+      - ARABIC
+      - TRANSLATION
+  position:
+    type: integer
+    description: Position within the session (0-based)
+  result:
+    type: string
+    nullable: true
+    description: Result recorded for this word (CORRECT, INCORRECT, SKIPPED)
+    enum:
+      - CORRECT
+      - INCORRECT
+      - SKIPPED
+  masteryLevel:
+    type: string
+    description: Current mastery level for this word
+    enum:
+      - NEW
+      - LEARNING
+      - KNOWN
+      - MASTERED
+  root:
+    type: string
+    nullable: true
+    description: Display form of the Arabic root (e.g. "ك ل م"), if available
+  notes:
+    type: string
+    nullable: true
+    description: Learner notes attached to the word
+  examples:
+    type: array
+    description: Up to 2 usage examples
+    items:
+      $ref: ./TrainingWordExampleResponse.yaml
+  relations:
+    type: array
+    description: Related words (synonyms, antonyms, etc.)
+    items:
+      $ref: ./TrainingWordRelationResponse.yaml

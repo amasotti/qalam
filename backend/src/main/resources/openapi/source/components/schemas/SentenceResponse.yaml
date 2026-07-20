@@ -1,0 +1,44 @@
+type: object
+required:
+  - id
+  - textId
+  - position
+  - arabicText
+  - tokensValid
+  - tokens
+  - createdAt
+  - updatedAt
+properties:
+  id:
+    type: string
+    format: uuid
+  textId:
+    type: string
+    format: uuid
+  position:
+    type: integer
+    description: 1-based ordering within the text
+  arabicText:
+    type: string
+  transliteration:
+    type: string
+    nullable: true
+  freeTranslation:
+    type: string
+    nullable: true
+  notes:
+    type: string
+    nullable: true
+  tokensValid:
+    type: boolean
+    description: False when arabicText was edited after tokenization
+  tokens:
+    type: array
+    items:
+      $ref: ./AlignmentTokenResponse.yaml
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time

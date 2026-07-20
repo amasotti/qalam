@@ -1,0 +1,107 @@
+get:
+  summary: Get a sentence by ID
+  operationId: getSentenceById
+  tags:
+    - sentences
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Sentence found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/SentenceResponse.yaml
+    '400':
+      description: Malformed UUID
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '404':
+      description: Sentence or text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+put:
+  summary: Update a sentence (all fields optional — only provided fields change)
+  operationId: updateSentence
+  tags:
+    - sentences
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/UpdateSentenceRequest.yaml
+  responses:
+    '200':
+      description: Sentence updated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/SentenceResponse.yaml
+    '404':
+      description: Sentence or text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '422':
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+delete:
+  summary: Delete a sentence
+  operationId: deleteSentence
+  tags:
+    - sentences
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '204':
+      description: Sentence deleted
+    '404':
+      description: Sentence or text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

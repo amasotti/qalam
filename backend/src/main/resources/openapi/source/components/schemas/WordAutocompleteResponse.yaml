@@ -1,0 +1,13 @@
+type: object
+required:
+  - id
+  - arabicText
+properties:
+  id:
+    type: string
+    format: uuid
+  arabicText:
+    type: string
+  translation:
+    type: string
+    nullable: true

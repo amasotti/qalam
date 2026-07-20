@@ -1,0 +1,35 @@
+type: object
+required:
+  - verbForm
+properties:
+  verbForm:
+    type: string
+    enum:
+      - I
+      - II
+      - III
+      - IV
+      - V
+      - VI
+      - VII
+      - VIII
+      - IX
+      - X
+  pastPattern:
+    type: string
+    nullable: true
+    description: Form I vowel pattern, e.g. fa3ala, fa3ila, fa3ula
+  presentPattern:
+    type: string
+    nullable: true
+    description: Form I vowel pattern, e.g. yaf3ulu, yaf3ilu, yaf3alu
+  weaknessType:
+    type: string
+    enum:
+      - SOUND
+      - ASSIMILATED
+      - HOLLOW
+      - GEMINATE
+      - DEFECTIVE
+      - DOUBLY_WEAK
+    default: SOUND

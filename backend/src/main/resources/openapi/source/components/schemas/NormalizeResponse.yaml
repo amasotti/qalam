@@ -1,0 +1,17 @@
+type: object
+required:
+  - letters
+  - normalizedForm
+  - displayForm
+  - letterCount
+properties:
+  letters:
+    type: array
+    items:
+      type: string
+  normalizedForm:
+    type: string
+  displayForm:
+    type: string
+  letterCount:
+    type: integer

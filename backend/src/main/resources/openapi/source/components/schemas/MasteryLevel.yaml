@@ -1,0 +1,6 @@
+type: string
+enum:
+  - NEW
+  - LEARNING
+  - KNOWN
+  - MASTERED

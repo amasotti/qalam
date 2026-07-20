@@ -1,0 +1,11 @@
+type: object
+required:
+  - itemId
+  - selectedOptionId
+properties:
+  itemId:
+    type: string
+    format: uuid
+  selectedOptionId:
+    type: string
+    format: uuid

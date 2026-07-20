@@ -1,0 +1,14 @@
+type: object
+required:
+  - text
+  - type
+properties:
+  text:
+    type: string
+  type:
+    type: string
+    enum:
+      - PREFIX
+      - ROOT
+      - PATTERN_VOWEL
+      - SUFFIX

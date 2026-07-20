@@ -1,0 +1,97 @@
+get:
+  summary: List texts with optional filters
+  operationId: listTexts
+  tags:
+    - texts
+  parameters:
+    - name: page
+      in: query
+      description: Page number (1-based)
+      schema:
+        type: integer
+        default: 1
+    - name: size
+      in: query
+      description: Number of items per page
+      schema:
+        type: integer
+        default: 20
+        maximum: 500
+    - name: q
+      in: query
+      description: Free-text search across title and body
+      schema:
+        type: string
+    - name: dialect
+      in: query
+      schema:
+        $ref: ../components/schemas/Dialect.yaml
+    - name: difficulty
+      in: query
+      schema:
+        $ref: ../components/schemas/Difficulty.yaml
+    - name: tag
+      in: query
+      description: Filter by tag (exact match)
+      schema:
+        type: string
+    - name: sortBy
+      in: query
+      description: Field to sort by
+      schema:
+        type: string
+        enum:
+          - CREATED_AT
+          - UPDATED_AT
+          - TITLE
+        default: CREATED_AT
+    - name: sortDesc
+      in: query
+      description: Sort descending (true = newest/Z first)
+      schema:
+        type: boolean
+        default: true
+  responses:
+    '200':
+      description: Paginated list of texts
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../components/schemas/PaginatedResponse.yaml
+              - type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/TextResponse.yaml
+    '400':
+      description: Invalid query parameters
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+post:
+  summary: Create a text
+  operationId: createText
+  tags:
+    - texts
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateTextRequest.yaml
+  responses:
+    '201':
+      description: Text created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/TextResponse.yaml
+    '422':
+      description: Validation error (blank title or body)
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

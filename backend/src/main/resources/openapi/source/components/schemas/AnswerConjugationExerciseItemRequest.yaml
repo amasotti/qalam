@@ -1,0 +1,17 @@
+type: object
+required:
+  - itemId
+  - mappings
+properties:
+  itemId:
+    type: string
+    format: uuid
+  mappings:
+    type: array
+    minItems: 4
+    maxItems: 4
+    items:
+      $ref: ./ConjugationExerciseMappingRequest.yaml
+  submittedText:
+    type: string
+    nullable: true

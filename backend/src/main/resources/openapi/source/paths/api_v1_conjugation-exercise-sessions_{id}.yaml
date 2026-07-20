@@ -1,0 +1,18 @@
+get:
+  summary: Get a conjugation exercise session by ID
+  operationId: getConjugationExerciseSession
+  tags:
+    - conjugation-exercises
+  parameters:
+    - $ref: ../components/parameters/UuidPathId.yaml
+  responses:
+    '200':
+      description: Conjugation exercise session found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ConjugationExerciseSessionResponse.yaml
+    '400':
+      description: Malformed UUID
+    '404':
+      description: Session not found

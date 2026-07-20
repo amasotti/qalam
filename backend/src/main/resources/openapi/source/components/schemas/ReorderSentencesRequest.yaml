@@ -1,0 +1,9 @@
+type: object
+required:
+  - orderedIds
+properties:
+  orderedIds:
+    type: array
+    items:
+      type: string
+      format: uuid

@@ -1,0 +1,83 @@
+get:
+  summary: Get a root by ID
+  operationId: getRootById
+  tags:
+    - roots
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Root found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/RootResponse.yaml
+    '400':
+      description: Malformed UUID
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '404':
+      description: Root not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+put:
+  summary: Update a root's meaning or analysis
+  operationId: updateRoot
+  tags:
+    - roots
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/UpdateRootRequest.yaml
+  responses:
+    '200':
+      description: Root updated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/RootResponse.yaml
+    '404':
+      description: Root not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+delete:
+  summary: Delete a root
+  operationId: deleteRoot
+  tags:
+    - roots
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '204':
+      description: Root deleted
+    '404':
+      description: Root not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

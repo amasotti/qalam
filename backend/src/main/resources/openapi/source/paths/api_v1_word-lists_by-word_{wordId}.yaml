@@ -1,0 +1,27 @@
+get:
+  summary: List the word lists a given word belongs to
+  operationId: listsForWord
+  tags:
+    - word-lists
+  parameters:
+    - name: wordId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Lists containing the word
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/WordListRefResponse.yaml
+    '400':
+      description: Malformed UUID
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

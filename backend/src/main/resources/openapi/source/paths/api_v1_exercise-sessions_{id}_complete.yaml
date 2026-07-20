@@ -1,0 +1,37 @@
+post:
+  summary: Complete an exercise session
+  operationId: completeExerciseSession
+  tags:
+    - exercises
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Exercise session completed with summary
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ExerciseSessionSummaryResponse.yaml
+    '400':
+      description: Malformed UUID
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '404':
+      description: Exercise session not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '409':
+      description: Session already completed
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

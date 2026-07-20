@@ -1,0 +1,36 @@
+post:
+  summary: Generate AI linguistic insight for a word or sentence
+  operationId: generateInsight
+  tags:
+    - ai
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/InsightRequest.yaml
+  responses:
+    '200':
+      description: Linguistic insight as plain text
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/InsightResponse.yaml
+    '400':
+      description: Invalid input (unknown entityType or malformed UUID)
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '404':
+      description: Entity not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '503':
+      description: AI service not configured
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

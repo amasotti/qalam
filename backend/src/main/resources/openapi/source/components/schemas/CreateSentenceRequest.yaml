@@ -1,0 +1,19 @@
+type: object
+required:
+  - arabicText
+properties:
+  arabicText:
+    type: string
+  position:
+    type: integer
+    nullable: true
+    description: Insertion position (appended at end if omitted)
+  transliteration:
+    type: string
+    nullable: true
+  freeTranslation:
+    type: string
+    nullable: true
+  notes:
+    type: string
+    nullable: true

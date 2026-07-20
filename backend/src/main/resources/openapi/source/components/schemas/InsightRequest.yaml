@@ -1,0 +1,24 @@
+type: object
+required:
+  - entityType
+  - entityId
+properties:
+  entityType:
+    type: string
+    enum:
+      - WORD
+      - SENTENCE
+    description: The type of entity to analyse
+  entityId:
+    type: string
+    format: uuid
+    description: UUID of the word or sentence
+  mode:
+    type: string
+    enum:
+      - HOMEWORK
+      - READING
+    nullable: true
+    description: >-
+      Insight mode — HOMEWORK prioritises corrections, READING focuses on nuance
+      (defaults to HOMEWORK for sentences)

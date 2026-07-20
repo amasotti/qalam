@@ -1,0 +1,36 @@
+type: object
+required:
+  - sessionId
+  - mode
+  - totalWords
+  - correct
+  - incorrect
+  - skipped
+  - accuracy
+  - promotions
+  - completedAt
+properties:
+  sessionId:
+    type: string
+    format: uuid
+  mode:
+    type: string
+  totalWords:
+    type: integer
+  correct:
+    type: integer
+  incorrect:
+    type: integer
+  skipped:
+    type: integer
+  accuracy:
+    type: number
+    format: double
+    description: Accuracy as a percentage (0.0-100.0)
+  promotions:
+    type: array
+    items:
+      $ref: ./MasteryPromotionResponse.yaml
+  completedAt:
+    type: string
+    format: date-time

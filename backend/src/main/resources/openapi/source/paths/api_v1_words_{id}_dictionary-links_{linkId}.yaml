@@ -1,0 +1,27 @@
+delete:
+  summary: Remove a dictionary link from a word
+  operationId: deleteDictionaryLink
+  tags:
+    - words
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: linkId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '204':
+      description: Link removed
+    '404':
+      description: Word or link not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

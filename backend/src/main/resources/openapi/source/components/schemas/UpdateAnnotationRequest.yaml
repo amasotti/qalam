@@ -1,0 +1,28 @@
+type: object
+description: All fields optional — only provided fields are updated
+properties:
+  anchor:
+    type: string
+    nullable: true
+  type:
+    type: string
+    nullable: true
+    enum:
+      - VOCABULARY
+      - GRAMMAR
+      - CULTURAL
+      - OTHER
+  content:
+    type: string
+    nullable: true
+  masteryLevel:
+    type: string
+    nullable: true
+    enum:
+      - NEW
+      - LEARNING
+      - KNOWN
+      - MASTERED
+  reviewFlag:
+    type: boolean
+    nullable: true

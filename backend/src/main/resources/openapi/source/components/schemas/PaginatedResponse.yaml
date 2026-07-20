@@ -1,0 +1,21 @@
+type: object
+required:
+  - items
+  - total
+  - page
+  - size
+properties:
+  items:
+    type: array
+    items:
+      type: object
+  total:
+    type: integer
+    format: int64
+    description: Total number of matching records
+  page:
+    type: integer
+    description: Current page (1-based)
+  size:
+    type: integer
+    description: Page size requested

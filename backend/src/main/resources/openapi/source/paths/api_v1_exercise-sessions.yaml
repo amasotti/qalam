@@ -1,0 +1,62 @@
+post:
+  summary: Create a new exercise session
+  operationId: createExerciseSession
+  tags:
+    - exercises
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateExerciseSessionRequest.yaml
+  responses:
+    '201':
+      description: Exercise session created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ExerciseSessionResponse.yaml
+    '400':
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '422':
+      description: Not enough words/options available
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+get:
+  summary: List exercise sessions with pagination
+  operationId: listExerciseSessions
+  tags:
+    - exercises
+  parameters:
+    - name: page
+      in: query
+      description: Page number (1-based)
+      schema:
+        type: integer
+        default: 1
+    - name: size
+      in: query
+      description: Number of items per page
+      schema:
+        type: integer
+        default: 20
+        maximum: 500
+  responses:
+    '200':
+      description: Paginated list of exercise sessions
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/PaginatedExerciseSessionsResponse.yaml
+    '400':
+      description: Invalid query parameters
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

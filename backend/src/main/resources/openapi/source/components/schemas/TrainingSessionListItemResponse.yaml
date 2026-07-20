@@ -1,0 +1,40 @@
+type: object
+required:
+  - id
+  - mode
+  - status
+  - totalWords
+  - correctCount
+  - incorrectCount
+  - skippedCount
+  - accuracy
+  - createdAt
+properties:
+  id:
+    type: string
+    format: uuid
+  mode:
+    type: string
+  status:
+    type: string
+    enum:
+      - ACTIVE
+      - COMPLETED
+  totalWords:
+    type: integer
+  correctCount:
+    type: integer
+  incorrectCount:
+    type: integer
+  skippedCount:
+    type: integer
+  accuracy:
+    type: number
+    format: double
+  createdAt:
+    type: string
+    format: date-time
+  completedAt:
+    type: string
+    format: date-time
+    nullable: true

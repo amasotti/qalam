@@ -1,0 +1,35 @@
+type: object
+required:
+  - sessionId
+  - mode
+  - totalItems
+  - correct
+  - incorrect
+  - skipped
+  - accuracy
+  - completedAt
+properties:
+  sessionId:
+    type: string
+    format: uuid
+  mode:
+    type: string
+    enum:
+      - NEW
+      - LEARNING
+      - KNOWN
+      - MIXED
+  totalItems:
+    type: integer
+  correct:
+    type: integer
+  incorrect:
+    type: integer
+  skipped:
+    type: integer
+  accuracy:
+    type: number
+    format: double
+  completedAt:
+    type: string
+    format: date-time

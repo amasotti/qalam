@@ -1,0 +1,101 @@
+get:
+  summary: Get an annotation by ID
+  operationId: getAnnotationById
+  tags:
+    - annotations
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Annotation found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/AnnotationResponse.yaml
+    '404':
+      description: Annotation or text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+put:
+  summary: Update an annotation (all fields optional)
+  operationId: updateAnnotation
+  tags:
+    - annotations
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/UpdateAnnotationRequest.yaml
+  responses:
+    '200':
+      description: Annotation updated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/AnnotationResponse.yaml
+    '404':
+      description: Annotation or text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '422':
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+delete:
+  summary: Delete an annotation
+  operationId: deleteAnnotation
+  tags:
+    - annotations
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '204':
+      description: Annotation deleted
+    '404':
+      description: Annotation or text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

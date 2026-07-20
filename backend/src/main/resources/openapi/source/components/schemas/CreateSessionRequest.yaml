@@ -1,0 +1,29 @@
+type: object
+required:
+  - mode
+  - size
+properties:
+  mode:
+    type: string
+    description: Training mode by mastery bucket
+    enum:
+      - NEW
+      - LEARNING
+      - KNOWN
+      - MIXED
+    example: MIXED
+  size:
+    type: integer
+    description: Number of words to include in the session
+    default: 15
+    minimum: 1
+    maximum: 100
+  wordListIds:
+    type: array
+    description: >-
+      Optional word-list IDs that constrain the training pool. Multiple lists
+      use union semantics.
+    items:
+      type: string
+      format: uuid
+    default: []

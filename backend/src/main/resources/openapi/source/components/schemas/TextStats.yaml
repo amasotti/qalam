@@ -1,0 +1,16 @@
+type: object
+required:
+  - total
+  - byDialect
+  - byDifficulty
+properties:
+  total:
+    type: integer
+  byDialect:
+    type: object
+    additionalProperties:
+      type: integer
+  byDifficulty:
+    type: object
+    additionalProperties:
+      type: integer

@@ -1,0 +1,40 @@
+get:
+  summary: Lightweight word search for linking operations
+  operationId: autocompleteWords
+  tags:
+    - words
+  parameters:
+    - name: q
+      in: query
+      required: true
+      description: >-
+        Arabic search ignores harakat; translation and transliteration search
+        remain unchanged
+      schema:
+        type: string
+    - name: limit
+      in: query
+      schema:
+        type: integer
+        default: 10
+        maximum: 50
+    - name: partOfSpeech
+      in: query
+      description: Restrict results to one part of speech
+      schema:
+        $ref: ../components/schemas/PartOfSpeech.yaml
+  responses:
+    '200':
+      description: Matching words (id + arabicText + translation only)
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/WordAutocompleteResponse.yaml
+    '400':
+      description: Missing required query parameter `q`
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

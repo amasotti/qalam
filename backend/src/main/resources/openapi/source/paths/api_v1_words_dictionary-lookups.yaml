@@ -1,0 +1,31 @@
+get:
+  summary: Search an external dictionary for word suggestions
+  operationId: searchWordDictionaryLookups
+  tags:
+    - words
+  parameters:
+    - name: source
+      in: query
+      required: true
+      schema:
+        $ref: ../components/schemas/Dictionary.yaml
+      description: Dictionary source. Only ASD is currently supported for lookup.
+    - name: query
+      in: query
+      required: true
+      schema:
+        type: string
+      description: Arabic word or token to search.
+  responses:
+    '200':
+      description: Normalized dictionary suggestions for creating or updating a word.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/DictionaryLookupResponse.yaml
+    '422':
+      description: Missing query/source or unsupported dictionary source
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

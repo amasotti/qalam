@@ -1,0 +1,33 @@
+delete:
+  summary: Remove a word from a list
+  operationId: removeWordFromList
+  tags:
+    - word-lists
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: wordId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '204':
+      description: Word removed from the list
+    '400':
+      description: Malformed UUID
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '404':
+      description: Word is not in the list
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

@@ -1,0 +1,15 @@
+type: object
+required:
+  - words
+  - texts
+  - roots
+  - training
+properties:
+  words:
+    $ref: ./WordStats.yaml
+  texts:
+    $ref: ./TextStats.yaml
+  roots:
+    $ref: ./RootStats.yaml
+  training:
+    $ref: ./TrainingAnalytics.yaml

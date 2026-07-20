@@ -1,0 +1,38 @@
+type: object
+required:
+  - arabicText
+properties:
+  arabicText:
+    type: string
+  transliteration:
+    type: string
+    nullable: true
+  translation:
+    type: string
+    nullable: true
+  partOfSpeech:
+    allOf:
+      - $ref: ./PartOfSpeech.yaml
+    default: UNKNOWN
+  dialect:
+    allOf:
+      - $ref: ./Dialect.yaml
+    default: MSA
+  difficulty:
+    allOf:
+      - $ref: ./Difficulty.yaml
+    default: BEGINNER
+  pronunciationUrl:
+    type: string
+    nullable: true
+  rootId:
+    type: string
+    format: uuid
+    nullable: true
+  derivedFromId:
+    type: string
+    format: uuid
+    nullable: true
+  notes:
+    type: string
+    nullable: true

@@ -1,0 +1,8 @@
+type: object
+properties:
+  gender:
+    type: string
+    nullable: true
+    enum:
+      - MASCULINE
+      - FEMININE

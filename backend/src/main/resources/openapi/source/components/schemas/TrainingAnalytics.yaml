@@ -1,0 +1,21 @@
+type: object
+required:
+  - totalSessions
+  - completedSessions
+  - averageAccuracy
+  - totalPromotions
+  - recentSessions
+properties:
+  totalSessions:
+    type: integer
+  completedSessions:
+    type: integer
+  averageAccuracy:
+    type: number
+    format: double
+  totalPromotions:
+    type: integer
+  recentSessions:
+    type: array
+    items:
+      $ref: ./SessionAccuracyPoint.yaml

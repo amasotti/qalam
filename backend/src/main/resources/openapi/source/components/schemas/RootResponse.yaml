@@ -1,0 +1,35 @@
+type: object
+required:
+  - id
+  - letters
+  - normalizedForm
+  - displayForm
+  - letterCount
+  - createdAt
+  - updatedAt
+properties:
+  id:
+    type: string
+    format: uuid
+  letters:
+    type: array
+    items:
+      type: string
+  normalizedForm:
+    type: string
+  displayForm:
+    type: string
+  letterCount:
+    type: integer
+  meaning:
+    type: string
+    nullable: true
+  analysis:
+    type: string
+    nullable: true
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time

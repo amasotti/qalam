@@ -1,0 +1,34 @@
+type: object
+required:
+  - anchor
+  - type
+properties:
+  anchor:
+    type: string
+  type:
+    type: string
+    enum:
+      - VOCABULARY
+      - GRAMMAR
+      - CULTURAL
+      - OTHER
+  content:
+    type: string
+    nullable: true
+  masteryLevel:
+    type: string
+    nullable: true
+    enum:
+      - NEW
+      - LEARNING
+      - KNOWN
+      - MASTERED
+  reviewFlag:
+    type: boolean
+    default: false
+  linkedWordIds:
+    type: array
+    items:
+      type: string
+      format: uuid
+    default: []

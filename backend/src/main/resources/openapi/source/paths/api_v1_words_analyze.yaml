@@ -1,0 +1,30 @@
+post:
+  summary: AI word analysis (ephemeral — does not persist)
+  operationId: analyzeWord
+  tags:
+    - words
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/AnalyzeWordRequest.yaml
+  responses:
+    '200':
+      description: AI analysis result
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/WordAnalysisResponse.yaml
+    '400':
+      description: Invalid request body
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '503':
+      description: AI not configured (OPENROUTER_API_KEY missing)
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

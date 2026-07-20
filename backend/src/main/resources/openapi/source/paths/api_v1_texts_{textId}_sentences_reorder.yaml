@@ -1,0 +1,39 @@
+put:
+  summary: Reorder all sentences in a text
+  operationId: reorderSentences
+  tags:
+    - sentences
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/ReorderSentencesRequest.yaml
+  responses:
+    '200':
+      description: Sentences in new order
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/SentenceResponse.yaml
+    '400':
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '404':
+      description: Text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

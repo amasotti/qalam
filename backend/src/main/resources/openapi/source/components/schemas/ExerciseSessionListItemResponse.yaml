@@ -1,0 +1,46 @@
+type: object
+required:
+  - id
+  - mode
+  - status
+  - totalItems
+  - correctCount
+  - incorrectCount
+  - skippedCount
+  - accuracy
+  - createdAt
+properties:
+  id:
+    type: string
+    format: uuid
+  mode:
+    type: string
+    enum:
+      - NEW
+      - LEARNING
+      - KNOWN
+      - MIXED
+  status:
+    type: string
+    enum:
+      - ACTIVE
+      - COMPLETED
+  totalItems:
+    type: integer
+  correctCount:
+    type: integer
+  incorrectCount:
+    type: integer
+  skippedCount:
+    type: integer
+  accuracy:
+    type: number
+    format: double
+    description: Accuracy as a ratio from 0.0 to 1.0, excluding skipped items.
+  createdAt:
+    type: string
+    format: date-time
+  completedAt:
+    type: string
+    format: date-time
+    nullable: true

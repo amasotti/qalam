@@ -1,0 +1,44 @@
+type: object
+required:
+  - itemId
+  - wordId
+  - type
+  - prompt
+  - options
+properties:
+  itemId:
+    type: string
+    format: uuid
+  wordId:
+    type: string
+    format: uuid
+  type:
+    type: string
+    enum:
+      - MULTIPLE_CHOICE_MEANING
+      - MULTIPLE_CHOICE_ARABIC
+      - CONFUSABLE_MEANING
+      - CONFUSABLE_ARABIC
+  prompt:
+    $ref: ./ExercisePromptResponse.yaml
+  options:
+    type: array
+    minItems: 2
+    maxItems: 4
+    items:
+      $ref: ./ExerciseOptionResponse.yaml
+  result:
+    type: string
+    nullable: true
+    enum:
+      - CORRECT
+      - INCORRECT
+      - SKIPPED
+  selectedOptionId:
+    type: string
+    format: uuid
+    nullable: true
+  answeredAt:
+    type: string
+    format: date-time
+    nullable: true

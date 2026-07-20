@@ -1,0 +1,14 @@
+type: object
+required:
+  - plurals
+properties:
+  gender:
+    type: string
+    nullable: true
+    enum:
+      - MASCULINE
+      - FEMININE
+  plurals:
+    type: array
+    items:
+      $ref: ./WordPluralResponse.yaml

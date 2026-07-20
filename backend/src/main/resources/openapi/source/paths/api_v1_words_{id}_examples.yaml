@@ -1,0 +1,64 @@
+get:
+  summary: List saved example sentences for a word
+  operationId: listWordExamples
+  tags:
+    - words
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: List of saved examples
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/WordExampleResponse.yaml
+    '404':
+      description: Word not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+post:
+  summary: Save an example sentence for a word
+  operationId: saveWordExample
+  tags:
+    - words
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateWordExampleRequest.yaml
+  responses:
+    '201':
+      description: Example saved
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/WordExampleResponse.yaml
+    '404':
+      description: Word not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '422':
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

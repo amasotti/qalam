@@ -1,0 +1,29 @@
+type: object
+required:
+  - id
+  - mode
+  - status
+  - words
+  - createdAt
+properties:
+  id:
+    type: string
+    format: uuid
+  mode:
+    type: string
+  status:
+    type: string
+    enum:
+      - ACTIVE
+      - COMPLETED
+  words:
+    type: array
+    items:
+      $ref: ./TrainingSessionWordResponse.yaml
+  createdAt:
+    type: string
+    format: date-time
+  completedAt:
+    type: string
+    format: date-time
+    nullable: true

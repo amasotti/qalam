@@ -1,0 +1,22 @@
+type: object
+required:
+  - verbDetails
+  - root
+  - dialect
+  - conjugations
+properties:
+  word:
+    $ref: ./ConjugationWordSummary.yaml
+  verbDetails:
+    $ref: ./ConjugationVerbDetailsSummary.yaml
+  root:
+    $ref: ./ConjugationRootSummary.yaml
+  dialect:
+    type: string
+  conjugations:
+    type: object
+    description: 'Keys: past_active, past_passive, present_active, present_passive'
+    additionalProperties:
+      type: array
+      items:
+        $ref: ./PersonConjugationDto.yaml

@@ -1,0 +1,19 @@
+type: object
+required:
+  - arabicText
+  - relationType
+properties:
+  arabicText:
+    type: string
+  relationType:
+    type: string
+    enum:
+      - SYNONYM
+      - ANTONYM
+      - RELATED
+  transliteration:
+    type: string
+    nullable: true
+  translation:
+    type: string
+    nullable: true

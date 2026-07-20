@@ -1,0 +1,23 @@
+type: object
+required:
+  - wordId
+  - from
+  - to
+properties:
+  wordId:
+    type: string
+    format: uuid
+  from:
+    type: string
+    enum:
+      - NEW
+      - LEARNING
+      - KNOWN
+      - MASTERED
+  to:
+    type: string
+    enum:
+      - NEW
+      - LEARNING
+      - KNOWN
+      - MASTERED

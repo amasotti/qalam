@@ -1,0 +1,76 @@
+get:
+  summary: List Arabic roots
+  operationId: listRoots
+  tags:
+    - roots
+  parameters:
+    - name: page
+      in: query
+      description: Page number (1-based)
+      schema:
+        type: integer
+        default: 1
+    - name: size
+      in: query
+      description: Number of items per page
+      schema:
+        type: integer
+        default: 20
+        maximum: 500
+    - name: letterCount
+      in: query
+      description: Filter by number of root letters (2–6)
+      schema:
+        type: integer
+        minimum: 2
+        maximum: 6
+  responses:
+    '200':
+      description: Paginated list of roots
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../components/schemas/PaginatedResponse.yaml
+              - type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/RootResponse.yaml
+    '400':
+      description: Invalid query parameters
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+post:
+  summary: Create a new Arabic root
+  operationId: createRoot
+  tags:
+    - roots
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateRootRequest.yaml
+  responses:
+    '201':
+      description: Root created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/RootResponse.yaml
+    '400':
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '409':
+      description: Root already exists
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

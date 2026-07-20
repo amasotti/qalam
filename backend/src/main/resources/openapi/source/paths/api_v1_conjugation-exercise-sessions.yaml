@@ -1,0 +1,49 @@
+post:
+  summary: Create a conjugation matching exercise session
+  operationId: createConjugationExerciseSession
+  tags:
+    - conjugation-exercises
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateConjugationExerciseSessionRequest.yaml
+  responses:
+    '201':
+      description: Conjugation exercise session created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ConjugationExerciseSessionResponse.yaml
+    '400':
+      description: Invalid request
+    '422':
+      description: Not enough conjugatable verbs
+get:
+  summary: List conjugation exercise sessions with pagination
+  operationId: listConjugationExerciseSessions
+  tags:
+    - conjugation-exercises
+  parameters:
+    - name: page
+      in: query
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+    - name: size
+      in: query
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+        maximum: 500
+  responses:
+    '200':
+      description: Paginated conjugation exercise history
+      content:
+        application/json:
+          schema:
+            $ref: >-
+              ../components/schemas/PaginatedConjugationExerciseSessionsResponse.yaml

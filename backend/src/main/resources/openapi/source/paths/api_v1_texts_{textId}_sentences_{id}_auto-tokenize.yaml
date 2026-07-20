@@ -1,0 +1,37 @@
+post:
+  summary: Auto-tokenize a sentence using AI
+  operationId: autoTokenize
+  tags:
+    - sentences
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Tokens generated and set
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/SentenceResponse.yaml
+    '404':
+      description: Sentence or text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '503':
+      description: AI not configured (OPENROUTER_API_KEY missing)
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

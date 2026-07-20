@@ -1,0 +1,43 @@
+post:
+  summary: Record a result for a word in the current session
+  operationId: recordTrainingResult
+  tags:
+    - training
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/RecordResultRequest.yaml
+  responses:
+    '200':
+      description: Result recorded (may include mastery promotion)
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/RecordResultResponse.yaml
+    '400':
+      description: Malformed UUID or invalid result
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '404':
+      description: Session or word not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '409':
+      description: Session already completed
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

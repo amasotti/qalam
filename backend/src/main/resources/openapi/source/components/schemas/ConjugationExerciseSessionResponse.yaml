@@ -1,0 +1,39 @@
+type: object
+required:
+  - id
+  - mode
+  - status
+  - items
+  - createdAt
+properties:
+  id:
+    type: string
+    format: uuid
+  mode:
+    type: string
+    enum:
+      - NEW
+      - LEARNING
+      - KNOWN
+      - MIXED
+  status:
+    type: string
+    enum:
+      - ACTIVE
+      - COMPLETED
+  exerciseType:
+    type: string
+    enum:
+      - MATCH_FORM
+      - WRITE_FORM
+  items:
+    type: array
+    items:
+      $ref: ./ConjugationExerciseItemResponse.yaml
+  createdAt:
+    type: string
+    format: date-time
+  completedAt:
+    type: string
+    format: date-time
+    nullable: true

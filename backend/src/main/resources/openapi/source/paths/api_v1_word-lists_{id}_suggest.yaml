@@ -1,0 +1,37 @@
+post:
+  summary: AI-suggest 5–10 new words for a list (ephemeral preview, never auto-saved)
+  operationId: suggestWordsForList
+  tags:
+    - word-lists
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Suggested words
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/WordListSuggestionsResponse.yaml
+    '400':
+      description: Malformed UUID or empty AI response
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '404':
+      description: Word list not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '503':
+      description: AI not configured
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

@@ -1,0 +1,31 @@
+get:
+  tags:
+    - conjugation
+  summary: Conjugate a saved verb (word must have verb details + linked root)
+  operationId: conjugateWord
+  parameters:
+    - name: wordId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Full conjugation table
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ConjugationResponse.yaml
+    '404':
+      description: Word or verb details not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '422':
+      description: Word is not a verb or has no root
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

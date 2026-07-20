@@ -1,0 +1,20 @@
+type: object
+required:
+  - id
+  - arabic
+  - createdAt
+properties:
+  id:
+    type: string
+    format: uuid
+  arabic:
+    type: string
+  transliteration:
+    type: string
+    nullable: true
+  translation:
+    type: string
+    nullable: true
+  createdAt:
+    type: string
+    format: date-time

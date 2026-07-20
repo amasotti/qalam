@@ -1,0 +1,111 @@
+get:
+  summary: List vocabulary words with optional filters
+  operationId: listWords
+  tags:
+    - words
+  parameters:
+    - name: page
+      in: query
+      description: Page number (1-based)
+      schema:
+        type: integer
+        default: 1
+    - name: size
+      in: query
+      description: Number of items per page
+      schema:
+        type: integer
+        default: 20
+        maximum: 500
+    - name: q
+      in: query
+      description: >-
+        Arabic text substring search (ignores Arabic harakat) or
+        translation/transliteration search
+      schema:
+        type: string
+    - name: rootId
+      in: query
+      description: Filter words by root UUID
+      schema:
+        type: string
+        format: uuid
+    - name: dialect
+      in: query
+      schema:
+        $ref: ../components/schemas/Dialect.yaml
+    - name: difficulty
+      in: query
+      schema:
+        $ref: ../components/schemas/Difficulty.yaml
+    - name: partOfSpeech
+      in: query
+      schema:
+        $ref: ../components/schemas/PartOfSpeech.yaml
+    - name: masteryLevel
+      in: query
+      schema:
+        $ref: ../components/schemas/MasteryLevel.yaml
+    - name: sortBy
+      in: query
+      description: Field to sort by (default UPDATED_AT)
+      schema:
+        type: string
+        enum:
+          - UPDATED_AT
+          - CREATED_AT
+          - ARABIC_TEXT
+          - TRANSLATION
+          - DIFFICULTY
+          - MASTERY_LEVEL
+        default: UPDATED_AT
+    - name: sortDesc
+      in: query
+      description: Sort descending (default true)
+      schema:
+        type: boolean
+        default: true
+  responses:
+    '200':
+      description: Paginated list of words
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../components/schemas/PaginatedResponse.yaml
+              - type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/WordResponse.yaml
+    '400':
+      description: Invalid query parameters
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+post:
+  summary: Create a vocabulary word
+  operationId: createWord
+  tags:
+    - words
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateWordRequest.yaml
+  responses:
+    '201':
+      description: Word created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/WordResponse.yaml
+    '422':
+      description: Validation error (blank arabicText, unknown enum value)
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

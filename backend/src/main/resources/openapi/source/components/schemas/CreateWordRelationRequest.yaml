@@ -1,0 +1,14 @@
+type: object
+required:
+  - relatedWordId
+  - relationType
+properties:
+  relatedWordId:
+    type: string
+    format: uuid
+  relationType:
+    type: string
+    enum:
+      - SYNONYM
+      - ANTONYM
+      - RELATED

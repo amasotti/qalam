@@ -1,0 +1,18 @@
+get:
+  summary: Get training statistics
+  operationId: getTrainingStats
+  tags:
+    - training
+  responses:
+    '200':
+      description: Training statistics (mastery distribution, session counts)
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/TrainingStatsResponse.yaml
+    '400':
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

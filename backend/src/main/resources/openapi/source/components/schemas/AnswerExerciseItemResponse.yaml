@@ -1,0 +1,24 @@
+type: object
+required:
+  - itemId
+  - wordId
+  - result
+  - correctOptionId
+properties:
+  itemId:
+    type: string
+    format: uuid
+  wordId:
+    type: string
+    format: uuid
+  result:
+    type: string
+    enum:
+      - CORRECT
+      - INCORRECT
+  correctOptionId:
+    type: string
+    format: uuid
+  masteryPromotion:
+    $ref: ./MasteryPromotionResponse.yaml
+    nullable: true

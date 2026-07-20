@@ -1,0 +1,11 @@
+type: object
+required:
+  - arabicText
+properties:
+  arabicText:
+    type: string
+    example: بنايات
+  transliteration:
+    type: string
+    nullable: true
+    example: bināyāt

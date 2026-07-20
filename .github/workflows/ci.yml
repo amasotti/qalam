@@ -81,7 +81,7 @@ jobs:
         working-directory: frontend
         run: pnpm build
 
-  # ── OpenAPI spec lint (parallel with backend — spec is a source file) ────────
+  # ── OpenAPI spec lint (parallel with backend — source is modular) ────────────
   openapi-lint:
     name: OpenAPI — lint spec
     needs: backend
@@ -91,8 +91,17 @@ jobs:
 
       - name: Lint OpenAPI spec
         run: >
-          npx --yes @redocly/cli@latest lint
-          backend/src/main/resources/openapi/documentation.yaml
+          npx --yes @redocly/cli@2.37.0 lint
+          backend/src/main/resources/openapi/source/openapi.yaml
+
+      - name: Verify OpenAPI bundle is current
+        run: |
+          npx --yes @redocly/cli@2.37.0 bundle \
+            backend/src/main/resources/openapi/source/openapi.yaml \
+            --output /tmp/documentation.yaml
+          diff --unified \
+            backend/src/main/resources/openapi/documentation.yaml \
+            /tmp/documentation.yaml
 
   # ── Docker: validate the image builds (needs backend to be green first) ──────
   docker-build:

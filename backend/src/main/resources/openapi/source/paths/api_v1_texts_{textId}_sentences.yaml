@@ -1,0 +1,64 @@
+get:
+  summary: List sentences for a text
+  operationId: listSentences
+  tags:
+    - sentences
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Array of sentences (no pagination)
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/SentenceResponse.yaml
+    '404':
+      description: Text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+post:
+  summary: Create a sentence in a text
+  operationId: createSentence
+  tags:
+    - sentences
+  parameters:
+    - name: textId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateSentenceRequest.yaml
+  responses:
+    '201':
+      description: Sentence created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/SentenceResponse.yaml
+    '404':
+      description: Text not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '422':
+      description: Validation error (blank arabicText, unknown enum value)
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

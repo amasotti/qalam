@@ -1,0 +1,7 @@
+type: object
+required:
+  - insight
+properties:
+  insight:
+    type: string
+    description: Plain-text linguistic analysis from the AI teacher

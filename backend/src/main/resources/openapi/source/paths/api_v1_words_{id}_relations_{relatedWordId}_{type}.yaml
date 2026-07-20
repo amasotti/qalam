@@ -1,0 +1,36 @@
+delete:
+  summary: Delete a semantic relation from a word
+  operationId: deleteWordRelation
+  tags:
+    - words
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: relatedWordId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: type
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+          - SYNONYM
+          - ANTONYM
+          - RELATED
+  responses:
+    '204':
+      description: Relation deleted
+    '404':
+      description: Word or relation not found
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

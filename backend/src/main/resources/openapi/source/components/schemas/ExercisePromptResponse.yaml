@@ -1,0 +1,12 @@
+type: object
+required:
+  - kind
+  - text
+properties:
+  kind:
+    type: string
+    enum:
+      - ARABIC_WORD
+      - TRANSLATION
+  text:
+    type: string

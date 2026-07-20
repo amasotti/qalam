@@ -1,0 +1,15 @@
+type: object
+required:
+  - formId
+  - arabic
+  - segments
+properties:
+  formId:
+    type: string
+    format: uuid
+  arabic:
+    type: string
+  segments:
+    type: array
+    items:
+      $ref: ./ConjugationExerciseSegmentResponse.yaml

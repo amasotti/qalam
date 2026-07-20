@@ -1,0 +1,45 @@
+type: object
+required:
+  - mode
+  - size
+properties:
+  mode:
+    type: string
+    description: Mastery bucket used to draw target words
+    enum:
+      - NEW
+      - LEARNING
+      - KNOWN
+      - MIXED
+    example: MIXED
+  size:
+    type: integer
+    description: Number of exercise items to include in the session
+    default: 15
+    minimum: 1
+    maximum: 50
+  wordListIds:
+    type: array
+    description: Optional word-list IDs that constrain the target and distractor pool.
+    items:
+      type: string
+      format: uuid
+    default: []
+  exerciseTypes:
+    type: array
+    description: Exercise types to cycle through while generating items.
+    items:
+      type: string
+      enum:
+        - MULTIPLE_CHOICE_MEANING
+        - MULTIPLE_CHOICE_ARABIC
+        - CONFUSABLE_MEANING
+        - CONFUSABLE_ARABIC
+    default:
+      - MULTIPLE_CHOICE_MEANING
+  optionCount:
+    type: integer
+    description: Number of options per item. Clamped by the server to 3-4.
+    default: 4
+    minimum: 3
+    maximum: 4

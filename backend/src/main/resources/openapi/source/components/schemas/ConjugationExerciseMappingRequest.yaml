@@ -1,0 +1,11 @@
+type: object
+required:
+  - formId
+  - labelId
+properties:
+  formId:
+    type: string
+    format: uuid
+  labelId:
+    type: string
+    format: uuid

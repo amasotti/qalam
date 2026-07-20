@@ -1,0 +1,21 @@
+post:
+  summary: Complete a conjugation exercise session
+  operationId: completeConjugationExerciseSession
+  tags:
+    - conjugation-exercises
+  parameters:
+    - $ref: ../components/parameters/UuidPathId.yaml
+  responses:
+    '200':
+      description: Conjugation exercise session completed with summary
+      content:
+        application/json:
+          schema:
+            $ref: >-
+              ../components/schemas/ConjugationExerciseSessionSummaryResponse.yaml
+    '400':
+      description: Malformed UUID
+    '404':
+      description: Session not found
+    '409':
+      description: Session already completed

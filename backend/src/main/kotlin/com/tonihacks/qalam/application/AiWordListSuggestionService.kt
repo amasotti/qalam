@@ -3,7 +3,7 @@ package com.tonihacks.qalam.application
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.raise.either
-import arrow.core.raise.raise
+import arrow.core.raise.ensure
 import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.wordlist.AiListWordSuggestion
 import com.tonihacks.qalam.delivery.dto.wordlist.WordListSuggestionsResponse
@@ -28,8 +28,10 @@ class AiWordListSuggestionService internal constructor(
         val listId = parseId(id).bind()
         val list = wordListRepository.findById(listId).bind()
         val existingWords = wordListRepository.membersOf(listId).bind()
-        val description = list.description?.trim()?.takeIf { it.isNotEmpty() }
-            ?: raise(DomainError.ValidationError("description", "description is required for AI word suggestions"))
+        val description = list.description?.trim().orEmpty()
+        ensure(description.isNotEmpty()) {
+            DomainError.ValidationError("description", "description is required for AI word suggestions")
+        }
 
         val suggestionContext = VocabularySuggestionContext(
             title = list.title,

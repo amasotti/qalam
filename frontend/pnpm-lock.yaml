@@ -11,6 +11,9 @@ importers:
       '@hey-api/client-fetch':
         specifier: ^0.13.1
         version: 0.13.1(@hey-api/openapi-ts@0.99.0(typescript@6.0.3))
+      '@tanstack/query-core':
+        specifier: ^5.101.2
+        version: 5.101.2
       '@tanstack/svelte-query':
         specifier: ^6.1.36
         version: 6.1.36(svelte@5.56.6)

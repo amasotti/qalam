@@ -2,6 +2,7 @@
 import { page } from '$app/state';
 import type {
 	AnswerConjugationExerciseItemResponse,
+	ConjugationExerciseItemResponse,
 	ConjugationExerciseMappingResponse,
 	ConjugationExerciseSessionSummaryResponse,
 } from '$lib/api/types.gen';
@@ -28,16 +29,24 @@ const progress = $derived(totalItems === 0 ? 0 : ((currentIndex + 1) / totalItem
 $effect(() => {
 	if (!session.data || initializedId === session.data.id) return;
 	initializedId = session.data.id;
-	currentIndex = session.data.items.findIndex((item) => item.result == null);
+	currentIndex = session.data.items.findIndex(
+		(item: ConjugationExerciseItemResponse) => item.result == null
+	);
 	if (currentIndex < 0) currentIndex = 0;
 	if (session.data.status === 'COMPLETED')
 		summary = {
 			sessionId: session.data.id,
 			mode: session.data.mode,
 			totalItems,
-			correct: session.data.items.filter((item) => item.result === 'CORRECT').length,
-			incorrect: session.data.items.filter((item) => item.result === 'INCORRECT').length,
-			skipped: session.data.items.filter((item) => item.result === 'SKIPPED').length,
+			correct: session.data.items.filter(
+				(item: ConjugationExerciseItemResponse) => item.result === 'CORRECT'
+			).length,
+			incorrect: session.data.items.filter(
+				(item: ConjugationExerciseItemResponse) => item.result === 'INCORRECT'
+			).length,
+			skipped: session.data.items.filter(
+				(item: ConjugationExerciseItemResponse) => item.result === 'SKIPPED'
+			).length,
 			accuracy: 0,
 			completedAt: session.data.completedAt ?? session.data.createdAt,
 		};

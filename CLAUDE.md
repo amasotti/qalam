@@ -87,3 +87,4 @@ docker-compose.yml  full dev stack (postgres, backend, frontend)
 - **Any change to a backend endpoint (new param, changed response, new route) MUST update `backend/src/main/resources/openapi/documentation.yaml` in the same step — it is the source of truth for frontend types**
   Read however `backend/src/main/resources/openapi/README.md` about how to edit the openapi spec.
 - Tony is an experienced developer — don't over-explain, don't pad responses, and co-operate with him, do not replace him
+- This is Tony's personal product. Treat adjacent or unrequested changes as intentional choices by default: describe observable effects or tradeoffs and ask about intent when needed; never phrase a review observation as an instruction to remove, restore, or defer the change unless it is objectively broken or violates an explicit project rule.

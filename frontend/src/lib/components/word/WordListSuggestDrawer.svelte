@@ -31,15 +31,15 @@ let itemStates = $state<ItemState[]>([]);
 
 function runSuggest() {
 	suggestMutation.mutate(listId, {
-		onSuccess: (data) => {
+		onSuccess: (data: AiListWordSuggestion[]) => {
 			suggestions = data;
 			itemStates = data.map(() => ({ status: 'checking' as const }));
 			for (let i = 0; i < data.length; i++) {
 				void checkSuggestion(data[i], i);
 			}
 		},
-		onError: (e) => {
-			const err = e as unknown as { status?: number; message?: string };
+		onError: (e: unknown) => {
+			const err = e as { status?: number; message?: string };
 			if (err.status === 503) {
 				isAiNotConfigured = true;
 				onAiUnavailable?.();
@@ -75,8 +75,8 @@ async function addSuggestion(s: AiListWordSuggestion, i: number) {
 				transliteration: s.transliteration ?? null,
 				translation: s.translation ?? null,
 				partOfSpeech: (s.partOfSpeech ?? 'UNKNOWN') as PartOfSpeech,
-				dialect: 'MSA',
-				difficulty: (s.difficulty ?? 'BEGINNER') as Difficulty,
+				dialect: s.dialect,
+				difficulty: (s.difficulty ?? 'INTERMEDIATE') as Difficulty,
 			});
 			wordId = created.id;
 		}
@@ -101,7 +101,10 @@ $effect(() => {
 });
 
 function formatEnum(value: string): string {
-	return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+	return value
+		.split('_')
+		.map((part) => part.charAt(0) + part.slice(1).toLowerCase())
+		.join(' ');
 }
 </script>
 
@@ -160,6 +163,9 @@ function formatEnum(value: string): string {
 									{#if s.partOfSpeech}
 										<span class="drawer-relation-type">{formatEnum(s.partOfSpeech)}</span>
 									{/if}
+									{#if s.dialect}
+										<span class="drawer-relation-type">{formatEnum(s.dialect)}</span>
+									{/if}
 									{#if st.status === 'checking'}
 										<span class="drawer-relation-action drawer-relation-checking">…</span>
 									{:else if st.status === 'adding'}
@@ -185,7 +191,6 @@ function formatEnum(value: string): string {
 					{/if}
 				{/if}
 			</div>
-
 			<div class="modal-actions">
 				<button class="btn" onclick={onClose}>Done</button>
 			</div>

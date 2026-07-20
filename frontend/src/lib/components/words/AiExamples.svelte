@@ -1,6 +1,6 @@
 <script lang="ts">
 import { Check, RefreshCw, Sparkles, X } from 'lucide-svelte';
-import type { AiExampleSentence } from '$lib/api/types.gen';
+import type { AiExampleSentence, AiExamplesResponse } from '$lib/api/types.gen';
 import Button from '$lib/components/ui/button/button.svelte';
 import { useGenerateExamples, useSaveWordExample } from '$lib/stores/words';
 
@@ -24,12 +24,12 @@ function handleGenerateClick() {
 	isAiNotConfigured = false;
 
 	generateMutation.mutate(wordId, {
-		onSuccess: (data) => {
+		onSuccess: (data: AiExamplesResponse) => {
 			examples = data.examples;
 			isExpanded = true;
 		},
-		onError: (error) => {
-			const errorObj = error as unknown as { status?: number; message?: string };
+		onError: (error: unknown) => {
+			const errorObj = error as { status?: number; message?: string };
 			if (errorObj.status === 503) {
 				isAiNotConfigured = true;
 			} else {
@@ -58,7 +58,7 @@ function handleUseExample(example: AiExampleSentence) {
 					errorMessage = '';
 				}
 			},
-			onError: (error) => {
+			onError: (error: unknown) => {
 				errorMessage = error instanceof Error ? error.message : 'Failed to save example';
 			},
 		}

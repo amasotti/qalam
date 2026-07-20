@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Cpu, Plus, Trash2, X } from 'lucide-svelte';
 import { untrack } from 'svelte';
-import type { SentenceResponse } from '$lib/api/types.gen';
+import type { AlignmentTokenResponse, SentenceResponse } from '$lib/api/types.gen';
 import { Button } from '$lib/components/ui/button';
 import { useAutoTokenize, useClearTokens, useReplaceTokens } from '$lib/stores/texts';
 
@@ -58,7 +58,7 @@ async function handleAutoTokenize() {
 	error = null;
 	try {
 		const updated = await autoTokenize.mutateAsync({ textId, id: sentence.id });
-		drafts = updated.tokens.map((t) => ({
+		drafts = updated.tokens.map((t: AlignmentTokenResponse) => ({
 			id: t.id,
 			arabic: t.arabic,
 			transliteration: t.transliteration ?? '',

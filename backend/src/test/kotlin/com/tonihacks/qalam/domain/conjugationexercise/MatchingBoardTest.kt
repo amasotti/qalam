@@ -1,6 +1,7 @@
 package com.tonihacks.qalam.domain.conjugationexercise
 
 import com.tonihacks.qalam.domain.conjugation.MsaConjugationEngine
+import com.tonihacks.qalam.domain.conjugation.model.Person
 import com.tonihacks.qalam.domain.conjugation.model.Tense
 import com.tonihacks.qalam.domain.conjugation.model.Voice
 import com.tonihacks.qalam.domain.word.VerbPattern

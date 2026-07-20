@@ -34,7 +34,7 @@ async function handleSave() {
 			onSuccess: () => {
 				editing = false;
 			},
-			onError: (e) => {
+			onError: (e: unknown) => {
 				saveError = e instanceof Error ? e.message : 'Failed to save';
 			},
 		}

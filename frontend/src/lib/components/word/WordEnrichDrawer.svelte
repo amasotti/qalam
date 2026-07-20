@@ -59,7 +59,7 @@ let relStates = $state<RelState[]>([]);
 
 function runEnrichment() {
 	enrichMutation.mutate(wordId, {
-		onSuccess: (data) => {
+		onSuccess: (data: WordEnrichmentSuggestion) => {
 			suggestion = data;
 			editedNotes = data.notes ?? '';
 			acceptNotes = !!data.notes;
@@ -72,8 +72,8 @@ function runEnrichment() {
 				void checkRelation(data.relations[i], i);
 			}
 		},
-		onError: (e) => {
-			const errorObj = e as unknown as { status?: number; message?: string };
+		onError: (e: unknown) => {
+			const errorObj = e as { status?: number; message?: string };
 			if (errorObj.status === 503) {
 				isAiNotConfigured = true;
 				onAiUnavailable?.();

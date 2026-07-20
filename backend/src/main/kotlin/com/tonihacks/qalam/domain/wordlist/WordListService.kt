@@ -14,21 +14,18 @@ import com.tonihacks.qalam.delivery.dto.wordlist.UpdateWordListRequest
 import com.tonihacks.qalam.delivery.dto.wordlist.WordListDetailResponse
 import com.tonihacks.qalam.delivery.dto.wordlist.WordListRefResponse
 import com.tonihacks.qalam.delivery.dto.wordlist.WordListResponse
-import com.tonihacks.qalam.delivery.dto.wordlist.WordListSuggestionsResponse
 import com.tonihacks.qalam.delivery.dto.wordlist.toDetailResponse
 import com.tonihacks.qalam.delivery.dto.wordlist.toRefResponse
 import com.tonihacks.qalam.delivery.dto.wordlist.toResponse
 import com.tonihacks.qalam.domain.logDomainFailure
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.word.WordId
-import com.tonihacks.qalam.infrastructure.ai.AiClient
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.UUID
 import kotlin.time.Clock
 
 class WordListService(
     private val repo: WordListRepository,
-    private val aiClient: AiClient,
 ) {
     private val log = KotlinLogging.logger {}
 
@@ -112,17 +109,7 @@ class WordListService(
         repo.listsForWord(word).bind().map { it.toRefResponse() }
     }.logDomainFailure(log) { "Failed to list word lists for wordId=$wordId: $it" }
 
-    // --- AI word suggestions (ephemeral preview — never auto-saved) ---
-
-    suspend fun suggestWords(id: String): Either<DomainError, WordListSuggestionsResponse> = either {
-        log.info { "Generating AI word-list suggestions listId=$id" }
-        val listId = parseId(id).bind()
-        val list = repo.findById(listId).bind()
-        val existing = repo.membersOf(listId).bind()
-        val suggestions = aiClient.suggestWordsForList(list.title, list.description, existing).bind()
-        WordListSuggestionsResponse(suggestions)
-    }.logDomainFailure(log) { "Failed to generate AI word-list suggestions listId=$id: $it" }
-
+    // -------- Utility methods for this class ---------------------
     private fun parseId(id: String): Either<DomainError, WordListId> =
         try {
             WordListId(UUID.fromString(id)).right()

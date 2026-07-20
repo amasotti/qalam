@@ -1,5 +1,6 @@
 package com.tonihacks.qalam.delivery.routes
 
+import com.tonihacks.qalam.application.AiWordListSuggestionService
 import com.tonihacks.qalam.delivery.respondError
 import com.tonihacks.qalam.delivery.dto.wordlist.AddWordToListRequest
 import com.tonihacks.qalam.delivery.dto.wordlist.CreateWordListRequest
@@ -11,7 +12,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.getOrFail
 
-fun Route.wordListRoutes(service: WordListService) {
+fun Route.wordListRoutes(service: WordListService, suggestionService: AiWordListSuggestionService) {
     route("/word-lists") {
         get {
             val page = call.request.queryParameters["page"]?.toIntOrNull()
@@ -55,11 +56,11 @@ fun Route.wordListRoutes(service: WordListService) {
             )
         }
 
-        membershipRoutes(service)
+        membershipRoutes(service, suggestionService)
     }
 }
 
-private fun Route.membershipRoutes(service: WordListService) {
+private fun Route.membershipRoutes(service: WordListService, suggestionService: AiWordListSuggestionService) {
     post("/{id}/words") {
         val id = call.pathParameters.getOrFail<String>("id")
         val req = call.receive<AddWordToListRequest>()
@@ -90,7 +91,7 @@ private fun Route.membershipRoutes(service: WordListService) {
     // AI word suggestions for a list (ephemeral preview — never auto-saved)
     post("/{id}/suggest") {
         val id = call.pathParameters.getOrFail<String>("id")
-        service.suggestWords(id).fold(
+        suggestionService.suggestWords(id).fold(
             { call.respondError(it) },
             { call.respond(HttpStatusCode.OK, it) },
         )

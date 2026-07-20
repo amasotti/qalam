@@ -64,6 +64,7 @@ data class AiListWordSuggestion(
     val translation: String? = null,
     val partOfSpeech: String? = null,
     val difficulty: String? = null,
+    val dialect: String? = null,
 )
 
 @Serializable

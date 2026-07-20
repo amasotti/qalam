@@ -3,6 +3,7 @@ post:
   operationId: enrichWord
   tags:
     - words
+    - ai
   parameters:
     - name: id
       in: path

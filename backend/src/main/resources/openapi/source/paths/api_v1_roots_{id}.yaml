@@ -4,12 +4,7 @@ get:
   tags:
     - roots
   parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
+    - $ref: ../components/parameters/UuidPathId.yaml
   responses:
     '200':
       description: Root found
@@ -35,12 +30,7 @@ put:
   tags:
     - roots
   parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
+    - $ref: ../components/parameters/UuidPathId.yaml
   requestBody:
     required: true
     content:
@@ -66,12 +56,7 @@ delete:
   tags:
     - roots
   parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
+    - $ref: ../components/parameters/UuidPathId.yaml
   responses:
     '204':
       description: Root deleted

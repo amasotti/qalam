@@ -3,6 +3,7 @@ post:
   operationId: transliterateSentence
   tags:
     - sentences
+    - ai
   parameters:
     - name: textId
       in: path

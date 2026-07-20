@@ -10,10 +10,14 @@ servers:
   - url: http://localhost:8085
     description: Local development
 tags:
+  - name: ai
+    description: AI-powered linguistic analysis
   - name: roots
     description: Arabic root management
   - name: words
     description: Vocabulary word management
+  - name: word-lists
+    description: Curated topical vocabulary lists (e.g. Colors, Family)
   - name: texts
     description: Arabic text management
   - name: sentences
@@ -26,10 +30,6 @@ tags:
     description: Flashcard training sessions and statistics
   - name: exercises
     description: Backend-generated exercise sessions for mobile practice
-  - name: word-lists
-    description: Curated topical vocabulary lists (e.g. Colors, Family)
-  - name: ai
-    description: AI-powered linguistic analysis
   - name: analytics
     description: Aggregated statistics across all domains
   - name: conjugation
@@ -43,6 +43,8 @@ paths:
     $ref: paths/api_v1_roots_normalize.yaml
   /api/v1/roots/{id}:
     $ref: paths/api_v1_roots_{id}.yaml
+  /api/v1/roots/{id}/suggest-words:
+    $ref: paths/api_v1_roots_{id}_suggest-words.yaml
   /api/v1/words:
     $ref: paths/api_v1_words.yaml
   /api/v1/words/autocomplete:

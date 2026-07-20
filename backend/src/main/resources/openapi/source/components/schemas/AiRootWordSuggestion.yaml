@@ -1,0 +1,24 @@
+type: object
+required:
+  - arabicText
+  - translation
+  - transliteration
+  - partOfSpeech
+  - dialect
+properties:
+  arabicText:
+    type: string
+    example: 'عَرَبِية'
+    description: Fully vocalized Arabic dictionary headword.
+  transliteration:
+    type: string
+    example: '3arabiya'
+  translation:
+    type: string
+    example: 'arabic'
+  partOfSpeech:
+    $ref: ./PartOfSpeech.yaml
+  dialect:
+    $ref: ./Dialect.yaml
+  difficulty:
+    $ref: ./Difficulty.yaml

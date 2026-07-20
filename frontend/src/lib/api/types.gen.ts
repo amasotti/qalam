@@ -73,11 +73,27 @@ export type UpdateRootRequest = {
     analysis?: string | null;
 };
 
+export type PartOfSpeech = 'UNKNOWN' | 'NOUN' | 'VERB' | 'ADJECTIVE' | 'ADVERB' | 'PREPOSITION' | 'PARTICLE' | 'INTERJECTION' | 'CONJUNCTION' | 'PRONOUN';
+
 export type Dialect = 'TUNISIAN' | 'MOROCCAN' | 'EGYPTIAN' | 'GULF' | 'LEVANTINE' | 'MSA' | 'IRAQI';
 
 export type Difficulty = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
-export type PartOfSpeech = 'UNKNOWN' | 'NOUN' | 'VERB' | 'ADJECTIVE' | 'ADVERB' | 'PREPOSITION' | 'PARTICLE' | 'INTERJECTION' | 'CONJUNCTION' | 'PRONOUN';
+export type AiRootWordSuggestion = {
+    /**
+     * Fully vocalized Arabic dictionary headword.
+     */
+    arabicText: string;
+    transliteration: string;
+    translation: string;
+    partOfSpeech: PartOfSpeech;
+    dialect: Dialect;
+    difficulty?: Difficulty;
+};
+
+export type RootWordSuggestionsResponse = {
+    suggestions: Array<AiRootWordSuggestion>;
+};
 
 export type MasteryLevel = 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
 
@@ -1209,6 +1225,41 @@ export type UpdateRootResponses = {
 };
 
 export type UpdateRootResponse = UpdateRootResponses[keyof UpdateRootResponses];
+
+export type SuggestWordsForRootData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/roots/{id}/suggest-words';
+};
+
+export type SuggestWordsForRootErrors = {
+    /**
+     * Malformed UUID or invalid AI response
+     */
+    400: ErrorResponse;
+    /**
+     * Root not found
+     */
+    404: ErrorResponse;
+    /**
+     * AI not configured
+     */
+    503: ErrorResponse;
+};
+
+export type SuggestWordsForRootError = SuggestWordsForRootErrors[keyof SuggestWordsForRootErrors];
+
+export type SuggestWordsForRootResponses = {
+    /**
+     * Root-family word suggestions generated via AI
+     */
+    200: RootWordSuggestionsResponse;
+};
+
+export type SuggestWordsForRootResponse = SuggestWordsForRootResponses[keyof SuggestWordsForRootResponses];
 
 export type ListWordsData = {
     body?: never;

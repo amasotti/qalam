@@ -3,6 +3,7 @@ post:
   operationId: analyzeWord
   tags:
     - words
+    - ai
   requestBody:
     required: true
     content:

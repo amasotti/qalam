@@ -3,6 +3,7 @@ post:
   operationId: autoTokenize
   tags:
     - sentences
+    - ai
   parameters:
     - name: textId
       in: path

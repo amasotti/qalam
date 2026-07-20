@@ -2,8 +2,8 @@ package com.tonihacks.qalam.application
 
 import arrow.core.Either
 import arrow.core.left
-import arrow.core.raise.context.bind
 import arrow.core.raise.either
+import arrow.core.raise.raise
 import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.wordlist.AiListWordSuggestion
 import com.tonihacks.qalam.delivery.dto.wordlist.WordListSuggestionsResponse
@@ -20,19 +20,21 @@ import java.util.UUID
 
 class AiWordListSuggestionService internal constructor(
     private val wordListRepository: WordListRepository,
-    private val vocabularyAiClient: OpenRouterVocabularyClient
+    private val vocabularyAiClient: OpenRouterVocabularyClient,
 ) {
-    private val log = KotlinLogging.logger {  }
+    private val log = KotlinLogging.logger {}
 
     suspend fun suggestWords(id: String): Either<DomainError, WordListSuggestionsResponse> = either {
         val listId = parseId(id).bind()
         val list = wordListRepository.findById(listId).bind()
         val existingWords = wordListRepository.membersOf(listId).bind()
+        val description = list.description?.trim()?.takeIf { it.isNotEmpty() }
+            ?: raise(DomainError.ValidationError("description", "description is required for AI word suggestions"))
 
         val suggestionContext = VocabularySuggestionContext(
             title = list.title,
-            description = list.description.takeUnless { it.isNullOrBlank() } ?: "",
-            existingWords = existingWords.map { ExistingVocabularyWord(it.arabicText, it.translation ?: "") }
+            description = description,
+            existingWords = existingWords.map { ExistingVocabularyWord(it.arabicText, it.translation) },
         )
         val suggestions = vocabularyAiClient.suggestWordsForList(suggestionContext).bind()
 
@@ -46,9 +48,9 @@ class AiWordListSuggestionService internal constructor(
                     difficulty = it.difficulty,
                     dialect = it.dialect,
                 )
-            }
+            },
         )
-    }.logDomainFailure(log) {"Failed to generate AI word-list suggestion for listId $id"}
+    }.logDomainFailure(log) { "Failed to generate AI word-list suggestion for listId=$id: $it" }
 
     private fun parseId(id: String): Either<DomainError, WordListId> =
         try {

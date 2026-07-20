@@ -5370,6 +5370,7 @@ components:
       type: object
       required:
         - arabicText
+        - dialect
       properties:
         arabicText:
           type: string
@@ -5385,6 +5386,9 @@ components:
         difficulty:
           type: string
           nullable: true
+        dialect:
+          allOf:
+            - $ref: '#/components/schemas/Dialect'
     WordListSuggestionsResponse:
       type: object
       required:

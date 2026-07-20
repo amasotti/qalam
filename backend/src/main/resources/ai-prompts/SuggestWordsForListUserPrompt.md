@@ -1,20 +1,24 @@
-Suggest between 3 and 10 NEW words in Arabic that belong in this list:
-List title: <title><description><existingWords>
+Suggest between 5 and 10 NEW Arabic vocabulary words that belong in this themed list.
 
-Each suggestion must fit the theme and must not duplicate existing words. Prefer
-common, used and useful words. For each of them provide this structured output (observe it strictly):
+List title: <title>
+Description: <description>
+<existingWords>
 
-- arabicText: the word in arabic fully vocalized with harakat
+Each suggestion must fit the theme and must not duplicate existing words or close variants.
+Prefer common, useful words. Each suggestion must be a dictionary headword, not an inflected
+sentence token.
+
+- arabicText: fully vocalized Arabic script
 - transliteration: practical chat-alphabet style (with digits, e.g. ع is rendered as 3, خ as 5, ق as 9 etc.)
 - translation: concise English gloss
-- partOfSpeech: one of ${PartOfSpeech.entries.map { it.name }.joinToString()}
-- difficulty: one of ${Difficulty.entries.map { it.name }.joinToString()}
-- dialect: one of ${Dialect.entries.map { it.name }.joinToString()}
+- partOfSpeech: one of <partOfSpeechValues>
+- difficulty: one of <difficultyValues>
+- dialect: one of <dialectValues>
 
-Prefer MSA (standard arabic) as "dialect" for most of them, but if there are interesting words in other dialects
-include as well. The user is very curious about arabic culture and its dialects.
+Prefer MSA for most suggestions. Include a non-MSA form only when it is genuinely common and
+useful for the list; always label it with its actual supported dialect.
 
-Respond ONLY AND ALWAYS with this JSON structure, no comments, no exceptions NEVER:
+Respond only with the structured result. Do not add commentary.
 {
   "suggestions": [
     {"arabicText": "...", "transliteration": "...", "translation": "...", "partOfSpeech": "NOUN", "difficulty": "BEGINNER", "dialect": "MSA"}

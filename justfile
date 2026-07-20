@@ -110,6 +110,16 @@ check-frontend:
 gtypes:
     pnpm --prefix frontend generate:types
 
+# Kill any process bound to qalam ports (5431, 8085, 5173, 80, 8083)
+stop:
+    @for port in 5431 8085 5173 80 8083; do \
+        pid=$(lsof -ti tcp:$port 2>/dev/null); \
+        if [ -n "$pid" ]; then \
+            echo "Killing PID $pid on port $port"; \
+            kill -9 $pid; \
+        fi; \
+    done
+
 # ── Local dev mode (no Docker — for rapid iteration) ─────────────────────────
 
 # Run backend locally against the dockerised DB (requires Doppler)

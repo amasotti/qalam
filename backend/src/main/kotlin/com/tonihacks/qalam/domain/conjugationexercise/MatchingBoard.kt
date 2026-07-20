@@ -17,6 +17,7 @@ fun ConjugationTable.matchingForms(
     forms[ConjugationKey(tense, voice)]
         .orEmpty()
         .sortedBy { it.person.ordinal }
+        .shuffled()
         .take(MATCHING_PAIR_COUNT)
 
 fun Person.exerciseLabel(): String = when (this) {

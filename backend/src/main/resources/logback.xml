@@ -12,6 +12,6 @@
     <logger name="com.tonihacks.qalam" level="DEBUG" />
     <logger name="org.flywaydb" level="INFO" />
     <logger name="com.zaxxer.hikari" level="WARN" />
-    <logger name="org.jetbrains.exposed" level="INFO" />
+    <logger name="org.jetbrains.exposed" level="WARN" />
     <logger name="io.ktor" level="WARN" />
 </configuration>

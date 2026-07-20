@@ -1,5 +1,6 @@
 package com.tonihacks.qalam.infrastructure.koin
 
+import com.tonihacks.qalam.application.AiWordListSuggestionService
 import com.tonihacks.qalam.domain.ai.AiInsightService
 import com.tonihacks.qalam.domain.annotation.AnnotationRepository
 import com.tonihacks.qalam.domain.annotation.AnnotationService
@@ -30,6 +31,8 @@ import com.tonihacks.qalam.domain.word.WordService
 import com.tonihacks.qalam.domain.wordlist.WordListRepository
 import com.tonihacks.qalam.domain.wordlist.WordListService
 import com.tonihacks.qalam.infrastructure.ai.AiClient
+import com.tonihacks.qalam.infrastructure.ai.OpenRouterClient
+import com.tonihacks.qalam.infrastructure.ai.OpenRouterVocabularyClient
 import com.tonihacks.qalam.infrastructure.exposed.ExposedAnnotationRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedRootRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedSentenceRepository
@@ -69,7 +72,7 @@ val dictionaryLookupModule = module {
 
 val wordListsModule = module {
     single<WordListRepository> { ExposedWordListRepository() }
-    single { WordListService(get(), get()) }
+    single { WordListService(get()) }
 }
 
 val textsModule = module {
@@ -101,8 +104,11 @@ val exerciseModule = module {
     single { ExerciseService(get(), get()) }
 }
 
-val aiInsightModule = module {
+val aiModule = module {
     single { AiInsightService(get(), get(), get(), get(), get()) }
+    single { OpenRouterClient() }
+    single { OpenRouterVocabularyClient(get()) }
+    single { AiWordListSuggestionService(get(), get()) }
 }
 
 val analyticsModule = module {
@@ -129,7 +135,7 @@ val appModule = module {
         annotationsModule,
         trainingModule,
         exerciseModule,
-        aiInsightModule,
+        aiModule,
         analyticsModule,
         conjugationModule,
     )

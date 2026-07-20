@@ -126,9 +126,11 @@ class ExposedWordRepository(
 
     override suspend fun findByArabicText(arabicText: String): Either<DomainError, Word?> =
         suspendTransaction {
+            val normalizedArabic = arabicText.removeArabicDiacritics()
+            val condition = WordsTable.arabicText.stripArabicDiacritics() ilike "%$normalizedArabic%"
             val word = WordsTable
                 .selectAll()
-                .where { WordsTable.arabicText eq arabicText }
+                .where { condition }
                 .singleOrNull()
                 ?.toWord()
             word.right()

@@ -180,7 +180,7 @@ class WordListsIntegrationTest : BaseIntegrationTest() {
         "POST /api/v1/word-lists/{id}/suggest" - {
             "returns 503 when AI is not configured" {
                 testApp { client ->
-                    val listId = createList(client, "Colors")
+                    val listId = createList(client, "Colors", "Common colour vocabulary")
                     val response = client.post("/api/v1/word-lists/$listId/suggest")
                     response.status shouldBe HttpStatusCode.ServiceUnavailable
                 }
@@ -206,10 +206,11 @@ class WordListsIntegrationTest : BaseIntegrationTest() {
         }
     }
 
-    private suspend fun createList(client: HttpClient, title: String): String {
+    private suspend fun createList(client: HttpClient, title: String, description: String? = null): String {
         val res = client.post("/api/v1/word-lists") {
             contentType(ContentType.Application.Json)
-            setBody("""{"title":"$title"}""")
+            val descriptionField = description?.let { "\"description\":\"$it\"," } ?: ""
+            setBody("""{$descriptionField"title":"$title"}""")
         }
         return idOf(res.bodyAsText())
     }

@@ -6,9 +6,11 @@ import {
 	listRoots,
 	listWords,
 	normalizeRoot,
+	suggestWordsForRoot,
 	updateRoot,
 } from '$lib/api/sdk.gen';
 import type {
+	AiRootWordSuggestion,
 	CreateRootRequest,
 	RootResponse,
 	UpdateRootRequest,
@@ -109,4 +111,16 @@ export function useNormalizeRoot() {
 			return requireData(data, 'normalizeRoot');
 		},
 	}));
+}
+
+export function useSuggestWordsForRoot() {
+	return createMutation(() => {
+		return {
+			mutationFn: async (rootId: string): Promise<AiRootWordSuggestion[]> => {
+				const { data, error } = await suggestWordsForRoot({ path: { id: rootId } });
+				if (error) throw error;
+				return requireData(data, 'suggestWordsForRoot').suggestions;
+			},
+		};
+	});
 }

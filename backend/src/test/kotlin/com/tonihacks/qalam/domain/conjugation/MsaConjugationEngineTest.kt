@@ -387,6 +387,81 @@ class MsaConjugationEngineTest : FunSpec({
         }
     }
 
+    // ── Geminate verbs (R2 = R3) ─────────────────────────────────────────
+
+    // قَرَّ (q-r-r) — Form I, "to settle / be steady", fa3ala / yaf3iru
+    context("Geminate Form I قَرَّ (q-r-r) — past active") {
+        val rootQRR = listOf("ق", "ر", "ر")
+        val table = engine.conjugate(rootQRR, VerbPattern.I, "fa3ala", "yaf3iru", WeaknessType.GEMINATE)
+        val past = table.forms[ConjugationKey(Tense.PAST, Voice.ACTIVE)]!!
+        fun formFor(p: Person) = past.first { it.person == p }.arabic
+
+        // Vowel-initial suffix → contracted: قَرَّ / قَرَّتْ / قَرُّوا
+        test("3SM — قَرَّ (contracted)") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "قَرَّ" }
+        test("3SF — قَرَّتْ (contracted)") { formFor(Person.THIRD_SINGULAR_FEM) shouldBe "قَرَّتْ" }
+        test("3DM — قَرَّا (contracted)") { formFor(Person.THIRD_DUAL_MASC) shouldBe "قَرَّا" }
+        test("3DF — قَرَّتَا (contracted)") { formFor(Person.THIRD_DUAL_FEM) shouldBe "قَرَّتَا" }
+        test("3PM — قَرُّوا (contracted, damma)") { formFor(Person.THIRD_PLURAL_MASC) shouldBe "قَرُّوا" }
+        // Consonant-initial suffix → uncontracted: قَرَرْتُ / قَرَرْنَ
+        test("1S — قَرَرْتُ (uncontracted)") { formFor(Person.FIRST_SINGULAR) shouldBe "قَرَرْتُ" }
+        test("2SM — قَرَرْتَ (uncontracted)") { formFor(Person.SECOND_SINGULAR_MASC) shouldBe "قَرَرْتَ" }
+        test("1P — قَرَرْنَا (uncontracted)") { formFor(Person.FIRST_PLURAL) shouldBe "قَرَرْنَا" }
+        test("3PF — قَرَرْنَ (uncontracted)") { formFor(Person.THIRD_PLURAL_FEM) shouldBe "قَرَرْنَ" }
+    }
+
+    context("Geminate Form I قَرَّ (q-r-r) — present active") {
+        val rootQRR = listOf("ق", "ر", "ر")
+        val table = engine.conjugate(rootQRR, VerbPattern.I, "fa3ala", "yaf3iru", WeaknessType.GEMINATE)
+        val pres = table.forms[ConjugationKey(Tense.PRESENT, Voice.ACTIVE)]!!
+        fun formFor(p: Person) = pres.first { it.person == p }.arabic
+
+        // Vowel-initial suffix → contracted; R1 takes R2's kasra, R2 gets shadda + suffix vowel
+        test("1S — أَقِرُّ (contracted)") { formFor(Person.FIRST_SINGULAR) shouldBe "أَقِرُّ" }
+        test("3SM — يَقِرُّ (contracted)") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "يَقِرُّ" }
+        test("2SF — تَقِرِّينَ (contracted)") { formFor(Person.SECOND_SINGULAR_FEM) shouldBe "تَقِرِّينَ" }
+        test("3PM — يَقِرُّونَ (contracted)") { formFor(Person.THIRD_PLURAL_MASC) shouldBe "يَقِرُّونَ" }
+        // Sukūn-initial suffix → uncontracted
+        test("2PF — تَقْرِرْنَ (uncontracted)") { formFor(Person.SECOND_PLURAL_FEM) shouldBe "تَقْرِرْنَ" }
+        test("3PF — يَقْرِرْنَ (uncontracted)") { formFor(Person.THIRD_PLURAL_FEM) shouldBe "يَقْرِرْنَ" }
+    }
+
+    // اِسْتَقَرَّ (q-r-r, Form X) — "to settle / stabilize"
+    context("Geminate Form X اِسْتَقَرَّ (q-r-r) — past active") {
+        val rootQRR = listOf("ق", "ر", "ر")
+        val table = engine.conjugate(rootQRR, VerbPattern.X, null, null, WeaknessType.GEMINATE)
+        val past = table.forms[ConjugationKey(Tense.PAST, Voice.ACTIVE)]!!
+        fun formFor(p: Person) = past.first { it.person == p }.arabic
+
+        test("3SM — اِسْتَقَرَّ (contracted)") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "ا\u0650سْتَقَرَّ" }
+        test("3SF — اِسْتَقَرَّتْ (contracted)") { formFor(Person.THIRD_SINGULAR_FEM) shouldBe "ا\u0650سْتَقَرَّتْ" }
+        test("1S — اِسْتَقْرَرْتُ (uncontracted)") { formFor(Person.FIRST_SINGULAR) shouldBe "ا\u0650سْتَقْرَرْتُ" }
+        test("3PM — اِسْتَقَرُّوا (contracted)") { formFor(Person.THIRD_PLURAL_MASC) shouldBe "ا\u0650سْتَقَرُّوا" }
+    }
+
+    context("Geminate Form X اِسْتَقَرَّ (q-r-r) — present active") {
+        val rootQRR = listOf("ق", "ر", "ر")
+        val table = engine.conjugate(rootQRR, VerbPattern.X, null, null, WeaknessType.GEMINATE)
+        val pres = table.forms[ConjugationKey(Tense.PRESENT, Voice.ACTIVE)]!!
+        fun formFor(p: Person) = pres.first { it.person == p }.arabic
+
+        test("1S — أَسْتَقِرُّ (contracted)") { formFor(Person.FIRST_SINGULAR) shouldBe "أَسْتَقِرُّ" }
+        test("3SM — يَسْتَقِرُّ (contracted)") { formFor(Person.THIRD_SINGULAR_MASC) shouldBe "يَسْتَقِرُّ" }
+        test("3PF — يَسْتَقْرِرْنَ (uncontracted)") { formFor(Person.THIRD_PLURAL_FEM) shouldBe "يَسْتَقْرِرْنَ" }
+    }
+
+    context("Geminate verb produces 4 tables × 13 persons") {
+        test("Form I geminate") {
+            val table = engine.conjugate(listOf("ق", "ر", "ر"), VerbPattern.I, "fa3ala", "yaf3iru", WeaknessType.GEMINATE)
+            table.forms.size shouldBe 4
+            table.forms.values.forEach { it.size shouldBe 13 }
+        }
+        test("Form X geminate") {
+            val table = engine.conjugate(listOf("ق", "ر", "ر"), VerbPattern.X, null, null, WeaknessType.GEMINATE)
+            table.forms.size shouldBe 4
+            table.forms.values.forEach { it.size shouldBe 13 }
+        }
+    }
+
     context("all forms produce 4 tables × 13 persons") {
         val root = listOf("ف", "ع", "ل")
         for (form in VerbPattern.entries) {

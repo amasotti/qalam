@@ -261,6 +261,8 @@ object WeakVerbRules {
         return PersonConjugation(person, arabic, segments)
     }
 
+    // ── Geminate verbs (R2 = R3) — handled by applyGeminateContraction below ────
+
     // ── Assimilated verbs (R1 = و or ي) ─────────────────────────────────
     // e.g. وصل (w-s-l): past is regular (وَصَلَ), present drops R1 (يَصِلُ)
 
@@ -309,4 +311,55 @@ object WeakVerbRules {
         val arabic = segments.joinToString("") { it.text }
         return PersonConjugation(person, arabic, segments)
     }
+}
+
+/**
+ * Applies geminate contraction to a [PersonConjugation] built for a verb with R2 = R3.
+ *
+ * Scans segments for the last two ROOT segments (R2, R3).  When the segment immediately
+ * after R3 begins with a short-vowel diacritic (fatḥa U+064E, ḍamma U+064F, kasra U+0650),
+ * contraction occurs:
+ *   - R1's vowel segment is replaced with R2's vowel (vowel-shift rule)
+ *   - R3 is dropped; R2 acquires SHADDA + the leading vowel of the following segment
+ *   - The remainder of the following segment, if non-empty, is appended as a suffix
+ *
+ * When the following segment begins with sukūn (U+0652) or shadda (U+0651) — or when the
+ * structure is unexpected — the input is returned unchanged (uncontracted form, e.g. قَرَرْتُ).
+ *
+ * Reference: Wright §194-196 (rules for the doubled verb, الفعل المضاعف).
+ */
+fun applyGeminateContraction(conjugation: PersonConjugation): PersonConjugation {
+    val segs = conjugation.segments
+
+    // Last ROOT segment = R3 in the geminate stem
+    val j = segs.indexOfLast { it.type == SegmentType.ROOT }
+    if (j < 0 || j + 1 >= segs.size) return conjugation
+
+    // The segment after R3 holds the suffix (or the 3SM fatḥa added as PATTERN_VOWEL)
+    val afterR3 = segs[j + 1]
+    val firstChar = afterR3.text.firstOrNull() ?: return conjugation
+
+    // Only contract when the leading character is a short-vowel diacritic
+    if (firstChar.code !in 0x064E..0x0650) return conjugation
+
+    val contractionVowel = firstChar.toString()
+    val suffixRest = afterR3.text.drop(1)
+
+    // Second-to-last ROOT = R2; expect exactly one PATTERN_VOWEL between R2 and R3
+    val k = segs.subList(0, j).indexOfLast { it.type == SegmentType.ROOT }
+    if (k < 1 || j != k + 2) return conjugation   // unexpected structure
+
+    val r2Vowel = segs[k + 1].text  // PATTERN_VOWEL at k+1, between R2 and R3
+
+    val result = mutableListOf<Segment>()
+    for (i in 0 until k - 1) result.add(segs[i])            // everything before R1_vowel
+    result.add(Segment(r2Vowel, SegmentType.PATTERN_VOWEL))  // R1 takes R2's vowel
+    result.add(segs[k])                                       // R2 ROOT unchanged
+    result.add(Segment(contractionVowel + SHADDA, SegmentType.PATTERN_VOWEL)) // vowel + shadda (matches existing convention, e.g. FormStemBuilder "$FATHA$SHADDA")
+    // segs[k+1] (R2_vowel), segs[j] (R3), segs[j+1] (after-R3) are consumed
+    if (suffixRest.isNotEmpty()) result.add(Segment(suffixRest, SegmentType.SUFFIX))
+    for (i in j + 2 until segs.size) result.add(segs[i])     // any trailing segments
+
+    val arabic = result.joinToString("") { it.text }
+    return PersonConjugation(conjugation.person, arabic, result)
 }

@@ -18,6 +18,7 @@ import com.tonihacks.qalam.domain.conjugation.rules.PAST_SUFFIXES
 import com.tonihacks.qalam.domain.conjugation.rules.PRESENT_PREFIXES
 import com.tonihacks.qalam.domain.conjugation.rules.PRESENT_SUFFIXES_INDICATIVE
 import com.tonihacks.qalam.domain.conjugation.rules.WeakVerbRules
+import com.tonihacks.qalam.domain.conjugation.rules.applyGeminateContraction
 import com.tonihacks.qalam.domain.word.VerbPattern
 import com.tonihacks.qalam.domain.word.WeaknessType
 
@@ -45,15 +46,17 @@ class MsaConjugationEngine : ConjugationEngine {
                 conjugateFormIPresent(rootLetters, presentPattern, Voice.PASSIVE, weaknessType)
         } else {
             val r1 = rootLetters[0]; val r2 = rootLetters[1]; val r3 = rootLetters[2]
+            val contract: (PersonConjugation) -> PersonConjugation =
+                if (weaknessType == WeaknessType.GEMINATE) ::applyGeminateContraction else { it -> it }
 
             for (voice in Voice.entries) {
                 val isPassive = voice == Voice.PASSIVE
                 val stem = FormStemBuilder.build(verbForm, r1, r2, r3, isPassive)
 
                 forms[ConjugationKey(Tense.PAST, voice)] =
-                    conjugateFormIIXPast(stem, voice)
+                    conjugateFormIIXPast(stem, voice).map(contract)
                 forms[ConjugationKey(Tense.PRESENT, voice)] =
-                    conjugateFormIIXPresent(stem, voice)
+                    conjugateFormIIXPresent(stem, voice).map(contract)
             }
         }
 
@@ -75,6 +78,13 @@ class MsaConjugationEngine : ConjugationEngine {
             }
             WeaknessType.DEFECTIVE -> Person.entries.map {
                 WeakVerbRules.conjugateDefectivePast(r1, r2, r3, it, voice, pastPattern)
+            }
+            WeaknessType.GEMINATE -> {
+                val stem = when (voice) {
+                    Voice.ACTIVE -> FormIStemBuilder.buildPastActiveStem(rootLetters, pastPattern)
+                    Voice.PASSIVE -> FormIStemBuilder.buildPastPassiveStem(rootLetters)
+                }
+                Person.entries.map { applyGeminateContraction(buildFormIPast(it, stem)) }
             }
             // Assimilated past is regular — fall through to sound logic
             else -> {
@@ -103,6 +113,13 @@ class MsaConjugationEngine : ConjugationEngine {
             }
             WeaknessType.ASSIMILATED -> Person.entries.map {
                 WeakVerbRules.conjugateAssimilatedPresent(r1, r2, r3, it, voice, presentPattern)
+            }
+            WeaknessType.GEMINATE -> {
+                val stem = when (voice) {
+                    Voice.ACTIVE -> FormIStemBuilder.buildPresentActiveStem(rootLetters, presentPattern)
+                    Voice.PASSIVE -> FormIStemBuilder.buildPresentPassiveStem(rootLetters)
+                }
+                Person.entries.map { applyGeminateContraction(buildFormIPresent(it, stem, voice)) }
             }
             else -> {
                 val stem = when (voice) {

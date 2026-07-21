@@ -215,8 +215,7 @@ function formatEnum(value: string): string {
 						{#if !aiUnavailable}
 							<button class="btn btn-full" onclick={() => (familySuggestOpen = true)}>✦ AI Suggest family words</button>
 						{/if}
-						<a href="/words/new" class="btn btn-full">+ Add word to family</a>
-						<a href="/training" class="btn btn-full">Practice this root</a>
+						<a href="/words/new?rootId={id}" class="btn btn-full">+ Add word to family</a>
 					</div>
 				</div>
 			</aside>

@@ -60,11 +60,11 @@ internal data class OpenRouterVocabularySuggestion(
     val transliteration: String,
     val translation: String,
     val partOfSpeech: String,
-    val difficulty: String,
+    val difficulty: String = Difficulty.INTERMEDIATE.toString(),
     val dialect: String,
 )
 
-internal fun parseWordListSuggestions(content: String, json: Json): List<OpenRouterVocabularySuggestion> {
+internal fun parseAiWordSuggestions(content: String, json: Json): List<OpenRouterVocabularySuggestion> {
     val root = runCatching { json.parseToJsonElement(content) }.getOrNull() ?: return emptyList()
 
     val suggestions = when (root) {

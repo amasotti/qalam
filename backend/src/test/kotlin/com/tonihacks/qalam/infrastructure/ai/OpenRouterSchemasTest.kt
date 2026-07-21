@@ -19,7 +19,7 @@ class OpenRouterSchemasTest : FreeSpec({
             ]}
         """.trimIndent()
 
-        val result = parseWordListSuggestions(content, json)
+        val result = parseAiWordSuggestions(content, json)
 
         result.map { it.arabicText } shouldBe listOf("أحمر")
         result.single().dialect shouldBe "MSA"
@@ -28,12 +28,12 @@ class OpenRouterSchemasTest : FreeSpec({
     "parses a bare top-level array" {
         val content = """[{"arabicText":"أزرق","transliteration":"azraq","translation":"blue","partOfSpeech":"ADJECTIVE","difficulty":"BEGINNER","dialect":"MSA"}]"""
 
-        parseWordListSuggestions(content, json).map { it.arabicText } shouldBe listOf("أزرق")
+        parseAiWordSuggestions(content, json).map { it.arabicText } shouldBe listOf("أزرق")
     }
 
     "returns an empty list for malformed or incomplete suggestions" {
-        parseWordListSuggestions("not json", json) shouldBe emptyList()
-        parseWordListSuggestions("""{"suggestions":[{"arabicText":"أسود"}]}""", json) shouldBe emptyList()
+        parseAiWordSuggestions("not json", json) shouldBe emptyList()
+        parseAiWordSuggestions("""{"suggestions":[{"arabicText":"أسود"}]}""", json) shouldBe emptyList()
     }
 
     "structured schema satisfies OpenRouter strict-mode invariants" {

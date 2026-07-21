@@ -24,6 +24,23 @@ get:
         type: integer
         minimum: 2
         maximum: 6
+    - name: sortBy
+      in: query
+      description: Field to sort by (default UPDATED_AT)
+      schema:
+        type: string
+        enum:
+          - UPDATED_AT
+          - CREATED_AT
+          - NORMALIZED_FORM
+          - LETTER_COUNT
+        default: UPDATED_AT
+    - name: sortDesc
+      in: query
+      description: Sort descending (default true)
+      schema:
+        type: boolean
+        default: true
   responses:
     '200':
       description: Paginated list of roots

@@ -10,9 +10,12 @@ import com.tonihacks.qalam.delivery.dto.PageRequest
 import com.tonihacks.qalam.delivery.dto.PaginatedResponse
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.root.ArabicRoot
+import com.tonihacks.qalam.domain.root.RootFilters
 import com.tonihacks.qalam.domain.root.RootId
 import com.tonihacks.qalam.domain.root.RootRepository
+import com.tonihacks.qalam.domain.root.RootSortField
 import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
@@ -55,10 +58,19 @@ class ExposedRootRepository : RootRepository {
                 .right()
         }
 
-    override suspend fun list(page: PageRequest, letterCount: Int?): Either<DomainError, PaginatedResponse<ArabicRoot>> =
+    override suspend fun list(page: PageRequest, filters: RootFilters): Either<DomainError, PaginatedResponse<ArabicRoot>> =
         suspendTransaction {
             val query = RootsTable.selectAll().let { q ->
-                if (letterCount != null) q.where { RootsTable.letterCount eq letterCount.toShort() } else q
+                if (filters.letterCount != null) q.where { RootsTable.letterCount eq filters.letterCount.toShort() } else q
+            }.let { q ->
+                val col = when (filters.sortBy) {
+                    RootSortField.CREATED_AT -> RootsTable.createdAt
+                    RootSortField.NORMALIZED_FORM -> RootsTable.normalizedForm
+                    RootSortField.LETTER_COUNT -> RootsTable.letterCount
+                    RootSortField.UPDATED_AT -> RootsTable.updatedAt
+                }
+                val order = if (filters.sortDesc) SortOrder.DESC else SortOrder.ASC
+                q.orderBy(col to order)
             }
 
             val total = query.count()

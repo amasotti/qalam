@@ -8,6 +8,7 @@ import com.tonihacks.qalam.delivery.dto.root.CreateRootRequest
 import com.tonihacks.qalam.delivery.dto.root.NormalizeRequest
 import com.tonihacks.qalam.delivery.dto.root.UpdateRootRequest
 import com.tonihacks.qalam.domain.error.DomainError
+import com.tonihacks.qalam.domain.root.RootFilters
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -142,21 +143,21 @@ class RootServiceTest : FunSpec({
 
     context("list") {
         test("delegates to repo with parsed pagination") {
-            coEvery { repo.list(PageRequest(1, 20), null) } returns
+            coEvery { repo.list(PageRequest(1, 20), RootFilters()) } returns
                 PaginatedResponse(listOf(sampleRoot), 1L, 1, 20).right()
 
-            val result = service.list(null, null, null)
+            val result = service.list(null, null, null, null, null)
 
             result.isRight() shouldBe true
             result.getOrNull()!!.total shouldBe 1L
         }
 
         test("passes letterCount filter to repo") {
-            coEvery { repo.list(PageRequest(1, 20), 3) } returns
+            coEvery { repo.list(PageRequest(1, 20), RootFilters(letterCount = 3)) } returns
                 PaginatedResponse(listOf(sampleRoot), 1L, 1, 20).right()
 
-            service.list(null, null, 3).isRight() shouldBe true
-            coVerify { repo.list(PageRequest(1, 20), 3) }
+            service.list(null, null, 3, null, null).isRight() shouldBe true
+            coVerify { repo.list(PageRequest(1, 20), RootFilters(letterCount = 3)) }
         }
     }
 })

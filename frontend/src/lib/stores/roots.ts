@@ -27,7 +27,9 @@ export function useAllRoots() {
 	return createQuery(() => ({
 		queryKey: ['roots', 'all'],
 		queryFn: async () => {
-			const { data, error } = await listRoots({ query: { size: 500 } });
+			const { data, error } = await listRoots({
+				query: { size: 500, sortBy: 'UPDATED_AT', sortDesc: true },
+			});
 			if (error) throw error;
 			return (requireData(data, 'listRoots').items ?? []) as RootResponse[];
 		},

@@ -2,9 +2,80 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [1.1.0] - 2026-07-21
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/7686657c988bd4986988c0d2b692e0f41111309d..5923647f5180d7dc82b4e42c0a3f79c83ddf53ff)
+### 🚀 Features
+
+
+- Design API endpoints ([6cccf47](https://github.com/amasotti/qalam/commit/6cccf471d2807a3c079568c3400fb91554a16e5b))
+
+- Adapt frontend for added dialect property in ai word list suggestion ([5fd2f4f](https://github.com/amasotti/qalam/commit/5fd2f4fef749f8e0d4f2e4061234a57270486217))
+
+- Root family suggestion routes and service ([378f619](https://github.com/amasotti/qalam/commit/378f6196cc6ba1c85a140a75cbcf1d848cfc9dc9))
+
+- Wire ai root family suggestion in fe ([379a853](https://github.com/amasotti/qalam/commit/379a853599a04ecf80ae9ea0371a56aa6c4418a5))
+
+- Add checkExist word repo function ([60f00e4](https://github.com/amasotti/qalam/commit/60f00e42ab2938feb30e7a09d379dcf828065634))
+
+### 🐛 Bug Fixes
+
+
+- Word suggestion extraction ([e138a44](https://github.com/amasotti/qalam/commit/e138a44fb6fcb816fce2f1e683ba283cc9826d52))
+
+- Prefill root id for new word creation from root ([276a34d](https://github.com/amasotti/qalam/commit/276a34d2c6e63f63716237968d6dbd1d4e691a21))
+
+- Integration test koin ([e07f602](https://github.com/amasotti/qalam/commit/e07f602daa22e5cfc189a8dde75d8961f9ca9d3b))
+
+### 🚜 Refactor
+
+
+- Modularize api docs ([96dd0cb](https://github.com/amasotti/qalam/commit/96dd0cbdafd39211a3f14a3093fec522cca16402))
+
+- Modularize word list ai suggestions ([3aa4168](https://github.com/amasotti/qalam/commit/3aa4168397d80639cec51b0c898a92d765babf02))
+
+### 🧪 Testing
+
+
+- Fix test for list without description ([94bd3ee](https://github.com/amasotti/qalam/commit/94bd3ee3e8c03ffd2bdc53b2f0b15bca1740a1b9))
+
+- Root family ai suggestion ([f809bd3](https://github.com/amasotti/qalam/commit/f809bd3ce538407ff039f6e2cd627fb9749e1293))
+
+- Integration test root family suggestion ([2e158bf](https://github.com/amasotti/qalam/commit/2e158bf96e4f527bc012dd0c76d1e1093a8f6f0e))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Use ensure to make sure that the description is there ([07b7321](https://github.com/amasotti/qalam/commit/07b73213817528a70d12def7af7c5277bffa61cb))
+
+- Disable temporarily smoke test for api ([b492708](https://github.com/amasotti/qalam/commit/b4927086ebbd0b41a1c81b4c03a182ec25e3cdd1))
+
+- Fix biome warnings ([7fa2780](https://github.com/amasotti/qalam/commit/7fa278054a8e1ee7d3d73c7629b5895f2116166e))
+
+- Apy gym ([cf1c98f](https://github.com/amasotti/qalam/commit/cf1c98fcda755f59f166b663d74a1ff333454aeb))
+
+- More readable join to string ([15d13b9](https://github.com/amasotti/qalam/commit/15d13b93e1d0c455bdbd41998ac8f526345dc0c6))
+
+- Normalize arabic search ([0c212c1](https://github.com/amasotti/qalam/commit/0c212c1a1159f635aab7612a83fe2a38a546fb09))
+
+- Normalize arabic dictionary links ([72191fc](https://github.com/amasotti/qalam/commit/72191fc4b5c54fdeb7c70ae00d7845a04bfcb0ff))
+
+- Center dialog for ai suggested terms ([17994d0](https://github.com/amasotti/qalam/commit/17994d0c31e1b8b0353d4d0e58a9e49a19a0d9a6))
+
+- Enforce check non redundant suggestion ([9b7a187](https://github.com/amasotti/qalam/commit/9b7a18718b2b1a24dea2e81aff89f37dc9973db8))
+
+- Suppress warning too many function, add todo item ([e07354d](https://github.com/amasotti/qalam/commit/e07354d62db93b1f54091b38286d9cbc222c36b9))
+
+- Silence wilcard import detekt rule ([5923647](https://github.com/amasotti/qalam/commit/5923647f5180d7dc82b4e42c0a3f79c83ddf53ff))
+
+### Enhancement
+
+
+- Add possibility to sort roots list ([d1748c5](https://github.com/amasotti/qalam/commit/d1748c53a9f0a99c0f700723cf6c070b01bf9d0a))
+
 ## [1.0.1] - 2026-07-20
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/e27269a6ed2e0bee75a7e7d4849e887bc2a7470a..17ae7735f2a1e9adcf6511f515df70169762e18f)
+[Compare with last version](https://github.com/amasotti/qalam/compare/e27269a6ed2e0bee75a7e7d4849e887bc2a7470a..7686657c988bd4986988c0d2b692e0f41111309d)
 ### 🐛 Bug Fixes
 
 
@@ -28,6 +99,8 @@ All notable changes to this project will be documented in this file (created wit
 - Fix import ([274b6c3](https://github.com/amasotti/qalam/commit/274b6c3d99bcbcba152ad04643f59a4d03f740fc))
 
 - Suppress output for git-cliff action in release PR workflow ([17ae773](https://github.com/amasotti/qalam/commit/17ae7735f2a1e9adcf6511f515df70169762e18f))
+
+- Release v1.0.1 ([7686657](https://github.com/amasotti/qalam/commit/7686657c988bd4986988c0d2b692e0f41111309d))
 
 ## [1.0.0] - 2026-07-19
 

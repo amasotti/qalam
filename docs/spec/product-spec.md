@@ -187,6 +187,17 @@ normalization function canonicalizes all of these. Available as an API endpoint.
 **Word family browser**: from any root, browse all vocabulary words linked to it, including
 the derivation chains (`derivedFrom` links). Useful for building mermaid-style root diagrams.
 
+**AI root-family suggestions**: from root detail, the learner can request a preview of 3–5
+attested dictionary headwords derived from that exact root. The request is available at
+`POST /api/v1/roots/{id}/suggest-words`; it returns structured Arabic text, transliteration,
+translation, part of speech, dialect, and difficulty, with intermediate as the fallback when
+difficulty is absent. It never persists AI output automatically. Existing family members are
+excluded from the prompt and each candidate is reviewed by exact Arabic-text lookup: create a
+missing word linked to this root, link an unlinked existing word, leave a current family member
+unchanged, or navigate to a word belonging to another root without reassignment. AI availability
+is optional; a missing API key returns `503`, while a root without a meaning returns `400` so the
+learner can add its semantic field first.
+
 **Statistics**: root count, words per root (avg/max), letter-count distribution.
 
 **CRUD**: Full create, read, update, delete. Available via both UI and API.

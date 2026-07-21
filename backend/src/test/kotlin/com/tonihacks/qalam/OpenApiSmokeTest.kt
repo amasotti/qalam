@@ -24,11 +24,6 @@ class OpenApiSmokeTest : BaseIntegrationTest() {
         private val METHOD_RE = Regex("^    (get|post|put|patch|delete):\\s*$")
         private val PATH_RE = Regex("^  (/api/[^:\\s]+):\\s*$")
 
-        // Remove in Slice 3 when RootFamilySuggestionService and RootRoutes are wired.
-        private val temporarilyUnwiredOperations = setOf(
-            HttpMethod.Post to "/api/v1/roots/{id}/suggest-words",
-        )
-
         fun parseSpec(): List<Pair<HttpMethod, String>> {
             val yaml = object {}.javaClass.classLoader
                 .getResourceAsStream("openapi/documentation.yaml")
@@ -62,7 +57,7 @@ class OpenApiSmokeTest : BaseIntegrationTest() {
 
     init {
         "OpenAPI spec — every declared route must be registered in Ktor routing" - {
-            parseSpec().filterNot { it in temporarilyUnwiredOperations }.forEach { (method, pathTemplate) ->
+            parseSpec().forEach { (method, pathTemplate) ->
                 "$method $pathTemplate" {
                     val path = PATH_PARAM.replace(pathTemplate, DUMMY_UUID)
                     testApp { client ->

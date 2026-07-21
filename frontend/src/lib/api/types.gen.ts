@@ -1238,7 +1238,7 @@ export type SuggestWordsForRootData = {
 
 export type SuggestWordsForRootErrors = {
     /**
-     * Malformed UUID or invalid AI response
+     * Malformed UUID, root without a meaning, or invalid AI response
      */
     400: ErrorResponse;
     /**

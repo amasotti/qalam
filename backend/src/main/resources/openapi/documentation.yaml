@@ -226,7 +226,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RootWordSuggestionsResponse'
         '400':
-          description: Malformed UUID or invalid AI response
+          description: Malformed UUID, root without a meaning, or invalid AI response
           content:
             application/json:
               schema:

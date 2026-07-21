@@ -189,7 +189,7 @@ export function useUpdateWord() {
 		},
 		onSuccess: (_data, variables) => {
 			qc.invalidateQueries({ queryKey: ['words', variables.id] });
-			qc.invalidateQueries({ queryKey: ['words', 'all'] });
+			qc.invalidateQueries({ queryKey: ['words'] });
 		},
 	}));
 }

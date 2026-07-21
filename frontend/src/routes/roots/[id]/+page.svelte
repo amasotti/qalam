@@ -3,6 +3,7 @@ import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import type { CreateRootRequest, UpdateRootRequest } from '$lib/api/types.gen';
 import Markdown from '$lib/components/Markdown.svelte';
+import RootFamilySuggestDialog from '$lib/components/roots/RootFamilySuggestDialog.svelte';
 import RootForm from '$lib/components/roots/RootForm.svelte';
 import { useDeleteRoot, useRoot, useUpdateRoot, useWordsForRoot } from '$lib/stores/roots';
 
@@ -14,6 +15,8 @@ const deleteRoot = useDeleteRoot();
 
 let isEditing = $state(false);
 let deleteConfirm = $state(false);
+let familySuggestOpen = $state(false);
+let aiUnavailable = $state(false);
 
 async function handleUpdate(req: CreateRootRequest | UpdateRootRequest) {
 	await updateRoot.mutateAsync({ id, body: req as UpdateRootRequest });
@@ -209,11 +212,21 @@ function formatEnum(value: string): string {
 				<div class="meta-card">
 					<div class="meta-card-title">Actions</div>
 					<div class="meta-actions">
+						{#if !aiUnavailable}
+							<button class="btn btn-full" onclick={() => (familySuggestOpen = true)}>✦ AI Suggest family words</button>
+						{/if}
 						<a href="/words/new" class="btn btn-full">+ Add word to family</a>
 						<a href="/training" class="btn btn-full">Practice this root</a>
 					</div>
 				</div>
 			</aside>
 		</div>
+
+		<RootFamilySuggestDialog
+			rootId={id}
+			open={familySuggestOpen}
+			onClose={() => (familySuggestOpen = false)}
+			onAiUnavailable={() => (aiUnavailable = true)}
+		/>
 	{/if}
 {/if}

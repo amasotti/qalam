@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Search } from 'lucide-svelte';
+import { Search } from '@lucide/svelte';
 import { useAllWordLists } from '$lib/stores/wordLists';
 
 const lists = useAllWordLists();

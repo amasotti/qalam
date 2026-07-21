@@ -29,7 +29,7 @@
 		"@sveltejs/kit": "2.70.1",
 		"@sveltejs/vite-plugin-svelte": "^7.2.0",
 		"@tailwindcss/vite": "^4.3.3",
-		"@testing-library/jest-dom": "^6.9.1",
+		"@testing-library/jest-dom": "^7.0.0",
 		"@testing-library/svelte": "^5.4.2",
 		"@types/node": "^26.1.1",
 		"@vitest/ui": "4.1.10",
@@ -44,12 +44,10 @@
 		"vitest": "^4.1.10"
 	},
 	"dependencies": {
-		"@hey-api/client-fetch": "^0.13.1",
-		"@tanstack/query-core": "^5.101.2",
+		"@lucide/svelte": "^1.25.0",
 		"@tanstack/svelte-query": "^6.1.36",
 		"bits-ui": "^2.18.1",
 		"clsx": "^2.1.1",
-		"lucide-svelte": "^1.0.1",
 		"marked": "^18.0.6",
 		"tailwind-merge": "^3.6.0"
 	}

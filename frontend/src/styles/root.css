@@ -303,6 +303,7 @@
 
 /* Root-family AI preview */
 .root-family-dialog {
+	margin: auto;
 	width: min(42rem, calc(100vw - 2rem));
 	max-height: min(44rem, calc(100vh - 2rem));
 	padding: 0;

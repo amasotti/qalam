@@ -6,54 +6,27 @@ import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.core.raise.ensureNotNull
 import arrow.core.right
-import io.github.oshai.kotlinlogging.KotlinLogging
 import com.tonihacks.qalam.delivery.dto.PageRequest
 import com.tonihacks.qalam.delivery.dto.PaginatedResponse
-import com.tonihacks.qalam.domain.removeArabicDiacritics
 import com.tonihacks.qalam.domain.error.DomainError
+import com.tonihacks.qalam.domain.removeArabicDiacritics
 import com.tonihacks.qalam.domain.root.RootId
-import com.tonihacks.qalam.domain.word.DictionaryLink
-import com.tonihacks.qalam.domain.word.DictionaryLinkId
-import com.tonihacks.qalam.domain.word.DictionarySource
-import com.tonihacks.qalam.domain.word.Dialect
-import com.tonihacks.qalam.domain.word.Difficulty
-import com.tonihacks.qalam.domain.word.MasteryLevel
-import com.tonihacks.qalam.domain.word.PartOfSpeech
-import com.tonihacks.qalam.domain.word.Word
-import com.tonihacks.qalam.domain.word.WordExample
-import com.tonihacks.qalam.domain.word.WordExampleId
-import com.tonihacks.qalam.domain.word.WordFilters
-import com.tonihacks.qalam.domain.word.WordId
-import com.tonihacks.qalam.domain.word.WordSortField
-import com.tonihacks.qalam.domain.word.Gender
-import com.tonihacks.qalam.domain.word.PluralType
-import com.tonihacks.qalam.domain.word.RelationType
-import com.tonihacks.qalam.domain.word.VerbPattern
-import com.tonihacks.qalam.domain.word.WordMorphology
-import com.tonihacks.qalam.domain.word.WordPlural
-import com.tonihacks.qalam.domain.word.WordPluralId
-import com.tonihacks.qalam.domain.word.WordProgress
-import com.tonihacks.qalam.domain.word.WordRelation
-import com.tonihacks.qalam.domain.word.WordRepository
-import org.jetbrains.exposed.v1.core.JoinType
-import org.jetbrains.exposed.v1.core.Op
-import org.jetbrains.exposed.v1.core.ResultRow
-import org.jetbrains.exposed.v1.core.SortOrder
-import org.jetbrains.exposed.v1.core.and
-import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.core.inList
-import org.jetbrains.exposed.v1.core.or
-import java.util.UUID
-import kotlin.time.Clock
-import org.postgresql.util.PSQLState
+import com.tonihacks.qalam.domain.word.*
+import io.github.oshai.kotlinlogging.KotlinLogging
+import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.update
+import org.postgresql.util.PSQLState
+import java.util.*
+import kotlin.time.Clock
 import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
 
+// To be split in the future
+@Suppress("TooManyFunctions")
 class ExposedWordRepository(
     private val morphologyRepo: ExposedWordMorphologyRepository,
     private val pluralsRepo: ExposedWordPluralsRepository,
@@ -79,7 +52,8 @@ class ExposedWordRepository(
                 var condition: Op<Boolean>? = null
 
                 filters.rootId?.let { r ->
-                    condition = condition?.and(WordsTable.rootId eq r.value.toKotlinUuid()) ?: (WordsTable.rootId eq r.value.toKotlinUuid())
+                    condition = condition?.and(WordsTable.rootId eq r.value.toKotlinUuid())
+                        ?: (WordsTable.rootId eq r.value.toKotlinUuid())
                 }
                 filters.dialect?.let { d ->
                     condition = condition?.and(WordsTable.dialect eq d.name) ?: (WordsTable.dialect eq d.name)
@@ -96,8 +70,8 @@ class ExposedWordRepository(
                 filters.q?.let { queryStr ->
                     val normalizedArabicQuery = queryStr.removeArabicDiacritics()
                     val qCondition = (WordsTable.arabicText.stripArabicDiacritics() ilike "%$normalizedArabicQuery%") or
-                        (WordsTable.translation ilike "%$queryStr%") or
-                        (WordsTable.transliteration ilike "%$queryStr%")
+                            (WordsTable.translation ilike "%$queryStr%") or
+                            (WordsTable.transliteration ilike "%$queryStr%")
                     condition = condition?.and(qCondition) ?: qCondition
                 }
 
@@ -147,13 +121,17 @@ class ExposedWordRepository(
             exists.right()
         }
 
-    override suspend fun autocomplete(query: String, limit: Int, partOfSpeech: PartOfSpeech?): Either<DomainError, List<Word>> =
+    override suspend fun autocomplete(
+        query: String,
+        limit: Int,
+        partOfSpeech: PartOfSpeech?
+    ): Either<DomainError, List<Word>> =
         suspendTransaction {
             val normalizedArabicQuery = query.removeArabicDiacritics()
             val search =
                 (WordsTable.arabicText.stripArabicDiacritics() ilike "%$normalizedArabicQuery%") or
-                    (WordsTable.translation ilike "%$query%") or
-                    (WordsTable.transliteration ilike "%$query%")
+                        (WordsTable.translation ilike "%$query%") or
+                        (WordsTable.transliteration ilike "%$query%")
             val condition = partOfSpeech?.let { search and (WordsTable.partOfSpeech eq it.name) } ?: search
             WordsTable
                 .selectAll()
@@ -263,7 +241,7 @@ class ExposedWordRepository(
             either {
                 val deleteCount = WordDictionaryLinksTable.deleteWhere {
                     (WordDictionaryLinksTable.id eq linkId.value.toKotlinUuid()) and
-                    (WordDictionaryLinksTable.wordId eq wordId.value.toKotlinUuid())
+                            (WordDictionaryLinksTable.wordId eq wordId.value.toKotlinUuid())
                 }
                 ensure(deleteCount > 0) { DomainError.NotFound("DictionaryLink", linkId.toString()) }
             }
@@ -295,7 +273,7 @@ class ExposedWordRepository(
             either {
                 val deleteCount = WordExamplesTable.deleteWhere {
                     (WordExamplesTable.id eq exampleId.value.toKotlinUuid()) and
-                    (WordExamplesTable.wordId eq wordId.value.toKotlinUuid())
+                            (WordExamplesTable.wordId eq wordId.value.toKotlinUuid())
                 }
                 ensure(deleteCount > 0) { DomainError.NotFound("WordExample", exampleId.toString()) }
             }
@@ -324,12 +302,15 @@ class ExposedWordRepository(
                     masteryLevel != null && wordListIds.isNotEmpty() ->
                         query.where {
                             (WordsTable.masteryLevel eq masteryLevel.name) and
-                                (WordListItemsTable.listId inList wordListIds.map { it.toKotlinUuid() })
+                                    (WordListItemsTable.listId inList wordListIds.map { it.toKotlinUuid() })
                         }
+
                     masteryLevel != null ->
                         query.where { WordsTable.masteryLevel eq masteryLevel.name }
+
                     wordListIds.isNotEmpty() ->
                         query.where { WordListItemsTable.listId inList wordListIds.map { it.toKotlinUuid() } }
+
                     else -> query
                 }
 
@@ -371,9 +352,9 @@ class ExposedWordRepository(
                     WordProgressTable.wordId eq progress.wordId.value.toKotlinUuid()
                 }) {
                     it[consecutiveCorrect] = progress.consecutiveCorrect
-                    it[totalAttempts]      = progress.totalAttempts
-                    it[totalCorrect]       = progress.totalCorrect
-                    it[lastReviewedAt]     = progress.lastReviewedAt
+                    it[totalAttempts] = progress.totalAttempts
+                    it[totalCorrect] = progress.totalCorrect
+                    it[lastReviewedAt] = progress.lastReviewedAt
                 }
                 ensure(updatedCount > 0) { DomainError.NotFound("WordProgress", progress.wordId.value.toString()) }
             }
@@ -387,7 +368,7 @@ class ExposedWordRepository(
             try {
                 WordsTable.update({ WordsTable.id eq wordId.value.toKotlinUuid() }) {
                     it[masteryLevel] = level.name
-                    it[updatedAt]    = Clock.System.now()
+                    it[updatedAt] = Clock.System.now()
                 }
                 Unit.right()
             } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {

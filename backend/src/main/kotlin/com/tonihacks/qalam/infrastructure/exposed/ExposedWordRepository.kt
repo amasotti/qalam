@@ -136,6 +136,17 @@ class ExposedWordRepository(
             word.right()
         }
 
+    override suspend fun checkExist(arabicText: String): Either<DomainError, Boolean> =
+        suspendTransaction {
+            val normalizedArabic = arabicText.removeArabicDiacritics()
+            val condition = WordsTable.arabicText.stripArabicDiacritics() ilike "%$normalizedArabic%"
+            val exists = WordsTable
+                .selectAll()
+                .where { condition }
+                .empty().not()
+            exists.right()
+        }
+
     override suspend fun autocomplete(query: String, limit: Int, partOfSpeech: PartOfSpeech?): Either<DomainError, List<Word>> =
         suspendTransaction {
             val normalizedArabicQuery = query.removeArabicDiacritics()

@@ -17,7 +17,8 @@ data class WordFilters(
     val sortBy: WordSortField = WordSortField.UPDATED_AT,
     val sortDesc: Boolean = true,
 )
-
+// To be split in the future
+@Suppress("TooManyFunctions")
 interface WordRepository {
     suspend fun findById(id: WordId): Either<DomainError, Word>
     suspend fun list(page: PageRequest, filters: WordFilters): Either<DomainError, PaginatedResponse<Word>>

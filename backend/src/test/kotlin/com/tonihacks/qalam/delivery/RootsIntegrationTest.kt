@@ -207,5 +207,41 @@ class RootsIntegrationTest : BaseIntegrationTest() {
                 }
             }
         }
+
+        "POST /api/v1/roots/{id}/suggest-words" - {
+            "returns 503 when AI is not configured" {
+                testApp { client ->
+                    val created = client.post("/api/v1/roots") {
+                        contentType(ContentType.Application.Json)
+                        setBody("""{"root":"ك ت ب","meaning":"writing"}""")
+                    }
+                    val id = Regex(""""id":"([^"]+)"""").find(created.bodyAsText())!!.groupValues[1]
+
+                    val response = client.post("/api/v1/roots/$id/suggest-words")
+                    response.status shouldBe HttpStatusCode.ServiceUnavailable
+                    response.bodyAsText() shouldContain "AI_NOT_CONFIGURED"
+                }
+            }
+
+            "returns 400 when root has no meaning" {
+                testApp { client ->
+                    val created = client.post("/api/v1/roots") {
+                        contentType(ContentType.Application.Json)
+                        setBody("""{"root":"ك ت ب"}""")
+                    }
+                    val id = Regex(""""id":"([^"]+)"""").find(created.bodyAsText())!!.groupValues[1]
+
+                    val response = client.post("/api/v1/roots/$id/suggest-words")
+                    response.status shouldBe HttpStatusCode.BadRequest
+                }
+            }
+
+            "returns 404 for an unknown root" {
+                testApp { client ->
+                    val response = client.post("/api/v1/roots/00000000-0000-0000-0000-000000000000/suggest-words")
+                    response.status shouldBe HttpStatusCode.NotFound
+                }
+            }
+        }
     }
 }

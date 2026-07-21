@@ -31,6 +31,12 @@ class OpenRouterSchemasTest : FreeSpec({
         parseAiWordSuggestions(content, json).map { it.arabicText } shouldBe listOf("أزرق")
     }
 
+    "defaults missing difficulty to intermediate" {
+        val content = """{"suggestions":[{"arabicText":"أزرق","transliteration":"azraq","translation":"blue","partOfSpeech":"ADJECTIVE","dialect":"MSA"}]}"""
+
+        parseAiWordSuggestions(content, json).single().difficulty shouldBe "INTERMEDIATE"
+    }
+
     "returns an empty list for malformed or incomplete suggestions" {
         parseAiWordSuggestions("not json", json) shouldBe emptyList()
         parseAiWordSuggestions("""{"suggestions":[{"arabicText":"أسود"}]}""", json) shouldBe emptyList()

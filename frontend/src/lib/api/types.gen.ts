@@ -1064,6 +1064,14 @@ export type ListRootsData = {
          * Filter by number of root letters (2–6)
          */
         letterCount?: number;
+        /**
+         * Field to sort by (default UPDATED_AT)
+         */
+        sortBy?: 'UPDATED_AT' | 'CREATED_AT' | 'NORMALIZED_FORM' | 'LETTER_COUNT';
+        /**
+         * Sort descending (default true)
+         */
+        sortDesc?: boolean;
     };
     url: '/api/v1/roots';
 };

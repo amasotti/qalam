@@ -2,6 +2,7 @@
 import { Search } from 'lucide-svelte';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
+import type { RootResponse } from '$lib/api';
 import ViewToggle from '$lib/components/ViewToggle.svelte';
 import { useAllRoots } from '$lib/stores/roots';
 
@@ -25,7 +26,7 @@ let letterFilter = $state<number | null>(null);
 let page = $state(1);
 
 const filtered = $derived.by(() => {
-	let items = roots.data ?? [];
+	let items: RootResponse[] = roots.data ?? [];
 	if (letterFilter !== null) {
 		items = items.filter((r) => r.letterCount === letterFilter);
 	}

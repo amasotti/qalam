@@ -23,15 +23,24 @@ import kotlin.time.Clock
 class RootService(private val repo: RootRepository) {
     private val log = KotlinLogging.logger {}
 
-    suspend fun list(page: Int?,size: Int?,letterCount: Int?): Either<DomainError, PaginatedResponse<RootResponse>> =
-        repo.list(PageRequest.from(page, size), letterCount)
-            .map { p -> PaginatedResponse(
-                items = p.items.map { it.toResponse() },
-                total = p.total,
-                page = p.page,
-                size = p.size,
-            )
-        }.logDomainFailure(log) { "Failed to list roots page=$page size=$size letterCount=$letterCount: $it" }
+    suspend fun list(page: Int?, size: Int?, letterCount: Int?, sortBy: String?, sortDesc: Boolean?): Either<DomainError, PaginatedResponse<RootResponse>> {
+        val parsedSortBy = when (sortBy?.uppercase()) {
+            "CREATED_AT" -> RootSortField.CREATED_AT
+            "NORMALIZED_FORM" -> RootSortField.NORMALIZED_FORM
+            "LETTER_COUNT" -> RootSortField.LETTER_COUNT
+            else -> RootSortField.UPDATED_AT
+        }
+        val filters = RootFilters(letterCount = letterCount, sortBy = parsedSortBy, sortDesc = sortDesc ?: true)
+        return repo.list(PageRequest.from(page, size), filters)
+            .map { p ->
+                PaginatedResponse(
+                    items = p.items.map { it.toResponse() },
+                    total = p.total,
+                    page = p.page,
+                    size = p.size,
+                )
+            }.logDomainFailure(log) { "Failed to list roots page=$page size=$size filters=$filters: $it" }
+    }
 
     suspend fun getById(id: String): Either<DomainError, RootResponse> =
         parseId(id)

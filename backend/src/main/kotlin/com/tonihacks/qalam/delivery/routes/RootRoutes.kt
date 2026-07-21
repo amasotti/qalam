@@ -19,8 +19,10 @@ fun Route.rootRoutes(service: RootService, suggestionService: AiRootFamilySugges
             val page = call.request.queryParameters["page"]?.toIntOrNull()
             val size = call.request.queryParameters["size"]?.toIntOrNull()
             val letterCount = call.request.queryParameters["letterCount"]?.toIntOrNull()
+            val sortBy = call.request.queryParameters["sortBy"]
+            val sortDesc = call.request.queryParameters["sortDesc"]?.toBooleanStrictOrNull()
 
-            service.list(page, size, letterCount).fold(
+            service.list(page, size, letterCount, sortBy, sortDesc).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.OK, it) },
             )

@@ -1,11 +1,12 @@
 <script lang="ts">
-import { ChevronLeft } from 'lucide-svelte';
 import { goto } from '$app/navigation';
+import { page } from '$app/state';
 import type { CreateWordRequest, UpdateWordRequest } from '$lib/api/types.gen';
 import WordForm from '$lib/components/words/WordForm.svelte';
 import { useCreateWord } from '$lib/stores/words';
 
 const createWord = useCreateWord();
+const prefillRootId = $derived(page.url.searchParams.get('rootId'));
 
 async function handleSubmit(req: CreateWordRequest | UpdateWordRequest) {
 	const created = await createWord.mutateAsync(req as CreateWordRequest);
@@ -23,6 +24,7 @@ async function handleSubmit(req: CreateWordRequest | UpdateWordRequest) {
 
 	<WordForm
 		isPending={createWord.isPending}
+		initial={prefillRootId ? { rootId: prefillRootId } : {}}
 		onSubmit={handleSubmit}
 		onCancel={() => goto('/words')}
 	/>

@@ -7,13 +7,14 @@ import com.tonihacks.qalam.infrastructure.koin.appModule
 import io.ktor.server.application.*
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
+import org.koin.core.module.Module
 
 // Entry point: io.ktor.server.netty.EngineMain (set in build.gradle.kts).
 // EngineMain reads application.conf, binds to the configured port, and calls Application.module().
-fun Application.module() {
+fun Application.module(additionalModules: List<Module> = emptyList()) {
     install(Koin) {
         slf4jLogger()
-        modules(appModule)
+        modules(appModule, *additionalModules.toTypedArray())
     }
     configureDatabase()
     configurePlugins()

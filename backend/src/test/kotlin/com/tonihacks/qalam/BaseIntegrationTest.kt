@@ -8,6 +8,7 @@ import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import org.flywaydb.core.Flyway
 import org.testcontainers.containers.PostgreSQLContainer
+import org.koin.core.module.Module
 
 abstract class BaseIntegrationTest : FreeSpec() {
 
@@ -31,7 +32,10 @@ abstract class BaseIntegrationTest : FreeSpec() {
      * Starts a full Ktor testApplication wired to the Testcontainers DB.
      * Schema is already migrated by companion object init; Flyway here is a no-op.
      */
-    protected fun testApp(block: suspend ApplicationTestBuilder.(HttpClient) -> Unit) {
+    protected fun testApp(
+        additionalModules: List<Module> = emptyList(),
+        block: suspend ApplicationTestBuilder.(HttpClient) -> Unit,
+    ) {
         testApplication {
             environment {
                 config = MapApplicationConfig(
@@ -46,7 +50,7 @@ abstract class BaseIntegrationTest : FreeSpec() {
                 )
             }
             application {
-                module()
+                module(additionalModules)
             }
 
             val client = createClient {

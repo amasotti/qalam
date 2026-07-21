@@ -47,9 +47,7 @@ describe('removeArabicDiacritics', () => {
 
 	it('strips all diacritics from a fully vowelised word', () => {
 		// كَتَبَ → كتب
-		expect(removeArabicDiacritics('كَتَبَ')).toBe(
-			'كتب'
-		);
+		expect(removeArabicDiacritics('كَتَبَ')).toBe('كتب');
 	});
 
 	it('strips diacritics from a sentence, preserving spaces and letters', () => {
@@ -61,8 +59,6 @@ describe('removeArabicDiacritics', () => {
 
 	it('preserves non-Arabic scripts mixed with Arabic', () => {
 		// Latin mixed in
-		expect(removeArabicDiacritics('abc كَتَبَ xyz')).toBe(
-			'abc كتب xyz'
-		);
+		expect(removeArabicDiacritics('abc كَتَبَ xyz')).toBe('abc كتب xyz');
 	});
 });

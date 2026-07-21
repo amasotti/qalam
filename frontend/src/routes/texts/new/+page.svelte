@@ -1,5 +1,5 @@
 <script lang="ts">
-import { ChevronLeft } from 'lucide-svelte';
+import { ChevronLeft } from '@lucide/svelte';
 import { goto } from '$app/navigation';
 import type { CreateTextRequest } from '$lib/api/types.gen';
 import TextForm from '$lib/components/texts/TextForm.svelte';

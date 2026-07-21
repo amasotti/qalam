@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Search } from 'lucide-svelte';
+import { Search } from '@lucide/svelte';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import type { Dialect, Difficulty, MasteryLevel, PartOfSpeech } from '$lib/api/types.gen';

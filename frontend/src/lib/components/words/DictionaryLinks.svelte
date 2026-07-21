@@ -1,5 +1,5 @@
 <script lang="ts">
-import { ExternalLink, Plus, X } from 'lucide-svelte';
+import { ExternalLink, Plus, X } from '@lucide/svelte';
 import type {
 	CreateDictionaryLinkRequest,
 	DictionaryLinkResponse,

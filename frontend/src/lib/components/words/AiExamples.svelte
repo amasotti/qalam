@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Check, RefreshCw, Sparkles, X } from 'lucide-svelte';
+import { Check, RefreshCw, Sparkles, X } from '@lucide/svelte';
 import type { AiExampleSentence, AiExamplesResponse } from '$lib/api/types.gen';
 import Button from '$lib/components/ui/button/button.svelte';
 import { useGenerateExamples, useSaveWordExample } from '$lib/stores/words';

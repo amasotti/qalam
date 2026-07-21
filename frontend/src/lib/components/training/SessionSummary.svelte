@@ -13,9 +13,18 @@ const STATUS_MAP = {
 	INCORRECT: 'Wrong',
 	SKIPPED: 'Skipped',
 } as const;
+
 let { summary, words }: Props = $props();
 let accuracyPercent = $derived(Math.round(summary.accuracy * 100));
 let answered = $derived(summary.correct + summary.incorrect);
+
+function printableWordFromId(wordId: string): { arabic: string; meaning: string } {
+	const word = words.find((w) => w.wordId === wordId);
+	if (!word) {
+		return { arabic: '', meaning: '' };
+	}
+	return { arabic: word.arabicText, meaning: word.translation || '' };
+}
 </script>
 
 <div class="session-summary">
@@ -50,7 +59,9 @@ let answered = $derived(summary.correct + summary.incorrect);
 			<h2 class="promotions-heading">Mastery promotions</h2>
 			<ul class="promotions-list">
 				{#each summary.promotions as promotion (promotion.wordId)}
-					<li class="promotion-item">{promotion.from} → {promotion.to}</li>
+					<li class="promotion-item">
+						{printableWordFromId(promotion.wordId).arabic}: {promotion.from} → {promotion.to}
+					</li>
 				{/each}
 			</ul>
 		</div>

@@ -1,5 +1,4 @@
 <script lang="ts">
-import { createQuery } from '@tanstack/svelte-query';
 import {
 	ArrowRight,
 	BarChart2,
@@ -8,7 +7,8 @@ import {
 	ExternalLink,
 	ScrollText,
 	Sprout,
-} from 'lucide-svelte';
+} from '@lucide/svelte';
+import { createQuery } from '@tanstack/svelte-query';
 
 const health = createQuery(() => ({
 	queryKey: ['health'],

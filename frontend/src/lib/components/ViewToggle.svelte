@@ -1,5 +1,5 @@
 <script lang="ts">
-import { LayoutGrid, Table2 } from 'lucide-svelte';
+import { LayoutGrid, Table2 } from '@lucide/svelte';
 
 let {
 	view,

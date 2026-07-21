@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Check, ChevronDown, ChevronUp, Pencil, Plus, Trash2, X } from 'lucide-svelte';
+import { Check, ChevronDown, ChevronUp, Pencil, Plus, Trash2, X } from '@lucide/svelte';
 import type { SentenceResponse } from '$lib/api/types.gen';
 import { Button } from '$lib/components/ui/button';
 import {

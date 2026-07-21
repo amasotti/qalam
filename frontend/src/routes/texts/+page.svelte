@@ -1,5 +1,5 @@
 <script lang="ts">
-import { BookOpen, Search } from 'lucide-svelte';
+import { BookOpen, Search } from '@lucide/svelte';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import type { Dialect, Difficulty } from '$lib/api/types.gen';

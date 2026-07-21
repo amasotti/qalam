@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Pencil, Trash2 } from 'lucide-svelte';
+import { Pencil, Trash2 } from '@lucide/svelte';
 import type { AnnotationResponse } from '$lib/api/types.gen';
 import AnnotationBadge from './AnnotationBadge.svelte';
 

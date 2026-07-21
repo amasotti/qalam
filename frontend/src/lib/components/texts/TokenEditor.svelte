@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Cpu, Plus, Trash2, X } from 'lucide-svelte';
+import { Cpu, Plus, Trash2, X } from '@lucide/svelte';
 import { untrack } from 'svelte';
 import type { AlignmentTokenResponse, SentenceResponse } from '$lib/api/types.gen';
 import { Button } from '$lib/components/ui/button';

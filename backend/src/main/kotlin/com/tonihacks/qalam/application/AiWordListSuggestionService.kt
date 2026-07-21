@@ -9,6 +9,7 @@ import com.tonihacks.qalam.delivery.dto.wordlist.AiListWordSuggestion
 import com.tonihacks.qalam.delivery.dto.wordlist.WordListSuggestionsResponse
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.logDomainFailure
+import com.tonihacks.qalam.domain.removeArabicDiacritics
 import com.tonihacks.qalam.domain.wordlist.WordListId
 import com.tonihacks.qalam.domain.wordlist.WordListRepository
 import com.tonihacks.qalam.infrastructure.ai.ExistingVocabularyWord
@@ -38,7 +39,9 @@ class AiWordListSuggestionService internal constructor(
             description = description,
             existingWords = existingWords.map { ExistingVocabularyWord(it.arabicText, it.translation) },
         )
-        val suggestions = vocabularyAiClient.suggestWordsForList(suggestionContext).bind()
+        val suggestions = vocabularyAiClient.suggestWordsForList(suggestionContext)
+            .bind()
+            .filter { !existingWords.any { w -> w.arabicText.removeArabicDiacritics() == it.arabicText.removeArabicDiacritics() } }
 
         WordListSuggestionsResponse(
             suggestions = suggestions.map {

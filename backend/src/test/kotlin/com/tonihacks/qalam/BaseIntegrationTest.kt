@@ -50,7 +50,7 @@ abstract class BaseIntegrationTest : FreeSpec() {
                 )
             }
             application {
-                module(additionalModules)
+                configureApplication(additionalModules)
             }
 
             val client = createClient {

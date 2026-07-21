@@ -9,11 +9,11 @@ import com.tonihacks.qalam.delivery.dto.PageRequest
 import com.tonihacks.qalam.delivery.dto.root.AiRootWordSuggestion
 import com.tonihacks.qalam.delivery.dto.root.RootWordSuggestionsResponse
 import com.tonihacks.qalam.domain.error.DomainError
+import com.tonihacks.qalam.domain.removeArabicDiacritics
 import com.tonihacks.qalam.domain.root.RootId
 import com.tonihacks.qalam.domain.root.RootRepository
 import com.tonihacks.qalam.domain.word.WordFilters
 import com.tonihacks.qalam.domain.word.WordRepository
-import com.tonihacks.qalam.domain.wordlist.WordListId
 import com.tonihacks.qalam.infrastructure.ai.ExistingVocabularyWord
 import com.tonihacks.qalam.infrastructure.ai.OpenRouterVocabularyClient
 import com.tonihacks.qalam.infrastructure.ai.RootFamilySuggestionContext
@@ -41,6 +41,8 @@ class AiRootFamilySuggestionService internal constructor(
                 existingWords = family.items.map { ExistingVocabularyWord(it.arabicText, it.translation) },
             ),
         ).bind()
+            .filter { !family.items.any { w -> w.arabicText.removeArabicDiacritics() == it.arabicText.removeArabicDiacritics() } }
+
         RootWordSuggestionsResponse(suggestions.take(5).map {
             AiRootWordSuggestion(
                 it.arabicText,

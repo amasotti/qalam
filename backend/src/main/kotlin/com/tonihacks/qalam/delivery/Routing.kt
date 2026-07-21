@@ -1,5 +1,6 @@
 package com.tonihacks.qalam.delivery
 
+import com.tonihacks.qalam.application.AiRootFamilySuggestionService
 import com.tonihacks.qalam.application.AiWordListSuggestionService
 import com.tonihacks.qalam.delivery.routes.aiInsightRoutes
 import com.tonihacks.qalam.delivery.routes.analyticsRoutes
@@ -54,6 +55,7 @@ fun Application.configureRouting() {
     val exerciseService by inject<ExerciseService>()
     val wordListService by inject<WordListService>()
     val aiWordListSuggestionService by inject<AiWordListSuggestionService>()
+    val aiRootFamilySuggestionService by inject<AiRootFamilySuggestionService>()
     val aiInsightService by inject<AiInsightService>()
     val analyticsService by inject<AnalyticsService>()
     val conjugationService by inject<ConjugationService>()
@@ -66,7 +68,7 @@ fun Application.configureRouting() {
 
         route("/api/v1") {
             swaggerUI(path = "swagger-ui", swaggerFile = "openapi/documentation.yaml")
-            rootRoutes(rootService)
+            rootRoutes(rootService, aiRootFamilySuggestionService)
 
             wordRoutes(wordService, dictionaryService)
             wordListRoutes(wordListService, aiWordListSuggestionService)

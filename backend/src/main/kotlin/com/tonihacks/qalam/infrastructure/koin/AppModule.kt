@@ -1,5 +1,6 @@
 package com.tonihacks.qalam.infrastructure.koin
 
+import com.tonihacks.qalam.application.AiRootFamilySuggestionService
 import com.tonihacks.qalam.application.AiWordListSuggestionService
 import com.tonihacks.qalam.domain.ai.AiInsightService
 import com.tonihacks.qalam.domain.annotation.AnnotationRepository
@@ -109,6 +110,7 @@ val aiModule = module {
     single { OpenRouterClient() }
     single { OpenRouterVocabularyClient(get()) }
     single { AiWordListSuggestionService(get(), get()) }
+    single { AiRootFamilySuggestionService(get(), get(), get())}
 }
 
 val analyticsModule = module {

@@ -10,17 +10,6 @@ import com.tonihacks.qalam.domain.word.PartOfSpeech
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.serialization.json.Json
 
-internal data class VocabularySuggestionContext(
-    val title: String,
-    val description: String,
-    val existingWords: List<ExistingVocabularyWord>,
-)
-
-internal data class ExistingVocabularyWord(
-    val arabicText: String,
-    val translation: String?,
-)
-
 internal class OpenRouterVocabularyClient(
     private val openRouter: OpenRouterClient,
 ) {
@@ -30,14 +19,13 @@ internal class OpenRouterVocabularyClient(
     suspend fun suggestWordsForList(
         context: VocabularySuggestionContext,
     ): Either<DomainError, List<OpenRouterVocabularySuggestion>> {
-        val existingWords = if (context.existingWords.isEmpty()) {
-            "The list is currently empty."
-        } else {
-            val existingWordsList = context.existingWords
-                .filter { w -> w.translation != null }
-                .joinToString("\n") { w -> "- ${w.arabicText} (${w.translation})" }
-            "Words already in the list (do NOT suggest these or close variants):\n$existingWordsList"
-        }
+
+        val existingWordsList = context.existingWords
+            .filter { w -> w.translation != null }
+            .joinToString("\n") { w -> "- ${w.arabicText} (${w.translation})" }
+
+        val existingWords = "Words already in the list (do NOT suggest these or close variants):\n$existingWordsList"
+            .ifBlank { "The list is currently empty." }
 
         val prompt = PromptLoader.loadPrompt(
             path = "ai-prompts/SuggestWordsForListUserPrompt.md",
@@ -66,7 +54,7 @@ internal class OpenRouterVocabularyClient(
                 ),
                 provider = OpenRouterProviderPreferences(requireParameters = true),
             ),
-        ).map { parseWordListSuggestions(it, json) }
+        ).map { parseAiWordSuggestions(it, json) }
 
         return result.fold(
             { error ->
@@ -77,4 +65,73 @@ internal class OpenRouterVocabularyClient(
             { suggestions -> suggestions.right() },
         )
     }
+
+    suspend fun suggestWordsForRoot(
+        context: RootFamilySuggestionContext,
+    ): Either<DomainError, List<OpenRouterVocabularySuggestion>> {
+
+        val existingWords = context.existingWords
+            .filter { w -> w.translation != null }
+            .joinToString("\n") { w -> "- ${w.arabicText} (${w.translation})" }
+            .ifBlank { "No existing family members yet." }
+
+        val systemPrompt = PromptLoader.loadPrompt("ai-prompts/VocabularyExpertSystemPrompt.md")
+
+        val prompt = PromptLoader.loadPrompt(
+            "ai-prompts/SuggestWordsForRootUserPrompt.md",
+            mapOf(
+                "displayForm" to context.displayForm,
+                "meaning" to context.meaning.orEmpty(),
+                "analysis" to context.analysis.orEmpty(),
+                "existingWords" to existingWords,
+                "partOfSpeechValues" to PartOfSpeech.entries.joinToString { it.name },
+                "difficultyValues" to Difficulty.entries.joinToString { it.name },
+                "dialectValues" to Dialect.entries.joinToString { it.name },
+            ),
+        )
+        val result = openRouter.complete(
+            OpenRouterCompletionRequest(
+                systemPrompt = systemPrompt,
+                userPrompt = prompt,
+                responseFormat = OpenRouterResponseFormat(
+                    type = "json_schema",
+                    jsonSchema = OpenRouterJsonSchema(
+                        name = "root_words_suggestions",
+                        strict = true,
+                        schema = wordSuggestionSchema,
+                    ),
+                ),
+                provider = OpenRouterProviderPreferences(requireParameters = true),
+            ),
+        ).map { parseAiWordSuggestions(it, json) }
+
+        return result.fold(
+            { error ->
+                log.warn { "OpenRouter rootFamily suggestion failed titleLength=${context.displayForm}: $error" }
+                if (error == DomainError.AiNotConfigured) error.left()
+                else DomainError.InvalidInput("AI list suggestion request failed").left()
+            },
+            { suggestions -> suggestions.take(5).right() },
+        )
+    }
 }
+
+// --------- Word suggestion ------------------
+
+internal data class VocabularySuggestionContext(
+    val title: String,
+    val description: String,
+    val existingWords: List<ExistingVocabularyWord>,
+)
+
+internal data class ExistingVocabularyWord(
+    val arabicText: String,
+    val translation: String?,
+)
+
+internal data class RootFamilySuggestionContext(
+    val displayForm: String,
+    val meaning: String,
+    val analysis: String,
+    val existingWords: List<ExistingVocabularyWord>,
+)

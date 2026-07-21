@@ -1,5 +1,6 @@
 package com.tonihacks.qalam.delivery.routes
 
+import com.tonihacks.qalam.application.AiRootFamilySuggestionService
 import com.tonihacks.qalam.delivery.respondError
 import com.tonihacks.qalam.delivery.dto.root.CreateRootRequest
 import com.tonihacks.qalam.delivery.dto.root.NormalizeRequest
@@ -11,7 +12,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.getOrFail
 
-fun Route.rootRoutes(service: RootService) {
+fun Route.rootRoutes(service: RootService, suggestionService: AiRootFamilySuggestionService) {
     route("/roots") {
         get {
 
@@ -61,6 +62,15 @@ fun Route.rootRoutes(service: RootService) {
         post("/normalize") {
             val req = call.receive<NormalizeRequest>()
             service.normalize(req).fold(
+                { call.respondError(it) },
+                { call.respond(HttpStatusCode.OK, it) },
+            )
+        }
+
+        // ----- AI word family suggestion
+        post("/{id}/suggest-words") {
+            val id = call.pathParameters.getOrFail<String>("id")
+            suggestionService.suggestWords(id).fold(
                 { call.respondError(it) },
                 { call.respond(HttpStatusCode.OK, it) },
             )

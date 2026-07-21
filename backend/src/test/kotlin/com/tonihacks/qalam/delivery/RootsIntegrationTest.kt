@@ -1,11 +1,17 @@
 package com.tonihacks.qalam.delivery
 
 import com.tonihacks.qalam.BaseIntegrationTest
+import arrow.core.right
+import com.tonihacks.qalam.infrastructure.ai.OpenRouterVocabularyClient
+import com.tonihacks.qalam.infrastructure.ai.OpenRouterVocabularySuggestion
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.mockk.coEvery
+import io.mockk.mockk
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import org.koin.dsl.module
 
 class RootsIntegrationTest : BaseIntegrationTest() {
 
@@ -209,6 +215,32 @@ class RootsIntegrationTest : BaseIntegrationTest() {
         }
 
         "POST /api/v1/roots/{id}/suggest-words" - {
+            "returns a deterministic preview when vocabulary client is bound" {
+                val vocabularyClient = mockk<OpenRouterVocabularyClient>()
+                coEvery { vocabularyClient.suggestWordsForRoot(any()) } returns listOf(
+                    OpenRouterVocabularySuggestion(
+                        arabicText = "مَكْتَب",
+                        transliteration = "maktab",
+                        translation = "desk",
+                        partOfSpeech = "NOUN",
+                        difficulty = "BEGINNER",
+                        dialect = "MSA",
+                    ),
+                ).right()
+
+                testApp(listOf(module { single { vocabularyClient } })) { client ->
+                    val created = client.post("/api/v1/roots") {
+                        contentType(ContentType.Application.Json)
+                        setBody("""{"root":"ك ت ب","meaning":"writing"}""")
+                    }
+                    val id = Regex(""""id":"([^"]+)"""").find(created.bodyAsText())!!.groupValues[1]
+
+                    val response = client.post("/api/v1/roots/$id/suggest-words")
+                    response.status shouldBe HttpStatusCode.OK
+                    response.bodyAsText() shouldContain "مَكْتَب"
+                }
+            }
+
             "returns 503 when AI is not configured" {
                 testApp { client ->
                     val created = client.post("/api/v1/roots") {

@@ -9,7 +9,7 @@ import com.tonihacks.qalam.delivery.dto.word.CreateWordRequest
 import com.tonihacks.qalam.delivery.dto.word.UpdateWordRequest
 import com.tonihacks.qalam.delivery.dto.word.UpsertVerbDetailsRequest
 import com.tonihacks.qalam.domain.error.DomainError
-import com.tonihacks.qalam.infrastructure.ai.AiClient
+import com.tonihacks.qalam.infrastructure.ai.OpenRouterWordClient
 import com.tonihacks.qalam.infrastructure.exposed.ExposedVerbDetailsRepository
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -24,7 +24,7 @@ import kotlin.time.Instant
 class WordServiceTest : FunSpec({
 
     val repo = mockk<WordRepository>()
-    val aiClient = mockk<AiClient>()
+    val aiClient = mockk<OpenRouterWordClient>()
     val verbDetailsRepo = mockk<ExposedVerbDetailsRepository>()
     val service = WordService(repo, aiClient, verbDetailsRepo)
 

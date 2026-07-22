@@ -17,6 +17,7 @@ import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.update
 import org.postgresql.util.PSQLState
@@ -288,40 +289,11 @@ class ExposedWordRepository(
         suspendTransaction {
             try {
                 val query = if (wordListIds.isEmpty()) {
-                    WordsTable.selectAll()
+                    trainingQueryWithoutWordLists(masteryLevel, dialects, limit)
                 } else {
-                    WordsTable
-                        .join(
-                            WordListItemsTable,
-                            JoinType.INNER,
-                            additionalConstraint = { WordsTable.id eq WordListItemsTable.wordId },
-                        )
-                        .selectAll()
+                    trainingQueryForWordLists(masteryLevel, wordListIds, dialects, limit)
                 }
-
-                val dialectCondition = WordsTable.dialect inList dialects.map { it.name }
-                val filtered = when {
-                    masteryLevel != null && wordListIds.isNotEmpty() ->
-                        query.where {
-                            dialectCondition and (WordsTable.masteryLevel eq masteryLevel.name) and
-                                    (WordListItemsTable.listId inList wordListIds.map { it.toKotlinUuid() })
-                        }
-
-                    masteryLevel != null ->
-                        query.where { dialectCondition and (WordsTable.masteryLevel eq masteryLevel.name) }
-
-                    wordListIds.isNotEmpty() ->
-                        query.where { dialectCondition and (WordListItemsTable.listId inList wordListIds.map { it.toKotlinUuid() }) }
-
-                    else -> query.where { dialectCondition }
-                }
-
-                filtered
-                    .toList()
-                    .map { it.toWord() }
-                    .distinctBy { it.id }
-                    .shuffled()
-                    .take(limit)
+                query.map { it.toWord() }
                     .right()
             } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
                 log.error(e) {
@@ -330,6 +302,36 @@ class ExposedWordRepository(
                 DomainError.DatabaseError.left()
             }
         }
+
+    private fun trainingQueryWithoutWordLists(
+        masteryLevel: MasteryLevel?,
+        dialects: Set<Dialect>,
+        limit: Int,
+    ) = WordsTable
+        .selectAll()
+        .where {
+            (WordsTable.dialect inList dialects.map { it.name }) and
+                    (masteryLevel?.let { WordsTable.masteryLevel eq it.name } ?: Op.TRUE)
+        }
+        .orderBy(CustomFunction<Double>("RANDOM", DoubleColumnType()) to SortOrder.ASC)
+        .limit(limit)
+
+    private fun trainingQueryForWordLists(
+        masteryLevel: MasteryLevel?,
+        wordListIds: Set<UUID>,
+        dialects: Set<Dialect>,
+        limit: Int,
+    ) = WordsTable
+        .selectAll()
+        .where {
+            (WordsTable.dialect inList dialects.map { it.name }) and
+                    (WordsTable.id inSubQuery WordListItemsTable
+                        .select(WordListItemsTable.wordId)
+                        .where { WordListItemsTable.listId inList wordListIds.map { it.toKotlinUuid() } }) and
+                    (masteryLevel?.let { WordsTable.masteryLevel eq it.name } ?: Op.TRUE)
+        }
+        .orderBy(CustomFunction<Double>("RANDOM", DoubleColumnType()) to SortOrder.ASC)
+        .limit(limit)
 
     override suspend fun getProgress(wordId: WordId): Either<DomainError, WordProgress> =
         suspendTransaction {

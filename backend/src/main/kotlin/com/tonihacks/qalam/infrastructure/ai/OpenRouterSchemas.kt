@@ -54,6 +54,69 @@ internal val wordSuggestionSchema: JsonObject = buildJsonObject {
     }
 }
 
+internal val productionPracticeReviewSchema: JsonObject = buildJsonObject {
+    put("type", "object")
+    put("additionalProperties", false)
+    putJsonArray("required") {
+        add("verdict")
+        add("wordFeedback")
+        add("corrections")
+        add("improvedSentence")
+        add("comment")
+    }
+    putJsonObject("properties") {
+        putJsonObject("verdict") {
+            put("type", "string")
+            putJsonArray("enum") {
+                add("EXCELLENT")
+                add("GOOD")
+                add("NEEDS_REVISION")
+            }
+        }
+        putJsonObject("wordFeedback") {
+            put("type", "array")
+            putJsonObject("items") {
+                put("type", "object")
+                put("additionalProperties", false)
+                putJsonArray("required") {
+                    add("wordId")
+                    add("usedNaturally")
+                    add("note")
+                }
+                putJsonObject("properties") {
+                    putJsonObject("wordId") { put("type", "string") }
+                    putJsonObject("usedNaturally") { put("type", "boolean") }
+                    putJsonObject("note") { put("type", "string") }
+                }
+            }
+        }
+        putJsonObject("corrections") {
+            put("type", "array")
+            putJsonObject("items") {
+                put("type", "object")
+                put("additionalProperties", false)
+                putJsonArray("required") {
+                    add("original")
+                    add("suggestion")
+                    add("explanation")
+                }
+                putJsonObject("properties") {
+                    putJsonObject("original") { put("type", "string") }
+                    putJsonObject("suggestion") { put("type", "string") }
+                    putJsonObject("explanation") { put("type", "string") }
+                }
+            }
+        }
+        putJsonObject("improvedSentence") {
+            putJsonArray("type") {
+                add("string")
+                add("null")
+            }
+        }
+        putJsonObject("comment") { put("type", "string") }
+    }
+}
+
 @Serializable
 internal data class OpenRouterVocabularySuggestion(
     val arabicText: String,

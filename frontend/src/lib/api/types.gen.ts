@@ -501,6 +501,7 @@ export type CreateSessionRequest = {
      * Optional word-list IDs that constrain the training pool. Multiple lists use union semantics.
      */
     wordListIds?: Array<string>;
+    dialect?: Dialect;
 };
 
 export type TrainingWordExampleResponse = {
@@ -522,6 +523,7 @@ export type TrainingWordRelationResponse = {
 export type TrainingSessionWordResponse = {
     wordId: string;
     arabicText: string;
+    dialect: Dialect;
     transliteration?: string | null;
     translation: string | null;
     /**
@@ -536,10 +538,7 @@ export type TrainingSessionWordResponse = {
      * Result recorded for this word (CORRECT, INCORRECT, SKIPPED)
      */
     result?: 'CORRECT' | 'INCORRECT' | 'SKIPPED';
-    /**
-     * Current mastery level for this word
-     */
-    masteryLevel: 'NEW' | 'LEARNING' | 'KNOWN' | 'MASTERED';
+    masteryLevel: MasteryLevel;
     /**
      * Display form of the Arabic root (e.g. "ك ل م"), if available
      */
@@ -2959,7 +2958,7 @@ export type CreateTrainingSessionData = {
 
 export type CreateTrainingSessionErrors = {
     /**
-     * Invalid request (missing/invalid mode or size)
+     * Invalid request (missing/invalid mode, size, or dialect)
      */
     400: ErrorResponse;
     /**

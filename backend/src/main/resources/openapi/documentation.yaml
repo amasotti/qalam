@@ -2108,7 +2108,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/TrainingSessionResponse'
         '400':
-          description: Invalid request (missing/invalid mode or size)
+          description: Invalid request (missing/invalid mode, size, or dialect)
           content:
             application/json:
               schema:
@@ -4325,6 +4325,9 @@ components:
             type: string
             format: uuid
           default: []
+        dialect:
+          $ref: '#/components/schemas/Dialect'
+          description: Optional dialect focus. MSA is always included; omitted means MSA only.
     TrainingWordExampleResponse:
       type: object
       required:
@@ -4365,6 +4368,7 @@ components:
       required:
         - wordId
         - arabicText
+        - dialect
         - translation
         - frontSide
         - position
@@ -4375,6 +4379,8 @@ components:
           format: uuid
         arabicText:
           type: string
+        dialect:
+          $ref: '#/components/schemas/Dialect'
         transliteration:
           type: string
           nullable: true
@@ -4399,13 +4405,7 @@ components:
             - INCORRECT
             - SKIPPED
         masteryLevel:
-          type: string
-          description: Current mastery level for this word
-          enum:
-            - NEW
-            - LEARNING
-            - KNOWN
-            - MASTERED
+          $ref: '#/components/schemas/MasteryLevel'
         root:
           type: string
           nullable: true

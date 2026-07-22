@@ -2,6 +2,7 @@ type: object
 required:
   - wordId
   - arabicText
+  - dialect
   - translation
   - frontSide
   - position
@@ -12,6 +13,8 @@ properties:
     format: uuid
   arabicText:
     type: string
+  dialect:
+    $ref: ./Dialect.yaml
   transliteration:
     type: string
     nullable: true
@@ -36,13 +39,7 @@ properties:
       - INCORRECT
       - SKIPPED
   masteryLevel:
-    type: string
-    description: Current mastery level for this word
-    enum:
-      - NEW
-      - LEARNING
-      - KNOWN
-      - MASTERED
+    $ref: "./MasteryLevel.yaml"
   root:
     type: string
     nullable: true

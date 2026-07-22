@@ -307,29 +307,33 @@ class ExposedWordRepository(
         masteryLevel: MasteryLevel?,
         dialects: Set<Dialect>,
         limit: Int,
-    ) = WordsTable
-        .selectAll()
-        .where {
-            (WordsTable.dialect inList dialects.map { it.name }) and
-                    (masteryLevel?.let { WordsTable.masteryLevel eq it.name } ?: Op.TRUE)
-        }
-        .orderBy(CustomFunction<Double>("RANDOM", DoubleColumnType()) to SortOrder.ASC)
-        .limit(limit)
+    ) = sampleTrainingWords(trainingFilters(masteryLevel, dialects), limit)
 
     private fun trainingQueryForWordLists(
         masteryLevel: MasteryLevel?,
         wordListIds: Set<UUID>,
         dialects: Set<Dialect>,
         limit: Int,
-    ) = WordsTable
+    ) = sampleTrainingWords(
+        trainingFilters(masteryLevel, dialects) and wordListMembership(wordListIds),
+        limit,
+    )
+
+    private fun trainingFilters(
+        masteryLevel: MasteryLevel?,
+        dialects: Set<Dialect>,
+    ): Op<Boolean> =
+        (WordsTable.dialect inList dialects.map { it.name }) and
+                (masteryLevel?.let { WordsTable.masteryLevel eq it.name } ?: Op.TRUE)
+
+    private fun wordListMembership(wordListIds: Set<UUID>): Op<Boolean> =
+        WordsTable.id inSubQuery WordListItemsTable
+            .select(WordListItemsTable.wordId)
+            .where { WordListItemsTable.listId inList wordListIds.map { it.toKotlinUuid() } }
+
+    private fun sampleTrainingWords(predicate: Op<Boolean>, limit: Int) = WordsTable
         .selectAll()
-        .where {
-            (WordsTable.dialect inList dialects.map { it.name }) and
-                    (WordsTable.id inSubQuery WordListItemsTable
-                        .select(WordListItemsTable.wordId)
-                        .where { WordListItemsTable.listId inList wordListIds.map { it.toKotlinUuid() } }) and
-                    (masteryLevel?.let { WordsTable.masteryLevel eq it.name } ?: Op.TRUE)
-        }
+        .where { predicate }
         .orderBy(CustomFunction<Double>("RANDOM", DoubleColumnType()) to SortOrder.ASC)
         .limit(limit)
 

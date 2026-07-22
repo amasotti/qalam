@@ -2,9 +2,54 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [1.1.1] - 2026-07-22
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/0a1768f80e92cd11224522b9d0e1e5f7df8f3af2..a602a44554891cac1f0045c23bb8d7af8e5fd8ba)
+### 🐛 Bug Fixes
+
+
+- Forvo link generation ([e2fc9f5](https://github.com/amasotti/qalam/commit/e2fc9f510f352368a656f27c0597b3350d34872f))
+
+### 🚜 Refactor
+
+
+- Modularize analyze word and improve prompt ([7b273f5](https://github.com/amasotti/qalam/commit/7b273f52836525658e49fe57694243de732e5893))
+
+- Improve prompts for the rest of vocabulary operations ([63837b7](https://github.com/amasotti/qalam/commit/63837b7d5cac07409c71bbd36e47c43efa155288))
+
+- General enum parsing ([31539e5](https://github.com/amasotti/qalam/commit/31539e545d8daadcbd5013f040d5297cef70eae9))
+
+- Word service ([4769b7c](https://github.com/amasotti/qalam/commit/4769b7cd70fcf268824e8823a23faa9e9044dfc6))
+
+- Sentence ai functionality extraction ([8cdb9a0](https://github.com/amasotti/qalam/commit/8cdb9a0f17a65041135e7763d4355fd9fbf4c418))
+
+- Complete modularization of god-service AiClient ([7f79eb7](https://github.com/amasotti/qalam/commit/7f79eb7b8dfefcb6f9bf9608358f57afa14f623c))
+
+- Complete modularization of god-service AiClient ([b4b6068](https://github.com/amasotti/qalam/commit/b4b6068107fa016e733de070883d0444648743fe))
+
+### 🧪 Testing
+
+
+- Fix test after change ([8a15d02](https://github.com/amasotti/qalam/commit/8a15d020ad38e3bcc0085a751319783d4f082fc1))
+
+- Adapt text and word service tests ([102aa5a](https://github.com/amasotti/qalam/commit/102aa5ada776d0892cfe1edf27fe978b44f1be2f))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Cleanup dependencies ([ab824dd](https://github.com/amasotti/qalam/commit/ab824ddc6e19ad8d72c881e2ae872dc6b13106d6))
+
+- Format frontend ([6cd8a0e](https://github.com/amasotti/qalam/commit/6cd8a0ee2022c3ef19195f84376944fd2133142d))
+
+- Sentence assistant sys prompt ([d97c812](https://github.com/amasotti/qalam/commit/d97c8126f61d66fa7ee4751b4ff6d28663af40d3))
+
+- Update dependencies fe ([8f4563a](https://github.com/amasotti/qalam/commit/8f4563a3100c57df6f0622288322d8be903cea6a))
+
+- Update docker base image backend builder ([a602a44](https://github.com/amasotti/qalam/commit/a602a44554891cac1f0045c23bb8d7af8e5fd8ba))
+
 ## [1.1.0] - 2026-07-21
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/7686657c988bd4986988c0d2b692e0f41111309d..5923647f5180d7dc82b4e42c0a3f79c83ddf53ff)
+[Compare with last version](https://github.com/amasotti/qalam/compare/7686657c988bd4986988c0d2b692e0f41111309d..0a1768f80e92cd11224522b9d0e1e5f7df8f3af2)
 ### 🚀 Features
 
 
@@ -67,6 +112,8 @@ All notable changes to this project will be documented in this file (created wit
 - Suppress warning too many function, add todo item ([e07354d](https://github.com/amasotti/qalam/commit/e07354d62db93b1f54091b38286d9cbc222c36b9))
 
 - Silence wilcard import detekt rule ([5923647](https://github.com/amasotti/qalam/commit/5923647f5180d7dc82b4e42c0a3f79c83ddf53ff))
+
+- Release v1.1.0 ([0a1768f](https://github.com/amasotti/qalam/commit/0a1768f80e92cd11224522b9d0e1e5f7df8f3af2))
 
 ### Enhancement
 

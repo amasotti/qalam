@@ -74,12 +74,18 @@ internal class OpenRouterClient : AutoCloseable {
                         ),
                         responseFormat = req.responseFormat,
                         provider = req.provider,
-                        maxTokens = req.maxTokens,
+                        maxCompletionTokens = req.maxCompletionTokens,
                     ),
                 )
             }
-            val content = res.body<OpenRouterResponse>()
-                .choices.firstOrNull()?.message?.content ?: return DomainError.InvalidInput("Empty AI response").left()
+            val completion = res.body<OpenRouterResponse>()
+            val choice = completion.choices.firstOrNull() ?: return DomainError.InvalidInput("Empty AI response").left()
+            log.debug {
+                "OpenRouter completion finishReason=${choice.finishReason} nativeFinishReason=${choice.nativeFinishReason} " +
+                    "promptTokens=${completion.usage?.promptTokens} completionTokens=${completion.usage?.completionTokens} " +
+                    "totalTokens=${completion.usage?.totalTokens}"
+            }
+            val content = choice.message.content
             content.right()
         } catch (error: Exception) {
             log.warn(error) { "OpenRouter completion failed" }
@@ -100,7 +106,7 @@ internal data class OpenRouterCompletionRequest(
     val userPrompt: String,
     val responseFormat: OpenRouterResponseFormat? = null,
     val provider: OpenRouterProviderPreferences? = null,
-    val maxTokens: Int? = null,
+    val maxCompletionTokens: Int? = null,
 )
 
 @Serializable
@@ -109,7 +115,7 @@ internal data class OpenRouterRequest(
     val messages: List<OpenRouterMessage>,
     @SerialName("response_format") val responseFormat: OpenRouterResponseFormat? = null,
     val provider: OpenRouterProviderPreferences? = null,
-    @SerialName("max_tokens") val maxTokens: Int? = null,
+    @SerialName("max_completion_tokens") val maxCompletionTokens: Int? = null,
 )
 
 @Serializable
@@ -134,7 +140,21 @@ internal data class OpenRouterProviderPreferences(
 internal data class OpenRouterMessage(val role: String, val content: String)
 
 @Serializable
-internal data class OpenRouterResponse(val choices: List<OpenRouterChoice>)
+internal data class OpenRouterResponse(
+    val choices: List<OpenRouterChoice>,
+    val usage: OpenRouterUsage? = null,
+)
 
 @Serializable
-internal data class OpenRouterChoice(val message: OpenRouterMessage)
+internal data class OpenRouterChoice(
+    val message: OpenRouterMessage,
+    @SerialName("finish_reason") val finishReason: String? = null,
+    @SerialName("native_finish_reason") val nativeFinishReason: String? = null,
+)
+
+@Serializable
+internal data class OpenRouterUsage(
+    @SerialName("prompt_tokens") val promptTokens: Int? = null,
+    @SerialName("completion_tokens") val completionTokens: Int? = null,
+    @SerialName("total_tokens") val totalTokens: Int? = null,
+)

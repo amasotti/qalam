@@ -22,4 +22,29 @@ class PromptLoaderTest : FunSpec({
         prompt shouldNotContain "<partOfSpeechValues>"
         prompt.contains("Description: Everyday vocabulary") shouldBe true
     }
+
+    test("renders word capability prompts without placeholder leakage") {
+        val prompts = listOf(
+            PromptLoader.loadPrompt(
+                "ai-prompts/GenerateWordExamplesUserPrompt.md",
+                mapOf("arabicText" to "كتاب", "translationHint" to " (meaning: \"book\")"),
+            ),
+            PromptLoader.loadPrompt(
+                "ai-prompts/AnalyzeWordUserPrompt.md",
+                mapOf("arabicText" to "كتاب", "partOfSpeechValues" to "NOUN, VERB",),
+            ),
+            PromptLoader.loadPrompt(
+                "ai-prompts/EnrichWordUserPrompt.md",
+                mapOf(
+                    "arabicText" to "كتاب",
+                    "transliterationClause" to " [ktaab]",
+                    "translation" to "book",
+                    "partOfSpeech" to "NOUN",
+                    "dialect" to "MSA",
+                ),
+            ),
+        )
+
+        prompts.forEach { prompt -> prompt shouldNotContain "<" }
+    }
 })

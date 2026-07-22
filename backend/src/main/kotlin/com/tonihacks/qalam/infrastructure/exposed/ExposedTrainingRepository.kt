@@ -15,6 +15,7 @@ import com.tonihacks.qalam.domain.training.TrainingSessionId
 import com.tonihacks.qalam.domain.training.TrainingSessionWord
 import com.tonihacks.qalam.domain.training.TrainingWordExample
 import com.tonihacks.qalam.domain.training.TrainingWordRelation
+import com.tonihacks.qalam.domain.word.Dialect
 import com.tonihacks.qalam.domain.word.WordId
 import kotlin.time.Instant
 import org.jetbrains.exposed.v1.core.JoinType
@@ -280,6 +281,7 @@ private fun ResultRow.toTrainingSessionWord(
     position          = this[TrainingSessionWordsTable.position],
     frontSide         = FlashcardSide.valueOf(this[TrainingSessionWordsTable.frontSide]),
     arabicText        = this[WordsTable.arabicText],
+    dialect           = Dialect.fromString(this[WordsTable.dialect]) ?: Dialect.MSA,
     transliteration   = this[WordsTable.transliteration],
     translation       = this[WordsTable.translation],
     masteryLevel      = this[WordsTable.masteryLevel],

@@ -283,6 +283,7 @@ class ExposedWordRepository(
         masteryLevel: MasteryLevel?,
         wordListIds: Set<UUID>,
         limit: Int,
+        dialects: Set<Dialect>,
     ): Either<DomainError, List<Word>> =
         suspendTransaction {
             try {
@@ -298,20 +299,21 @@ class ExposedWordRepository(
                         .selectAll()
                 }
 
+                val dialectCondition = WordsTable.dialect inList dialects.map { it.name }
                 val filtered = when {
                     masteryLevel != null && wordListIds.isNotEmpty() ->
                         query.where {
-                            (WordsTable.masteryLevel eq masteryLevel.name) and
+                            dialectCondition and (WordsTable.masteryLevel eq masteryLevel.name) and
                                     (WordListItemsTable.listId inList wordListIds.map { it.toKotlinUuid() })
                         }
 
                     masteryLevel != null ->
-                        query.where { WordsTable.masteryLevel eq masteryLevel.name }
+                        query.where { dialectCondition and (WordsTable.masteryLevel eq masteryLevel.name) }
 
                     wordListIds.isNotEmpty() ->
-                        query.where { WordListItemsTable.listId inList wordListIds.map { it.toKotlinUuid() } }
+                        query.where { dialectCondition and (WordListItemsTable.listId inList wordListIds.map { it.toKotlinUuid() }) }
 
-                    else -> query
+                    else -> query.where { dialectCondition }
                 }
 
                 filtered

@@ -1,6 +1,7 @@
 package com.tonihacks.qalam.domain.training
 
 import com.tonihacks.qalam.domain.word.WordId
+import com.tonihacks.qalam.domain.word.Dialect
 import kotlin.time.Instant
 import java.util.UUID
 
@@ -44,6 +45,7 @@ data class TrainingSessionWord(
     val position: Int,
     val frontSide: FlashcardSide,
     val arabicText: String,
+    val dialect: Dialect,
     val transliteration: String?,
     val translation: String?,
     val masteryLevel: String,

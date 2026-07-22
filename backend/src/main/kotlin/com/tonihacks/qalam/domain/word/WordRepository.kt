@@ -40,6 +40,7 @@ interface WordRepository {
         masteryLevel: MasteryLevel?,
         wordListIds: Set<UUID>,
         limit: Int,
+        dialects: Set<Dialect> = Dialect.entries.toSet(),
     ): Either<DomainError, List<Word>>
 
     suspend fun getProgress(wordId: WordId): Either<DomainError, WordProgress>

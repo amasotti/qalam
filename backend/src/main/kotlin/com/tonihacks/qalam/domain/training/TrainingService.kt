@@ -7,6 +7,7 @@ import arrow.core.raise.ensure
 import arrow.core.right
 import com.tonihacks.qalam.domain.logDomainFailure
 import com.tonihacks.qalam.domain.error.DomainError
+import com.tonihacks.qalam.domain.word.Dialect
 import com.tonihacks.qalam.domain.word.MasteryLevel
 import com.tonihacks.qalam.domain.word.WordId
 import com.tonihacks.qalam.domain.word.WordProgress
@@ -21,13 +22,18 @@ class TrainingService(
 ) {
     private val log = KotlinLogging.logger {}
 
+    @Suppress("LongMethod")
     suspend fun createSession(
         modeStr: String,
         size: Int,
         wordListIds: List<String> = emptyList(),
+        dialectStr: String? = null,
     ): Either<DomainError, Pair<TrainingSession, List<TrainingSessionWord>>> = either {
         log.info { "Creating training session mode=$modeStr requestedSize=$size wordListCount=${wordListIds.size}" }
         val parsedSize = size.coerceIn(1, 50)
+        val dialect = dialectStr?.let {
+            Dialect.fromString(it) ?: raise(DomainError.InvalidInput("Unknown dialect: $it"))
+        } ?: Dialect.MSA
         val mode = runCatching { TrainingMode.valueOf(modeStr.uppercase()) }
             .getOrElse { raise(DomainError.InvalidInput("Unknown training mode: $modeStr")) }
         val parsedWordListIds = wordListIds
@@ -45,7 +51,12 @@ class TrainingService(
             TrainingMode.MIXED    -> null
         }
 
-        val words = wordRepo.findForTraining(masteryFilter, parsedWordListIds, parsedSize).bind()
+        val words = wordRepo.findForTraining(
+            masteryFilter,
+            parsedWordListIds,
+            parsedSize,
+            setOf(Dialect.MSA, dialect),
+        ).bind()
         ensure(words.isNotEmpty()) {
             DomainError.NotEnoughWords(requested = parsedSize, available = 0)
         }
@@ -72,6 +83,7 @@ class TrainingService(
                 position         = index,
                 frontSide        = sides.random(),
                 arabicText       = word.arabicText,
+                dialect           = word.dialect,
                 transliteration  = word.transliteration,
                 translation      = word.translation,
                 masteryLevel     = word.masteryLevel.name,

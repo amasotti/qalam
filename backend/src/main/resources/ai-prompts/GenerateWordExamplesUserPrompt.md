@@ -7,9 +7,9 @@ Return a JSON object with an "examples" array following this structure:
 { 
   "examples": [
     {
-      "arabic": "<MSA_sentence>",
-      "transliteration": "<MSA_transliteration>",
-      "translation": "<MSA_translation>"
+      "arabic": "MSA_sentence",
+      "transliteration": "chat-arabic_transliteration",
+      "translation": "english_translation"
     }
   ]
 }

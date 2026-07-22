@@ -141,7 +141,7 @@ class TextServiceTest : FreeSpec({
             result shouldBe DomainError.ValidationError("title", "Title must not be blank").left()
         }
 
-        "returns ValidationError for unknown difficulty" {
+        "returns UnknownEnumValue for unknown difficulty" {
             val result = service.create(
                 title = "عنوان",
                 body = "محتوى",
@@ -152,10 +152,10 @@ class TextServiceTest : FreeSpec({
                 comments = null,
                 tags = emptyList(),
             )
-            result shouldBe DomainError.ValidationError("difficulty", "Unknown value: GIBBERISH").left()
+            result shouldBe DomainError.UnknownEnumValue("difficulty", "GIBBERISH").left()
         }
 
-        "returns ValidationError for unknown dialect" {
+        "returns UnknownEnumValue for unknown dialect" {
             val result = service.create(
                 title = "عنوان",
                 body = "محتوى",
@@ -166,7 +166,7 @@ class TextServiceTest : FreeSpec({
                 comments = null,
                 tags = emptyList(),
             )
-            result shouldBe DomainError.ValidationError("dialect", "Unknown value: KLINGON").left()
+            result shouldBe DomainError.UnknownEnumValue("dialect", "KLINGON").left()
         }
     }
 
@@ -254,7 +254,7 @@ class TextServiceTest : FreeSpec({
             result shouldBe err.left()
         }
 
-        "returns ValidationError for unknown difficulty in update" {
+        "returns UnknownEnumValue for unknown difficulty in update" {
             coEvery { repo.findById(TextId(sampleId)) } returns sampleText.right()
 
             val result = service.update(
@@ -269,7 +269,7 @@ class TextServiceTest : FreeSpec({
                 tags = null,
             )
 
-            result shouldBe DomainError.ValidationError("difficulty", "Unknown value: ULTRA").left()
+            result shouldBe DomainError.UnknownEnumValue("difficulty", "ULTRA").left()
         }
     }
 
@@ -341,9 +341,9 @@ class TextServiceTest : FreeSpec({
             coVerify { repo.list(PageRequest(1, 20), TextFilters(q = "كهف")) }
         }
 
-        "returns ValidationError for unknown dialect filter" {
+        "returns UnknownEnumValue for unknown dialect filter" {
             val result = service.list(null, null, null, "KLINGON", null, null, null, null)
-            result shouldBe DomainError.ValidationError("dialect", "Unknown value: KLINGON").left()
+            result shouldBe DomainError.UnknownEnumValue("dialect", "KLINGON").left()
         }
     }
 })

@@ -27,3 +27,6 @@ properties:
       type: string
       format: uuid
     default: []
+  dialect:
+    $ref: ./Dialect.yaml
+    description: Optional dialect focus. MSA is always included; omitted means MSA only.

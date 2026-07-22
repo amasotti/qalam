@@ -17,7 +17,7 @@ post:
           schema:
             $ref: ../components/schemas/TrainingSessionResponse.yaml
     '400':
-      description: Invalid request (missing/invalid mode or size)
+      description: Invalid request (missing/invalid mode, size, or dialect)
       content:
         application/json:
           schema:

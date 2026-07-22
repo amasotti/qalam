@@ -68,19 +68,19 @@ class WordServiceTest : FunSpec({
             coVerify(exactly = 1) { repo.create(any()) }
         }
 
-        test("invalid partOfSpeech string returns ValidationError") {
+        test("invalid partOfSpeech string returns UnknownEnumValue") {
             val result = service.create(CreateWordRequest(arabicText = "كَتَبَ", partOfSpeech = "GIBBERISH"))
-            result shouldBe DomainError.ValidationError("partOfSpeech", "Unknown value: GIBBERISH").left()
+            result shouldBe DomainError.UnknownEnumValue("partOfSpeech", "GIBBERISH").left()
         }
 
-        test("invalid dialect string returns ValidationError") {
+        test("invalid dialect string returns UnknownEnumValue") {
             val result = service.create(CreateWordRequest(arabicText = "كَتَبَ", dialect = "KLINGON"))
-            result shouldBe DomainError.ValidationError("dialect", "Unknown value: KLINGON").left()
+            result shouldBe DomainError.UnknownEnumValue("dialect", "KLINGON").left()
         }
 
-        test("invalid difficulty string returns ValidationError") {
+        test("invalid difficulty string returns UnknownEnumValue") {
             val result = service.create(CreateWordRequest(arabicText = "كَتَبَ", difficulty = "HARD"))
-            result shouldBe DomainError.ValidationError("difficulty", "Unknown value: HARD").left()
+            result shouldBe DomainError.UnknownEnumValue("difficulty", "HARD").left()
         }
 
         test("blank arabicText returns ValidationError") {
@@ -153,11 +153,11 @@ class WordServiceTest : FunSpec({
             service.update(sampleId.toString(), UpdateWordRequest()).shouldBeInstanceOf<arrow.core.Either.Left<*>>()
         }
 
-        test("invalid masteryLevel in update returns ValidationError") {
+        test("invalid masteryLevel in update returns UnknownEnumValue") {
             coEvery { repo.findById(WordId(sampleId)) } returns sampleWord.right()
 
             val result = service.update(sampleId.toString(), UpdateWordRequest(masteryLevel = "UNKNOWN_LEVEL"))
-            result shouldBe DomainError.ValidationError("masteryLevel", "Unknown value: UNKNOWN_LEVEL").left()
+            result shouldBe DomainError.UnknownEnumValue("masteryLevel", "UNKNOWN_LEVEL").left()
         }
     }
 
@@ -291,10 +291,10 @@ class WordServiceTest : FunSpec({
                 UpsertVerbDetailsRequest(verbForm = "XI"),
             )
 
-            result shouldBe DomainError.ValidationError("verbForm", "Unknown value: XI").left()
+            result shouldBe DomainError.UnknownEnumValue("verbForm", "XI").left()
         }
 
-        test("upsertVerbDetails with invalid weaknessType returns ValidationError") {
+        test("upsertVerbDetails with invalid weaknessType returns UnknownEnumValue") {
             coEvery { repo.findById(WordId(sampleId)) } returns sampleWord.right()
 
             val result = service.upsertVerbDetails(
@@ -302,7 +302,7 @@ class WordServiceTest : FunSpec({
                 UpsertVerbDetailsRequest(verbForm = "I", weaknessType = "BROKEN"),
             )
 
-            result shouldBe DomainError.ValidationError("weaknessType", "Unknown value: BROKEN").left()
+            result shouldBe DomainError.UnknownEnumValue("weaknessType", "BROKEN").left()
         }
     }
 
@@ -329,14 +329,14 @@ class WordServiceTest : FunSpec({
             result.isRight() shouldBe true
         }
 
-        test("addDictionaryLink with invalid source returns ValidationError") {
+        test("addDictionaryLink with invalid source returns UnknownEnumValue") {
             coEvery { repo.findById(WordId(sampleId)) } returns sampleWord.right()
 
             val result = service.addDictionaryLink(
                 sampleId.toString(),
                 CreateDictionaryLinkRequest("BADLINK", "https://example.com")
             )
-            result shouldBe DomainError.ValidationError("source", "Unknown value: BADLINK").left()
+            result shouldBe DomainError.UnknownEnumValue("source", "BADLINK").left()
         }
 
         test("deleteDictionaryLink happy path") {

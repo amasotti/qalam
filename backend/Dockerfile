@@ -3,7 +3,7 @@
 # =============================================================================
 
 # ---------- Build stage ----------
-FROM gradle:9.4.1-jdk25-corretto-al2023 AS builder
+FROM gradle:9.6.1-jdk25-corretto-al2023 AS builder
 
 WORKDIR /app
 

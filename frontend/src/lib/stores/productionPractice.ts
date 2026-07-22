@@ -14,6 +14,7 @@ function requireData<T>(data: T | undefined, label: string): T {
 export function useProductionPracticePrompt() {
 	return createQuery(() => ({
 		queryKey: ['production-practice', 'prompt'],
+		refetchOnWindowFocus: false,
 		queryFn: async () => {
 			const { data, error } = await getProductionPracticePrompt();
 			if (error) throw error;

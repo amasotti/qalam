@@ -43,8 +43,23 @@ class PromptLoaderTest : FunSpec({
                     "dialect" to "MSA",
                 ),
             ),
+            PromptLoader.loadPrompt(
+                "ai-prompts/AutoTokenizeSentenceUserPrompt.md",
+                mapOf("arabicText" to "أنا أقرأ"),
+            ),
+            PromptLoader.loadPrompt(
+                "ai-prompts/TransliterateSentenceUserPrompt.md",
+                mapOf("arabicText" to "أنا أقرأ"),
+            ),
         )
 
         prompts.forEach { prompt -> prompt shouldNotContain "<" }
+    }
+
+    test("loads the sentence assistant system prompt") {
+        val prompt = PromptLoader.loadPrompt("ai-prompts/SentenceAssistantSystemPrompt.md")
+
+        prompt.contains("`3` for ع") shouldBe true
+        prompt.contains("structured-output instructions") shouldBe true
     }
 })

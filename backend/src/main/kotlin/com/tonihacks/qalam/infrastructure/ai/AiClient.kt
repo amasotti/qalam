@@ -3,7 +3,6 @@ package com.tonihacks.qalam.infrastructure.ai
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import com.tonihacks.qalam.delivery.dto.sentence.TokenInputDto
 import com.tonihacks.qalam.domain.ai.InsightContext
 import com.tonihacks.qalam.domain.ai.InsightMode
 import com.tonihacks.qalam.domain.error.DomainError
@@ -16,10 +15,8 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 
 // Every OpenRouter call catches broadly on purpose: network, timeout, and JSON-decode
 // failures all collapse to a single degraded DomainError. The suppress keeps that intent
@@ -58,85 +55,6 @@ class AiClient : java.io.Closeable {
 
     override fun close() {
         if (lazyHttpClient.isInitialized()) lazyHttpClient.value.close()
-    }
-
-    suspend fun autoTokenize(arabicText: String): Either<DomainError, List<TokenInputDto>> {
-        if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
-
-        val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
-        val prompt = """Split this Arabic sentence into individual word tokens.
-Return a JSON object with a "tokens" array. Each element must have:
-- "position": integer index starting at 0
-- "arabic": the Arabic word
-- "transliteration": practical Latin transliteration of the token. Use chat Arabic conventions (e.g. "3" for ع, "7" for ح) and avoid diacritics.
-- "translation": concise English gloss for the token
-
-Sentence: "$arabicText""""
-
-        return try {
-            val response = httpClient.post("https://openrouter.ai/api/v1/chat/completions") {
-                header(HttpHeaders.Authorization, "Bearer $apiKey")
-                contentType(ContentType.Application.Json)
-                setBody(
-                    OpenRouterRequest(
-                        model = model,
-                        messages = listOf(
-                            Message("system", LEGACY_SYSTEM_PROMPT),
-                            Message("user", prompt),
-                        ),
-                        responseFormat = ResponseFormat("json_object"),
-                    )
-                )
-            }
-
-            val body = response.body<OpenRouterResponse>()
-            val content = body.choices.firstOrNull()?.message?.content
-                ?: return DomainError.InvalidInput("Empty AI response").left()
-
-            val payload = jsonConfig.decodeFromString<TokensPayload>(content)
-            payload.tokens.right()
-        } catch (e: Exception) {
-            log.warn(e) { "OpenRouter autoTokenize failed for '$arabicText'" }
-            DomainError.InvalidInput("AI request failed").left()
-        }
-    }
-
-    suspend fun transliterate(arabicText: String): Either<DomainError, String> {
-        if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
-
-        val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
-        val prompt =
-            """Transliterate this Arabic sentence into Latin script using a practical/Buckwalter-inspired scheme.
-Return a JSON object with a single "transliteration" string field.
-
-Sentence: "$arabicText""""
-
-        return try {
-            val response = httpClient.post("https://openrouter.ai/api/v1/chat/completions") {
-                header(HttpHeaders.Authorization, "Bearer $apiKey")
-                contentType(ContentType.Application.Json)
-                setBody(
-                    OpenRouterRequest(
-                        model = model,
-                        messages = listOf(
-                            Message("system", LEGACY_SYSTEM_PROMPT),
-                            Message("user", prompt),
-                        ),
-                        responseFormat = ResponseFormat("json_object"),
-                    )
-                )
-            }
-
-            val body = response.body<OpenRouterResponse>()
-            val content = body.choices.firstOrNull()?.message?.content
-                ?: return DomainError.InvalidInput("Empty AI response").left()
-
-            val payload = jsonConfig.decodeFromString<TransliterationPayload>(content)
-            payload.transliteration.right()
-        } catch (e: Exception) {
-            log.warn(e) { "OpenRouter transliterate failed for '$arabicText'" }
-            DomainError.InvalidInput("AI request failed").left()
-        }
     }
 
     suspend fun generateInsight(context: InsightContext): Either<DomainError, String> {
@@ -232,39 +150,9 @@ Be concise."""
         System.getenv(name)?.toLongOrNull()?.takeIf { it > 0 }
 
     @Serializable
-    private data class OpenRouterRequest(
-        val model: String,
-        val messages: List<Message>,
-        @SerialName("response_format") val responseFormat: ResponseFormat,
-        // Present only when we need a specific capability (e.g. structured outputs). Omitted otherwise.
-        val provider: ProviderPreferences? = null,
-    )
-
-    @Serializable
     private data class OpenRouterInsightRequest(
         val model: String,
         val messages: List<Message>,
-    )
-
-    @Serializable
-    private data class ResponseFormat(
-        val type: String,
-        // Only set for type == "json_schema"; omitted for plain "json_object".
-        @SerialName("json_schema") val jsonSchema: JsonSchemaSpec? = null,
-    )
-
-    @Serializable
-    private data class JsonSchemaSpec(
-        val name: String,
-        val strict: Boolean,
-        val schema: JsonObject,
-    )
-
-    // require_parameters=true makes OpenRouter route ONLY to providers that honour the requested
-    // parameters (here: structured outputs) and hard-fail otherwise — no silent downgrade.
-    @Serializable
-    private data class ProviderPreferences(
-        @SerialName("require_parameters") val requireParameters: Boolean,
     )
 
     @Serializable
@@ -275,12 +163,6 @@ Be concise."""
 
     @Serializable
     private data class Choice(val message: Message)
-
-    @Serializable
-    private data class TokensPayload(val tokens: List<TokenInputDto>)
-
-    @Serializable
-    private data class TransliterationPayload(val transliteration: String)
 
 
     private companion object {

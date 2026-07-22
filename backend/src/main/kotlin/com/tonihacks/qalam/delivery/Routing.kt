@@ -30,7 +30,7 @@ import com.tonihacks.qalam.domain.training.TrainingService
 import com.tonihacks.qalam.domain.transliteration.TransliterationService
 import com.tonihacks.qalam.domain.word.WordService
 import com.tonihacks.qalam.domain.wordlist.WordListService
-import com.tonihacks.qalam.infrastructure.ai.AiClient
+import com.tonihacks.qalam.infrastructure.ai.OpenRouterSentenceClient
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.swagger.*
@@ -50,7 +50,7 @@ fun Application.configureRouting() {
     val sentenceService by inject<SentenceService>()
     val transliterationService by inject<TransliterationService>()
     val annotationService by inject<AnnotationService>()
-    val aiClient by inject<AiClient>()
+    val sentenceAiClient by inject<OpenRouterSentenceClient>()
     val trainingService by inject<TrainingService>()
     val exerciseService by inject<ExerciseService>()
     val wordListService by inject<WordListService>()
@@ -76,7 +76,7 @@ fun Application.configureRouting() {
             conjugationExerciseRoutes(conjugationExerciseService)
 
             textRoutes(textService)
-            sentenceRoutes(sentenceService, aiClient)
+            sentenceRoutes(sentenceService, sentenceAiClient)
 
             transliterationRoutes(transliterationService)
 

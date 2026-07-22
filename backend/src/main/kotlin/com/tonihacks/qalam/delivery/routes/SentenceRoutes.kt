@@ -12,7 +12,7 @@ import com.tonihacks.qalam.domain.sentence.SentenceService
 import com.tonihacks.qalam.domain.sentence.TokenInput
 import com.tonihacks.qalam.domain.text.TextId
 import com.tonihacks.qalam.domain.word.WordId
-import com.tonihacks.qalam.infrastructure.ai.AiClient
+import com.tonihacks.qalam.infrastructure.ai.OpenRouterSentenceClient
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -20,7 +20,7 @@ import io.ktor.server.routing.*
 import java.util.UUID
 
 @Suppress("LongMethod", "CyclomaticComplexMethod")
-fun Route.sentenceRoutes(service: SentenceService, aiClient: AiClient) {
+internal fun Route.sentenceRoutes(service: SentenceService, sentenceAiClient: OpenRouterSentenceClient) {
     route("/texts/{textId}/sentences") {
 
         get {
@@ -168,25 +168,10 @@ fun Route.sentenceRoutes(service: SentenceService, aiClient: AiClient) {
                 { it },
             )
 
-            val tokenDtos = aiClient.autoTokenize(sentence.arabicText).fold(
+            val tokenInputs = sentenceAiClient.autoTokenize(sentence.arabicText).fold(
                 { return@post call.respondError(it) },
                 { it },
             )
-
-            val tokenInputs = tokenDtos.map { dto ->
-                val wordId = dto.wordId?.let {
-                    val uuid = it.toUuidOrNull()
-                        ?: return@post call.respondError(DomainError.InvalidInput("'$it' is not a valid UUID for wordId"))
-                    WordId(uuid)
-                }
-                TokenInput(
-                    position = dto.position,
-                    arabic = dto.arabic,
-                    transliteration = dto.transliteration,
-                    translation = dto.translation,
-                    wordId = wordId,
-                )
-            }
 
             service.replaceTokens(SentenceId(id), tokenInputs).fold(
                 { call.respondError(it) },
@@ -205,7 +190,7 @@ fun Route.sentenceRoutes(service: SentenceService, aiClient: AiClient) {
                 { it },
             )
 
-            val transliteration = aiClient.transliterate(sentence.arabicText).fold(
+            val transliteration = sentenceAiClient.transliterate(sentence.arabicText).fold(
                 { return@post call.respondError(it) },
                 { it },
             )

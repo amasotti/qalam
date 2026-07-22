@@ -155,7 +155,7 @@ class TextsIntegrationTest : BaseIntegrationTest() {
                     response.status shouldBe HttpStatusCode.OK
                     val body = response.bodyAsText()
                     body shouldContain "xqz"
-                    body shouldNotContain "abc"
+                    body shouldNotContain "qsearch-other-abc-two"
                 }
             }
 

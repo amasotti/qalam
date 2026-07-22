@@ -1,5 +1,10 @@
 package com.tonihacks.qalam.domain.word
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import com.tonihacks.qalam.domain.error.DomainError
+
 enum class WordSortField { UPDATED_AT, CREATED_AT, ARABIC_TEXT, TRANSLATION, DIFFICULTY, MASTERY_LEVEL }
 
 enum class PartOfSpeech {
@@ -95,3 +100,10 @@ enum class RelationType {
             entries.firstOrNull { it.name.equals(value.trim(), ignoreCase = true) }
     }
 }
+
+fun <T : Enum<T>> parseDomainEnum(
+    field: String,
+    value: String,
+    parser: (String) -> T?,
+): Either<DomainError, T> =
+    parser(value)?.right() ?: DomainError.UnknownEnumValue(field, value).left()

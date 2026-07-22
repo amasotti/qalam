@@ -62,4 +62,34 @@ class PromptLoaderTest : FunSpec({
         prompt.contains("`3` for ع") shouldBe true
         prompt.contains("structured-output instructions") shouldBe true
     }
+
+    test("renders insight prompts without placeholder leakage") {
+        val prompts = listOf(
+            PromptLoader.loadPrompt("ai-prompts/InsightSystemPrompt.md"),
+            PromptLoader.loadPrompt(
+                "ai-prompts/GenerateWordInsightUserPrompt.md",
+                mapOf(
+                    "arabicText" to "كتاب",
+                    "translationClause" to " (\"book\")",
+                    "partOfSpeech" to "NOUN",
+                    "dialect" to "MSA",
+                    "rootClause" to "\nRoot: ك-ت-ب.",
+                    "examplesClause" to "\nExample usage: \"هذا كتاب\"",
+                ),
+            ),
+            PromptLoader.loadPrompt(
+                "ai-prompts/GenerateSentenceInsightUserPrompt.md",
+                mapOf(
+                    "targetIndex" to "2",
+                    "textTitle" to "Lesson",
+                    "dialect" to "MSA",
+                    "truncationNote" to "",
+                    "sentences" to "→ 2. أنا أقرأ    ← target",
+                    "modeInstruction" to "Focus on syntax.",
+                ),
+            ),
+        )
+
+        prompts.forEach { prompt -> prompt shouldNotContain "<" }
+    }
 })

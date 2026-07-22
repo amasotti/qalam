@@ -20,7 +20,10 @@ import kotlinx.serialization.json.JsonObject
 
 internal class OpenRouterClient : AutoCloseable {
     private val log = KotlinLogging.logger { }
-    private val json = Json { ignoreUnknownKeys = true }
+    private val json = Json {
+        ignoreUnknownKeys = true
+        explicitNulls = false
+    }
 
     private val apiKey = System.getenv("OPENROUTER_API_KEY")
     private val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
@@ -94,7 +97,7 @@ internal class OpenRouterClient : AutoCloseable {
 internal data class OpenRouterCompletionRequest(
     val systemPrompt: String,
     val userPrompt: String,
-    val responseFormat: OpenRouterResponseFormat,
+    val responseFormat: OpenRouterResponseFormat? = null,
     val provider: OpenRouterProviderPreferences? = null
 )
 
@@ -102,7 +105,7 @@ internal data class OpenRouterCompletionRequest(
 internal data class OpenRouterRequest(
     val model: String,
     val messages: List<OpenRouterMessage>,
-    @SerialName("response_format") val responseFormat: OpenRouterResponseFormat,
+    @SerialName("response_format") val responseFormat: OpenRouterResponseFormat? = null,
     val provider: OpenRouterProviderPreferences? = null,
 )
 

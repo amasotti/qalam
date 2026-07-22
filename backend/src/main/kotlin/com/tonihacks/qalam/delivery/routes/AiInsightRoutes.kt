@@ -3,7 +3,7 @@ package com.tonihacks.qalam.delivery.routes
 import com.tonihacks.qalam.delivery.respondError
 import com.tonihacks.qalam.delivery.dto.ai.InsightRequest
 import com.tonihacks.qalam.delivery.dto.ai.InsightResponse
-import com.tonihacks.qalam.domain.ai.AiInsightService
+import com.tonihacks.qalam.application.AiInsightService
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*

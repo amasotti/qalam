@@ -23,6 +23,7 @@ import {
 	useWordAnnotations,
 	useWordExamples,
 } from '$lib/stores/words';
+    import { removeArabicDiacritics } from '$lib/utils/arabicUtils';
 
 const id = $derived(page.params.id ?? '');
 const word = useWord(() => id);
@@ -65,7 +66,8 @@ async function saveNotes() {
 function startEditPron() {
 	editedPron = word.data?.pronunciationUrl ?? '';
 	if (!editedPron && word.data?.arabicText) {
-		editedPron = `https://forvo.com/search/${encodeURIComponent(word.data.arabicText)}`;
+		const normalizedArabicText = removeArabicDiacritics(word.data.arabicText);
+		editedPron = `https://forvo.com/search/${encodeURIComponent(normalizedArabicText)}`;
 	}
 	editingPron = true;
 }

@@ -12,6 +12,7 @@ import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.sentence.SentenceRepository
 import com.tonihacks.qalam.domain.word.Dialect
 import com.tonihacks.qalam.domain.word.Difficulty
+import com.tonihacks.qalam.domain.word.parseDomainEnum
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.UUID
 import kotlin.time.Clock
@@ -37,8 +38,8 @@ class TextService(private val repo: TextRepository, private val sentenceRepo: Se
         }
         val filters = TextFilters(
             q = q,
-            dialect = dialect?.let { parseTextEnum("dialect", it) { s -> Dialect.fromString(s) }.bind() },
-            difficulty = difficulty?.let { parseTextEnum("difficulty", it) { s -> Difficulty.fromString(s) }.bind() },
+            dialect = dialect?.let { parseDomainEnum("dialect", it) { s -> Dialect.fromString(s) }.bind() },
+            difficulty = difficulty?.let { parseDomainEnum("difficulty", it) { s -> Difficulty.fromString(s) }.bind() },
             tag = tag,
             sortBy = parsedSortBy,
             sortDesc = sortDesc ?: true,
@@ -63,8 +64,8 @@ class TextService(private val repo: TextRepository, private val sentenceRepo: Se
         log.info { "Creating text titleLength=${title.length} tagCount=${tags.size}" }
         if (title.isBlank()) raise(DomainError.ValidationError("title", "Title must not be blank"))
 
-        val parsedDifficulty = parseTextEnum("difficulty", difficulty) { Difficulty.fromString(it) }.bind()
-        val parsedDialect = parseTextEnum("dialect", dialect) { Dialect.fromString(it) }.bind()
+        val parsedDifficulty = parseDomainEnum("difficulty", difficulty) { Difficulty.fromString(it) }.bind()
+        val parsedDialect = parseDomainEnum("dialect", dialect) { Dialect.fromString(it) }.bind()
 
         val now = Clock.System.now()
         val text = Text(
@@ -99,11 +100,11 @@ class TextService(private val repo: TextRepository, private val sentenceRepo: Se
         val existing = repo.findById(textId).bind()
 
         val parsedDifficulty = difficulty?.let {
-            parseTextEnum("difficulty", it) { s -> Difficulty.fromString(s) }.bind()
+            parseDomainEnum("difficulty", it) { s -> Difficulty.fromString(s) }.bind()
         } ?: existing.difficulty
 
         val parsedDialect = dialect?.let {
-            parseTextEnum("dialect", it) { s -> Dialect.fromString(s) }.bind()
+            parseDomainEnum("dialect", it) { s -> Dialect.fromString(s) }.bind()
         } ?: existing.dialect
 
         val updated = existing.copy(
@@ -171,10 +172,3 @@ private fun clearable(incoming: String?, existing: String?): String? = when {
 private fun parseTextId(id: String): Either<DomainError, TextId> =
     try { TextId(UUID.fromString(id)).right() }
     catch (_: IllegalArgumentException) { DomainError.InvalidInput("'$id' is not a valid UUID").left() }
-
-private fun <T : Enum<T>> parseTextEnum(
-    field: String,
-    value: String,
-    parser: (String) -> T?,
-): Either<DomainError, T> =
-    parser(value)?.right() ?: DomainError.ValidationError(field, "Unknown value: $value").left()

@@ -32,15 +32,15 @@ import com.tonihacks.qalam.infrastructure.exposed.ExposedVerbDetailsRepository
 import com.tonihacks.qalam.domain.logDomainFailure
 import com.tonihacks.qalam.domain.error.DomainError
 import com.tonihacks.qalam.domain.root.RootId
-import com.tonihacks.qalam.infrastructure.ai.AiClient
+import com.tonihacks.qalam.infrastructure.ai.OpenRouterWordClient
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.UUID
 import kotlin.time.Clock
 
 @Suppress("TooManyFunctions") // Will be split when noun_details extracts morphology (Slice 11)
-class WordService(
+class WordService internal constructor(
     private val repo: WordRepository,
-    private val aiClient: AiClient,
+    private val wordAiClient: OpenRouterWordClient,
     private val verbDetailsRepo: ExposedVerbDetailsRepository,
 ) {
     private val log = KotlinLogging.logger {}
@@ -69,10 +69,10 @@ class WordService(
         val filters = WordFilters(
             q = q,
             rootId = rootId?.let { parseWordUuid(it, "rootId").bind()?.let { u -> RootId(u) } },
-            dialect = dialect?.let { parseWordEnum("dialect", it) { s -> Dialect.fromString(s) }.bind() },
-            difficulty = difficulty?.let { parseWordEnum("difficulty", it) { s -> Difficulty.fromString(s) }.bind() },
-            partOfSpeech = partOfSpeech?.let { parseWordEnum("partOfSpeech", it) { s -> PartOfSpeech.fromString(s) }.bind() },
-            masteryLevel = masteryLevel?.let { parseWordEnum("masteryLevel", it) { s -> MasteryLevel.fromString(s) }.bind() },
+            dialect = dialect?.let { parseDomainEnum("dialect", it) { s -> Dialect.fromString(s) }.bind() },
+            difficulty = difficulty?.let { parseDomainEnum("difficulty", it) { s -> Difficulty.fromString(s) }.bind() },
+            partOfSpeech = partOfSpeech?.let { parseDomainEnum("partOfSpeech", it) { s -> PartOfSpeech.fromString(s) }.bind() },
+            masteryLevel = masteryLevel?.let { parseDomainEnum("masteryLevel", it) { s -> MasteryLevel.fromString(s) }.bind() },
             sortBy = parsedSortBy,
             sortDesc = sortDesc ?: true,
         )
@@ -97,9 +97,9 @@ class WordService(
         log.info { "Creating word arabicLength=${req.arabicText.length} partOfSpeech=${req.partOfSpeech}" }
         if (req.arabicText.isBlank()) raise(DomainError.ValidationError("arabicText", "Arabic text must not be blank"))
 
-        val pos = parseWordEnum("partOfSpeech", req.partOfSpeech) { PartOfSpeech.fromString(it) }.bind()
-        val dialect = parseWordEnum("dialect", req.dialect) { Dialect.fromString(it) }.bind()
-        val difficulty = parseWordEnum("difficulty", req.difficulty) { Difficulty.fromString(it) }.bind()
+        val pos = parseDomainEnum("partOfSpeech", req.partOfSpeech) { PartOfSpeech.fromString(it) }.bind()
+        val dialect = parseDomainEnum("dialect", req.dialect) { Dialect.fromString(it) }.bind()
+        val difficulty = parseDomainEnum("difficulty", req.difficulty) { Difficulty.fromString(it) }.bind()
         val rootId = req.rootId?.let { parseWordUuid(it, "rootId").bind()?.let { u -> RootId(u) } }
         val derivedFromId = req.derivedFromId?.let { parseWordUuid(it, "derivedFromId").bind()?.let { u -> WordId(u) } }
 
@@ -132,13 +132,13 @@ class WordService(
             raise(DomainError.ValidationError("arabicText", "Arabic text must not be blank"))
         }
 
-        val pos = req.partOfSpeech?.let { parseWordEnum("partOfSpeech", it) { s -> PartOfSpeech.fromString(s) }.bind() }
+        val pos = req.partOfSpeech?.let { parseDomainEnum("partOfSpeech", it) { s -> PartOfSpeech.fromString(s) }.bind() }
             ?: existing.partOfSpeech
-        val dialect = req.dialect?.let { parseWordEnum("dialect", it) { s -> Dialect.fromString(s) }.bind() }
+        val dialect = req.dialect?.let { parseDomainEnum("dialect", it) { s -> Dialect.fromString(s) }.bind() }
             ?: existing.dialect
-        val difficulty = req.difficulty?.let { parseWordEnum("difficulty", it) { s -> Difficulty.fromString(s) }.bind() }
+        val difficulty = req.difficulty?.let { parseDomainEnum("difficulty", it) { s -> Difficulty.fromString(s) }.bind() }
             ?: existing.difficulty
-        val masteryLevel = req.masteryLevel?.let { parseWordEnum("masteryLevel", it) { s -> MasteryLevel.fromString(s) }.bind() }
+        val masteryLevel = req.masteryLevel?.let { parseDomainEnum("masteryLevel", it) { s -> MasteryLevel.fromString(s) }.bind() }
             ?: existing.masteryLevel
         val rootId = if (req.rootId == null) existing.rootId
             else parseWordUuid(req.rootId, "rootId").bind()?.let { RootId(it) }
@@ -169,7 +169,7 @@ class WordService(
         limit: Int?,
         partOfSpeech: String? = null,
     ): Either<DomainError, List<WordAutocompleteResponse>> = either {
-        val pos = partOfSpeech?.let { parseWordEnum("partOfSpeech", it) { value -> PartOfSpeech.fromString(value) }.bind() }
+        val pos = partOfSpeech?.let { parseDomainEnum("partOfSpeech", it) { value -> PartOfSpeech.fromString(value) }.bind() }
         repo.autocomplete(query, limit?.coerceIn(1, 50) ?: 10, pos).bind().map { it.toAutocompleteResponse() }
     }.logDomainFailure(log) { "Failed to autocomplete words queryLength=${query.length} limit=$limit: $it" }
 
@@ -186,7 +186,7 @@ class WordService(
         log.info { "Adding dictionary link wordId=$wordId source=${req.source}" }
         val id = parseWordId(wordId).bind()
         repo.findById(id).bind()
-        val source = parseWordEnum("source", req.source) { DictionarySource.fromString(it) }.bind()
+        val source = parseDomainEnum("source", req.source) { DictionarySource.fromString(it) }.bind()
         repo.addDictionaryLink(
             DictionaryLink(id = DictionaryLinkId(UUID.randomUUID()), wordId = id, source = source, url = req.url)
         ).bind().toResponse()
@@ -205,14 +205,14 @@ class WordService(
     }.logDomainFailure(log) { "Failed to delete dictionary link wordId=$wordId linkId=$linkId: $it" }
 
     suspend fun analyzeWord(arabicText: String): Either<DomainError, WordAnalysisResponse> =
-        aiClient.analyzeWord(arabicText)
+        wordAiClient.analyzeWord(arabicText)
             .logDomainFailure(log) { "Failed to analyze word arabicLength=${arabicText.length}: $it" }
 
     suspend fun generateExamples(wordId: String): Either<DomainError, AiExamplesResponse> = either {
         log.info { "Generating AI examples wordId=$wordId" }
         val id = parseWordId(wordId).bind()
         val word = repo.findById(id).bind()
-        val examples = aiClient.generateExamples(word.arabicText, word.translation).bind()
+        val examples = wordAiClient.generateExamples(word.arabicText, word.translation).bind()
         AiExamplesResponse(examples)
     }.logDomainFailure(log) { "Failed to generate AI examples wordId=$wordId: $it" }
 
@@ -266,7 +266,7 @@ class WordService(
         log.info { "Upserting word morphology wordId=$wordId gender=${req.gender}" }
         val id = parseWordId(wordId).bind()
         repo.findById(id).bind()
-        val gender = req.gender?.let { parseWordEnum("gender", it) { s -> Gender.fromString(s) }.bind() }
+        val gender = req.gender?.let { parseDomainEnum("gender", it) { s -> Gender.fromString(s) }.bind() }
         val morphology = WordMorphology(wordId = id, gender = gender)
         repo.upsertMorphology(morphology).bind()
         val plurals = repo.findPlurals(id).bind()
@@ -287,7 +287,7 @@ class WordService(
         if (req.pluralForm.isBlank()) raise(DomainError.ValidationError("pluralForm", "must not be blank"))
         val id = parseWordId(wordId).bind()
         repo.findById(id).bind()
-        val pluralType = parseWordEnum("pluralType", req.pluralType) { PluralType.fromString(it) }.bind()
+        val pluralType = parseDomainEnum("pluralType", req.pluralType) { PluralType.fromString(it) }.bind()
         val plural = WordPlural(
             id = WordPluralId(UUID.randomUUID()),
             wordId = id,
@@ -333,7 +333,7 @@ class WordService(
         if (id == relatedId) raise(DomainError.ValidationError("relatedWordId", "cannot relate a word to itself"))
 
         val relatedWord = repo.findById(relatedId).bind()
-        val type = parseWordEnum("relationType", req.relationType) { RelationType.fromString(it) }.bind()
+        val type = parseDomainEnum("relationType", req.relationType) { RelationType.fromString(it) }.bind()
         // findRelations queries both directions and normalises all results to wordId=id,
         // so this single check catches both (id→relatedId) and (relatedId→id) duplicates.
         val existing = repo.findRelations(id).bind()
@@ -353,7 +353,7 @@ class WordService(
         val wId = parseWordId(wordId).bind()
         repo.findById(wId).bind()
         val rId = parseWordId(relatedWordId).bind()
-        val relationType = parseWordEnum("relationType", type) { RelationType.fromString(it) }.bind()
+        val relationType = parseDomainEnum("relationType", type) { RelationType.fromString(it) }.bind()
         repo.deleteRelation(wId, rId, relationType).bind()
     }.logDomainFailure(log) { "Failed to delete relation wordId=$wordId relatedWordId=$relatedWordId type=$type: $it" }
 
@@ -370,8 +370,8 @@ class WordService(
         log.info { "Upserting verb details wordId=$wordId verbForm=${req.verbForm}" }
         val id = parseWordId(wordId).bind()
         requireVerb(id).bind()
-        val verbForm = parseWordEnum("verbForm", req.verbForm) { s -> VerbPattern.fromString(s) }.bind()
-        val weaknessType = parseWordEnum("weaknessType", req.weaknessType) { s -> WeaknessType.fromString(s) }.bind()
+        val verbForm = parseDomainEnum("verbForm", req.verbForm) { s -> VerbPattern.fromString(s) }.bind()
+        val weaknessType = parseDomainEnum("weaknessType", req.weaknessType) { s -> WeaknessType.fromString(s) }.bind()
         val now = Clock.System.now()
         val existing = verbDetailsRepo.find(id).bind()
         val details = VerbDetails(
@@ -410,11 +410,11 @@ class WordService(
         log.info { "Generating AI word enrichment wordId=$wordId" }
         val id = parseWordId(wordId).bind()
         val word = repo.findById(id).bind()
-        aiClient.enrichWord(word).bind()
+        wordAiClient.enrichWord(word).bind()
     }.logDomainFailure(log) { "Failed to generate AI word enrichment wordId=$wordId: $it" }
 }
 
-// --- top-level helpers (excluded from TooManyFunctions count) ---
+// --- top-level helpers ---
 
 private fun parseWordId(id: String): Either<DomainError, WordId> =
     try { WordId(UUID.fromString(id)).right() }
@@ -423,10 +423,3 @@ private fun parseWordId(id: String): Either<DomainError, WordId> =
 private fun parseWordUuid(value: String, field: String): Either<DomainError, UUID?> =
     try { UUID.fromString(value).right() }
     catch (_: IllegalArgumentException) { DomainError.InvalidInput("'$value' is not a valid UUID for $field").left() }
-
-private fun <T : Enum<T>> parseWordEnum(
-    field: String,
-    value: String,
-    parser: (String) -> T?,
-): Either<DomainError, T> =
-    parser(value)?.right() ?: DomainError.ValidationError(field, "Unknown value: $value").left()

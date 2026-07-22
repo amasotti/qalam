@@ -18,8 +18,7 @@ internal class OpenRouterProductionPracticeReviewer(
         openRouter.complete(
             OpenRouterCompletionRequest(
                 systemPrompt = PromptLoader.loadPrompt("ai-prompts/ProductionPracticeSystemPrompt.md"),
-                userPrompt = buildProductionPracticeReviewPrompt(request),
-                maxTokens = REVIEW_MAX_TOKENS,
+                userPrompt = buildProductionPracticeReviewPrompt(request)
             ),
         ).fold(
             { error ->
@@ -37,10 +36,6 @@ internal class OpenRouterProductionPracticeReviewer(
                 }
             },
         )
-
-    private companion object {
-        const val REVIEW_MAX_TOKENS = 2_048
-    }
 }
 
 internal fun buildProductionPracticeReviewPrompt(request: ProductionPracticeReviewRequest): String =

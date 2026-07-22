@@ -1,6 +1,6 @@
 <script lang="ts">
 import { goto } from '$app/navigation';
-import type { WordListResponse } from '$lib/api/types.gen';
+import type { Dialect, WordListResponse } from '$lib/api/types.gen';
 import { Button } from '$lib/components/ui/button';
 import { useCreateSession } from '$lib/stores/training';
 
@@ -14,6 +14,13 @@ interface Props {
 const modes = ['MIXED', 'NEW', 'LEARNING', 'KNOWN'] as const;
 type Mode = (typeof modes)[number];
 const sessionSizes = [5, 10, 15, 20, 25, 30, 50];
+const dialects: { value: Dialect; label: string }[] = [
+	{ value: 'MSA', label: 'Modern Standard Arabic' },
+	{ value: 'TUNISIAN', label: 'Tunisian' },
+	{ value: 'EGYPTIAN', label: 'Egyptian' },
+	{ value: 'LEVANTINE', label: 'Levantine' },
+	{ value: 'IRAQI', label: 'Iraqi' },
+];
 const modeCopy: Record<Mode, { label: string; description: string }> = {
 	MIXED: { label: 'Mixed review', description: 'A balanced pass across your vocabulary.' },
 	NEW: { label: 'New words', description: 'Meet words you have not practised yet.' },
@@ -25,6 +32,7 @@ let { wordLists = [], isLoadingLists, isListError, totalVocabulary }: Props = $p
 const createSession = useCreateSession();
 let selectedMode = $state<Mode>('MIXED');
 let sessionSize = $state(15);
+let selectedDialect = $state<Dialect>('MSA');
 let selectedWordListIds = $state<string[]>([]);
 let scope = $state<'ALL' | 'LISTS'>('ALL');
 let listSearch = $state('');
@@ -56,6 +64,7 @@ function start() {
 		{
 			mode: selectedMode,
 			size: sessionSize,
+			dialect: selectedDialect,
 			wordListIds: scope === 'ALL' ? [] : selectedWordListIds,
 		},
 		{ onSuccess: (session) => goto(`/training/${session.id}`) }
@@ -115,6 +124,15 @@ function closeListPicker() {
 		<div class="training-size-options" role="radiogroup" aria-label="Session size">
 			{#each sessionSizes as size}
 				<button type="button" class:selected={sessionSize === size} class="training-size-option" role="radio" aria-checked={sessionSize === size} onclick={() => (sessionSize = size)}>{size}</button>
+			{/each}
+		</div>
+	</div>
+
+	<div class="training-form-section">
+		<div class="training-field-heading"><span class="training-field-label">Dialect</span><span>MSA is always included</span></div>
+		<div class="training-size-options" role="radiogroup" aria-label="Dialect">
+			{#each dialects as dialect}
+				<button type="button" class:selected={selectedDialect === dialect.value} class="training-size-option" role="radio" aria-checked={selectedDialect === dialect.value} onclick={() => (selectedDialect = dialect.value)}>{dialect.label}</button>
 			{/each}
 		</div>
 	</div>

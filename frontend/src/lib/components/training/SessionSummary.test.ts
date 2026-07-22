@@ -31,6 +31,7 @@ function buildWords(): TrainingSessionWordResponse[] {
 		{
 			wordId: 'word-correct',
 			arabicText: 'كتب',
+			dialect: 'MSA',
 			transliteration: 'kataba',
 			translation: 'write',
 			frontSide: 'ARABIC',
@@ -41,6 +42,7 @@ function buildWords(): TrainingSessionWordResponse[] {
 		{
 			wordId: 'word-incorrect',
 			arabicText: 'قرأ',
+			dialect: 'MSA',
 			transliteration: 'qaraʾa',
 			translation: 'read',
 			frontSide: 'TRANSLATION',
@@ -51,6 +53,7 @@ function buildWords(): TrainingSessionWordResponse[] {
 		{
 			wordId: 'word-skipped',
 			arabicText: 'ذهب',
+			dialect: 'MSA',
 			transliteration: null,
 			translation: 'go',
 			frontSide: 'ARABIC',

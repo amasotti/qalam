@@ -20,7 +20,7 @@ fun Route.trainingRoutes(service: TrainingService) {
     route("/training") {
         post("/sessions") {
             val req = call.receive<CreateSessionRequest>()
-            service.createSession(req.mode, req.size, req.wordListIds).fold(
+            service.createSession(req.mode, req.size, req.wordListIds, req.dialect).fold(
                 { call.respondError(it) },
                 { (session, words) -> call.respond(HttpStatusCode.Created, toSessionResponse(session, words)) },
             )
@@ -80,6 +80,7 @@ private fun toSessionResponse(
         TrainingSessionWordResponse(
             wordId          = w.wordId.value.toString(),
             arabicText      = w.arabicText,
+            dialect         = w.dialect.name,
             transliteration = w.transliteration,
             translation     = w.translation,
             frontSide       = w.frontSide.name,

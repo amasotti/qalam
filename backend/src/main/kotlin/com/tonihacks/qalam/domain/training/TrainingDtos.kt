@@ -7,6 +7,7 @@ data class CreateSessionRequest(
     val mode: String,
     val size: Int = 15,
     val wordListIds: List<String> = emptyList(),
+    val dialect: String? = null,
 )
 
 @Serializable
@@ -34,6 +35,7 @@ data class TrainingWordRelationResponse(
 data class TrainingSessionWordResponse(
     val wordId: String,
     val arabicText: String,
+    val dialect: String,
     val transliteration: String?,
     val translation: String?,
     val frontSide: String,

@@ -121,6 +121,36 @@ class TrainingIntegrationTest : BaseIntegrationTest() {
                 }
             }
 
+            "includes MSA and selected dialect only" {
+                testApp { client ->
+                    createWord(client, """{"arabicText":"فصحى","translation":"classical","dialect":"MSA"}""")
+                    createWord(client, """{"arabicText":"مصري","translation":"egyptian","dialect":"EGYPTIAN"}""")
+                    createWord(client, """{"arabicText":"تونسي","translation":"tunisian","dialect":"TUNISIAN"}""")
+
+                    val response = client.post("/api/v1/training/sessions") {
+                        contentType(ContentType.Application.Json)
+                        setBody("""{"mode":"MIXED","size":10,"dialect":"EGYPTIAN"}""")
+                    }
+
+                    response.status shouldBe HttpStatusCode.Created
+                    val body = response.bodyAsText()
+                    body shouldContain "فصحى"
+                    body shouldContain "مصري"
+                    body.contains("تونسي") shouldBe false
+                }
+            }
+
+            "returns 400 for unknown dialect" {
+                testApp { client ->
+                    createWord(client)
+                    val response = client.post("/api/v1/training/sessions") {
+                        contentType(ContentType.Application.Json)
+                        setBody("""{"mode":"MIXED","size":1,"dialect":"UNKNOWN"}""")
+                    }
+                    response.status shouldBe HttpStatusCode.BadRequest
+                }
+            }
+
             "returns 400 for malformed word list id" {
                 testApp { client ->
                     createWord(client)

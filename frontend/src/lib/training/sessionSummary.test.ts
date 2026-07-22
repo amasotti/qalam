@@ -12,6 +12,7 @@ const session: TrainingSessionResponse = {
 		{
 			wordId: 'word-1',
 			arabicText: 'كتب',
+			dialect: 'MSA',
 			translation: 'write',
 			frontSide: 'ARABIC',
 			position: 0,
@@ -21,6 +22,7 @@ const session: TrainingSessionResponse = {
 		{
 			wordId: 'word-2',
 			arabicText: 'قرأ',
+			dialect: 'MSA',
 			translation: 'read',
 			frontSide: 'ARABIC',
 			position: 1,
@@ -30,6 +32,7 @@ const session: TrainingSessionResponse = {
 		{
 			wordId: 'word-3',
 			arabicText: 'ذهب',
+			dialect: 'MSA',
 			translation: 'go',
 			frontSide: 'ARABIC',
 			position: 2,

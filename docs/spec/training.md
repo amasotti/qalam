@@ -27,6 +27,8 @@ Parameters:
 - `size` — how many words (clamped to 1–50)
 - `wordListIds` — optional list IDs that restrict the word pool. Multiple lists use union semantics:
   words from any selected list are eligible. Empty or omitted means all vocabulary.
+- `dialect` — optional dialect focus. MSA is always included; omitted or `MSA` means MSA-only,
+  while a dialect such as `EGYPTIAN` includes both MSA and that dialect.
 
 Backend queries `words` filtered by mastery level and optional word-list membership, shuffles, takes `size` words.
 For each word a `front_side` is randomly assigned at creation time (`ARABIC` or `TRANSLATION`) — fixed for the life of that session.

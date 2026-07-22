@@ -52,7 +52,7 @@ function handleResult(result: 'CORRECT' | 'INCORRECT' | 'SKIPPED') {
 		</div>
 		<div class="fc-meta">
 			<span>{currentIndex + 1} / {totalWords}</span>
-			<span>{mode}</span>
+			<span>{mode} · {word.dialect}</span>
 		</div>
 	</div>
 

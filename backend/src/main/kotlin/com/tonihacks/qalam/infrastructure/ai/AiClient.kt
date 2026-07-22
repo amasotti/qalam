@@ -4,34 +4,22 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.sentence.TokenInputDto
-import com.tonihacks.qalam.delivery.dto.word.AiExampleSentence
-import com.tonihacks.qalam.delivery.dto.word.WordAnalysisResponse
-import com.tonihacks.qalam.delivery.dto.word.WordEnrichmentSuggestion
-import com.tonihacks.qalam.delivery.dto.wordlist.AiListWordSuggestion
 import com.tonihacks.qalam.domain.ai.InsightContext
 import com.tonihacks.qalam.domain.ai.InsightMode
 import com.tonihacks.qalam.domain.error.DomainError
-import com.tonihacks.qalam.domain.word.Word
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.add
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.put
-import kotlinx.serialization.json.putJsonArray
-import kotlinx.serialization.json.putJsonObject
 
 // Every OpenRouter call catches broadly on purpose: network, timeout, and JSON-decode
 // failures all collapse to a single degraded DomainError. The suppress keeps that intent
@@ -72,42 +60,6 @@ class AiClient : java.io.Closeable {
         if (lazyHttpClient.isInitialized()) lazyHttpClient.value.close()
     }
 
-    suspend fun generateExamples(
-        arabicText: String,
-        translation: String?,
-    ): Either<DomainError, List<AiExampleSentence>> {
-        if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
-
-        val prompt = buildPrompt(arabicText, translation)
-
-        val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
-
-        return try {
-            val response = httpClient.post("https://openrouter.ai/api/v1/chat/completions") {
-                header(HttpHeaders.Authorization, "Bearer $apiKey")
-                contentType(ContentType.Application.Json)
-                setBody(OpenRouterRequest(
-                    model = model,
-                    messages = listOf(
-                        Message("system", SYSTEM_PROMPT),
-                        Message("user", prompt),
-                    ),
-                    responseFormat = ResponseFormat("json_object"),
-                ))
-            }
-
-            val body = response.body<OpenRouterResponse>()
-            val content = body.choices.firstOrNull()?.message?.content
-                ?: return DomainError.InvalidInput("Empty AI response").left()
-
-            val examples = jsonConfig.decodeFromString<ExamplesPayload>(content)
-            examples.examples.right()
-        } catch (e: Exception) {
-            log.warn(e) { "OpenRouter generateExamples failed for '$arabicText'" }
-            DomainError.InvalidInput("AI request failed").left()
-        }
-    }
-
     suspend fun autoTokenize(arabicText: String): Either<DomainError, List<TokenInputDto>> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
@@ -125,14 +77,16 @@ Sentence: "$arabicText""""
             val response = httpClient.post("https://openrouter.ai/api/v1/chat/completions") {
                 header(HttpHeaders.Authorization, "Bearer $apiKey")
                 contentType(ContentType.Application.Json)
-                setBody(OpenRouterRequest(
-                    model = model,
-                    messages = listOf(
-                        Message("system", SYSTEM_PROMPT),
-                        Message("user", prompt),
-                    ),
-                    responseFormat = ResponseFormat("json_object"),
-                ))
+                setBody(
+                    OpenRouterRequest(
+                        model = model,
+                        messages = listOf(
+                            Message("system", LEGACY_SYSTEM_PROMPT),
+                            Message("user", prompt),
+                        ),
+                        responseFormat = ResponseFormat("json_object"),
+                    )
+                )
             }
 
             val body = response.body<OpenRouterResponse>()
@@ -151,7 +105,8 @@ Sentence: "$arabicText""""
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
         val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
-        val prompt = """Transliterate this Arabic sentence into Latin script using a practical/Buckwalter-inspired scheme.
+        val prompt =
+            """Transliterate this Arabic sentence into Latin script using a practical/Buckwalter-inspired scheme.
 Return a JSON object with a single "transliteration" string field.
 
 Sentence: "$arabicText""""
@@ -160,14 +115,16 @@ Sentence: "$arabicText""""
             val response = httpClient.post("https://openrouter.ai/api/v1/chat/completions") {
                 header(HttpHeaders.Authorization, "Bearer $apiKey")
                 contentType(ContentType.Application.Json)
-                setBody(OpenRouterRequest(
-                    model = model,
-                    messages = listOf(
-                        Message("system", SYSTEM_PROMPT),
-                        Message("user", prompt),
-                    ),
-                    responseFormat = ResponseFormat("json_object"),
-                ))
+                setBody(
+                    OpenRouterRequest(
+                        model = model,
+                        messages = listOf(
+                            Message("system", LEGACY_SYSTEM_PROMPT),
+                            Message("user", prompt),
+                        ),
+                        responseFormat = ResponseFormat("json_object"),
+                    )
+                )
             }
 
             val body = response.body<OpenRouterResponse>()
@@ -182,99 +139,6 @@ Sentence: "$arabicText""""
         }
     }
 
-    suspend fun analyzeWord(arabicText: String): Either<DomainError, WordAnalysisResponse> {
-        if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
-
-        val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
-        val prompt = """Analyze the Arabic word "$arabicText" and return a JSON object with:
-- "transliteration": Latin transliteration using practical chat-alphabet style
-- "translation": English translation or meaning
-- "partOfSpeech": one of NOUN, VERB, ADJECTIVE, ADVERB, PREPOSITION, PARTICLE, INTERJECTION, CONJUNCTION, PRONOUN, UNKNOWN
-- "rootLetters": Arabic trilateral/quadrilateral root consonants separated by dashes (e.g. "ك-ت-ب"), or null if not applicable
-- "exampleSentence": object with "arabic", "transliteration", "translation" keys showing the word in a short sentence, or null"""
-
-        return try {
-            val response = httpClient.post("https://openrouter.ai/api/v1/chat/completions") {
-                header(HttpHeaders.Authorization, "Bearer $apiKey")
-                contentType(ContentType.Application.Json)
-                setBody(OpenRouterRequest(
-                    model = model,
-                    messages = listOf(
-                        Message("system", SYSTEM_PROMPT),
-                        Message("user", prompt),
-                    ),
-                    responseFormat = ResponseFormat("json_object"),
-                ))
-            }
-
-            val body = response.body<OpenRouterResponse>()
-            val content = body.choices.firstOrNull()?.message?.content
-                ?: return DomainError.InvalidInput("Empty AI response").left()
-
-            val payload = jsonConfig.decodeFromString<WordAnalysisPayload>(content)
-            WordAnalysisResponse(
-                arabicText = arabicText,
-                transliteration = payload.transliteration,
-                translation = payload.translation,
-                partOfSpeech = payload.partOfSpeech,
-                rootLetters = payload.rootLetters,
-                exampleSentence = payload.exampleSentence,
-            ).right()
-        } catch (e: Exception) {
-            log.warn(e) { "OpenRouter analyzeWord failed for '$arabicText'" }
-            DomainError.InvalidInput("AI request failed").left()
-        }
-    }
-
-    suspend fun enrichWord(word: Word): Either<DomainError, WordEnrichmentSuggestion> {
-        if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
-
-        val model = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
-        val dialectClause = ", dialect: ${word.dialect}"
-        val transliterationClause = word.transliteration?.let { " [$it]" } ?: ""
-        val prompt = """Analyse the Arabic word: ${word.arabicText}$transliterationClause (${word.translation ?: "no translation"}, partOfSpeech: ${word.partOfSpeech}$dialectClause)
-
-Provide:
-- gender (MASCULINE/FEMININE, nouns only, null for others)
-- verbDetails (verbs only, null for others): verbForm (Roman numeral I-X), pastPattern and presentPattern (Form I only: fa3ala/fa3ila/fa3ula and yaf3ulu/yaf3ilu/yaf3alu), weaknessType (SOUND/ASSIMILATED/HOLLOW/GEMINATE/DEFECTIVE/DOUBLY_WEAK)
-- plurals: list of plural forms with types (SOUND_MASC/SOUND_FEM/BROKEN/PAUCAL/COLLECTIVE/OTHER)
-- relations: up to 5 high-value entries — synonyms with register/nuance difference, strong antonyms, or words from the same semantic field. Avoid generic filler. Each entry: arabicText (fully vocalized), transliteration (practical chat-style), translation (concise English gloss), relationType (SYNONYM/ANTONYM/RELATED)
-- notes: brief mnemonic or usage note in English, focusing on common learner confusions, collocations, or register constraints (null if nothing genuinely useful)
-
-Respond ONLY with this JSON structure:
-{
-  "gender": "MASCULINE" | "FEMININE" | null,
-  "verbDetails": {"verbForm": "I", "pastPattern": "fa3ala", "presentPattern": "yaf3ulu", "weaknessType": "SOUND"} | null,
-  "plurals": [{"pluralForm": "...", "pluralType": "BROKEN"}],
-  "relations": [{"arabicText": "...", "transliteration": "...", "translation": "...", "relationType": "SYNONYM"}],
-  "notes": "..." | null
-}"""
-
-        return try {
-            val response = httpClient.post("https://openrouter.ai/api/v1/chat/completions") {
-                header(HttpHeaders.Authorization, "Bearer $apiKey")
-                contentType(ContentType.Application.Json)
-                setBody(OpenRouterRequest(
-                    model = model,
-                    messages = listOf(
-                        Message("system", ENRICH_SYSTEM_PROMPT),
-                        Message("user", prompt),
-                    ),
-                    responseFormat = ResponseFormat("json_object"),
-                ))
-            }
-
-            val body = response.body<OpenRouterResponse>()
-            val content = body.choices.firstOrNull()?.message?.content
-                ?: return DomainError.InvalidInput("Empty AI response").left()
-
-            jsonConfig.decodeFromString<WordEnrichmentSuggestion>(content).right()
-        } catch (e: Exception) {
-            log.warn(e) { "OpenRouter enrichWord failed for '${word.arabicText}'" }
-            DomainError.InvalidInput("AI enrichment request failed").left()
-        }
-    }
-
     suspend fun generateInsight(context: InsightContext): Either<DomainError, String> {
         if (apiKey.isNullOrBlank()) return DomainError.AiNotConfigured.left()
 
@@ -285,13 +149,15 @@ Respond ONLY with this JSON structure:
             val response = httpClient.post("https://openrouter.ai/api/v1/chat/completions") {
                 header(HttpHeaders.Authorization, "Bearer $apiKey")
                 contentType(ContentType.Application.Json)
-                setBody(OpenRouterInsightRequest(
-                    model = model,
-                    messages = listOf(
-                        Message("system", INSIGHT_SYSTEM_PROMPT),
-                        Message("user", userPrompt),
-                    ),
-                ))
+                setBody(
+                    OpenRouterInsightRequest(
+                        model = model,
+                        messages = listOf(
+                            Message("system", INSIGHT_SYSTEM_PROMPT),
+                            Message("user", userPrompt),
+                        ),
+                    )
+                )
             }
 
             val body = response.body<OpenRouterResponse>()
@@ -346,6 +212,7 @@ Give concise linguistic insights. Lead with semantic disambiguation if this word
         val modeInstruction = when (ctx.mode) {
             InsightMode.HOMEWORK ->
                 "This is a student-authored sentence. Prioritise corrections and natural alternatives over analysis."
+
             InsightMode.READING ->
                 "This is a native-authored sentence. Focus on nuance, notable constructions, and vocabulary choices."
         }
@@ -359,16 +226,6 @@ $lines
 $modeInstruction
 
 Be concise."""
-    }
-
-    private fun buildPrompt(arabicText: String, translation: String?): String {
-        val translationHint = if (!translation.isNullOrBlank()) " (meaning: \"$translation\")" else ""
-        return """Given the Arabic word "$arabicText"$translationHint, provide exactly 2 example sentences.
-One sentence should be in MSA and the other in Tunisian Arabic dialect.
-Return a JSON object with an "examples" array. Each element must have:
-- "arabic": the sentence in Arabic script
-- "transliteration": Latin transliteration
-- "translation": English translation"""
     }
 
     private fun positiveLongEnv(name: String): Long? =
@@ -420,18 +277,6 @@ Return a JSON object with an "examples" array. Each element must have:
     private data class Choice(val message: Message)
 
     @Serializable
-    private data class ExamplesPayload(val examples: List<AiExampleSentence>)
-
-    @Serializable
-    private data class WordAnalysisPayload(
-        val transliteration: String? = null,
-        val translation: String? = null,
-        val partOfSpeech: String? = null,
-        val rootLetters: String? = null,
-        val exampleSentence: AiExampleSentence? = null,
-    )
-
-    @Serializable
     private data class TokensPayload(val tokens: List<TokenInputDto>)
 
     @Serializable
@@ -442,12 +287,8 @@ Return a JSON object with an "examples" array. Each element must have:
         const val DEFAULT_AI_REQUEST_TIMEOUT_MS = 120_000L
         const val DEFAULT_AI_CONNECT_TIMEOUT_MS = 15_000L
 
-        const val SYSTEM_PROMPT = "You are a structured assistant as companion for an Arabic language teacher. " +
-                "Return only valid JSON."
-
-        const val ENRICH_SYSTEM_PROMPT = "You are an expert Arabic linguist. Given an Arabic word, provide structured linguistic enrichment in JSON format. Always respond with valid JSON."
-
-        const val INSIGHT_SYSTEM_PROMPT = """You are an experienced Arabic language teacher and tandem partner, specialising in Tunisian Arabic and MSA.
+        const val INSIGHT_SYSTEM_PROMPT =
+            """You are an experienced Arabic language teacher and tandem partner, specialising in Tunisian Arabic and MSA.
 
 Rules:
 - Respond in English unless Arabic script is needed for examples
@@ -459,3 +300,5 @@ Rules:
     }
 }
 
+const val LEGACY_SYSTEM_PROMPT = "You are a structured assistant as companion for an Arabic language teacher. " +
+        "Return only valid JSON."

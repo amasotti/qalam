@@ -3168,6 +3168,7 @@ components:
         - INTERJECTION
         - CONJUNCTION
         - PRONOUN
+      example: NOUN
     Dialect:
       type: string
       enum:
@@ -3404,19 +3405,6 @@ components:
       properties:
         arabicText:
           type: string
-    AiExampleSentence:
-      type: object
-      required:
-        - arabic
-        - transliteration
-        - translation
-      properties:
-        arabic:
-          type: string
-        transliteration:
-          type: string
-        translation:
-          type: string
     WordAnalysisResponse:
       type: object
       required:
@@ -3424,21 +3412,15 @@ components:
       properties:
         arabicText:
           type: string
+          example: صِيف
         transliteration:
           type: string
-          nullable: true
+          example: Sayf
         translation:
           type: string
-          nullable: true
+          example: summer
         partOfSpeech:
-          type: string
-          nullable: true
-        rootLetters:
-          type: string
-          nullable: true
-        exampleSentence:
-          $ref: '#/components/schemas/AiExampleSentence'
-          nullable: true
+          $ref: '#/components/schemas/PartOfSpeech'
     UpdateWordRequest:
       type: object
       description: All fields optional — only provided fields are updated
@@ -3557,6 +3539,19 @@ components:
         translation:
           type: string
           nullable: true
+    AiExampleSentence:
+      type: object
+      required:
+        - arabic
+        - transliteration
+        - translation
+      properties:
+        arabic:
+          type: string
+        transliteration:
+          type: string
+        translation:
+          type: string
     AiExamplesResponse:
       type: object
       required:

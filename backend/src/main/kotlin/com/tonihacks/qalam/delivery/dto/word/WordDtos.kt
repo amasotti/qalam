@@ -144,6 +144,4 @@ data class WordAnalysisResponse(
     val transliteration: String? = null,
     val translation: String? = null,
     val partOfSpeech: String? = null,
-    val rootLetters: String? = null,
-    val exampleSentence: AiExampleSentence? = null,
 )

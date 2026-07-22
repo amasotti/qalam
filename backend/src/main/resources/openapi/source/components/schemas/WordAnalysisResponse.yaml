@@ -4,18 +4,12 @@ required:
 properties:
   arabicText:
     type: string
+    example: "صِيف"
   transliteration:
     type: string
-    nullable: true
+    example: "Sayf"
   translation:
     type: string
-    nullable: true
+    example: "summer"
   partOfSpeech:
-    type: string
-    nullable: true
-  rootLetters:
-    type: string
-    nullable: true
-  exampleSentence:
-    $ref: ./AiExampleSentence.yaml
-    nullable: true
+    $ref: ./PartOfSpeech.yaml

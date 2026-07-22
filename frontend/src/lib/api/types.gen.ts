@@ -162,19 +162,11 @@ export type AnalyzeWordRequest = {
     arabicText: string;
 };
 
-export type AiExampleSentence = {
-    arabic: string;
-    transliteration: string;
-    translation: string;
-};
-
 export type WordAnalysisResponse = {
     arabicText: string;
-    transliteration?: string | null;
-    translation?: string | null;
-    partOfSpeech?: string | null;
-    rootLetters?: string | null;
-    exampleSentence?: AiExampleSentence;
+    transliteration?: string;
+    translation?: string;
+    partOfSpeech?: PartOfSpeech;
 };
 
 /**
@@ -219,6 +211,12 @@ export type CreateWordExampleRequest = {
     arabic: string;
     transliteration?: string | null;
     translation?: string | null;
+};
+
+export type AiExampleSentence = {
+    arabic: string;
+    transliteration: string;
+    translation: string;
 };
 
 export type AiExamplesResponse = {

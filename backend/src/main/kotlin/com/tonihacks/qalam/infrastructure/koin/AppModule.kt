@@ -33,6 +33,7 @@ import com.tonihacks.qalam.domain.wordlist.WordListRepository
 import com.tonihacks.qalam.domain.wordlist.WordListService
 import com.tonihacks.qalam.infrastructure.ai.AiClient
 import com.tonihacks.qalam.infrastructure.ai.OpenRouterClient
+import com.tonihacks.qalam.infrastructure.ai.OpenRouterSentenceClient
 import com.tonihacks.qalam.infrastructure.ai.OpenRouterVocabularyClient
 import com.tonihacks.qalam.infrastructure.ai.OpenRouterWordClient
 import com.tonihacks.qalam.infrastructure.exposed.ExposedAnnotationRepository
@@ -110,6 +111,7 @@ val exerciseModule = module {
 val aiModule = module {
     single { AiInsightService(get(), get(), get(), get(), get()) }
     single { OpenRouterClient() }
+    single { OpenRouterSentenceClient(get()) }
     single { OpenRouterVocabularyClient(get()) }
     single { AiWordListSuggestionService(get(), get()) }
     single { AiRootFamilySuggestionService(get(), get(), get())}

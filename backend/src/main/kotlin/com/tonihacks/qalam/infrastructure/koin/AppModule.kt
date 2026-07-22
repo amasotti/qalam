@@ -34,6 +34,7 @@ import com.tonihacks.qalam.domain.wordlist.WordListService
 import com.tonihacks.qalam.infrastructure.ai.AiClient
 import com.tonihacks.qalam.infrastructure.ai.OpenRouterClient
 import com.tonihacks.qalam.infrastructure.ai.OpenRouterVocabularyClient
+import com.tonihacks.qalam.infrastructure.ai.OpenRouterWordClient
 import com.tonihacks.qalam.infrastructure.exposed.ExposedAnnotationRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedRootRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedSentenceRepository
@@ -58,6 +59,7 @@ val rootsModules = module {
 
 val wordsModules = module {
     single { AiClient() }
+    single { OpenRouterWordClient(get()) }
     single { ExposedWordMorphologyRepository() }
     single { ExposedWordPluralsRepository() }
     single { ExposedWordRelationsRepository() }

@@ -13,6 +13,7 @@ import type {
 import { Button } from '$lib/components/ui/button';
 import { useAllRoots } from '$lib/stores/roots';
 import { useAsdLookup, useWordAutocomplete } from '$lib/stores/words';
+    import { removeArabicDiacritics } from '$lib/utils/arabicUtils';
 
 interface Props {
 	initial?: Partial<{
@@ -335,7 +336,7 @@ async function handleSubmit(e: SubmitEvent) {
 				<button
 					type="button"
 					class="btn form-inline-btn"
-					onclick={() => { pronunciationUrl = `https://forvo.com/search/${encodeURIComponent(arabicText.trim())}`; }}
+					onclick={() => { pronunciationUrl = `https://forvo.com/search/${encodeURIComponent(removeArabicDiacritics(arabicText.trim()))}`; }}
 					disabled={isPending}
 				>Forvo</button>
 			{/if}

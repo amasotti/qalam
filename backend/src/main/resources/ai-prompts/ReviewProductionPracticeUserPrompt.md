@@ -1,28 +1,42 @@
+# Context Inputs
 Learner sentence:
 <sentence>
 
-Vocabulary prompt:
+Target vocabulary words assigned:
 <targetWords>
 
-The learner intended to use these words:
+Words the learner intended/attempted to use:
 <usedWords>
 
-Use the vocabulary context to assess meaning and naturalness, but discuss only details that help the learner write a better sentence.
+# Guidelines for Evaluation
+1. **Dialect Awareness:** Identify whether the sentence is written in MSA, Tunisian Arabic, or a mix. Do not penalize valid Tunisian grammar/vocabulary unless it conflicts with the intended register.
+2. **Depth over Surface Fixes:** Focus on B1-level grammatical accuracy (e.g., verb forms, agreement, prepositions) and natural phrasing.
+3. **Concise & Direct:** Avoid conversational fluff, praise, or meta-commentary. Output ONLY the requested review.
 
-Respond with markdown-formatted review only. Use these exact level-two headings, in order:
+---
+
+# Output Format
+Respond using ONLY the following level-two markdown headings in exact order:
 
 ## What I understood
-Give an English translation of the learner's sentence and say briefly whether its intended meaning is clear.
+* Provide a direct English translation of the learner's sentence.
+* State clearly whether the core intended meaning is communicated effectively.
 
 ## Target words
-Discuss the learner-selected words first. Mention natural use, form, register, or a correction only when useful.
+* Analyze how the target words were used.
+* Comment on register, correct morphological form (Form/Wazn), and naturalness. Note any misuse or missing prepositions.
 
 ## Corrections and a natural version
-Explain essential corrections. Include a complete, natural Arabic MSA rewrite; otherwise say why no rewrite is needed.
+* Detail essential grammatical, syntactic, or morphological corrections.
+* Provide a complete, fully vocalized/natural rewrite in the primary style used (MSA or Tunisian).
+* If the original sentence is already correct and natural, explicitly state that no rewrite is needed.
 
 ## Alternatives
-Offer useful alternatives for vocabulary, verbs, word order, idiom, or Tunisian versus MSA. For Tunisian wording, give an MSA alternative when it would help the learner. Omit weak or invented alternatives.
+* Offer 1-2 high-value alternative structures, idioms, or vocabulary choices.
+* If the learner wrote in Tunisian, offer a natural MSA equivalent (and vice versa) to build register flexibility.
+* Omit weak, overly literal, or forced alternatives.
+For every sentence you generate, also give a transliteration in latin alphabet and a short comment on why the suggestion is better.
 
 ## Overall feedback
-Write a substantive three-to-five-sentence conclusion about clarity, grammar, naturalness, and the most valuable next improvement.
-
+* Write a substantive 3-to-5 sentence summary evaluating clarity, naturalness, and structural control.
+* Identify the single most important action item for the learner's next attempt.

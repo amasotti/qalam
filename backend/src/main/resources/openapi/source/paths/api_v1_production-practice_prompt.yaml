@@ -1,0 +1,19 @@
+get:
+  summary: Create an ephemeral production-practice prompt
+  description: "Returns a fresh, non-persisted set of seven vocabulary targets: two nouns, two verbs, and three further random words."
+  operationId: getProductionPracticePrompt
+  tags:
+    - production-practice
+  responses:
+    '200':
+      description: "Seven vocabulary words: two nouns, two verbs, and three random words"
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ProductionPracticePromptResponse.yaml
+    '422':
+      description: Fewer than the required eligible distinct vocabulary words are available
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml

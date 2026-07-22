@@ -4,6 +4,9 @@ import com.tonihacks.qalam.application.AiInsightService
 import com.tonihacks.qalam.application.AiRootFamilySuggestionService
 import com.tonihacks.qalam.application.AiWordListSuggestionService
 import com.tonihacks.qalam.application.InsightGenerator
+import com.tonihacks.qalam.application.productionpractice.ProductionPracticeReviewer
+import com.tonihacks.qalam.application.productionpractice.ProductionPracticeService
+import com.tonihacks.qalam.application.productionpractice.ProductionPracticeWordSource
 import com.tonihacks.qalam.domain.annotation.AnnotationRepository
 import com.tonihacks.qalam.domain.annotation.AnnotationService
 import com.tonihacks.qalam.domain.root.RootRepository
@@ -37,6 +40,7 @@ import com.tonihacks.qalam.infrastructure.ai.OpenRouterInsightClient
 import com.tonihacks.qalam.infrastructure.ai.OpenRouterSentenceClient
 import com.tonihacks.qalam.infrastructure.ai.OpenRouterVocabularyClient
 import com.tonihacks.qalam.infrastructure.ai.OpenRouterWordClient
+import com.tonihacks.qalam.infrastructure.ai.OpenRouterProductionPracticeReviewer
 import com.tonihacks.qalam.infrastructure.exposed.ExposedAnnotationRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedRootRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedSentenceRepository
@@ -52,6 +56,7 @@ import com.tonihacks.qalam.infrastructure.exposed.ExposedWordPluralsRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedWordListRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedWordRelationsRepository
 import com.tonihacks.qalam.infrastructure.exposed.ExposedWordRepository
+import com.tonihacks.qalam.infrastructure.exposed.ExposedProductionPracticeWordSource
 import org.koin.dsl.module
 
 val rootsModules = module {
@@ -108,6 +113,12 @@ val exerciseModule = module {
     single { ExerciseService(get(), get()) }
 }
 
+val productionPracticeModule = module {
+    single<ProductionPracticeWordSource> { ExposedProductionPracticeWordSource() }
+    single<ProductionPracticeReviewer> { OpenRouterProductionPracticeReviewer(get()) }
+    single { ProductionPracticeService(get(), get()) }
+}
+
 val aiModule = module {
     single { OpenRouterClient() }
     single<InsightGenerator> { OpenRouterInsightClient(get()) }
@@ -142,6 +153,7 @@ val appModule = module {
         annotationsModule,
         trainingModule,
         exerciseModule,
+        productionPracticeModule,
         aiModule,
         analyticsModule,
         conjugationModule,

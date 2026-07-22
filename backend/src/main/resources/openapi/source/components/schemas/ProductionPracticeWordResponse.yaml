@@ -1,0 +1,31 @@
+type: object
+description: A canonical vocabulary word offered as one target in an ephemeral production-practice prompt.
+required:
+  - id
+  - arabicText
+  - partOfSpeech
+  - dialect
+properties:
+  id:
+    type: string
+    format: uuid
+    description: Stable identifier of the vocabulary word. Submit this value in targetWordIds and usedWordIds.
+    example: 11111111-1111-1111-1111-111111111111
+  arabicText:
+    type: string
+    description: Canonical Arabic spelling stored in the learner's vocabulary.
+    example: كِتَاب
+  transliteration:
+    type: string
+    nullable: true
+    description: Optional practical Latin transliteration.
+    example: kitāb
+  translation:
+    type: string
+    nullable: true
+    description: Optional concise English gloss.
+    example: book
+  partOfSpeech:
+    $ref: ./PartOfSpeech.yaml
+  dialect:
+    $ref: ./Dialect.yaml

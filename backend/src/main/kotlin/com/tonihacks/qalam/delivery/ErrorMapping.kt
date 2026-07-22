@@ -18,6 +18,8 @@ fun DomainError.toHttpResponse(): Pair<HttpStatusCode, ErrorResponse> = when (th
         HttpStatusCode.Conflict to ErrorResponse(detail, "ALREADY_EXISTS")
     is DomainError.ValidationError ->
         HttpStatusCode.UnprocessableEntity to ErrorResponse("$field: $message", "VALIDATION_ERROR")
+    is DomainError.UnknownEnumValue ->
+        HttpStatusCode.UnprocessableEntity to ErrorResponse("$field: unknown enum value '$value'", "UNKNOWN_ENUM_VALUE")
     is DomainError.InvalidInput ->
         HttpStatusCode.BadRequest to ErrorResponse(message, "INVALID_INPUT")
     is DomainError.AiNotConfigured ->

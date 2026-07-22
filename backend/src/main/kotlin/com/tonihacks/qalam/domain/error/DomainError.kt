@@ -1,5 +1,9 @@
 package com.tonihacks.qalam.domain.error
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+
 // Domain layer — zero framework dependencies.
 // HTTP mapping lives in delivery/ErrorMapping.kt as an extension function.
 sealed class DomainError {
@@ -15,6 +19,8 @@ sealed class DomainError {
 
     /** Field-level input validation failure. */
     data class ValidationError(val field: String, val message: String) : DomainError()
+
+    data class UnknownEnumValue(val field: String, val value: String): DomainError()
 
     /** Generic bad input that doesn't map to a single field. */
     data class InvalidInput(val message: String) : DomainError()

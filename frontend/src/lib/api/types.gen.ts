@@ -722,6 +722,146 @@ export type ExerciseSessionSummaryResponse = {
     completedAt: string;
 };
 
+/**
+ * A canonical vocabulary word offered as one target in an ephemeral production-practice prompt.
+ */
+export type ProductionPracticeWordResponse = {
+    /**
+     * Stable identifier of the vocabulary word. Submit this value in targetWordIds and usedWordIds.
+     */
+    id: string;
+    /**
+     * Canonical Arabic spelling stored in the learner's vocabulary.
+     */
+    arabicText: string;
+    /**
+     * Optional practical Latin transliteration.
+     */
+    transliteration?: string | null;
+    /**
+     * Optional concise English gloss.
+     */
+    translation?: string | null;
+    partOfSpeech: PartOfSpeech;
+    dialect: Dialect;
+};
+
+/**
+ * A stateless production-practice prompt. It is not persisted and may be replaced by a fresh request.
+ */
+export type ProductionPracticePromptResponse = {
+    /**
+     * Seven unique target words: exactly two nouns, exactly two verbs, and three additional random words.
+     */
+    words: [
+        ProductionPracticeWordResponse,
+        ProductionPracticeWordResponse,
+        ProductionPracticeWordResponse,
+        ProductionPracticeWordResponse,
+        ProductionPracticeWordResponse,
+        ProductionPracticeWordResponse,
+        ProductionPracticeWordResponse
+    ];
+};
+
+/**
+ * A stateless request to review one learner-authored Arabic sentence against its displayed prompt words.
+ */
+export type ReviewProductionPracticeRequest = {
+    /**
+     * Learner-authored Arabic sentence to review. Leading and trailing whitespace is ignored.
+     */
+    sentence: string;
+    /**
+     * Exactly the seven distinct word IDs displayed in the current prompt. The server reloads canonical word data from these IDs.
+     */
+    targetWordIds: [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+    ];
+    /**
+     * At least two distinct IDs from targetWordIds that the learner intended to use. This records intent; it does not mechanically prove an inflected surface form.
+     */
+    usedWordIds: Array<string>;
+};
+
+/**
+ * Overall assessment of the learner's submitted sentence.
+ */
+export type ProductionPracticeVerdict = 'EXCELLENT' | 'GOOD' | 'NEEDS_REVISION';
+
+/**
+ * AI feedback for one target word. The response contains exactly one entry for every prompt target word.
+ */
+export type ProductionPracticeWordFeedbackResponse = {
+    /**
+     * Identifier of the target word being assessed.
+     */
+    wordId: string;
+    /**
+     * Whether the word is present and used naturally in the submitted sentence.
+     */
+    usedNaturally: boolean;
+    /**
+     * Concise English explanation of the word's usage or absence.
+     */
+    note: string;
+};
+
+/**
+ * One essential correction suggested by the AI reviewer. The list is empty when no correction is useful.
+ */
+export type ProductionPracticeCorrectionResponse = {
+    /**
+     * Excerpt from the learner sentence needing correction.
+     */
+    original: string;
+    /**
+     * Corrected Arabic replacement.
+     */
+    suggestion: string;
+    /**
+     * Concise English explanation of the correction.
+     */
+    explanation: string;
+};
+
+/**
+ * Ephemeral structured feedback from the AI reviewer. It is never stored or used for SRS progress.
+ */
+export type ProductionPracticeReviewResponse = {
+    verdict: ProductionPracticeVerdict;
+    /**
+     * One assessment for each of the seven target words.
+     */
+    wordFeedback: [
+        ProductionPracticeWordFeedbackResponse,
+        ProductionPracticeWordFeedbackResponse,
+        ProductionPracticeWordFeedbackResponse,
+        ProductionPracticeWordFeedbackResponse,
+        ProductionPracticeWordFeedbackResponse,
+        ProductionPracticeWordFeedbackResponse,
+        ProductionPracticeWordFeedbackResponse
+    ];
+    /**
+     * Essential corrections only; stylistic alternatives are omitted when the sentence is already natural.
+     */
+    corrections: Array<ProductionPracticeCorrectionResponse>;
+    /**
+     * Optional improved Arabic version of the whole sentence; null when a rewrite is not useful.
+     */
+    improvedSentence: string | null;
+    /**
+     * Short English comment summarising the feedback.
+     */
+    comment: string;
+};
+
 export type ConjugationExerciseSessionListItemResponse = {
     id: string;
     mode: 'NEW' | 'LEARNING' | 'KNOWN' | 'MIXED';
@@ -3267,6 +3407,68 @@ export type CompleteExerciseSessionResponses = {
 };
 
 export type CompleteExerciseSessionResponse = CompleteExerciseSessionResponses[keyof CompleteExerciseSessionResponses];
+
+export type GetProductionPracticePromptData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/production-practice/prompt';
+};
+
+export type GetProductionPracticePromptErrors = {
+    /**
+     * Fewer than the required eligible distinct vocabulary words are available
+     */
+    422: ErrorResponse;
+};
+
+export type GetProductionPracticePromptError = GetProductionPracticePromptErrors[keyof GetProductionPracticePromptErrors];
+
+export type GetProductionPracticePromptResponses = {
+    /**
+     * Seven vocabulary words: two nouns, two verbs, and three random words
+     */
+    200: ProductionPracticePromptResponse;
+};
+
+export type GetProductionPracticePromptResponse = GetProductionPracticePromptResponses[keyof GetProductionPracticePromptResponses];
+
+export type ReviewProductionPracticeSentenceData = {
+    body: ReviewProductionPracticeRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/production-practice/reviews';
+};
+
+export type ReviewProductionPracticeSentenceErrors = {
+    /**
+     * Malformed UUID or invalid AI provider response
+     */
+    400: ErrorResponse;
+    /**
+     * One or more target words do not exist
+     */
+    404: ErrorResponse;
+    /**
+     * Sentence or selected-word validation failed
+     */
+    422: ErrorResponse;
+    /**
+     * AI not configured (OPENROUTER_API_KEY missing)
+     */
+    503: ErrorResponse;
+};
+
+export type ReviewProductionPracticeSentenceError = ReviewProductionPracticeSentenceErrors[keyof ReviewProductionPracticeSentenceErrors];
+
+export type ReviewProductionPracticeSentenceResponses = {
+    /**
+     * Structured AI feedback for the submitted sentence
+     */
+    200: ProductionPracticeReviewResponse;
+};
+
+export type ReviewProductionPracticeSentenceResponse = ReviewProductionPracticeSentenceResponses[keyof ReviewProductionPracticeSentenceResponses];
 
 export type ListConjugationExerciseSessionsData = {
     body?: never;

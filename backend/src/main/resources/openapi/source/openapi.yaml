@@ -30,6 +30,8 @@ tags:
     description: Flashcard training sessions and statistics
   - name: exercises
     description: Backend-generated exercise sessions for mobile practice
+  - name: production-practice
+    description: Ephemeral AI-reviewed Arabic sentence production practice
   - name: analytics
     description: Aggregated statistics across all domains
   - name: conjugation
@@ -133,6 +135,10 @@ paths:
     $ref: paths/api_v1_exercise-sessions_{id}_answers.yaml
   /api/v1/exercise-sessions/{id}/complete:
     $ref: paths/api_v1_exercise-sessions_{id}_complete.yaml
+  /api/v1/production-practice/prompt:
+    $ref: paths/api_v1_production-practice_prompt.yaml
+  /api/v1/production-practice/reviews:
+    $ref: paths/api_v1_production-practice_reviews.yaml
   /api/v1/conjugation-exercise-sessions:
     $ref: paths/api_v1_conjugation-exercise-sessions.yaml
   /api/v1/conjugation-exercise-sessions/eligibility:

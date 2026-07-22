@@ -3,6 +3,7 @@ package com.tonihacks.qalam.delivery
 import com.tonihacks.qalam.application.AiRootFamilySuggestionService
 import com.tonihacks.qalam.application.AiInsightService
 import com.tonihacks.qalam.application.AiWordListSuggestionService
+import com.tonihacks.qalam.application.productionpractice.ProductionPracticeService
 import com.tonihacks.qalam.delivery.routes.aiInsightRoutes
 import com.tonihacks.qalam.delivery.routes.analyticsRoutes
 import com.tonihacks.qalam.delivery.routes.annotationRoutes
@@ -17,6 +18,7 @@ import com.tonihacks.qalam.delivery.routes.trainingRoutes
 import com.tonihacks.qalam.delivery.routes.transliterationRoutes
 import com.tonihacks.qalam.delivery.routes.wordListRoutes
 import com.tonihacks.qalam.delivery.routes.wordRoutes
+import com.tonihacks.qalam.delivery.routes.productionPracticeRoutes
 import com.tonihacks.qalam.domain.analytics.AnalyticsService
 import com.tonihacks.qalam.domain.conjugation.ConjugationService
 import com.tonihacks.qalam.domain.conjugationexercise.ConjugationExerciseService
@@ -60,6 +62,7 @@ fun Application.configureRouting() {
     val analyticsService by inject<AnalyticsService>()
     val conjugationService by inject<ConjugationService>()
     val conjugationExerciseService by inject<ConjugationExerciseService>()
+    val productionPracticeService by inject<ProductionPracticeService>()
 
     routing {
         get("/health") {
@@ -85,6 +88,7 @@ fun Application.configureRouting() {
 
             trainingRoutes(trainingService)
             exerciseRoutes(exerciseService)
+            productionPracticeRoutes(productionPracticeService)
 
             aiInsightRoutes(aiInsightService)
 

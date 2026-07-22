@@ -31,6 +31,8 @@ tags:
     description: Flashcard training sessions and statistics
   - name: exercises
     description: Backend-generated exercise sessions for mobile practice
+  - name: production-practice
+    description: Ephemeral AI-reviewed Arabic sentence production practice
   - name: analytics
     description: Aggregated statistics across all domains
   - name: conjugation
@@ -2461,6 +2463,111 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/v1/production-practice/prompt:
+    get:
+      summary: Create an ephemeral production-practice prompt
+      description: 'Returns a fresh, non-persisted set of seven vocabulary targets: two nouns, two verbs, and three further random words.'
+      operationId: getProductionPracticePrompt
+      tags:
+        - production-practice
+      responses:
+        '200':
+          description: 'Seven vocabulary words: two nouns, two verbs, and three random words'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductionPracticePromptResponse'
+        '422':
+          description: Fewer than the required eligible distinct vocabulary words are available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/v1/production-practice/reviews:
+    post:
+      summary: Review an ephemeral production-practice sentence
+      description: Validates the learner's seven displayed target IDs and submits the sentence to the configured AI reviewer. Neither the request nor feedback is persisted.
+      operationId: reviewProductionPracticeSentence
+      tags:
+        - production-practice
+        - ai
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewProductionPracticeRequest'
+            example:
+              sentence: أكتب كتابًا كبيرًا في البيت.
+              targetWordIds:
+                - 11111111-1111-1111-1111-111111111111
+                - 22222222-2222-2222-2222-222222222222
+                - 33333333-3333-3333-3333-333333333333
+                - 44444444-4444-4444-4444-444444444444
+                - 55555555-5555-5555-5555-555555555555
+                - 66666666-6666-6666-6666-666666666666
+                - 77777777-7777-7777-7777-777777777777
+              usedWordIds:
+                - 11111111-1111-1111-1111-111111111111
+                - 33333333-3333-3333-3333-333333333333
+      responses:
+        '200':
+          description: Structured AI feedback for the submitted sentence
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductionPracticeReviewResponse'
+              example:
+                verdict: GOOD
+                wordFeedback:
+                  - wordId: 11111111-1111-1111-1111-111111111111
+                    usedNaturally: true
+                    note: Used naturally as the direct object.
+                  - wordId: 22222222-2222-2222-2222-222222222222
+                    usedNaturally: true
+                    note: Used naturally in the prepositional phrase.
+                  - wordId: 33333333-3333-3333-3333-333333333333
+                    usedNaturally: true
+                    note: Used naturally as the main verb.
+                  - wordId: 44444444-4444-4444-4444-444444444444
+                    usedNaturally: false
+                    note: Not used in this sentence.
+                  - wordId: 55555555-5555-5555-5555-555555555555
+                    usedNaturally: true
+                    note: Used naturally to describe the book.
+                  - wordId: 66666666-6666-6666-6666-666666666666
+                    usedNaturally: false
+                    note: Not used in this sentence.
+                  - wordId: 77777777-7777-7777-7777-777777777777
+                    usedNaturally: false
+                    note: Not used in this sentence.
+                corrections: []
+                improvedSentence: أكتب كتابًا كبيرًا في البيت.
+                comment: Good use of the target noun and verb; the sentence is natural.
+        '400':
+          description: Malformed UUID or invalid AI provider response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: One or more target words do not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Sentence or selected-word validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: AI not configured (OPENROUTER_API_KEY missing)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/conjugation-exercise-sessions:
     post:
       summary: Create a conjugation matching exercise session
@@ -3179,6 +3286,7 @@ components:
         - LEVANTINE
         - MSA
         - IRAQI
+      example: MSA
     Difficulty:
       type: string
       enum:
@@ -4873,6 +4981,218 @@ components:
         completedAt:
           type: string
           format: date-time
+    ProductionPracticeWordResponse:
+      type: object
+      description: A canonical vocabulary word offered as one target in an ephemeral production-practice prompt.
+      required:
+        - id
+        - arabicText
+        - partOfSpeech
+        - dialect
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Stable identifier of the vocabulary word. Submit this value in targetWordIds and usedWordIds.
+          example: 11111111-1111-1111-1111-111111111111
+        arabicText:
+          type: string
+          description: Canonical Arabic spelling stored in the learner's vocabulary.
+          example: كِتَاب
+        transliteration:
+          type: string
+          nullable: true
+          description: Optional practical Latin transliteration.
+          example: kitāb
+        translation:
+          type: string
+          nullable: true
+          description: Optional concise English gloss.
+          example: book
+        partOfSpeech:
+          $ref: '#/components/schemas/PartOfSpeech'
+        dialect:
+          $ref: '#/components/schemas/Dialect'
+    ProductionPracticePromptResponse:
+      type: object
+      description: A stateless production-practice prompt. It is not persisted and may be replaced by a fresh request.
+      required:
+        - words
+      properties:
+        words:
+          type: array
+          description: 'Seven unique target words: exactly two nouns, exactly two verbs, and three additional random words.'
+          minItems: 7
+          maxItems: 7
+          items:
+            $ref: '#/components/schemas/ProductionPracticeWordResponse'
+          example:
+            - id: 11111111-1111-1111-1111-111111111111
+              arabicText: كِتَاب
+              transliteration: kitāb
+              translation: book
+              partOfSpeech: NOUN
+              dialect: MSA
+            - id: 22222222-2222-2222-2222-222222222222
+              arabicText: بَيْت
+              transliteration: bayt
+              translation: house
+              partOfSpeech: NOUN
+              dialect: MSA
+            - id: 33333333-3333-3333-3333-333333333333
+              arabicText: كَتَبَ
+              transliteration: kataba
+              translation: to write
+              partOfSpeech: VERB
+              dialect: MSA
+            - id: 44444444-4444-4444-4444-444444444444
+              arabicText: ذَهَبَ
+              transliteration: dhahaba
+              translation: to go
+              partOfSpeech: VERB
+              dialect: MSA
+            - id: 55555555-5555-5555-5555-555555555555
+              arabicText: كَبِير
+              transliteration: kabīr
+              translation: big
+              partOfSpeech: ADJECTIVE
+              dialect: MSA
+            - id: 66666666-6666-6666-6666-666666666666
+              arabicText: سَرِيعًا
+              transliteration: sarīʿan
+              translation: quickly
+              partOfSpeech: ADVERB
+              dialect: MSA
+            - id: 77777777-7777-7777-7777-777777777777
+              arabicText: هُوَ
+              transliteration: huwa
+              translation: he
+              partOfSpeech: PRONOUN
+              dialect: MSA
+    ReviewProductionPracticeRequest:
+      type: object
+      description: A stateless request to review one learner-authored Arabic sentence against its displayed prompt words.
+      required:
+        - sentence
+        - targetWordIds
+        - usedWordIds
+      properties:
+        sentence:
+          type: string
+          description: Learner-authored Arabic sentence to review. Leading and trailing whitespace is ignored.
+          minLength: 1
+          maxLength: 1000
+          example: أكتب كتابًا كبيرًا في البيت.
+        targetWordIds:
+          type: array
+          description: Exactly the seven distinct word IDs displayed in the current prompt. The server reloads canonical word data from these IDs.
+          minItems: 7
+          maxItems: 7
+          uniqueItems: true
+          items:
+            type: string
+            format: uuid
+          example:
+            - 11111111-1111-1111-1111-111111111111
+            - 22222222-2222-2222-2222-222222222222
+            - 33333333-3333-3333-3333-333333333333
+            - 44444444-4444-4444-4444-444444444444
+            - 55555555-5555-5555-5555-555555555555
+            - 66666666-6666-6666-6666-666666666666
+            - 77777777-7777-7777-7777-777777777777
+        usedWordIds:
+          type: array
+          description: At least two distinct IDs from targetWordIds that the learner intended to use. This records intent; it does not mechanically prove an inflected surface form.
+          minItems: 2
+          uniqueItems: true
+          items:
+            type: string
+            format: uuid
+          example:
+            - 11111111-1111-1111-1111-111111111111
+            - 33333333-3333-3333-3333-333333333333
+    ProductionPracticeVerdict:
+      type: string
+      description: Overall assessment of the learner's submitted sentence.
+      enum:
+        - EXCELLENT
+        - GOOD
+        - NEEDS_REVISION
+      example: GOOD
+    ProductionPracticeWordFeedbackResponse:
+      type: object
+      description: AI feedback for one target word. The response contains exactly one entry for every prompt target word.
+      required:
+        - wordId
+        - usedNaturally
+        - note
+      properties:
+        wordId:
+          type: string
+          format: uuid
+          description: Identifier of the target word being assessed.
+          example: 33333333-3333-3333-3333-333333333333
+        usedNaturally:
+          type: boolean
+          description: Whether the word is present and used naturally in the submitted sentence.
+          example: true
+        note:
+          type: string
+          description: Concise English explanation of the word's usage or absence.
+          example: Used naturally as the main verb.
+    ProductionPracticeCorrectionResponse:
+      type: object
+      description: One essential correction suggested by the AI reviewer. The list is empty when no correction is useful.
+      required:
+        - original
+        - suggestion
+        - explanation
+      properties:
+        original:
+          type: string
+          description: Excerpt from the learner sentence needing correction.
+          example: أنا يكتب
+        suggestion:
+          type: string
+          description: Corrected Arabic replacement.
+          example: أنا أكتب
+        explanation:
+          type: string
+          description: Concise English explanation of the correction.
+          example: First-person singular requires أكتب rather than third-person يكتب.
+    ProductionPracticeReviewResponse:
+      type: object
+      description: Ephemeral structured feedback from the AI reviewer. It is never stored or used for SRS progress.
+      required:
+        - verdict
+        - wordFeedback
+        - corrections
+        - improvedSentence
+        - comment
+      properties:
+        verdict:
+          $ref: '#/components/schemas/ProductionPracticeVerdict'
+        wordFeedback:
+          type: array
+          description: One assessment for each of the seven target words.
+          minItems: 7
+          maxItems: 7
+          items:
+            $ref: '#/components/schemas/ProductionPracticeWordFeedbackResponse'
+        corrections:
+          type: array
+          description: Essential corrections only; stylistic alternatives are omitted when the sentence is already natural.
+          items:
+            $ref: '#/components/schemas/ProductionPracticeCorrectionResponse'
+        improvedSentence:
+          type: string
+          nullable: true
+          description: Optional improved Arabic version of the whole sentence; null when a rewrite is not useful.
+          example: أكتب كتابًا كبيرًا في البيت.
+        comment:
+          type: string
+          description: Short English comment summarising the feedback.
+          example: Good use of the target noun and verb; the sentence is natural.
     ConjugationExerciseSessionListItemResponse:
       type: object
       required:

@@ -59,39 +59,9 @@ class OpenRouterSchemasTest : FreeSpec({
         assertStrict(wordSuggestionSchema)
         assertStrict(wordSuggestionSchema["properties"]!!.jsonObject["suggestions"]!!
             .jsonObject["items"]!!.jsonObject)
-        assertStrict(productionPracticeReviewSchema)
-        assertStrict(productionPracticeReviewSchema["properties"]!!.jsonObject["wordFeedback"]!!
-            .jsonObject["items"]!!.jsonObject)
-        assertStrict(productionPracticeReviewSchema["properties"]!!.jsonObject["corrections"]!!
-            .jsonObject["items"]!!.jsonObject)
     }
 
-    "parses and validates production-practice review feedback against target IDs" {
-        val firstId = UUID.randomUUID()
-        val secondId = UUID.randomUUID()
-        val content = """
-            {"verdict":"GOOD","wordFeedback":[
-              {"wordId":"$firstId","usedNaturally":true,"note":"Natural usage."},
-              {"wordId":"$secondId","usedNaturally":false,"note":"Not used in this sentence."}
-            ],"corrections":[],"improvedSentence":null,"comment":"Clear sentence."}
-        """.trimIndent()
-
-        parseProductionPracticeReview(content, json)!!.toReview(setOf(WordId(firstId), WordId(secondId)))!!.verdict shouldBe
-            com.tonihacks.qalam.application.productionpractice.ProductionPracticeVerdict.GOOD
-    }
-
-    "rejects production-practice feedback with an unexpected target ID" {
-        val targetId = UUID.randomUUID()
-        val content = """
-            {"verdict":"GOOD","wordFeedback":[
-              {"wordId":"${UUID.randomUUID()}","usedNaturally":true,"note":"Natural usage."}
-            ],"corrections":[],"improvedSentence":null,"comment":"Clear sentence."}
-        """.trimIndent()
-
-        parseProductionPracticeReview(content, json)!!.toReview(setOf(WordId(targetId))) shouldBe null
-    }
-
-    "renders the strict output schema into the production-practice user prompt" {
+    "renders a Markdown production-practice prompt without internal IDs or an output schema" {
         val wordId = WordId(UUID.randomUUID())
         val prompt = buildProductionPracticeReviewPrompt(
             ProductionPracticeReviewRequest(
@@ -103,8 +73,8 @@ class OpenRouterSchemasTest : FreeSpec({
             ),
         )
 
-        prompt.contains("```json") shouldBe true
-        prompt.contains("\"wordFeedback\"") shouldBe true
-        prompt.contains(wordId.toString()) shouldBe true
+        prompt.contains("كَتَبَ") shouldBe true
+        prompt.contains(wordId.toString()) shouldBe false
+        prompt.contains("outputSchema") shouldBe false
     }
 })

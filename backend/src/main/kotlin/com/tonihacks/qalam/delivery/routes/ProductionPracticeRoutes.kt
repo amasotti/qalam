@@ -2,18 +2,14 @@ package com.tonihacks.qalam.delivery.routes
 
 import arrow.core.Either
 import arrow.core.raise.either
-import com.tonihacks.qalam.application.productionpractice.ProductionPracticeCorrection
 import com.tonihacks.qalam.application.productionpractice.ProductionPracticePrompt
 import com.tonihacks.qalam.application.productionpractice.ProductionPracticeReview
 import com.tonihacks.qalam.application.productionpractice.ProductionPracticeReviewCommand
 import com.tonihacks.qalam.application.productionpractice.ProductionPracticeService
 import com.tonihacks.qalam.application.productionpractice.ProductionPracticeWord
-import com.tonihacks.qalam.application.productionpractice.ProductionPracticeWordFeedback
 import com.tonihacks.qalam.delivery.respondError
-import com.tonihacks.qalam.delivery.dto.productionpractice.ProductionPracticeCorrectionResponse
 import com.tonihacks.qalam.delivery.dto.productionpractice.ProductionPracticePromptResponse
 import com.tonihacks.qalam.delivery.dto.productionpractice.ProductionPracticeReviewResponse
-import com.tonihacks.qalam.delivery.dto.productionpractice.ProductionPracticeWordFeedbackResponse
 import com.tonihacks.qalam.delivery.dto.productionpractice.ProductionPracticeWordResponse
 import com.tonihacks.qalam.delivery.dto.productionpractice.ReviewProductionPracticeRequest
 import com.tonihacks.qalam.domain.error.DomainError
@@ -77,22 +73,4 @@ private fun ProductionPracticeWord.toResponse() = ProductionPracticeWordResponse
     dialect = dialect.name,
 )
 
-private fun ProductionPracticeReview.toResponse() = ProductionPracticeReviewResponse(
-    verdict = verdict.name,
-    wordFeedback = wordFeedback.map(ProductionPracticeWordFeedback::toResponse),
-    corrections = corrections.map(ProductionPracticeCorrection::toResponse),
-    improvedSentence = improvedSentence,
-    comment = comment,
-)
-
-private fun ProductionPracticeWordFeedback.toResponse() = ProductionPracticeWordFeedbackResponse(
-    wordId = wordId.toString(),
-    usedNaturally = usedNaturally,
-    note = note,
-)
-
-private fun ProductionPracticeCorrection.toResponse() = ProductionPracticeCorrectionResponse(
-    original = original,
-    suggestion = suggestion,
-    explanation = explanation,
-)
+private fun ProductionPracticeReview.toResponse() = ProductionPracticeReviewResponse(reviewMarkdown = markdown)

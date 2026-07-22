@@ -32,26 +32,8 @@ data class ProductionPracticeReviewRequest(
     val usedWordIds: Set<WordId>,
 )
 
-enum class ProductionPracticeVerdict { EXCELLENT, GOOD, NEEDS_REVISION }
-
-data class ProductionPracticeWordFeedback(
-    val wordId: WordId,
-    val usedNaturally: Boolean,
-    val note: String,
-)
-
-data class ProductionPracticeCorrection(
-    val original: String,
-    val suggestion: String,
-    val explanation: String,
-)
-
 data class ProductionPracticeReview(
-    val verdict: ProductionPracticeVerdict,
-    val wordFeedback: List<ProductionPracticeWordFeedback>,
-    val corrections: List<ProductionPracticeCorrection>,
-    val improvedSentence: String?,
-    val comment: String,
+    val markdown: String,
 )
 
 /** Application boundary for selecting vocabulary without exposing persistence details. */

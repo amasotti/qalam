@@ -2512,38 +2512,27 @@ paths:
                 - 33333333-3333-3333-3333-333333333333
       responses:
         '200':
-          description: Structured AI feedback for the submitted sentence
+          description: Markdown AI review for the submitted sentence
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductionPracticeReviewResponse'
               example:
-                verdict: GOOD
-                wordFeedback:
-                  - wordId: 11111111-1111-1111-1111-111111111111
-                    usedNaturally: true
-                    note: Used naturally as the direct object.
-                  - wordId: 22222222-2222-2222-2222-222222222222
-                    usedNaturally: true
-                    note: Used naturally in the prepositional phrase.
-                  - wordId: 33333333-3333-3333-3333-333333333333
-                    usedNaturally: true
-                    note: Used naturally as the main verb.
-                  - wordId: 44444444-4444-4444-4444-444444444444
-                    usedNaturally: false
-                    note: Not used in this sentence.
-                  - wordId: 55555555-5555-5555-5555-555555555555
-                    usedNaturally: true
-                    note: Used naturally to describe the book.
-                  - wordId: 66666666-6666-6666-6666-666666666666
-                    usedNaturally: false
-                    note: Not used in this sentence.
-                  - wordId: 77777777-7777-7777-7777-777777777777
-                    usedNaturally: false
-                    note: Not used in this sentence.
-                corrections: []
-                improvedSentence: أكتب كتابًا كبيرًا في البيت.
-                comment: Good use of the target noun and verb; the sentence is natural.
+                reviewMarkdown: |-
+                  ## What I understood
+                  I understand: “I am writing a big book at home.” The meaning is clear.
+
+                  ## Target words
+                  **كِتَاب** and **كَتَبَ** are used naturally.
+
+                  ## Corrections and a natural version
+                  No essential correction is needed.
+
+                  ## Alternatives
+                  You can front **في البيت** to emphasise the location.
+
+                  ## Overall feedback
+                  This is a clear, natural sentence with good target-word use.
         '400':
           description: Malformed UUID or invalid AI provider response
           content:
@@ -5111,88 +5100,31 @@ components:
           example:
             - 11111111-1111-1111-1111-111111111111
             - 33333333-3333-3333-3333-333333333333
-    ProductionPracticeVerdict:
-      type: string
-      description: Overall assessment of the learner's submitted sentence.
-      enum:
-        - EXCELLENT
-        - GOOD
-        - NEEDS_REVISION
-      example: GOOD
-    ProductionPracticeWordFeedbackResponse:
-      type: object
-      description: AI feedback for one target word. The response contains exactly one entry for every prompt target word.
-      required:
-        - wordId
-        - usedNaturally
-        - note
-      properties:
-        wordId:
-          type: string
-          format: uuid
-          description: Identifier of the target word being assessed.
-          example: 33333333-3333-3333-3333-333333333333
-        usedNaturally:
-          type: boolean
-          description: Whether the word is present and used naturally in the submitted sentence.
-          example: true
-        note:
-          type: string
-          description: Concise English explanation of the word's usage or absence.
-          example: Used naturally as the main verb.
-    ProductionPracticeCorrectionResponse:
-      type: object
-      description: One essential correction suggested by the AI reviewer. The list is empty when no correction is useful.
-      required:
-        - original
-        - suggestion
-        - explanation
-      properties:
-        original:
-          type: string
-          description: Excerpt from the learner sentence needing correction.
-          example: أنا يكتب
-        suggestion:
-          type: string
-          description: Corrected Arabic replacement.
-          example: أنا أكتب
-        explanation:
-          type: string
-          description: Concise English explanation of the correction.
-          example: First-person singular requires أكتب rather than third-person يكتب.
     ProductionPracticeReviewResponse:
       type: object
-      description: Ephemeral structured feedback from the AI reviewer. It is never stored or used for SRS progress.
+      description: Ephemeral Markdown feedback from the AI reviewer. It is never stored or used for SRS progress.
       required:
-        - verdict
-        - wordFeedback
-        - corrections
-        - improvedSentence
-        - comment
+        - reviewMarkdown
       properties:
-        verdict:
-          $ref: '#/components/schemas/ProductionPracticeVerdict'
-        wordFeedback:
-          type: array
-          description: One assessment for each of the seven target words.
-          minItems: 7
-          maxItems: 7
-          items:
-            $ref: '#/components/schemas/ProductionPracticeWordFeedbackResponse'
-        corrections:
-          type: array
-          description: Essential corrections only; stylistic alternatives are omitted when the sentence is already natural.
-          items:
-            $ref: '#/components/schemas/ProductionPracticeCorrectionResponse'
-        improvedSentence:
+        reviewMarkdown:
           type: string
-          nullable: true
-          description: Optional improved Arabic version of the whole sentence; null when a rewrite is not useful.
-          example: أكتب كتابًا كبيرًا في البيت.
-        comment:
-          type: string
-          description: Short English comment summarising the feedback.
-          example: Good use of the target noun and verb; the sentence is natural.
+          description: Markdown review with sections for what the reviewer understood, target words, corrections and a natural version, alternatives, and overall feedback.
+          example: |-
+            ## What I understood
+            You mean: “My friend advised me to visit Morocco, known for its beautiful nature.” The meaning is clear.
+
+            ## Target words
+            - **يَنْصَح** works naturally here.
+            - **تَصْوِيرَة** is a natural Tunisian word for a picture; in MSA, use **صورة**.
+
+            ## Corrections and a natural version
+            Consider **المعروفة بطبيعتها الجميلة** for a more natural phrase.
+
+            ## Alternatives
+            In MSA, **ذهبتُ إلى المغرب** is a useful alternative to the Tunisian travel phrasing.
+
+            ## Overall feedback
+            Your sentence communicates the experience well. The main improvement is choosing a more natural phrase for Morocco’s nature.
     ConjugationExerciseSessionListItemResponse:
       type: object
       required:

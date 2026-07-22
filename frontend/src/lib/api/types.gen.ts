@@ -791,75 +791,13 @@ export type ReviewProductionPracticeRequest = {
 };
 
 /**
- * Overall assessment of the learner's submitted sentence.
- */
-export type ProductionPracticeVerdict = 'EXCELLENT' | 'GOOD' | 'NEEDS_REVISION';
-
-/**
- * AI feedback for one target word. The response contains exactly one entry for every prompt target word.
- */
-export type ProductionPracticeWordFeedbackResponse = {
-    /**
-     * Identifier of the target word being assessed.
-     */
-    wordId: string;
-    /**
-     * Whether the word is present and used naturally in the submitted sentence.
-     */
-    usedNaturally: boolean;
-    /**
-     * Concise English explanation of the word's usage or absence.
-     */
-    note: string;
-};
-
-/**
- * One essential correction suggested by the AI reviewer. The list is empty when no correction is useful.
- */
-export type ProductionPracticeCorrectionResponse = {
-    /**
-     * Excerpt from the learner sentence needing correction.
-     */
-    original: string;
-    /**
-     * Corrected Arabic replacement.
-     */
-    suggestion: string;
-    /**
-     * Concise English explanation of the correction.
-     */
-    explanation: string;
-};
-
-/**
- * Ephemeral structured feedback from the AI reviewer. It is never stored or used for SRS progress.
+ * Ephemeral Markdown feedback from the AI reviewer. It is never stored or used for SRS progress.
  */
 export type ProductionPracticeReviewResponse = {
-    verdict: ProductionPracticeVerdict;
     /**
-     * One assessment for each of the seven target words.
+     * Markdown review with sections for what the reviewer understood, target words, corrections and a natural version, alternatives, and overall feedback.
      */
-    wordFeedback: [
-        ProductionPracticeWordFeedbackResponse,
-        ProductionPracticeWordFeedbackResponse,
-        ProductionPracticeWordFeedbackResponse,
-        ProductionPracticeWordFeedbackResponse,
-        ProductionPracticeWordFeedbackResponse,
-        ProductionPracticeWordFeedbackResponse,
-        ProductionPracticeWordFeedbackResponse
-    ];
-    /**
-     * Essential corrections only; stylistic alternatives are omitted when the sentence is already natural.
-     */
-    corrections: Array<ProductionPracticeCorrectionResponse>;
-    /**
-     * Optional improved Arabic version of the whole sentence; null when a rewrite is not useful.
-     */
-    improvedSentence: string | null;
-    /**
-     * Short English comment summarising the feedback.
-     */
-    comment: string;
+    reviewMarkdown: string;
 };
 
 export type ConjugationExerciseSessionListItemResponse = {
@@ -3463,7 +3401,7 @@ export type ReviewProductionPracticeSentenceError = ReviewProductionPracticeSent
 
 export type ReviewProductionPracticeSentenceResponses = {
     /**
-     * Structured AI feedback for the submitted sentence
+     * Markdown AI review for the submitted sentence
      */
     200: ProductionPracticeReviewResponse;
 };

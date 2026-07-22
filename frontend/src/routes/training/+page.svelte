@@ -26,5 +26,12 @@
 			<p>Match fully vocalised verb forms to their person, number, and gender.</p>
 			<span class="practice-strategy-cta">Practise verbs <span aria-hidden="true">→</span></span>
 		</a>
+
+		<a class="practice-strategy-card practice-strategy-card-production" href="/training/production">
+			<p class="practice-strategy-kicker">Production</p>
+			<h2>Sentence writing</h2>
+			<p>Choose target words, write one Arabic sentence, and receive focused AI feedback.</p>
+			<span class="practice-strategy-cta">Write a sentence <span aria-hidden="true">→</span></span>
+		</a>
 	</div>
 </div>

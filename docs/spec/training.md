@@ -122,6 +122,7 @@ Key observations:
 | `/training/exercises/[id]` | Resumable multiple-choice exercise and completed review |
 | `/training/exercises/conjugation` | Conjugation matching setup and paginated history |
 | `/training/conjugation-exercises/[id]` | Resumable conjugation matching session and review |
+| `/training/production` | Ephemeral AI-reviewed Arabic sentence writing |
 
 `FlashCard.svelte` shows the question side, reveals the answer on Space/Enter, then accepts 1/2/3 (or numpad) for correct/incorrect/skip. After the last card the route renders `SessionSummary.svelte` with accuracy and any promotions.
 
@@ -149,6 +150,20 @@ mapping/text, and per-form correctness so mistakes can be reviewed. No per-form 
 table is planned.
 
 See [conjugation.md](conjugation.md)
+
+### Production practice
+
+Production practice asks the learner to write one Arabic sentence using at least two of seven
+target vocabulary words. Every prompt contains two nouns, two verbs, and three additional random
+words. The learner selects the words they intended to use; this communicates intent to the reviewer
+without trying to mechanically match inflected surface forms to stored lemmas.
+
+OpenRouter returns one Markdown review rendered with the same reader used for root analysis. Its
+fixed sections cover what the reviewer understood, target-word use, corrections and a natural
+version, alternatives for vocabulary/verbs/word order or Tunisian versus MSA, and overall feedback.
+Prompts, submissions, and feedback are entirely ephemeral: no database rows, history, analytics,
+SRS progress, or mastery promotion. Word selection works without AI; review returns `503
+AI_NOT_CONFIGURED` when OpenRouter is not configured.
 ---
 
 ## API endpoints
@@ -166,3 +181,5 @@ See [conjugation.md](conjugation.md)
 | GET | `/api/v1/exercise-sessions/{id}` | Fetch an exercise session and its items |
 | POST | `/api/v1/exercise-sessions/{id}/answers` | Submit a multiple-choice answer |
 | POST | `/api/v1/exercise-sessions/{id}/complete` | Finalize an exercise session |
+| GET | `/api/v1/production-practice/prompt` | Get an ephemeral seven-word production prompt |
+| POST | `/api/v1/production-practice/reviews` | Get ephemeral AI feedback for one sentence |

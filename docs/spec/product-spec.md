@@ -232,6 +232,11 @@ max 50).
 feedback. They use the same vocabulary pool and update word mastery through their existing answer
 flow.
 
+**Production practice**: sentence writing selects seven vocabulary words—two nouns, two verbs,
+and three additional random words. The learner writes one Arabic sentence using at least two and
+receives an AI Markdown review. This mode is ephemeral: it has no session history and does not
+change SRS progress or mastery.
+
 **Conjugation exercises (planned)**: matching and typed full-harakat recall use generated verb
 forms. They store session history and mistakes only; they do not promote lemma mastery or introduce
 per-form progress.

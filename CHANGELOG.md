@@ -2,9 +2,36 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [1.2.0] - 2026-07-22
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/ad52fba566cc52b7494ddc0ceda0b977c1112892..18238248a5f457e325fcffa413ca00c7807f3c79)
+### 🚀 Features
+
+
+- Update API model for training session ([f5d0c86](https://github.com/amasotti/qalam/commit/f5d0c86eee683c6c669e84363baa0604dbf72dd6))
+
+- Dialect option in training ([bcd607c](https://github.com/amasotti/qalam/commit/bcd607c53d2ff14d292b49fe6a8a3ef31be96128))
+
+### 🐛 Bug Fixes
+
+
+- Optimize query condition for Arabic text search ([1823824](https://github.com/amasotti/qalam/commit/18238248a5f457e325fcffa413ca00c7807f3c79))
+
+### 🚜 Refactor
+
+
+- Split long exposed method ([0efa684](https://github.com/amasotti/qalam/commit/0efa684aab5c31a3eab4faa60f0bec9a255e5402))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Center list picker ([1a18ab9](https://github.com/amasotti/qalam/commit/1a18ab94e76f8c31cfd876f97b366f6727bfd790))
+
+- Improve readability and maintainability of repository class ([25c8a50](https://github.com/amasotti/qalam/commit/25c8a5022397a35d80504e6da90135c71462e29c))
+
 ## [1.1.1] - 2026-07-22
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/0a1768f80e92cd11224522b9d0e1e5f7df8f3af2..a602a44554891cac1f0045c23bb8d7af8e5fd8ba)
+[Compare with last version](https://github.com/amasotti/qalam/compare/0a1768f80e92cd11224522b9d0e1e5f7df8f3af2..ad52fba566cc52b7494ddc0ceda0b977c1112892)
 ### 🐛 Bug Fixes
 
 
@@ -46,6 +73,8 @@ All notable changes to this project will be documented in this file (created wit
 - Update dependencies fe ([8f4563a](https://github.com/amasotti/qalam/commit/8f4563a3100c57df6f0622288322d8be903cea6a))
 
 - Update docker base image backend builder ([a602a44](https://github.com/amasotti/qalam/commit/a602a44554891cac1f0045c23bb8d7af8e5fd8ba))
+
+- Release v1.1.1 ([ad52fba](https://github.com/amasotti/qalam/commit/ad52fba566cc52b7494ddc0ceda0b977c1112892))
 
 ## [1.1.0] - 2026-07-21
 

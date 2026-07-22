@@ -352,6 +352,7 @@
 	width: min(34rem, calc(100vw - 2rem));
 	max-height: min(42rem, calc(100vh - 2rem));
 	padding: 0;
+	margin: auto;
 	border: 1px solid var(--border-color);
 	border-radius: 0.75rem;
 	background: var(--white);

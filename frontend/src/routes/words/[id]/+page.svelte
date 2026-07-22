@@ -23,7 +23,7 @@ import {
 	useWordAnnotations,
 	useWordExamples,
 } from '$lib/stores/words';
-    import { removeArabicDiacritics } from '$lib/utils/arabicUtils';
+import { removeArabicDiacritics } from '$lib/utils/arabicUtils';
 
 const id = $derived(page.params.id ?? '');
 const word = useWord(() => id);

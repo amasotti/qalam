@@ -13,7 +13,7 @@ import type {
 import { Button } from '$lib/components/ui/button';
 import { useAllRoots } from '$lib/stores/roots';
 import { useAsdLookup, useWordAutocomplete } from '$lib/stores/words';
-    import { removeArabicDiacritics } from '$lib/utils/arabicUtils';
+import { removeArabicDiacritics } from '$lib/utils/arabicUtils';
 
 interface Props {
 	initial?: Partial<{

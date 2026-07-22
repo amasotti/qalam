@@ -173,6 +173,9 @@
 .practice-strategy-card-conjugation {
 	background: linear-gradient(135deg, var(--white), var(--olive-pale));
 }
+.practice-strategy-card-production {
+	background: linear-gradient(135deg, var(--white), var(--coral-pale));
+}
 .practice-strategy-kicker {
 	margin: 0;
 	font-size: var(--type-meta);
@@ -180,6 +183,112 @@
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
 	color: var(--olive);
+}
+
+/* Production practice */
+.production-practice-page {
+	max-width: 56rem;
+}
+.production-practice-composer,
+.production-practice-feedback,
+.production-practice-notice {
+	padding: 1.5rem;
+	border: 1px solid var(--border-color);
+	border-radius: 0.75rem;
+	background: var(--white);
+}
+.production-practice-words {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+	gap: 0.75rem;
+	margin-top: 1.25rem;
+}
+.production-practice-word {
+	display: grid;
+	grid-template-columns: auto auto 1fr;
+	align-items: center;
+	gap: 0.625rem;
+	padding: 0.75rem;
+	border: 1px solid var(--border-color);
+	border-radius: 0.5rem;
+	cursor: pointer;
+}
+.production-practice-word.selected {
+	border-color: var(--olive);
+	background: var(--olive-pale);
+}
+.production-practice-word-arabic {
+	font-family: var(--font-arabic);
+	font-size: 1.25rem;
+	color: var(--ink);
+}
+.production-practice-word-detail {
+	display: flex;
+	min-width: 0;
+	flex-direction: column;
+	color: var(--ink-light);
+	font-size: var(--type-meta);
+}
+.production-practice-word-detail span {
+	overflow: hidden;
+	color: var(--ink);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.production-practice-word-detail em {
+	font-style: normal;
+	text-transform: capitalize;
+}
+.production-practice-sentence {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin-top: 1.5rem;
+}
+.production-practice-sentence textarea {
+	font-family: var(--font-arabic);
+	font-size: 1.2rem;
+	line-height: 1.8;
+}
+.production-practice-hint {
+	color: var(--ink-light);
+	font-size: var(--type-meta);
+}
+.production-practice-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	margin-top: 1.5rem;
+}
+.production-practice-notice {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+}
+.production-practice-notice p {
+	margin: 0;
+}
+.production-practice-notice-error {
+	border-color: var(--coral);
+}
+.production-practice-feedback {
+	margin-top: 1.5rem;
+}
+.production-practice-feedback > h2 {
+	margin: 0;
+	font-family: var(--font-display);
+}
+@media (max-width: 36rem) {
+	.production-practice-composer,
+	.production-practice-feedback,
+	.production-practice-notice {
+		padding: 1rem;
+	}
+	.production-practice-notice {
+		align-items: flex-start;
+		flex-direction: column;
+	}
 }
 .practice-strategy-card h2 {
 	margin: 0.75rem 0 0;

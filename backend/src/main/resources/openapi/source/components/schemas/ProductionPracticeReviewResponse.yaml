@@ -1,32 +1,24 @@
 type: object
-description: Ephemeral structured feedback from the AI reviewer. It is never stored or used for SRS progress.
+description: Ephemeral Markdown feedback from the AI reviewer. It is never stored or used for SRS progress.
 required:
-  - verdict
-  - wordFeedback
-  - corrections
-  - improvedSentence
-  - comment
+  - reviewMarkdown
 properties:
-  verdict:
-    $ref: ./ProductionPracticeVerdict.yaml
-  wordFeedback:
-    type: array
-    description: One assessment for each of the seven target words.
-    minItems: 7
-    maxItems: 7
-    items:
-      $ref: ./ProductionPracticeWordFeedbackResponse.yaml
-  corrections:
-    type: array
-    description: Essential corrections only; stylistic alternatives are omitted when the sentence is already natural.
-    items:
-      $ref: ./ProductionPracticeCorrectionResponse.yaml
-  improvedSentence:
+  reviewMarkdown:
     type: string
-    nullable: true
-    description: Optional improved Arabic version of the whole sentence; null when a rewrite is not useful.
-    example: أكتب كتابًا كبيرًا في البيت.
-  comment:
-    type: string
-    description: Short English comment summarising the feedback.
-    example: Good use of the target noun and verb; the sentence is natural.
+    description: Markdown review with sections for what the reviewer understood, target words, corrections and a natural version, alternatives, and overall feedback.
+    example: |-
+      ## What I understood
+      You mean: “My friend advised me to visit Morocco, known for its beautiful nature.” The meaning is clear.
+
+      ## Target words
+      - **يَنْصَح** works naturally here.
+      - **تَصْوِيرَة** is a natural Tunisian word for a picture; in MSA, use **صورة**.
+
+      ## Corrections and a natural version
+      Consider **المعروفة بطبيعتها الجميلة** for a more natural phrase.
+
+      ## Alternatives
+      In MSA, **ذهبتُ إلى المغرب** is a useful alternative to the Tunisian travel phrasing.
+
+      ## Overall feedback
+      Your sentence communicates the experience well. The main improvement is choosing a more natural phrase for Morocco’s nature.

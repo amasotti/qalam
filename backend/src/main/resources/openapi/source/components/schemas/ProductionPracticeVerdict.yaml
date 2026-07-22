@@ -1,7 +1,0 @@
-type: string
-description: Overall assessment of the learner's submitted sentence.
-enum:
-  - EXCELLENT
-  - GOOD
-  - NEEDS_REVISION
-example: GOOD

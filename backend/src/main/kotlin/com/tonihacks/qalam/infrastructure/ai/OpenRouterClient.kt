@@ -74,6 +74,7 @@ internal class OpenRouterClient : AutoCloseable {
                         ),
                         responseFormat = req.responseFormat,
                         provider = req.provider,
+                        maxTokens = req.maxTokens,
                     ),
                 )
             }
@@ -98,7 +99,8 @@ internal data class OpenRouterCompletionRequest(
     val systemPrompt: String,
     val userPrompt: String,
     val responseFormat: OpenRouterResponseFormat? = null,
-    val provider: OpenRouterProviderPreferences? = null
+    val provider: OpenRouterProviderPreferences? = null,
+    val maxTokens: Int? = null,
 )
 
 @Serializable
@@ -107,6 +109,7 @@ internal data class OpenRouterRequest(
     val messages: List<OpenRouterMessage>,
     @SerialName("response_format") val responseFormat: OpenRouterResponseFormat? = null,
     val provider: OpenRouterProviderPreferences? = null,
+    @SerialName("max_tokens") val maxTokens: Int? = null,
 )
 
 @Serializable

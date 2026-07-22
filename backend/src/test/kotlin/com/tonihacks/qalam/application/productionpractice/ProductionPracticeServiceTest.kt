@@ -92,11 +92,7 @@ private class FakeWordSource : ProductionPracticeWordSource {
 
 private class FakeReviewer : ProductionPracticeReviewer {
     val response = ProductionPracticeReview(
-        verdict = ProductionPracticeVerdict.GOOD,
-        wordFeedback = emptyList(),
-        corrections = emptyList(),
-        improvedSentence = null,
-        comment = "Good work",
+        markdown = "## Overall feedback\nGood work",
     )
     var calls = 0
     var lastRequest: ProductionPracticeReviewRequest? = null

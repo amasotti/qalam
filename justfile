@@ -15,6 +15,11 @@ build:
     docker buildx bake
     docker compose up -d
 
+# Force full rebuild ignoring all layer cache
+rebuild-all:
+    docker buildx bake --no-cache
+    docker compose up -d
+
 # Stop all services
 down:
     docker compose down

@@ -18,13 +18,16 @@ internal class OpenRouterSentenceClient(
     private val log = KotlinLogging.logger {}
     private val json = Json { ignoreUnknownKeys = true }
 
-    suspend fun autoTokenize(arabicText: String): Either<DomainError, List<TokenInput>> =
+    suspend fun autoTokenize(arabicText: String, translation: String?): Either<DomainError, List<TokenInput>> =
         complete("autoTokenize", arabicText) {
             OpenRouterCompletionRequest(
                 systemPrompt = PromptLoader.loadPrompt("ai-prompts/SentenceAssistantSystemPrompt.md"),
                 userPrompt = PromptLoader.loadPrompt(
                     "ai-prompts/AutoTokenizeSentenceUserPrompt.md",
-                    mapOf("arabicText" to arabicText),
+                    mapOf(
+                        "arabicText" to arabicText,
+                        "translation" to (translation?.takeUnless { it.isBlank() } ?: "")
+                    ),
                 ),
                 responseFormat = JSON_OBJECT_RESPONSE_FORMAT,
             )

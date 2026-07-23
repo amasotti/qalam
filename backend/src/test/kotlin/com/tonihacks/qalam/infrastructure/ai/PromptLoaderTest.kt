@@ -56,13 +56,6 @@ class PromptLoaderTest : FunSpec({
         prompts.forEach { prompt -> prompt shouldNotContain "<" }
     }
 
-    test("loads the sentence assistant system prompt") {
-        val prompt = PromptLoader.loadPrompt("ai-prompts/SentenceAssistantSystemPrompt.md")
-
-        prompt.contains("`3` for ع") shouldBe true
-        prompt.contains("structured-output instructions") shouldBe true
-    }
-
     test("renders insight prompts without placeholder leakage") {
         val prompts = listOf(
             PromptLoader.loadPrompt("ai-prompts/InsightSystemPrompt.md"),

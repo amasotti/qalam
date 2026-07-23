@@ -168,7 +168,7 @@ internal fun Route.sentenceRoutes(service: SentenceService, sentenceAiClient: Op
                 { it },
             )
 
-            val tokenInputs = sentenceAiClient.autoTokenize(sentence.arabicText).fold(
+            val tokenInputs = sentenceAiClient.autoTokenize(sentence.arabicText, sentence.freeTranslation).fold(
                 { return@post call.respondError(it) },
                 { it },
             )

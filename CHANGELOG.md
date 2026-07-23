@@ -2,9 +2,51 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [1.3.0] - 2026-07-23
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/d66d6a8f9b6ad44a43f1767d1c7b6297551a10e7..c370a7b6b4c0ecaf28ab861f9e3ba6172071b000)
+### 🚀 Features
+
+
+- Production practice model ([52380a5](https://github.com/amasotti/qalam/commit/52380a5050eba9a16e474821bb49c8f0ab09da89))
+
+- Infrastructure level implementation for production practice ([d4b7e86](https://github.com/amasotti/qalam/commit/d4b7e861b1cb5eda8ce60733dc6b8a0519bd2da1))
+
+- Api schema and http wiring ([a2917c2](https://github.com/amasotti/qalam/commit/a2917c2c332b40ce6125f09d1bb46e05f6447e7a))
+
+- Complete and simplify production training feature ([74dc524](https://github.com/amasotti/qalam/commit/74dc524db067a798224abd9bedf118024ad6a9d7))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Enum example ([042c1de](https://github.com/amasotti/qalam/commit/042c1dee514f736a5e679e93b8c88c74a400e8f7))
+
+- Remove max token capping ([1928388](https://github.com/amasotti/qalam/commit/192838856a110c57cbafd90ebebac836b898f467))
+
+- Prevent reloading on focus change ([8ba1327](https://github.com/amasotti/qalam/commit/8ba1327c28d7142b67b9dc7abae981618e515d37))
+
+- Enrich word, relax parser ([1404b4b](https://github.com/amasotti/qalam/commit/1404b4b46e78fd268e120161680789970a008f1e))
+
+- Add news outlet links ([8908747](https://github.com/amasotti/qalam/commit/89087477910313e3d7abc6b4550034c17175fa26))
+
+- Refine prompts ([e1287c0](https://github.com/amasotti/qalam/commit/e1287c0b80959464ccacfed3dfeb7babed28c11f))
+
+- Remove dumb test and improve prompting for autotokenization ([e49e218](https://github.com/amasotti/qalam/commit/e49e218642362d4862fa9bc2028682e5eeb985df))
+
+- Fix test ([c370a7b](https://github.com/amasotti/qalam/commit/c370a7b6b4c0ecaf28ab861f9e3ba6172071b000))
+
+### Enhancement
+
+
+- Improve prompts ([ea14e88](https://github.com/amasotti/qalam/commit/ea14e8867f44ec78bd78f365b2ae4e262039a89d))
+
+- Improve prompts ([638fcd5](https://github.com/amasotti/qalam/commit/638fcd51cb272fdd1dbb4899acb80c60fd05009e))
+
+- Custom transliteration prompt ([9615e61](https://github.com/amasotti/qalam/commit/9615e6139f314486f924a34d9f65359b117a865b))
+
 ## [1.2.0] - 2026-07-22
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/ad52fba566cc52b7494ddc0ceda0b977c1112892..18238248a5f457e325fcffa413ca00c7807f3c79)
+[Compare with last version](https://github.com/amasotti/qalam/compare/ad52fba566cc52b7494ddc0ceda0b977c1112892..d66d6a8f9b6ad44a43f1767d1c7b6297551a10e7)
 ### 🚀 Features
 
 
@@ -28,6 +70,8 @@ All notable changes to this project will be documented in this file (created wit
 - Center list picker ([1a18ab9](https://github.com/amasotti/qalam/commit/1a18ab94e76f8c31cfd876f97b366f6727bfd790))
 
 - Improve readability and maintainability of repository class ([25c8a50](https://github.com/amasotti/qalam/commit/25c8a5022397a35d80504e6da90135c71462e29c))
+
+- Release v1.2.0 ([d66d6a8](https://github.com/amasotti/qalam/commit/d66d6a8f9b6ad44a43f1767d1c7b6297551a10e7))
 
 ## [1.1.1] - 2026-07-22
 

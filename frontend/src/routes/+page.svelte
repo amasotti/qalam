@@ -87,6 +87,15 @@ const learningLinks = [
 	{ label: 'Learn Arabic with Maha', href: 'https://www.youtube.com/@LearnArabicwithMaha' },
 	{ label: 'Arabic with Sam', href: 'https://www.youtube.com/@ArabicwithSam' },
 ];
+
+const arabicNews = [
+	{ label: 'Al Jazeera', href: 'https://www.aljazeera.net/' },
+	{ label: 'BBC Arabic', href: 'https://www.bbc.com/arabic' },
+	{ label: 'France 24 Arabic', href: 'https://www.france24.com/ar/' },
+	{ label: 'Al Arabiya', href: 'https://www.alarabiya.net/' },
+	{ label: 'Asharq Al-Awsat', href: 'https://aawsat.com/' },
+	{ label: 'Nawaat', href: 'https://nawaat.org/' },
+];
 </script>
 
 <div class="home-shell">
@@ -151,6 +160,18 @@ const learningLinks = [
 				{#each learningLinks as l}
 					<a class="home-resource-link" href={l.href} target="_blank" rel="noopener noreferrer">
 						{l.label}
+						<ExternalLink size={10} />
+					</a>
+				{/each}
+			</div>
+		</div>
+
+		<div class="home-resources-group">
+			<span class="home-resources-label">News Outlets in Arabic</span>
+			<div class="home-resources-links">
+				{#each arabicNews as n}
+					<a class="home-resource-link" href={n.href} target="_blank" rel="noopener noreferrer">
+						{n.label}
 						<ExternalLink size={10} />
 					</a>
 				{/each}

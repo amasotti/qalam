@@ -77,8 +77,8 @@ jobs:
         with:
           branch: release/next
           base: main
-          title: "chore: release ${{ steps.version.outputs.next }}"
+          title: "chore(release): auto-release ${{ steps.version.outputs.next }}"
           body: ${{ steps.notes.outputs.content }}
           labels: autorelease
-          commit-message: "chore: release ${{ steps.version.outputs.next }}"
+          commit-message: "chore(release): new auto release ${{ steps.version.outputs.next }}"
           delete-branch: false

@@ -62,6 +62,9 @@ internal class OpenRouterClient : AutoCloseable {
         val configuredApiKey = apiKey?.takeIf { it.isNotBlank() } ?: return DomainError.AiNotConfigured.left()
 
         return try {
+            log.debug {
+                "OpenRouter request model=$model\n=== system ===\n${req.systemPrompt}\n=== user ===\n${req.userPrompt}"
+            }
             val res = lazyHttpClient.value.post(OPENROUTER_COMPLETION_URL) {
                 header(HttpHeaders.Authorization, "Bearer $configuredApiKey")
                 contentType(ContentType.Application.Json)
@@ -86,6 +89,7 @@ internal class OpenRouterClient : AutoCloseable {
                     "totalTokens=${completion.usage?.totalTokens}"
             }
             val content = choice.message.content
+            log.debug { "OpenRouter raw response:\n$content" }
             content.right()
         } catch (error: Exception) {
             log.warn(error) { "OpenRouter completion failed" }

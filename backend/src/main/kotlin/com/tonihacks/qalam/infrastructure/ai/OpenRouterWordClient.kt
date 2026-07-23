@@ -96,10 +96,7 @@ internal class OpenRouterWordClient(
             if (error == DomainError.AiNotConfigured) error.left()
             else DomainError.InvalidInput("AI $capability request failed").left()
         },
-        { content ->
-            log.debug { "OpenRouter $capability raw response:\n$content" }
-            content.right()
-        },
+        { content -> content.right() },
     )
 
     private inline fun <T> parse(capability: String, content: String, decode: (String) -> T): Either<DomainError, T> =

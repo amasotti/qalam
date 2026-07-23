@@ -16,6 +16,9 @@
 
 .scratch
 
+# Runtime logs
+logs/
+
 # pg_dump backups (mounted into db container)
 backups/*.dump
 backups/*.sql

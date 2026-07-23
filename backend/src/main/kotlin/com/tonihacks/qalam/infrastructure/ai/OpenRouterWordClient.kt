@@ -5,6 +5,9 @@ import arrow.core.flatMap
 import arrow.core.left
 import arrow.core.right
 import com.tonihacks.qalam.delivery.dto.word.AiExampleSentence
+import com.tonihacks.qalam.delivery.dto.word.AiPluralSuggestion
+import com.tonihacks.qalam.delivery.dto.word.AiRelationSuggestion
+import com.tonihacks.qalam.delivery.dto.word.AiVerbDetailsSuggestion
 import com.tonihacks.qalam.delivery.dto.word.WordAnalysisResponse
 import com.tonihacks.qalam.delivery.dto.word.WordEnrichmentSuggestion
 import com.tonihacks.qalam.domain.error.DomainError
@@ -81,7 +84,7 @@ internal class OpenRouterWordClient(
                 ),
                 responseFormat = JSON_OBJECT_RESPONSE_FORMAT,
             )
-        }.flatMap { content -> parse("enrichWord", content) { json.decodeFromString<WordEnrichmentSuggestion>(it) } }
+        }.flatMap { content -> parse("enrichWord", content) { parseWordEnrichmentSuggestion(it, word.partOfSpeech) } }
 
     private suspend fun complete(
         capability: String,
@@ -119,5 +122,53 @@ internal class OpenRouterWordClient(
 
     private companion object {
         val JSON_OBJECT_RESPONSE_FORMAT = OpenRouterResponseFormat(type = "json_object")
+    }
+}
+
+private val enrichmentJson = Json {
+    ignoreUnknownKeys = true
+    coerceInputValues = true
+}
+
+/**
+ * Decodes an untrusted AI preview without allowing one incomplete suggestion to discard useful ones.
+ * The response returned to the frontend retains the strict API shape.
+ */
+internal fun parseWordEnrichmentSuggestion(
+    content: String,
+    partOfSpeech: PartOfSpeech,
+): WordEnrichmentSuggestion =
+    enrichmentJson.decodeFromString<AiWordEnrichmentPayload>(content).toSuggestion(partOfSpeech)
+
+@Serializable
+private data class AiWordEnrichmentPayload(
+    val notes: String? = null,
+    val gender: String? = null,
+    val verbDetails: AiVerbDetailsPayload? = null,
+    val plurals: List<AiPluralSuggestion> = emptyList(),
+    val relations: List<AiRelationSuggestion> = emptyList(),
+) {
+    fun toSuggestion(partOfSpeech: PartOfSpeech) = WordEnrichmentSuggestion(
+        notes = notes,
+        gender = gender,
+        verbDetails = verbDetails
+            ?.takeIf { partOfSpeech == PartOfSpeech.VERB }
+            ?.toSuggestionOrNull(),
+        plurals = plurals,
+        relations = relations,
+    )
+}
+
+@Serializable
+private data class AiVerbDetailsPayload(
+    val verbForm: String? = null,
+    val pastPattern: String? = null,
+    val presentPattern: String? = null,
+    val weaknessType: String? = null,
+) {
+    fun toSuggestionOrNull(): AiVerbDetailsSuggestion? {
+        val form = verbForm?.takeIf { it.isNotBlank() } ?: return null
+        val weakness = weaknessType?.takeIf { it.isNotBlank() } ?: return null
+        return AiVerbDetailsSuggestion(form, pastPattern, presentPattern, weakness)
     }
 }

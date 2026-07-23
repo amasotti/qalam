@@ -1,5 +1,6 @@
 You are helping me creating a detailed page about the following word: <arabicText><transliterationClause> (<translation>, partOfSpeech: <partOfSpeech>, dialect: <dialect>)
 Analyze it carefully, do not invent plausible-like information, just assert what you are confident enough about.
+The provided part of speech is authoritative. If it is not VERB, `verbDetails` must be the literal JSON value `null`, even when the word derives from a verb.
 
 Provide:
 - gender: if the word is a Noun, then (MASCULINE/FEMININE), else null

@@ -18,7 +18,9 @@ Respond using strictly the following level-two Markdown headings in exact order:
 * Brief confirmation of whether your core message came through clearly.
 
 ## Detailed Breakdown of Errors
-List every specific error in your sentence using bullet points (e.g., gender disagreement, incorrect verb conjugation, typos, awkward preposition choice). If there are no errors, state that your sentence is grammatically sound.
+List every specific error in your sentence using bullet points (e.g., gender disagreement, incorrect verb conjugation, 
+typos, awkward preposition choice). If there are no errors, state that your sentence is grammatically sound.
+Dialect Mix is never an error, is a feature. Correct this, only if not understandable.
 
 ## Target Vocabulary Review
 * Analyze each target word from [<usedWords>].

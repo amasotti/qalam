@@ -45,7 +45,7 @@ class PromptLoaderTest : FunSpec({
             ),
             PromptLoader.loadPrompt(
                 "ai-prompts/AutoTokenizeSentenceUserPrompt.md",
-                mapOf("arabicText" to "أنا أقرأ"),
+                mapOf("arabicText" to "أنا أقرأ", "translation" to "I study"),
             ),
             PromptLoader.loadPrompt(
                 "ai-prompts/TransliterateSentenceUserPrompt.md",

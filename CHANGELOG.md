@@ -2,9 +2,27 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [1.3.1] - 2026-07-24
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/ece30802de695001355ac4d19560ff3b1e6bf9d9..aa0bb39566d9b5fea0fdfae53417f46e3a2a27d1)
+### ⚙️ Miscellaneous Tasks
+
+
+- Add rebuild-all command ([a2a7280](https://github.com/amasotti/qalam/commit/a2a72809419e954e7eda5ccbf950222ddf1781b9))
+
+- Improve prompts ([312bda9](https://github.com/amasotti/qalam/commit/312bda9ba0ba8792fd1404a98ac5180d78dd3f48))
+
+- Improve logs ([3e7bd2a](https://github.com/amasotti/qalam/commit/3e7bd2a135276f65309da76fab2627ea54e2914a))
+
+- Conv commit scope for autorelease ([2e3adaa](https://github.com/amasotti/qalam/commit/2e3adaaf12ff0a51f4c743412bd1e263ee8db37f))
+
+- Improve prompt glossing ([66ee358](https://github.com/amasotti/qalam/commit/66ee35825843c36885a734322f6728a3e536b151))
+
+- Github wf for dependabot automerge ([aa0bb39](https://github.com/amasotti/qalam/commit/aa0bb39566d9b5fea0fdfae53417f46e3a2a27d1))
+
 ## [1.3.0] - 2026-07-23
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/d66d6a8f9b6ad44a43f1767d1c7b6297551a10e7..c370a7b6b4c0ecaf28ab861f9e3ba6172071b000)
+[Compare with last version](https://github.com/amasotti/qalam/compare/d66d6a8f9b6ad44a43f1767d1c7b6297551a10e7..ece30802de695001355ac4d19560ff3b1e6bf9d9)
 ### 🚀 Features
 
 
@@ -34,6 +52,8 @@ All notable changes to this project will be documented in this file (created wit
 - Remove dumb test and improve prompting for autotokenization ([e49e218](https://github.com/amasotti/qalam/commit/e49e218642362d4862fa9bc2028682e5eeb985df))
 
 - Fix test ([c370a7b](https://github.com/amasotti/qalam/commit/c370a7b6b4c0ecaf28ab861f9e3ba6172071b000))
+
+- Release v1.3.0 ([ece3080](https://github.com/amasotti/qalam/commit/ece30802de695001355ac4d19560ff3b1e6bf9d9))
 
 ### Enhancement
 

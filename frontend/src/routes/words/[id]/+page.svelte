@@ -390,7 +390,6 @@ const masterySteps: Record<string, number> = {
 
 					<!-- Dictionaries -->
 					<div class="workbench-section">
-						<div class="sect-label">Dictionaries</div>
 						<DictionaryLinks wordId={id} arabicText={word.data.arabicText} />
 					</div>
 

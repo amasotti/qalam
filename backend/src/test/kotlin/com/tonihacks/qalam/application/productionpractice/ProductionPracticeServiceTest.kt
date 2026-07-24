@@ -48,16 +48,27 @@ class ProductionPracticeServiceTest : FunSpec({
         reviewer.calls shouldBe 0
     }
 
-    test("loads canonical target words and delegates a valid review") {
+    test("normalizes an intended meaning and delegates it with a valid review") {
         val targetIds = source.allWords.take(7).map { it.id }
         val usedIds = targetIds.take(2)
 
-        val result = service.review(ProductionPracticeReviewCommand("  أنا أكتب كتاباً  ", targetIds, usedIds))
+        val result = service.review(
+            ProductionPracticeReviewCommand("  أنا أكتب كتاباً  ", targetIds, usedIds, "  I am writing a book.  "),
+        )
 
         result shouldBe reviewer.response.right()
         reviewer.lastRequest!!.sentence shouldBe "أنا أكتب كتاباً"
+        reviewer.lastRequest!!.intendedMeaning shouldBe "I am writing a book."
         reviewer.lastRequest!!.usedWordIds shouldBe usedIds.toSet()
         reviewer.lastRequest!!.targetWords.map { it.id }.toSet() shouldBe targetIds.toSet()
+    }
+
+    test("treats a blank intended meaning as absent") {
+        val targetIds = source.allWords.take(7).map { it.id }
+
+        service.review(ProductionPracticeReviewCommand("أنا أكتب كتاباً", targetIds, targetIds.take(2), "  "))
+
+        reviewer.lastRequest!!.intendedMeaning shouldBe null
     }
 })
 

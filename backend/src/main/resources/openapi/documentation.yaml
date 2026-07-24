@@ -5072,6 +5072,12 @@ components:
           minLength: 1
           maxLength: 1000
           example: أكتب كتابًا كبيرًا في البيت.
+        intendedMeaning:
+          type: string
+          nullable: true
+          description: Optional gloss, in any language, of what the learner intended to say. Blank input is treated as absent.
+          maxLength: 1000
+          example: I am writing a big book at home.
         targetWordIds:
           type: array
           description: Exactly the seven distinct word IDs displayed in the current prompt. The server reloads canonical word data from these IDs.

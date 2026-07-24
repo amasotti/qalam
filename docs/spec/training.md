@@ -157,6 +157,8 @@ Production practice asks the learner to write one Arabic sentence using at least
 target vocabulary words. Every prompt contains two nouns, two verbs, and three additional random
 words. The learner selects the words they intended to use; this communicates intent to the reviewer
 without trying to mechanically match inflected surface forms to stored lemmas.
+They may also provide an optional gloss in any language of the meaning they intended; the reviewer
+uses it to assess semantic accuracy, while an omitted or blank gloss preserves the usual review.
 
 OpenRouter returns one Markdown review rendered with the same reader used for root analysis. Its
 fixed sections cover what the reviewer understood, target-word use, corrections and a natural

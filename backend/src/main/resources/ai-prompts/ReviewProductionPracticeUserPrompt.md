@@ -12,53 +12,44 @@ Target vocabulary assigned:
 Words the learner intended/attempted to use:
 [<usedWords>]
 
-# How to assess the attempt
+# Review task
 
-1. Inspect grammar, spelling, agreement, verb form, prepositions, collocations, and clarity.
-2. The learner may provide an optional intended meaning. When present, use it as the semantic target:
-    - first state what the Arabic actually communicates;
-    - then say whether it matches the intended meaning, partly matches it, or expresses a different meaning;
-    - a grammatical sentence with the wrong meaning is a semantic mismatch, not a grammar error. When absent, assess
-      only the meaning expressed by the Arabic.
-3. MSA, Tunisian Arabic, and natural code-switching are all valid. Never mark mixing MSA and dialect as an error or ask
-   the learner to choose one. Mention a pure-register alternative only when it teaches a meaningful difference.
-4. Review only vocabulary the learner selected as intended. Recognize valid inflected forms; do not claim mechanical
-   proof from a surface form alone.
+If an intended meaning is supplied, first identify what the Arabic actually says, then compare it with the intended
+meaning. State whether they match, partly match, or differ, and name the precise gap. A grammatical sentence with
+unintended meaning is a semantic mismatch, not a grammar error. If no intended meaning is supplied, assess only the
+meaning expressed by the Arabic.
 
-Only make claims you are at least 80% confident about.
+Review the selected target words that the learner actually attempted. Do not invent a problem for every selected word.
 
-# Output rules
+# Output structure
 
-Output only clean Markdown, with these level-two headings in exactly this order:
+Respond with these level-two Markdown headings in exactly this order:
 
-## Meaning and clarity
+## Meaning
 
-Give a direct translation of what the Arabic says. If an intended meaning was supplied, compare it explicitly with that
-translation and name the precise semantic gap, if any.
+State what the Arabic sentence communicates in the feedback language. When an intended meaning was supplied, compare it
+directly with that meaning.
 
-## Corrections
+## Error breakdown
 
-List only real corrections, one bullet per issue: original fragment → corrected fragment, then a brief reason. Include
-semantic mismatches here only when an intended meaning was supplied. If none are needed, say so in one sentence.
+List only real issues, one bullet per issue: original fragment → correction — concise reason. Separate grammatical
+issues from semantic mismatches. If there are none, say so in one sentence.
 
 ## Target vocabulary
 
-Discuss the selected target words actually attempted: form, meaning, fit, and any needed preposition or collocation. Do
-not invent a problem for every word.
+Discuss the selected target words actually attempted: form, meaning, fit, and any needed preposition or collocation.
 
-## Best corrected sentence
+## Correct sentence
 
-Provide one closest, minimal repair only when the attempt needs a correction. Include Arabic, Latin transliteration, and
-English translation. Do not automatically provide both MSA and Derja versions. If no correction is needed, write "No
-corrected sentence needed."
+Provide one closest, minimal, natural sentence expressing the intended meaning, or the meaning actually expressed when
+none was supplied. Include Arabic, Latin transliteration, and a translation in the feedback language. If no correction
+is needed, say so in the feedback language.
 
-## Useful alternatives
+## Alternatives
 
-Offer zero to two alternatives only when each teaches something materially different: a distinct idiom, a deliberate
-register choice, a different emphasis, or a more natural construction. Never repeat the best corrected sentence, its
-fully vocalized form, or a near-identical word substitution. If none add learning value, write "No additional
-alternative is needed."
-
-## Next focus
-
-In one or two sentences, name the single most useful pattern to practise next. Ground it in this attempt.
+Offer 3-5 concise, high-value ways to express the same intended proposition when they expand the learner's
+usable repertoire. Vary wording, causal or agentive framing, verb choice, preposition, construction, or register;
+preserve the core intended idea and explain any changed nuance. Each alternative must include Arabic, Latin
+transliteration, a literal translation in the feedback language, and one short usage note. Never repeat the correct
+sentence or offer near-identical substitutions. If no alternative adds real learning value, say so in the feedback
+language.

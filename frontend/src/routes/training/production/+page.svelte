@@ -16,6 +16,7 @@ const prompt = useProductionPracticePrompt();
 const review = useReviewProductionPractice();
 
 let sentence = $state('');
+let intendedMeaning = $state('');
 let usedWordIds = $state<string[]>([]);
 let feedback = $state<ProductionPracticeReviewResponse | null>(null);
 
@@ -41,6 +42,7 @@ function submitReview() {
 	review.mutate(
 		{
 			sentence,
+			intendedMeaning: intendedMeaning.trim() || undefined,
 			targetWordIds: targetWordIds(prompt.data.words),
 			usedWordIds,
 		},
@@ -64,6 +66,7 @@ function targetWordIds(
 
 function startFreshPrompt() {
 	sentence = '';
+	intendedMeaning = '';
 	usedWordIds = [];
 	feedback = null;
 	review.reset();
@@ -113,6 +116,12 @@ function startFreshPrompt() {
 				<span class="training-field-label">Your sentence</span>
 				<textarea class="form-textarea" bind:value={sentence} lang="ar" dir="rtl" rows="4" maxlength="1000" placeholder="اكتب جملة هنا…"></textarea>
 				<span class="production-practice-hint">{selectedWordCount < 2 ? `Select ${2 - selectedWordCount} more word${selectedWordCount === 0 ? 's' : ''} before reviewing.` : 'Ready to review.'}</span>
+			</label>
+
+			<label class="production-practice-meaning">
+				<span class="training-field-label">What you meant <span class="training-field-optional">(optional)</span></span>
+				<textarea class="form-textarea" bind:value={intendedMeaning} dir="auto" rows="2" maxlength="1000" placeholder="For example: I want to say that I am writing a book at home."></textarea>
+				<span class="production-practice-hint">Write a translation or short explanation in any language to help the review assess your intended meaning.</span>
 			</label>
 
 			<div class="production-practice-actions">

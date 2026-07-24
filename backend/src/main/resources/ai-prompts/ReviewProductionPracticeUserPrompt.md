@@ -1,6 +1,10 @@
 # Inputs
+
 Learner sentence:
 [<sentence>]
+
+Learner's intended meaning (optional; may be in any language):
+[<intendedMeaning>]
 
 Target vocabulary assigned:
 [<targetWords>]
@@ -8,40 +12,44 @@ Target vocabulary assigned:
 Words the learner intended/attempted to use:
 [<usedWords>]
 
-**Important**: Dialect mix with elements of both a dialect and MSA are never to be evaluated as errors. This is the 
-intended learning mode, not a mix or register jumps. The user will express himself as a foreigner that tries and succeeds
-to communicate in a dialect, using MSA terms where local words do not exist or are unknown or to express a precise concept.
-Like also native speaker do, code switching, is intended and one thing the user practice, never an error. 
-You can however at the end of the review give a "pure" MSA and "pure" dialectal variant if you can without hallucinating.
-Confidence level for all what you say should be above 80%, otherwise refrain from asserting it at all.
+# Review task
 
----
+If an intended meaning is supplied, first identify what the Arabic actually says, then compare it with the intended
+meaning. State whether they match, partly match, or differ, and name the precise gap. A grammatical sentence with
+unintended meaning is a semantic mismatch, not a grammar error. If no intended meaning is supplied, assess only the
+meaning expressed by the Arabic.
 
-# Output Structure
-Respond using strictly the following level-two Markdown headings in exact order:
+Review the selected target words that the learner actually attempted. Do not invent a problem for every selected word.
 
-## What I understood
-* Direct English translation of your sentence based on what the user actually wrote.
+# Output structure
 
-## Detailed Breakdown of Errors
-If there are errors, list every specific error in your sentence using bullet points (e.g., gender disagreement, incorrect verb conjugation, 
-typos, awkward preposition choice, strange collocation). 
-If there are no errors, state that your sentence is grammatically sound.
+Respond with these level-two Markdown headings in exactly this order:
 
-## Target Vocabulary Review
-* Analyze each used word or expression from the user generated sentence.
-* Evaluate fluency, morphological form (Wazn), tense, and naturalness. Note missing prepositions or awkward collocations.
+## Meaning
 
-## Corrected Version
-* A complete, fully vocalized rewrite of your sentence (MSA and Tunisian).
-* Provide both the Arabic text and a precise Latin transliteration.
-* Explain briefly why these specific changes make your sentence natural and correct.
+State what the Arabic sentence communicates in the feedback language. When an intended meaning was supplied, compare it
+directly with that meaning.
 
-## Natural Alternatives & Register Shift
-* Offer 1-2 high-value alternative ways to express your idea or chunks of it (e.g., more idiomatic phrasing or sophisticated vocabulary).
-* If you wrote in Tunisian Arabic, provide the equivalent in natural MSA (and vice versa) to build your register flexibility.
-* Include full Arabic text, Latin transliteration, and English translation for each alternative.
+## Error breakdown
 
-## Tutor's Key Takeaway
-* A concise 3-to-4 sentence summary addressing your overall clarity, naturalness, and grammar control.
-* The single most important concept or pattern you should focus on practicing in your next exercise.
+List only real issues, one bullet per issue: original fragment → correction — concise reason. Separate grammatical
+issues from semantic mismatches. If there are none, say so in one sentence.
+
+## Target vocabulary
+
+Discuss the selected target words actually attempted: form, meaning, fit, and any needed preposition or collocation.
+
+## Correct sentence
+
+Provide one closest, minimal, natural sentence expressing the intended meaning, or the meaning actually expressed when
+none was supplied. Include Arabic, Latin transliteration, and a translation in the feedback language. If no correction
+is needed, say so in the feedback language.
+
+## Alternatives
+
+Offer 3-5 concise, high-value ways to express the same intended proposition when they expand the learner's
+usable repertoire. Vary wording, causal or agentive framing, verb choice, preposition, construction, or register;
+preserve the core intended idea and explain any changed nuance. Each alternative must include Arabic, Latin
+transliteration, a literal translation in the feedback language, and one short usage note. Never repeat the correct
+sentence or offer near-identical substitutions. If no alternative adds real learning value, say so in the feedback
+language.

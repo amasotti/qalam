@@ -157,10 +157,13 @@ Production practice asks the learner to write one Arabic sentence using at least
 target vocabulary words. Every prompt contains two nouns, two verbs, and three additional random
 words. The learner selects the words they intended to use; this communicates intent to the reviewer
 without trying to mechanically match inflected surface forms to stored lemmas.
+They may also provide an optional gloss in any language of the meaning they intended; the reviewer
+uses it to assess semantic accuracy, while an omitted or blank gloss preserves the usual review.
 
 OpenRouter returns one Markdown review rendered with the same reader used for root analysis. Its
-fixed sections cover what the reviewer understood, target-word use, corrections and a natural
-version, alternatives for vocabulary/verbs/word order or Tunisian versus MSA, and overall feedback.
+fixed sections distinguish meaning and clarity, actual corrections, target-word use, one minimal
+corrected sentence, genuinely distinct alternatives, and the next practice focus. A supplied gloss
+lets the reviewer identify a grammatical sentence that expresses a different intended meaning.
 Prompts, submissions, and feedback are entirely ephemeral: no database rows, history, analytics,
 SRS progress, or mastery promotion. Word selection works without AI; review returns `503
 AI_NOT_CONFIGURED` when OpenRouter is not configured.

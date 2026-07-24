@@ -62,6 +62,8 @@ let addError = $state('');
 
 const links = $derived<DictionaryLinkResponse[]>(linksQuery.data ?? []);
 const existingSources = $derived(new Set(links.map((l) => l.source)));
+const templateSources = $derived(sources.filter((s) => URL_TEMPLATES[s] !== undefined));
+const allAdded = $derived(templateSources.every((s) => existingSources.has(s)));
 
 // Auto-fill URL when source changes in custom add form
 $effect(() => {
@@ -80,6 +82,25 @@ function buildTemplateUrl(source: DictionarySource): string {
 
 	const normalizedArabic = removeArabicDiacritics(arabicText);
 	return template.replace('{word}', encodeURIComponent(normalizedArabic));
+}
+
+async function handleAddAll() {
+	addError = '';
+	for (const source of sources) {
+		if (existingSources.has(source)) continue;
+
+		const url = buildTemplateUrl(source);
+		if (!url) continue;
+
+		try {
+			await addMutation.mutateAsync({
+				id: wordId,
+				body: { source, url },
+			});
+		} catch {
+			addError = 'Failed to add some links';
+		}
+	}
 }
 
 async function handleQuickAdd(source: DictionarySource) {
@@ -120,73 +141,85 @@ async function handleAddCustom() {
 </script>
 
 {#if linksQuery.isPending}
-	<span class="annot-empty">Loading…</span>
+    <span class="annot-empty">Loading…</span>
 {:else}
-	<div class="dict-links-list">
-		{#if links.length > 0}
-			{#each links as link (link.id)}
-				<a href={link.url} target="_blank" rel="noopener noreferrer" class="dict-link-row">
-					<span class="dict-link-label">{sourceLabels[link.source]}</span>
-					<ExternalLink size={11} class="dict-link-icon" />
-					<button
-						class="dict-link-remove"
-						onclick={(e: MouseEvent) => {
+    <div class="sect-label with-action">
+        <span>Dictionaries</span>
+        {#if !allAdded}
+            <button class="btn btn-xs" onclick={() => handleAddAll()} disabled={addMutation.isPending}>
+                + Add all
+            </button>
+        {/if}
+    </div>
+    <div class="dict-links-list">
+        <!-- Show already added dictionaries -->
+        {#if links.length > 0}
+            {#each links as link (link.id)}
+                <a href={link.url} target="_blank" rel="noopener noreferrer" class="dict-link-row">
+                    <span class="dict-link-label">{sourceLabels[link.source]}</span>
+                    <ExternalLink size={11} class="dict-link-icon"/>
+                    <button
+                            class="dict-link-remove"
+                            onclick={(e: MouseEvent) => {
 							e.preventDefault();
 							e.stopPropagation();
 							deleteMutation.mutate({ id: wordId, linkId: link.id });
 						}}
-						disabled={deleteMutation.isPending}
-						aria-label="Remove {sourceLabels[link.source]}"
-					><X size={10} /></button>
-				</a>
-			{/each}
-		{/if}
+                            disabled={deleteMutation.isPending}
+                            aria-label="Remove {sourceLabels[link.source]}"
+                    >
+                        <X size={10}/>
+                    </button>
+                </a>
+            {/each}
+        {/if}
 
-		{#if showAdd}
-			<div class="dict-add-form">
-				<select
-					class="dict-add-select"
-					bind:value={selectedSource}
-					disabled={addMutation.isPending}
-				>
-					{#each sources as source}
-						<option value={source}>{sourceLabels[source]}</option>
-					{/each}
-				</select>
-				<input
-					type="url"
-					class="dict-add-input"
-					placeholder="URL"
-					bind:value={urlInput}
-					disabled={addMutation.isPending}
-				/>
-				<button
-					class="btn btn-xs"
-					onclick={handleAddCustom}
-					disabled={addMutation.isPending || !urlInput.trim()}
-				>Add</button>
-				<button class="btn btn-xs" onclick={() => (showAdd = false)}>Cancel</button>
-				{#if addError}
-					<span class="dict-add-error">{addError}</span>
-				{/if}
-			</div>
-		{/if}
+        {#if showAdd}
+            <div class="dict-add-form">
+                <select
+                        class="dict-add-select"
+                        bind:value={selectedSource}
+                        disabled={addMutation.isPending}
+                >
+                    {#each sources as source}
+                        <option value={source}>{sourceLabels[source]}</option>
+                    {/each}
+                </select>
+                <input
+                        type="url"
+                        class="dict-add-input"
+                        placeholder="URL"
+                        bind:value={urlInput}
+                        disabled={addMutation.isPending}
+                />
+                <button
+                        class="btn btn-xs"
+                        onclick={handleAddCustom}
+                        disabled={addMutation.isPending || !urlInput.trim()}
+                >Add
+                </button>
+                <button class="btn btn-xs" onclick={() => (showAdd = false)}>Cancel</button>
+                {#if addError}
+                    <span class="dict-add-error">{addError}</span>
+                {/if}
+            </div>
+        {/if}
 
-		<div class="dict-add-actions">
-			{#each sources.filter(s => URL_TEMPLATES[s] && !existingSources.has(s)).slice(0, 4) as source (source)}
-				<button
-					class="dict-quick-add"
-					onclick={() => handleQuickAdd(source)}
-					disabled={addMutation.isPending}
-				>
-					<Plus size={10} />
-					{sourceLabels[source]}
-				</button>
-			{/each}
-			<button class="dict-quick-add dict-quick-add-custom" onclick={startCustomAdd}>
-				<Plus size={10} />
-				Custom
-			</button>
-		</div>
-	</div>
+        <div class="dict-add-actions">
+            {#each sources.filter(s => URL_TEMPLATES[s] && !existingSources.has(s)).slice(0, 4) as source (source)}
+                <button
+                        class="dict-quick-add"
+                        onclick={() => handleQuickAdd(source)}
+                        disabled={addMutation.isPending}
+                >
+                    <Plus size={10}/>
+                    {sourceLabels[source]}
+                </button>
+            {/each}
+            <button class="dict-quick-add dict-quick-add-custom" onclick={startCustomAdd}>
+                <Plus size={10}/>
+                Custom
+            </button>
+        </div>
+    </div>
 {/if}

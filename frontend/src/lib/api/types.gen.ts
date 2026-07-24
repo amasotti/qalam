@@ -773,6 +773,10 @@ export type ReviewProductionPracticeRequest = {
      */
     sentence: string;
     /**
+     * Optional gloss, in any language, of what the learner intended to say. Blank input is treated as absent.
+     */
+    intendedMeaning?: string | null;
+    /**
      * Exactly the seven distinct word IDs displayed in the current prompt. The server reloads canonical word data from these IDs.
      */
     targetWordIds: [

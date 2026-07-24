@@ -245,10 +245,19 @@
 	gap: 0.5rem;
 	margin-top: 1.5rem;
 }
+.production-practice-meaning {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin-top: 1rem;
+}
 .production-practice-sentence textarea {
 	font-family: var(--font-arabic);
 	font-size: 1.2rem;
 	line-height: 1.8;
+}
+.production-practice-meaning textarea {
+	font-size: 1rem;
 }
 .production-practice-hint {
 	color: var(--ink-light);

@@ -52,6 +52,7 @@ private fun toCommand(request: ReviewProductionPracticeRequest): Either<DomainEr
         sentence = request.sentence,
         targetWordIds = request.targetWordIds.map { parseWordId(it, "targetWordIds").bind() },
         usedWordIds = request.usedWordIds.map { parseWordId(it, "usedWordIds").bind() },
+        intendedMeaning = request.intendedMeaning,
     )
 }
 

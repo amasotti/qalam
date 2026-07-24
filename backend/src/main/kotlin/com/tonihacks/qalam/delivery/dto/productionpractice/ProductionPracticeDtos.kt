@@ -22,6 +22,7 @@ data class ReviewProductionPracticeRequest(
     val sentence: String,
     val targetWordIds: List<String>,
     val usedWordIds: List<String>,
+    val intendedMeaning: String? = null,
 )
 
 @Serializable

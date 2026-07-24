@@ -48,5 +48,6 @@ internal fun buildProductionPracticeReviewPrompt(request: ProductionPracticeRevi
                     "translation: ${word.translation.orEmpty()}; part of speech: ${word.partOfSpeech}; dialect: ${word.dialect}"
             },
             "usedWords" to request.targetWords.filter { it.id in request.usedWordIds }.joinToString { it.arabicText },
+            "intendedMeaning" to request.intendedMeaning.orEmpty(),
         ),
     )

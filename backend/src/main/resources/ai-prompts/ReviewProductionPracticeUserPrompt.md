@@ -2,6 +2,9 @@
 Learner sentence:
 [<sentence>]
 
+Learner's intended meaning (optional; may be in any language):
+[<intendedMeaning>]
+
 Target vocabulary assigned:
 [<targetWords>]
 
@@ -18,7 +21,7 @@ Confidence level for all what you say should be above 80%, otherwise refrain fro
 ---
 
 # Output Structure
-Respond using strictly the following level-two Markdown headings in exact order:
+Respond using strictly the following level-two Markdown headings in exact order.
 
 ## What I understood
 * Direct English translation of your sentence based on what the user actually wrote.

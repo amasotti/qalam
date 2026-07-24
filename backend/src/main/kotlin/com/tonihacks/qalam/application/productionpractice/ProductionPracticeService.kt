@@ -30,6 +30,13 @@ class ProductionPracticeService(
         ensure(sentence.length <= MAX_SENTENCE_LENGTH) {
             DomainError.ValidationError("sentence", "Sentence must not exceed $MAX_SENTENCE_LENGTH characters")
         }
+        val intendedMeaning = command.intendedMeaning?.trim()?.takeIf(String::isNotEmpty)
+        ensure(intendedMeaning == null || intendedMeaning.length <= MAX_INTENDED_MEANING_LENGTH) {
+            DomainError.ValidationError(
+                "intendedMeaning",
+                "Intended meaning must not exceed $MAX_INTENDED_MEANING_LENGTH characters",
+            )
+        }
         ensure(command.targetWordIds.size == PROMPT_WORD_COUNT && command.targetWordIds.toSet().size == PROMPT_WORD_COUNT) {
             DomainError.ValidationError("targetWordIds", "Exactly $PROMPT_WORD_COUNT distinct target words are required")
         }
@@ -51,6 +58,7 @@ class ProductionPracticeService(
                 sentence = sentence,
                 targetWords = targetWords.map(Word::toProductionPracticeWord),
                 usedWordIds = usedWordIds,
+                intendedMeaning = intendedMeaning,
             ),
         ).bind()
     }
@@ -76,6 +84,7 @@ class ProductionPracticeService(
         const val PROMPT_WORD_COUNT = REQUIRED_NOUNS + REQUIRED_VERBS + RANDOM_WORDS
         const val MIN_USED_WORDS = 2
         const val MAX_SENTENCE_LENGTH = 1_000
+        const val MAX_INTENDED_MEANING_LENGTH = 1_000
     }
 }
 

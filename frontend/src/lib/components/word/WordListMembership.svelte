@@ -14,15 +14,22 @@ const addWord = useAddWordToList();
 const removeWord = useRemoveWordFromList();
 
 const memberIds = $derived(new Set((memberships.data ?? []).map((l) => l.id)));
-const available = $derived((allLists.data ?? []).filter((l) => !memberIds.has(l.id)));
+const hasAvailable = $derived((allLists.data ?? []).some((l) => !memberIds.has(l.id)));
 
-async function addToList(e: Event) {
-	// Capture the element before awaiting — currentTarget is nulled once the event settles.
-	const select = e.currentTarget as HTMLSelectElement;
-	const listId = select.value;
-	if (!listId) return;
+let q = $state('');
+let open = $state(false);
+
+const filtered = $derived(
+	(allLists.data ?? [])
+		.filter((l) => !memberIds.has(l.id))
+		.filter((l) => !q || l.title.toLowerCase().includes(q.toLowerCase()))
+		.sort((a, b) => a.title.localeCompare(b.title))
+);
+
+async function select(listId: string) {
+	open = false;
+	q = '';
 	await addWord.mutateAsync({ listId, wordId });
-	select.value = '';
 }
 </script>
 
@@ -49,12 +56,30 @@ async function addToList(e: Event) {
 		</div>
 	{/if}
 
-	{#if available.length > 0}
-		<select class="form-select wl-add-select" onchange={addToList} disabled={addWord.isPending}>
-			<option value="">+ Add to list…</option>
-			{#each available as l (l.id)}
-				<option value={l.id}>{l.title}</option>
-			{/each}
-		</select>
+	{#if hasAvailable}
+		<div class="wl-add wl-add-membership">
+			<input
+				type="text"
+				class="form-input"
+				placeholder="+ Add to list…"
+				bind:value={q}
+				onfocus={() => (open = true)}
+				onblur={() => setTimeout(() => (open = false), 150)}
+				disabled={addWord.isPending}
+			/>
+			{#if open && filtered.length > 0}
+				<div class="wl-add-results">
+					{#each filtered as l (l.id)}
+						<button
+							type="button"
+							class="wl-add-result"
+							onmousedown={() => select(l.id)}
+						>
+							{l.title}
+						</button>
+					{/each}
+				</div>
+			{/if}
+		</div>
 	{/if}
 </div>

@@ -19,7 +19,8 @@ internal class OpenRouterProductionPracticeReviewer(
         openRouter.complete(
             OpenRouterCompletionRequest(
                 systemPrompt = PromptLoader.loadPrompt("ai-prompts/ProductionPracticeSystemPrompt.md"),
-                userPrompt = buildProductionPracticeReviewPrompt(request)
+                userPrompt = buildProductionPracticeReviewPrompt(request),
+                model = "openai/gpt-4o-mini"
             ),
         ).fold(
             { error ->

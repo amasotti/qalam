@@ -70,7 +70,7 @@ internal class OpenRouterClient : AutoCloseable {
                 contentType(ContentType.Application.Json)
                 setBody(
                     OpenRouterRequest(
-                        model = model,
+                        model = req.model ?: model,
                         messages = listOf(
                             OpenRouterMessage("system", req.systemPrompt),
                             OpenRouterMessage("user", req.userPrompt),
@@ -111,6 +111,7 @@ internal data class OpenRouterCompletionRequest(
     val responseFormat: OpenRouterResponseFormat? = null,
     val provider: OpenRouterProviderPreferences? = null,
     val maxCompletionTokens: Int? = null,
+    val model: String? = System.getenv("OPENROUTER_MODEL") ?: "google/gemini-2.5-flash-lite"
 )
 
 @Serializable

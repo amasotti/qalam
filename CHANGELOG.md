@@ -2,9 +2,50 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [1.4.0] - 2026-07-25
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/b9246eaff56bf575dfa782ab364484056519fd52..c61389ec22bbd875990db79ff5526bd023a14463)
+### 🚀 Features
+
+
+- Improve sentence production by optionally giving the intended meaning ([caed2c8](https://github.com/amasotti/qalam/commit/caed2c86a2d567d9f3f42cf8c6bdd757a9d54748))
+
+- Frontend adjustment sentence production ([a98397d](https://github.com/amasotti/qalam/commit/a98397dc6ab04470be7bc5e9292653b8fe74523d))
+
+### 🚜 Refactor
+
+
+- Simplify production sentence command model ([d88ba35](https://github.com/amasotti/qalam/commit/d88ba35112e06b2cdc7453bcbdff5837a973a2b1))
+
+### 🧪 Testing
+
+
+- Fix test ([c61389e](https://github.com/amasotti/qalam/commit/c61389ec22bbd875990db79ff5526bd023a14463))
+
+### ⚙️ Miscellaneous Tasks
+
+
+- Quick add all button ([1c8f60b](https://github.com/amasotti/qalam/commit/1c8f60b56ee38042a4f1b71890ec4355f8d767b7))
+
+- Mv redocly to the default name to make it discoverable ([0538ebc](https://github.com/amasotti/qalam/commit/0538ebcb2c8b425eb066873b0f72d5dd3b99859e))
+
+- Improve sentence review prompt ([ee78ddd](https://github.com/amasotti/qalam/commit/ee78dddc6cc8b14bbd13cad9636a89908a66dc9b))
+
+- Relax redocly.yaml ([1f2620b](https://github.com/amasotti/qalam/commit/1f2620b9e0e608648caa61a9b17c90cb14529007))
+
+- Improve word list dropdown ([7fc6ed5](https://github.com/amasotti/qalam/commit/7fc6ed5b915d630b70975466339697e3aa871f38))
+
+- More powerful model for sentence review ([6a0ab66](https://github.com/amasotti/qalam/commit/6a0ab66a60cb6723053ef68d47ca03c243fdac0d))
+
+- More powerful model for sentence review ([d94432a](https://github.com/amasotti/qalam/commit/d94432ac97dc447987d337a35bf3f2f2fbb7cbdc))
+
+- Log model used ([917c53c](https://github.com/amasotti/qalam/commit/917c53c8ebcacc8259c3ec4d5520f9b6b9648ca1))
+
+- Prompt hardening ([31d7ae5](https://github.com/amasotti/qalam/commit/31d7ae5a60ee2c82c0ad0f30826bfebf19f6fc7a))
+
 ## [1.3.1] - 2026-07-24
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/ece30802de695001355ac4d19560ff3b1e6bf9d9..aa0bb39566d9b5fea0fdfae53417f46e3a2a27d1)
+[Compare with last version](https://github.com/amasotti/qalam/compare/ece30802de695001355ac4d19560ff3b1e6bf9d9..b9246eaff56bf575dfa782ab364484056519fd52)
 ### ⚙️ Miscellaneous Tasks
 
 

@@ -60,13 +60,11 @@ internal class OpenRouterClient : AutoCloseable {
     @Suppress("TooGenericExceptionCaught")
     suspend fun complete(req: OpenRouterCompletionRequest): Either<DomainError, String> {
         val configuredApiKey = apiKey?.takeIf { it.isNotBlank() } ?: return DomainError.AiNotConfigured.left()
-        val configuredModel = (req.model ?: model).also {
-            log.debug { "Using OpenRouter model: $it" }
-        }
+        val configuredModel = req.model ?: model
 
         return try {
             log.debug {
-                "OpenRouter request model=$model\n=== system ===\n${req.systemPrompt}\n=== user ===\n${req.userPrompt}"
+                "OpenRouter request model=$configuredModel\n=== system ===\n${req.systemPrompt}\n=== user ===\n${req.userPrompt}"
             }
             val res = lazyHttpClient.value.post(OPENROUTER_COMPLETION_URL) {
                 header(HttpHeaders.Authorization, "Bearer $configuredApiKey")

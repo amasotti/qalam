@@ -5,7 +5,7 @@ and provide:
 - "translation": English translation / glossa or meaning
 - "partOfSpeech": <partOfSpeechValues>
 
-Respond only with a JSON structured in this way. Do not add commentary or explanation and do not drift from this structure:
+Respond only with a JSON structured in this way. Do not add markdown, triple ticks, commentary or explanation and do not drift from this structure:
 ```json
 {
   "arabicText": "the fully vocalized arabic word given in this prompt, e.g. صِيف", 

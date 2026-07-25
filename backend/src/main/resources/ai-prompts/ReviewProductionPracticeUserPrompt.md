@@ -3,11 +3,8 @@
 Learner sentence:
 [<sentence>]
 
-Learner's intended meaning (optional; may be in any language):
+Learner's intended meaning (optionale):
 [<intendedMeaning>]
-
-Target vocabulary assigned:
-[<targetWords>]
 
 Words the learner intended/attempted to use:
 [<usedWords>]
@@ -53,3 +50,15 @@ preserve the core intended idea and explain any changed nuance. Each alternative
 transliteration, a literal translation in the feedback language, and one short usage note. Never repeat the correct
 sentence or offer near-identical substitutions. If no alternative adds real learning value, say so in the feedback
 language.
+
+--- 
+
+CRITICAL: You will output the entire review in the feedback language, which is the same as the intended meaning language
+if provided. Before outputting anything, re-read the learner's intended meaning and to ensure that your feedback is accurate,
+relevant and in the right language.
+
+Your language has to match the language of this sentence:
+
+```
+<intendedMeaning>
+```

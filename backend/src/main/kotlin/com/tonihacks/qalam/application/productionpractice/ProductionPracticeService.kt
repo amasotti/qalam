@@ -37,27 +37,19 @@ class ProductionPracticeService(
                 "Intended meaning must not exceed $MAX_INTENDED_MEANING_LENGTH characters",
             )
         }
-        ensure(command.targetWordIds.size == PROMPT_WORD_COUNT && command.targetWordIds.toSet().size == PROMPT_WORD_COUNT) {
-            DomainError.ValidationError("targetWordIds", "Exactly $PROMPT_WORD_COUNT distinct target words are required")
-        }
         ensure(command.usedWordIds.size >= MIN_USED_WORDS && command.usedWordIds.distinct().size == command.usedWordIds.size) {
             DomainError.ValidationError("usedWordIds", "At least $MIN_USED_WORDS distinct used words are required")
         }
-        ensure(command.usedWordIds.all(command.targetWordIds::contains)) {
-            DomainError.ValidationError("usedWordIds", "Used words must be selected target words")
-        }
 
-        val targetWordIds = command.targetWordIds.toSet()
         val usedWordIds = command.usedWordIds.toSet()
-        val targetWords = wordSource.findByIds(targetWordIds).bind()
-        ensure(targetWords.size == targetWordIds.size) {
-            DomainError.NotFound("Word", "one or more target word IDs")
-        }
+        val usedWords = wordSource.findByIds(usedWordIds).bind()
+            .requireSelection(usedWordIds.size, null, emptySet()).bind()
+            .map(Word::toProductionPracticeWord)
+            .toSet()
         reviewer.review(
             ProductionPracticeReviewRequest(
                 sentence = sentence,
-                targetWords = targetWords.map(Word::toProductionPracticeWord),
-                usedWordIds = usedWordIds,
+                usedWords = usedWords,
                 intendedMeaning = intendedMeaning,
             ),
         ).bind()

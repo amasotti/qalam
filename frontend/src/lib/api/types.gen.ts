@@ -777,18 +777,6 @@ export type ReviewProductionPracticeRequest = {
      */
     intendedMeaning?: string | null;
     /**
-     * Exactly the seven distinct word IDs displayed in the current prompt. The server reloads canonical word data from these IDs.
-     */
-    targetWordIds: [
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string
-    ];
-    /**
      * At least two distinct IDs from targetWordIds that the learner intended to use. This records intent; it does not mechanically prove an inflected surface form.
      */
     usedWordIds: Array<string>;

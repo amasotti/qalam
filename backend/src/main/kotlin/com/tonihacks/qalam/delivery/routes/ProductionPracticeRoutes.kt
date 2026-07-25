@@ -50,7 +50,6 @@ fun Route.productionPracticeRoutes(service: ProductionPracticeService) {
 private fun toCommand(request: ReviewProductionPracticeRequest): Either<DomainError, ProductionPracticeReviewCommand> = either {
     ProductionPracticeReviewCommand(
         sentence = request.sentence,
-        targetWordIds = request.targetWordIds.map { parseWordId(it, "targetWordIds").bind() },
         usedWordIds = request.usedWordIds.map { parseWordId(it, "usedWordIds").bind() },
         intendedMeaning = request.intendedMeaning,
     )

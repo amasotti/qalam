@@ -48,7 +48,7 @@ class ProductionPracticeIntegrationTest : BaseIntegrationTest() {
                         setBody(
                             """{
                               "sentence":"أنا أكتب.",
-                              "targetWordIds":["not-a-uuid", "not-a-uuid", "not-a-uuid", "not-a-uuid", "not-a-uuid", "not-a-uuid", "not-a-uuid"],
+                              "intendedMeaning":"I am writing.",
                               "usedWordIds":["not-a-uuid", "also-not-a-uuid"]
                             }""".trimIndent(),
                         )
@@ -56,7 +56,7 @@ class ProductionPracticeIntegrationTest : BaseIntegrationTest() {
 
                     response.status shouldBe HttpStatusCode.BadRequest
                     response.bodyAsText() shouldBe
-                        """{"error":"targetWordIds contains an invalid UUID: 'not-a-uuid'","code":"INVALID_INPUT"}"""
+                        """{"error":"usedWordIds contains an invalid UUID: 'not-a-uuid'","code":"INVALID_INPUT"}"""
                 }
             }
         }

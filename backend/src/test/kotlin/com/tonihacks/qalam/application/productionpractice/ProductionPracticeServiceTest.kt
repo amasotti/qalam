@@ -40,33 +40,32 @@ class ProductionPracticeServiceTest : FunSpec({
     }
 
     test("rejects a review with fewer than two selected words before loading words") {
-        val targetIds = source.allWords.take(7).map { it.id }
+        val usedWordsIds = source.allWords.take(1).map { it.id }
 
-        service.review(ProductionPracticeReviewCommand("أنا أكتب", targetIds, listOf(targetIds.first()))) shouldBe
+
+        service.review(ProductionPracticeReviewCommand("أنا أكتب", usedWordsIds, "I write")) shouldBe
             DomainError.ValidationError("usedWordIds", "At least 2 distinct used words are required").left()
         source.findCalls shouldBe 0
         reviewer.calls shouldBe 0
     }
 
     test("normalizes an intended meaning and delegates it with a valid review") {
-        val targetIds = source.allWords.take(7).map { it.id }
-        val usedIds = targetIds.take(2)
+        val usedIds = source.allWords.take(2).map { it.id }
 
         val result = service.review(
-            ProductionPracticeReviewCommand("  أنا أكتب كتاباً  ", targetIds, usedIds, "  I am writing a book.  "),
+            ProductionPracticeReviewCommand("  أنا أكتب كتاباً  ",usedIds, "  I am writing a book.  "),
         )
 
         result shouldBe reviewer.response.right()
         reviewer.lastRequest!!.sentence shouldBe "أنا أكتب كتاباً"
         reviewer.lastRequest!!.intendedMeaning shouldBe "I am writing a book."
-        reviewer.lastRequest!!.usedWordIds shouldBe usedIds.toSet()
-        reviewer.lastRequest!!.targetWords.map { it.id }.toSet() shouldBe targetIds.toSet()
+        reviewer.lastRequest!!.usedWords.map { it.id }.toSet() shouldBe usedIds.toSet()
     }
 
     test("treats a blank intended meaning as absent") {
         val targetIds = source.allWords.take(7).map { it.id }
 
-        service.review(ProductionPracticeReviewCommand("أنا أكتب كتاباً", targetIds, targetIds.take(2), "  "))
+        service.review(ProductionPracticeReviewCommand("أنا أكتب كتاباً", targetIds, "  "))
 
         reviewer.lastRequest!!.intendedMeaning shouldBe null
     }

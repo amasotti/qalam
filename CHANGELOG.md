@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file (created wit
 
 ## [1.4.0] - 2026-07-25
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/b9246eaff56bf575dfa782ab364484056519fd52..c61389ec22bbd875990db79ff5526bd023a14463)
+[Compare with last version](https://github.com/amasotti/qalam/compare/b9246eaff56bf575dfa782ab364484056519fd52..2578eb0aea14ff853d8df830bcd60fff3cc0aa98)
 ### 🚀 Features
 
 

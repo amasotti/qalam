@@ -611,9 +611,10 @@
 .wl-chip-link:hover {
 	text-decoration: underline;
 }
-.wl-add-select {
+/* Inline variant inside sidebar meta-cards */
+.wl-add-membership {
 	margin-top: 0.625rem;
-	width: 100%;
+	max-width: 100%;
 }
 .wl-chip-remove {
 	border: none;

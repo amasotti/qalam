@@ -42,7 +42,7 @@ describe('WordListMembership', () => {
 		expect(removeMutate).toHaveBeenCalledWith({ listId: 'list-a', wordId: 'word-1' });
 	});
 
-	it('offers only lists the word is not already in, and adds via select', async () => {
+	it('offers only lists the word is not already in, and adds via click', async () => {
 		memberships.data = [{ id: 'list-a', title: 'Colors' }];
 		allLists.data = [
 			{ id: 'list-a', title: 'Colors', itemCount: 3 },
@@ -51,11 +51,15 @@ describe('WordListMembership', () => {
 
 		render(WordListMembership, { props: { wordId: 'word-1' } });
 
-		// "Colors" is already a member → not an <option>; "Family" is available.
-		expect(screen.getByRole('option', { name: 'Family' })).toBeInTheDocument();
-		expect(screen.queryByRole('option', { name: 'Colors' })).not.toBeInTheDocument();
+		// Focus input to open dropdown
+		await fireEvent.focus(screen.getByPlaceholderText('+ Add to list…'));
 
-		await fireEvent.change(screen.getByRole('combobox'), { target: { value: 'list-b' } });
+		// "Colors" already a member → not in dropdown; "Family" is available
+		const familyBtn = screen.getByRole('button', { name: 'Family' });
+		expect(familyBtn).toBeInTheDocument();
+		expect(screen.queryByRole('button', { name: 'Colors' })).not.toBeInTheDocument();
+
+		await fireEvent.mouseDown(familyBtn);
 		expect(addMutateAsync).toHaveBeenCalledWith({ listId: 'list-b', wordId: 'word-1' });
 	});
 

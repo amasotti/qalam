@@ -20,7 +20,7 @@ internal class OpenRouterProductionPracticeReviewer(
             OpenRouterCompletionRequest(
                 systemPrompt = PromptLoader.loadPrompt("ai-prompts/ProductionPracticeSystemPrompt.md"),
                 userPrompt = buildProductionPracticeReviewPrompt(request),
-                model = "openai/gpt-4o-mini"
+                model = "anthropic/claude-opus-4.8"
             ),
         ).fold(
             { error ->

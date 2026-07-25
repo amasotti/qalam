@@ -43,25 +43,10 @@ function submitReview() {
 		{
 			sentence,
 			intendedMeaning: intendedMeaning.trim() || undefined,
-			targetWordIds: targetWordIds(prompt.data.words),
 			usedWordIds,
 		},
 		{ onSuccess: (result) => (feedback = result) }
 	);
-}
-
-function targetWordIds(
-	words: ProductionPracticePromptResponse['words']
-): ReviewProductionPracticeRequest['targetWordIds'] {
-	return [
-		words[0].id,
-		words[1].id,
-		words[2].id,
-		words[3].id,
-		words[4].id,
-		words[5].id,
-		words[6].id,
-	];
 }
 
 function startFreshPrompt() {

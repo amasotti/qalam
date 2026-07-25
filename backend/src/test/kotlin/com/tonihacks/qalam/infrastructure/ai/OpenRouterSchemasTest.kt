@@ -62,21 +62,24 @@ class OpenRouterSchemasTest : FreeSpec({
     }
 
     "renders a Markdown production-practice prompt with intended meaning but without internal IDs or an output schema" {
-        val wordId = WordId(UUID.randomUUID())
+        val usedWord = ProductionPracticeWord(
+            WordId(UUID.randomUUID()),
+            "كَتَبَ",
+            "kataba",
+            "to write",
+            PartOfSpeech.VERB,
+            Dialect.MSA)
         val prompt = buildProductionPracticeReviewPrompt(
             ProductionPracticeReviewRequest(
                 sentence = "أنا أكتب.",
-                targetWords = listOf(
-                    ProductionPracticeWord(wordId, "كَتَبَ", "kataba", "to write", PartOfSpeech.VERB, Dialect.MSA),
-                ),
-                usedWordIds = setOf(wordId),
+                usedWords = setOf(usedWord),
                 intendedMeaning = "I am writing.",
             ),
         )
 
         prompt.contains("كَتَبَ") shouldBe true
         prompt.contains("I am writing.") shouldBe true
-        prompt.contains(wordId.toString()) shouldBe false
+        prompt.contains(usedWord.id.toString()) shouldBe false
         prompt.contains("outputSchema") shouldBe false
     }
 })

@@ -22,15 +22,13 @@ data class ProductionPracticeWord(
 
 data class ProductionPracticeReviewCommand(
     val sentence: String,
-    val targetWordIds: List<WordId>,
     val usedWordIds: List<WordId>,
     val intendedMeaning: String? = null,
 )
 
 data class ProductionPracticeReviewRequest(
     val sentence: String,
-    val targetWords: List<ProductionPracticeWord>,
-    val usedWordIds: Set<WordId>,
+    val usedWords: Set<ProductionPracticeWord>,
     val intendedMeaning: String? = null,
 )
 

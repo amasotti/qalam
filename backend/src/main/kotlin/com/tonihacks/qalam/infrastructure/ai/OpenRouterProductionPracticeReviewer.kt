@@ -8,6 +8,7 @@ import com.tonihacks.qalam.application.productionpractice.ProductionPracticeRevi
 import com.tonihacks.qalam.application.productionpractice.ProductionPracticeReviewer
 import com.tonihacks.qalam.domain.error.DomainError
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlin.collections.filter
 
 internal class OpenRouterProductionPracticeReviewer(
     private val openRouter: OpenRouterClient,
@@ -43,11 +44,7 @@ internal fun buildProductionPracticeReviewPrompt(request: ProductionPracticeRevi
         "ai-prompts/ReviewProductionPracticeUserPrompt.md",
         mapOf(
             "sentence" to request.sentence,
-            "targetWords" to request.targetWords.joinToString("\n") { word ->
-                "- Arabic: ${word.arabicText}; transliteration: ${word.transliteration.orEmpty()}; " +
-                    "translation: ${word.translation.orEmpty()}; part of speech: ${word.partOfSpeech}; dialect: ${word.dialect}"
-            },
-            "usedWords" to request.targetWords.filter { it.id in request.usedWordIds }.joinToString { it.arabicText },
+            "usedWords" to request.usedWords.joinToString("\n") { w -> "- ${w.arabicText} (${w.translation})" },
             "intendedMeaning" to request.intendedMeaning.orEmpty(),
         ),
-    )
+)

@@ -12,8 +12,9 @@ Provide:
 - relations: up to 5 high-value entries — synonyms with register/nuance difference, strong antonyms, or words from the same semantic field. Avoid generic filler. Each entry: arabicText (fully vocalized), transliteration (practical chat-style), translation (concise English gloss), relationType (SYNONYM/ANTONYM/RELATED)
 - notes: brief mnemonic or usage note in English, focusing on common learner confusions, collocations, or register constraints (null if nothing genuinely useful)
 
-Respond ONLY with this JSON structure (verbDetails and plurals are ofc mutually exclusive):
-```json
+Respond ONLY with this JSON structure (verbDetails and plurals are ofc mutually exclusive), no markdown formatting, no
+triple ticks, nothing else than the JSON structure.
+
 {
   "gender": "MASCULINE | FEMININE | null",
   "verbDetails": {
@@ -36,5 +37,5 @@ Respond ONLY with this JSON structure (verbDetails and plurals are ofc mutually 
   ],
   "notes": "..."
 }
-```
+
 

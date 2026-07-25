@@ -82,6 +82,7 @@ internal class OpenRouterWordClient(
                         "dialect" to word.dialect.name,
                     ),
                 ),
+                model = "anthropic/claude-opus-4.8",
                 responseFormat = JSON_OBJECT_RESPONSE_FORMAT,
             )
         }.flatMap { content -> parse("enrichWord", content) { parseWordEnrichmentSuggestion(it, word.partOfSpeech) } }

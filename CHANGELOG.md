@@ -2,9 +2,17 @@
 
 All notable changes to this project will be documented in this file (created with git cliff).
 
+## [1.4.1] - 2026-08-09
+
+[Compare with last version](https://github.com/amasotti/qalam/compare/2578eb0aea14ff853d8df830bcd60fff3cc0aa98..d032e19cdab03b8f4a08d0a791fa2b8b8eae50f6)
+### ⚙️ Miscellaneous Tasks
+
+
+- Use rebase strategy ([5acbab7](https://github.com/amasotti/qalam/commit/5acbab79048ba32ab26c220cb5fa827e0bacebba))
+
 ## [1.4.0] - 2026-07-25
 
-[Compare with last version](https://github.com/amasotti/qalam/compare/b9246eaff56bf575dfa782ab364484056519fd52..c61389ec22bbd875990db79ff5526bd023a14463)
+[Compare with last version](https://github.com/amasotti/qalam/compare/b9246eaff56bf575dfa782ab364484056519fd52..2578eb0aea14ff853d8df830bcd60fff3cc0aa98)
 ### 🚀 Features
 
 

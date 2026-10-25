@@ -1,7 +1,7 @@
 [versions]
 kotlin               = "2.4.21"
 kotlinCoroutines     = "1.11.0"
-kotlinxSerialization = "1.11.0"
+kotlinxSerialization = "1.12.0"
 kotest               = "6.2.6"
 detekt               = "2.0.0-alpha.6"
 junitPlatform        = "6.1.3"
